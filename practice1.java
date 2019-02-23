@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-class div{
+class practice1{
     public static void main(String args[]){
         Scanner key = new Scanner(System.in);
         double answer,a,b;

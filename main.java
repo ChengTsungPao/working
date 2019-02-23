@@ -1,4 +1,5 @@
-import java.util.Scanner;;
+import java.util.Scanner;
+import java.util.Random;
 
 class apples{
     public static void main(String args[]) {
@@ -8,7 +9,5 @@ class apples{
         System.out.print("\nInput your name:");
         name = key.nextLine();
         tunaObject.tunaMessage(name);
-
-        
     } 
 }
