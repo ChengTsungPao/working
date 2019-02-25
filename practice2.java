@@ -1,13 +1,15 @@
-import java.util.Random;
+import java.util.Scanner;
 
 class practice2{
-    public static void main(String args[]) {
-
-        Random dice = new Random();
-        int num;
-        for(int count=1;count<=10;count++){
-            num = dice.nextInt(6)+1;
-            System.out.printf("Random of %2d number:%d\n",count,num);
-        }
-    } 
+    public static void main(String args[]){
+        Scanner key = new Scanner(System.in);
+        double answer,a,b;
+        System.out.print("Input the first  number:");
+        a = key.nextDouble();
+        System.out.print("Input the second number:");
+        b = key.nextDouble();
+        answer=a/b;
+        System.out.print("a/b = ");
+        System.out.println(answer);
+    }
 }
