@@ -5,18 +5,23 @@ public class ArrayData4105054025 extends ArrayData{
     }
 
     public int max(){
-        int num = A[0];
-        for(int x:A){
-            if(num < x){
-                num=x;
-            }
+    	if(A.length!=0){
+	        int num = A[0];
+	        for(int x:A){
+	            if(num < x){
+	                num=x;
+	            }
+	        }
+	        System.out.println(num);
+    	}
+        else{
+            System.out.println("Please input the correct array !!!");
         }
-        System.out.println(num);
         return 0;
     }
 
     public int dot(int[] B){
-        if(A.length==B.length){
+        if(A.length==B.length && A.length!=0 && B.length!=0){
             int sum = 0;
             for(int i=0;i<A.length;i++){
                 sum+=A[i]*B[i];
@@ -24,7 +29,7 @@ public class ArrayData4105054025 extends ArrayData{
             System.out.println(sum);
         }
         else{
-            System.out.println("Please input the same array length !!!");
+            System.out.println("Please input the correct array !!!");
         }
         return 0;
     }
