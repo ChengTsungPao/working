@@ -12,6 +12,6 @@ public class practice6_3{
     }
 
     public String toString(){
-        return String.format("%d/%d/%d",month,day,year);
+        return String.format("%d/%d/%d",month,day,year); // wrong : return String.format("%s",this);
     }
 }
