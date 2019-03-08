@@ -12,12 +12,11 @@ public class ArrayData4105054025 extends ArrayData{
 	                num=x;
 	            }
 	        }
-	        System.out.println(num);
+	        return num;
     	}
         else{
-            System.out.println("Please input the correct array !!!");
+            return 0;
         }
-        return 0;
     }
 
     public int dot(int[] B){
@@ -26,11 +25,10 @@ public class ArrayData4105054025 extends ArrayData{
             for(int i=0;i<A.length;i++){
                 sum+=A[i]*B[i];
             }
-            System.out.println(sum);
+            return sum;
         }
         else{
-            System.out.println("Please input the correct array !!!");
+            return 0;
         }
-        return 0;
     }
 }

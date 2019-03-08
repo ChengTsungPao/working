@@ -11,3 +11,8 @@ class practice8{
         System.out.println(practice8_2.getMembers()); // Because of the static variable
     }
 }
+//static final(const)
+//class file1 extends file2{...}
+//extends為延伸用法
+//public:file1與file2函數相同file1為主
+//private:file1無法使用file2函數
