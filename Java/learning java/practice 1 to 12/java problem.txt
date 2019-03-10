@@ -1,0 +1,56 @@
+open two files
+
+
+file1.java
+
+public class file1{ //必須和檔名相同
+    public static void main(String args[]) {
+
+    } 
+}
+
+file2.java
+
+public class file2{
+    public void .....{
+
+    } 
+}
+----------------------------------------------------
+open two files
+
+
+file1.java
+
+class filename{ //filename隨意令
+    public static void main(String args[]) {
+
+    } 
+}
+
+file2.java
+
+public class file2{
+    public void .....{
+
+    } 
+}
+----------------------------------------------------
+open one files
+
+
+name1.java
+
+public class name1{ 
+    public static void main(String args[]) {
+
+    } 
+}
+
+
+class name2{ //此處加public會錯
+    public void .....{
+
+    } 
+}
+----------------------------------------------------

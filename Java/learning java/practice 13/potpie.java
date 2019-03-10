@@ -1,8 +1,8 @@
-public class practice13_2 extends practice13_4{
+public class potpie extends food{
 
     void eat(){ //need to same arguments,data type,
                 //(and public/private) as practice13_4
-        System.out.println("this file is 13-2");
+        System.out.println("this potpie is great");
     }
 
 }

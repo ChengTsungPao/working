@@ -1,10 +1,10 @@
-class practice13{
+class Main{
     public static void main(String[] args) {
 
-        practice13_5 bucky = new practice13_5();
-        practice13_4 fo = new practice13_4();
-        practice13_4 tu = new practice13_3();
-        practice13_4 po = new practice13_2();
+        fatty bucky = new fatty();
+        food fo = new food();
+        food tu = new tuna();
+        food po = new potpie();
 
         bucky.digest(fo);
         bucky.digest(tu);
