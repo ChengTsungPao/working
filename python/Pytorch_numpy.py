@@ -11,3 +11,10 @@ print("\nnumpy",np_data,
 data = [-1,-2,1,2]
 tensor = torch.FloatTensor(data)
 print('\nabs','\nnumpy',np.abs(data),'\ntorch: ',torch.abs(tensor))
+
+data = [[1,2],[3,4]]
+tensor = torch.FloatTensor(data)
+data = np.array(data)
+print("\nnumpy",np.dot(data,data),
+    "\ntorch",torch.mm(tensor,tensor))
+        
