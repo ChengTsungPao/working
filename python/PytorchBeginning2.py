@@ -411,11 +411,11 @@ class DogsAndCatsDataset(Dataset):
 
 # In[ ]:
 
-
+'''
 from torch.utils.data import Dataset, DataLoader
 
 dataloader = DataLoader(DogsAndCatsDataset,batch_size=32,num_workers=2)
 for imgs , labels in dataloader:
         #Apply your DL on the dataset.
     pass
-
+'''
