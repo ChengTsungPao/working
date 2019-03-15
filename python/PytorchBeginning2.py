@@ -442,7 +442,7 @@ class DogsAndCatsDataset(Dataset):
         label = self.files[idx].split('/')[-2]
         return img,label
 
-image=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogscats/sample/train/cats/cat.394.jpg")
+image=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogscats/sample/train/cats/*.jpg")
 print(len(image))
 print(image.size)
 print(image[0][1])
@@ -452,11 +452,15 @@ print(image)
 
 # In[ ]:
 
-'''
+
 from torch.utils.data import Dataset, DataLoader
 
-dataloader = DataLoader(DogsAndCatsDataset,batch_size=32,num_workers=2)
+
+dataloader = DataLoader(image,batch_size=32,num_workers=2)
+'''
 for imgs , labels in dataloader:
-        #Apply your DL on the dataset.
+    #Apply your DL on the dataset.
     pass
 '''
+
+
