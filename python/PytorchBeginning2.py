@@ -445,7 +445,7 @@ class DogsAndCatsDataset(Dataset):
 image=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogscats/sample/train/cats/cat.394.jpg")
 print(len(image))
 print(image.size)
-print(image[0])
+print(image[0][1])
 print(image)
 
 # ### Defining DataLoader to iterate over Dogs and Cats Dataset
