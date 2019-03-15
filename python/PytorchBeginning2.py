@@ -105,7 +105,6 @@ plot_variable(x, y_pred, label='Fitted line')
 x = torch.rand(10)
 x.size()
 
-
 # ### Vector
 
 # In[9]:
@@ -220,14 +219,14 @@ from glob import glob
 #Read cat images from disk
 data_path='D:/program/vscode_workspace/private/data/dogscats/sample/train/cats/'
 cats = glob(data_path+'*.jpg')
-print(len(cats),type(cats))
+print("----------------------------\n",len(cats),type(cats))
 #Convert images into numpy arrays
 cat_imgs = np.array([np.array(Image.open(cat).resize((224,224))) for cat in
 cats[:64]])
 cat_imgs = cat_imgs.reshape(-1,224,224,3)
 cat_tensors = torch.from_numpy(cat_imgs)
 cat_tensors.size()
-print(cat_tensors.size())
+print(cat_tensors.size(),"\n----------------------------")
 
 
 # ### Tensor addition and multiplication
@@ -245,32 +244,67 @@ a.add_(5)
 
 #Multiplication of different tensors
 
+
 a*b
 a.mul(b)
 #For in-place multiplication
 a.mul_(b)
 
+###########################################################
 
 # ### On GPU
 
 # In[ ]:
+from time import perf_counter
 
+a = torch.rand(100,100)
+b = torch.rand(100,100)
+t=perf_counter()
+a.matmul(b)
+print("Matrix Size : 100x100")
+print("CPU:",perf_counter()-t)
+#Time taken : 3.23 s
+
+# In[ ]:
+
+#Move the tensors to GPU
+
+a = a.cuda()
+b = b.cuda()
+
+t=perf_counter()
+a.matmul(b)
+print("GPU:",perf_counter()-t,"\n----------------------------")
+
+
+#Time taken : 11.2 µs  
+###########################################################
+# In[ ]:
+from time import perf_counter
 
 a = torch.rand(10000,10000)
 b = torch.rand(10000,10000)
 
+t=perf_counter()
 a.matmul(b)
+print("Matrix Size : 10000x10000")
+print("CPU:",perf_counter()-t)
 #Time taken : 3.23 s
-
 
 # In[ ]:
 
 
 #Move the tensors to GPU
+
 a = a.cuda()
 b = b.cuda()
+
+t=perf_counter()
 a.matmul(b)
+print("GPU:",perf_counter()-t,"\n----------------------------")
+
 #Time taken : 11.2 µs  
+###########################################################
 
 
 # ### Variables
@@ -408,6 +442,11 @@ class DogsAndCatsDataset(Dataset):
         label = self.files[idx].split('/')[-2]
         return img,label
 
+image=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogscats/sample/train/cats/cat.394.jpg")
+print(len(image))
+print(image.size)
+print(image[0])
+print(image)
 
 # ### Defining DataLoader to iterate over Dogs and Cats Dataset
 
