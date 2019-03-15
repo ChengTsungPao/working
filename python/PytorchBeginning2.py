@@ -218,14 +218,16 @@ sales[0,1]
 
 from glob import glob
 #Read cat images from disk
-data_path='/Users/vishnu/Documents/fastAIPytorch/fastai/courses/dl1/data/dogscats/train/cats/'
+data_path='D:/program/vscode_workspace/private/data/dogscats/sample/train/cats/'
 cats = glob(data_path+'*.jpg')
+print(len(cats),type(cats))
 #Convert images into numpy arrays
 cat_imgs = np.array([np.array(Image.open(cat).resize((224,224))) for cat in
 cats[:64]])
 cat_imgs = cat_imgs.reshape(-1,224,224,3)
 cat_tensors = torch.from_numpy(cat_imgs)
 cat_tensors.size()
+print(cat_tensors.size())
 
 
 # ### Tensor addition and multiplication
