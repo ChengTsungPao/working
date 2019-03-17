@@ -89,6 +89,7 @@ from time import perf_counter
 
 a = torch.rand(100,100)
 b = torch.rand(100,100)
+
 t=perf_counter()
 a.matmul(b)
 print("Matrix Size : 100x100")
@@ -112,8 +113,8 @@ print("GPU:",perf_counter()-t,"\n----------------------------")
 # In[ ]:
 from time import perf_counter
 
-#a = torch.rand(10000,10000)
-#b = torch.rand(10000,10000)
+a = torch.rand(10000,10000)
+b = torch.rand(10000,10000)
 
 t=perf_counter()
 #a.matmul(b)
@@ -121,13 +122,11 @@ print("Matrix Size : 10000x10000")
 print("CPU:",perf_counter()-t)
 #Time taken : 3.23 s
 
-# In[ ]:
-
 
 #Move the tensors to GPU
 
-#a = a.cuda()
-#b = b.cuda()
+a = a.cuda()
+b = b.cuda()
 
 t=perf_counter()
 #a.matmul(b)
