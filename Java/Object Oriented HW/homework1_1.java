@@ -5,29 +5,33 @@ public class homework1_1{
         int i=0,j=0;
         Scanner key = new Scanner(System.in);
         String[] data = key.nextLine().split(" ");
-        if(Integer.valueOf(data[0]) - Integer.valueOf(data[2]) < 1){
-            i=i+Integer.valueOf(data[0]);
+        int data_int[] = new int[3];
+        for(int k=0;k<data_int.length;k++)
+            data_int[k]=Integer.valueOf(data[k]);
+
+        if(data_int[0] - data_int[2] < 1){
+            i=i+data_int[0];
         }
         else{
-            i=i+Integer.valueOf(data[2])+1;
+            i=i+data_int[2]+1;
         }
-        if(Integer.valueOf(data[1]) - Integer.valueOf(data[2]) < 1){
-            j=j+Integer.valueOf(data[1]);
+        if(data_int[1] - data_int[2] < 1){
+            j=j+data_int[1];
         }
         else{
-            j=j+Integer.valueOf(data[2])+1;
+            j=j+data_int[2]+1;
         }    
-        if(Integer.valueOf(data[0]) + Integer.valueOf(data[2]) > 8){
-            i=i+(8-Integer.valueOf(data[0]));
+        if(data_int[0] + data_int[2] > 8){
+            i=i+(8-data_int[0]);
         }
         else{
-            i=i+Integer.valueOf(data[2]);
+            i=i+data_int[2];
         }
-        if(Integer.valueOf(data[1]) + Integer.valueOf(data[2]) > 8){
-            j=j+(8-Integer.valueOf(data[1]));
+        if(data_int[1] + data_int[2] > 8){
+            j=j+(8-data_int[1]);
         }
         else{
-            j=j+Integer.valueOf(data[2]);
+            j=j+data_int[2];
         }   
         System.out.println(i*j);    
     }
