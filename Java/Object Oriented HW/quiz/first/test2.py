@@ -4,8 +4,6 @@ Created on Wed Feb 27 15:18:56 2019
 
 @author: Cheng
 """
-
-
 A=int(input("input the A : "))
 N=int(input("input the N : "))
 
