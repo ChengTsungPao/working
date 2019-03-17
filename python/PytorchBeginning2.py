@@ -1,3 +1,4 @@
+
 import torch
 import numpy as np
 from PIL import Image
@@ -58,8 +59,10 @@ for i in range(1000):
 
 plot_variable(x, y, 'ro')
 plot_variable(x, y_pred, label='Fitted line')
+plt.legend()
 plt.show()
 print("---------------------------------------------------")
+
 class DogsAndCatsDataset(Dataset):
     def __init__(self,root_dir,size=(224,224)):
         self.files = glob(root_dir)
@@ -72,16 +75,26 @@ class DogsAndCatsDataset(Dataset):
         return img,label
 
 image=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogscats/sample/train/cats/*.jpg")
-
+plt.imshow(image[0][0])
+plt.show()
 
 from torch.utils.data import Dataset, DataLoader
 
-dataloader = DataLoader(image,batch_size=32,num_workers=2)
+dataloader = DataLoader(image,batch_size=2,num_workers=2)
+print(type(dataloader))
 
 def main():
     for imgs , labels in dataloader:
-        #Apply your DL on the dataset.
+        for i in range(len(imgs)):
+            plt.subplot(241+i)
+            plt.title(labels[i])
+            plt.imshow(imgs[i])
+        plt.show()
         pass
+    
 
 if __name__ == '__main__':
     main()
+
+
+
