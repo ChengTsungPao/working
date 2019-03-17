@@ -90,9 +90,9 @@ from time import perf_counter
 a = torch.rand(100,100)
 b = torch.rand(100,100)
 
+print("Matrix Size : 100x100")
 t=perf_counter()
 a.matmul(b)
-print("Matrix Size : 100x100")
 print("CPU:",perf_counter()-t)
 #Time taken : 3.23 s
 
@@ -116,9 +116,9 @@ from time import perf_counter
 a = torch.rand(10000,10000)
 b = torch.rand(10000,10000)
 
-t=perf_counter()
-#a.matmul(b)
 print("Matrix Size : 10000x10000")
+t=perf_counter()
+a.matmul(b)
 print("CPU:",perf_counter()-t)
 #Time taken : 3.23 s
 
@@ -129,7 +129,7 @@ a = a.cuda()
 b = b.cuda()
 
 t=perf_counter()
-#a.matmul(b)
+a.matmul(b)
 print("GPU:",perf_counter()-t,"\n----------------------------")
 
 #Time taken : 11.2 µs  
