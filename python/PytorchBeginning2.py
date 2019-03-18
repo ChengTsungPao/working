@@ -71,13 +71,13 @@ class DogsAndCatsDataset(Dataset):
         return len(self.files)
     def __getitem__(self,idx):
         img = np.asarray(Image.open(self.files[idx]).resize(self.size))
-        label = self.files[idx].split('/')[-2]
+        label = self.files[idx].split('/')[-1]
         return img,label
 
 image=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogscats/sample/train/cats/*.jpg")
 plt.imshow(image[0][0])
 plt.show()
-
+print(image[0][1])
 from torch.utils.data import Dataset, DataLoader
 
 dataloader = DataLoader(image,batch_size=2,num_workers=2)
