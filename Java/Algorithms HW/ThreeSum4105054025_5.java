@@ -1,6 +1,6 @@
 import java.util.Arrays;
 
-public class ThreeSum4105056046 extends ThreeSum
+public class ThreeSum4104056046 extends ThreeSum
 {
 	public int T_sum(int[] nums)
 	{
