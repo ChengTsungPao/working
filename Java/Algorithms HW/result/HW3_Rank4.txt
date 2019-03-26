@@ -1,0 +1,80 @@
+2019-03-21 14:44:09
+0    MaxDifference4106056044_4       stats: Correct                                     time: 0.010222       
+1    MaxDifference4107054020_to      stats: Correct                                     time: 0.010515       
+2    MaxDifference0107209221         stats: Correct                                     time: 0.010527       
+3    MaxDifference4106056038         stats: Correct                                     time: 0.010577       
+4    MaxDifference4105028015         stats: Correct                                     time: 0.010586       
+5    MaxDifference4107054020         stats: Correct                                     time: 0.010624       
+6    MaxDifference4106056040         stats: Correct                                     time: 0.010635       
+7    MaxDifference4106056030         stats: Correct                                     time: 0.010641       
+8    MaxDifference4107054020_t2      stats: Correct                                     time: 0.010659       
+9    MaxDifference41050530253        stats: Correct                                     time: 0.010672       
+10   MaxDifference41050540252        stats: Correct                                     time: 0.010698       
+11   MaxDifference4106056022test2    stats: Correct                                     time: 0.010722       
+12   MaxDifference4106056044         stats: Correct                                     time: 0.010724       
+13   MaxDifference4105053036         stats: Correct                                     time: 0.010747       
+14   MaxDifference4106056022         stats: Correct                                     time: 0.010750       
+15   MaxDifference4106056044_3       stats: Correct                                     time: 0.010751       
+16   MaxDifference4106056044_2       stats: Correct                                     time: 0.010764       
+17   MaxDifference0107209237_3       stats: Correct                                     time: 0.010784       
+18   MaxDifference7107056072         stats: Correct                                     time: 0.010796       
+19   MaxDifference4106056008_2       stats: Correct                                     time: 0.010803       
+20   MaxDifference4101054030         stats: Correct                                     time: 0.010809       
+21   MaxDifference4106056001         stats: Correct                                     time: 0.010810       
+22   MaxDifference4105054025         stats: Correct                                     time: 0.010815       
+23   MaxDifference4107011060         stats: Correct                                     time: 0.010822           
+24   MaxDifference7107056074         stats: Correct                                     time: 0.010841       
+25   MaxDifference41050540253        stats: Correct                                     time: 0.010843       
+26   MaxDifference7107056113         stats: Correct                                     time: 0.010846       
+27   MaxDifference4103043042_01      stats: Correct                                     time: 0.010854       
+28   MaxDifference4106056009         stats: Correct                                     time: 0.010862       
+29   MaxDifference4106056033_2       stats: Correct                                     time: 0.010872       
+30   MaxDifference4106056008         stats: Correct                                     time: 0.010885       
+31   MaxDifference4105056027         stats: Correct                                     time: 0.010888       
+32   MaxDifference4106056010         stats: Correct                                     time: 0.010891       
+33   MaxDifference41050540254        stats: Correct                                     time: 0.010898       
+34   MaxDifference4105053137         stats: Correct                                     time: 0.010905       
+35   MaxDifference4104056046         stats: Correct                                     time: 0.010911       
+36   MaxDifference4106056019         stats: Correct                                     time: 0.010917       
+37   MaxDifference4105021032         stats: Correct                                     time: 0.010923       
+38   MaxDifference4105053041         stats: Correct                                     time: 0.010943       
+39   MaxDifference4107054020_t1      stats: Correct                                     time: 0.010967       
+40   MaxDifference4106056022test1    stats: Correct                                     time: 0.011018       
+41   MaxDifference4106056046         stats: Correct                                     time: 0.011058       
+42   MaxDifference0107209237         stats: Correct                                     time: 0.011267       
+43   MaxDifference0107209224         stats: Correct                                     time: 0.011427       
+44   MaxDifference0107209237_2       stats: Correct                                     time: 0.011547       
+45   MaxDifference41050540255        stats: Correct                                     time: 0.011738       
+46   MaxDifference4105053006         stats: Correct                                     time: 0.011766       
+47   MaxDifference4104029028         stats: Correct                                     time: 0.011855       
+48   MaxDifference4106056033         stats: Correct                                     time: 0.012348       
+49   MaxDifference4105053113         stats: Correct                                     time: 0.013917       
+50   MaxDifference4106056014         stats: Correct                                     time: 0.015795       
+51   MaxDifference4107054020_oo      stats: Correct                                     time: 0.015909       
+52   MaxDifference4105053102_2point  stats: Correct                                     time: 0.017163          
+53   MaxDifference4105053132_2       stats: Correct                                     time: 0.018113       
+54   MaxDifference4103043042_04      stats: Correct                                     time: 0.018753       
+55   MaxDifference4105053025         stats: Correct                                     time: 0.025660       
+56   MaxDifference4105053132         stats: Correct                                     time: 0.033457       
+57   MaxDifference41050530412        stats: Correct                                     time: 0.105888       
+58   MaxDifference41050530252        stats: Correct                                     time: 0.253520       
+59   MaxDifference4105056012         stats: Correct                                     time: 0.267726       
+60   MaxDifference4105061003         stats: Correct                                     time: 0.299504       
+61   MaxDifference0107209315         stats: Correct                                     time: 0.356075       
+62   MaxDifference4103043042_03      stats: Error: function max_d() Wrong Answer.       time: 0.000000       
+63   MaxDifference4104056017         stats: Error: function max_d() Wrong Answer.       time: 0.000000       
+64   MaxDifference4106029012         stats: Error: function max_d() Wrong Answer.       time: 0.000000       
+65   MaxDifference4105053102_1st     stats: Error: function max_d() Wrong Answer.       time: 0.000000       
+66   MaxDifference4106056022test4    stats: Error: InvocationTargetException.           time: 0.000000       
+67   MaxDifference4106056027         stats: Error: function max_d() Wrong Answer.       time: 0.000000       
+68   MaxDifference4106056014-2       stats: Error: compiler error.                      time: 0.000000       
+69   MaxDifference41040290281        stats: Error: function max_d() Wrong Answer.       time: 0.000000       
+70   MaxDifference4106056014-1       stats: Error: compiler error.                      time: 0.000000       
+71   MaxDifference4103043042_05      stats: Error: function max_d() Wrong Answer.       time: 0.000000       
+72   MaxDifference41050530061        stats: Error: function max_d() Wrong Answer.       time: 0.000000       
+73   MaxDifference4104029005         stats: Error: compiler error.                      time: 0.000000       
+74   MaxDifference4106056003         stats: Error: compiler error.                      time: 0.000000       
+75   MaxDifference4106056022test3    stats: Error: function max_d() Wrong Answer.       time: 0.000000       
+76   MaxDifference4106029023         stats: Error: function max_d() Wrong Answer.       time: 0.000000       
+77   MaxDifference4103043042_02      stats: using lib : import java.util.Arrays;        time: 0.000000
+78   MaxDifference4104064053         stats: using lib : import java.util.Arrays;        time: 0.000000
