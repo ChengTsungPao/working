@@ -9,17 +9,17 @@ public class PrimeString41050540253 extends PrimeString{
             sum=0;
             str=A[i].toCharArray();
             for(int j=0;j<str.length;j++){
-                sum+=(char)str[j]+48;
+                sum+=(int)str[j];
             }
             if(sum>=2){
                 flag=1;
-                for(int j=0;j<data.length && data[j]*data[j]<sum;j++){
+                for(int j=0;j<data.length && data[j]*data[j]<=sum;j++){
                     if(sum%data[j]==0){
                         flag=0;
                         break;
                     }
                 }
-                for(int j=307;j*j<sum && flag==1;j++){
+                for(int j=307;j*j<=sum && flag==1;j+=2){
                     if(sum%j==0){
                         flag=0;
                         break;
