@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 public class homework1_3{
     public static void main(String[] args) {
+        System.out.println("Please input the shape of the game and the number of mines.");
         Scanner input = new Scanner(System.in);
         String tmp = input.nextLine();
         int size = Integer.valueOf(tmp.split(" ")[0]);
@@ -38,13 +39,14 @@ public class homework1_3{
                 }
             }
         }
+        /*
         for(int i=0;i<size;i++){
             for(int j=0;j<size;j++){
                 System.out.printf("%2d ",map_2D[i][j]);     
             }
             System.out.println();
         }
-
+        */
         int flag1 = 1,flag2 = 1;
         int pos[] = new int[2];
         char vision[][] = new char[size][size];
