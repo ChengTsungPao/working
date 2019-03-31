@@ -10,10 +10,15 @@ public class PrimeString41050540255 extends PrimeString{
             }
             if(sum>=2){
                 flag=1;
-                for(int j=3;j*j<=sum && flag==1;j+=2){
-                    if(sum%j==0){
-                        flag=0;
-                        break;
+                if(sum%2==0 && sum!=2){
+                    flag=0;
+                }
+                else{
+                    for(int j=3;j*j<=sum && flag==1;j+=2){
+                        if(sum%j==0){
+                            flag=0;
+                            break;
+                        }
                     }
                 }
                 if(flag==1) count++;  
