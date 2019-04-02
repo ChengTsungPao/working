@@ -19,7 +19,7 @@ from torch import optim
 from torchvision.datasets import ImageFolder
 from torchvision.utils import make_grid
 import time
-get_ipython().run_line_magic('matplotlib', 'inline')
+#get_ipython().run_line_magic('matplotlib', 'inline')
 
 
 # In[2]:

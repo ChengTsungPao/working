@@ -110,6 +110,9 @@ loss = nn.CrossEntropyLoss()
 input = Variable(torch.randn(3, 5), requires_grad=True) 
 target = Variable(torch.LongTensor(3).random_(5)) 
 output = loss(input, target)
+print(input)
+print(target)
+print(output)
 output.backward()
 
 
@@ -117,7 +120,7 @@ output.backward()
 
 # In[14]:
 
-
+'''
 # for demo
 import torch.optim as optim
 model = nn.Linear(1,1)
@@ -129,3 +132,4 @@ for input, target in dataset:
     loss.backward()
     optimizer.step()
 
+'''
