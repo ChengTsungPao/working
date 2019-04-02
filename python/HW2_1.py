@@ -52,7 +52,7 @@ myLayer2(myLayer1(inp))
 sample_data = Variable(torch.Tensor([[1,2,-1,-1]])) 
 myRelu = ReLU()
 myRelu(sample_data)
-
+ 
 
 # In[7]:
 
