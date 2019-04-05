@@ -21,7 +21,6 @@ inp = Variable(torch.randn(1,10))
 myLayer = Linear(in_features=10,out_features=5,bias=True) 
 myLayer(inp)
 
-
 # In[3]:
 
 
@@ -110,26 +109,60 @@ loss = nn.CrossEntropyLoss()
 input = Variable(torch.randn(3, 5), requires_grad=True) 
 target = Variable(torch.LongTensor(3).random_(5)) 
 output = loss(input, target)
-print(input)
-print(target)
-print(output)
+#print(input)
+#print(target)
+#print(output)
 output.backward()
 
 
+from glob import glob
+from PIL import Image
+from torch.utils.data import Dataset
 # ### Optimizer
+class DogsAndCatsDataset(Dataset):
+    def __init__(self,root_dir,size=(224,224)):
+        self.files = glob(root_dir)
+        self.size = size
+        self.arr = np.array([[1,0],[1,0],[1,0],[1,0],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[1,0],
+                             [0,1],[0,1],[0,1],[0,1],[1,0],[1,0],[0,1],[0,1],[1,0],[0,1],[1,0],[1,0],
+                             [0,1],[1,0],[1,0],[0,1],[0,1],[1,0]], float)
+    def __len__(self):
+        return len(self.files)
+    def __getitem__(self,idx):
+        input = Variable(torch.from_numpy(np.asarray(Image.open(self.files[idx]).resize((1,224*224)), float)))
+        target = Variable(torch.from_numpy(self.arr[idx])) 
+        return input,target
+
+dataset=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogs-vs-cats/sample/*.jpg")
+#import matplotlib.pylab as plt
+#plt.imshow(dataset[0][0])
+#plt.show()
 
 # In[14]:
 
-'''
+
 # for demo
 import torch.optim as optim
-model = nn.Linear(1,1)
-optimizer = optim.SGD(model.parameters(), lr = 0.01,momentum=0.9)
+loss_fn = nn.MSELoss()
+model1 = nn.Linear(224*224,56*56)
+model2 = nn.Linear(56*56,28*28)
+model3 = nn.Linear(28*28,2)
+optimizer = optim.SGD(model1.parameters(), lr = 0.00001,momentum=0.9)
 for input, target in dataset:
+
+    #print(input.float().type())
+    #print (model.weight.type())
+    data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
+    output = model3(model2(model1(data/(3*(255.)**2)**0.5)))
+    print(output)
     optimizer.zero_grad()
-    output = model(input)
-    loss = loss_fn(output, target)
+    loss = loss_fn(output, target.float())
     loss.backward()
     optimizer.step()
 
-'''
+
+a=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogs-vs-cats/sample_test/*.jpg")
+print("------------------------")
+data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
+output = model3(model2(model1(data/(3*(255.)**2)**0.5)))
+print(output)
