@@ -39,6 +39,7 @@ class MyFirstNetwork(nn.Module):
         out = self.layer1(input) 
         out = F.relu(out)
         out = self.layer2(out) 
+        out = F.softmax(out,dim=1)
         return out
 
 model = MyFirstNetwork(224*224,56*56,2)
@@ -101,10 +102,7 @@ dataset=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogs-vs-cat
 import torch.optim as optim
 from time import perf_counter
 loss_fn = nn.MSELoss()
-model1 = nn.Linear(224*224,56*56)
-model2 = nn.Linear(56*56,28*28)
-model3 = nn.Linear(28*28,2)
-optimizer = optim.SGD(model1.parameters(), lr = 0.00001,momentum=0.9)
+optimizer = optim.SGD(model.parameters(), lr = 0.0001,momentum=0.9)
 print("Training......")
 
 index = 0
@@ -113,13 +111,12 @@ t  = t1
 for input, target in dataset:
     data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
     output = model(data/(3*(255.)**2)**0.5)
-    output = F.softmax(output,dim=1)
     optimizer.zero_grad()
     loss = loss_fn(output, target.float())
     loss.backward()
     optimizer.step()
     index+=1
-    if(perf_counter()-t>30):
+    if(perf_counter()-t > 30):
         t = perf_counter()
         print("Completion ratio :",str(index*100.0/25000)+"%")
 t2  = perf_counter()
@@ -129,10 +126,10 @@ print("--------------------------------------")
 print("layer1 :","\nweight :\n",model.layer()[0][0].numpy(),"\nbias :\n",model.layer()[0][1].numpy())
 print("")
 print("layer2 :","\nweight :\n",model.layer()[1][0].numpy(),"\nbias :\n",model.layer()[1][1].numpy())
-print("time :",t2-t1)
+print("time :",str((t2-t1)/60.0)+"min")
 
 print("\ntest.....")
 test = DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogs-vs-cats/sample_test/*.jpg")
 data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
-output = model3(model2(model1(data/(3*(255.)**2)**0.5)))
+output = model(data/(3*(255.)**2)**0.5)
 print(output)
