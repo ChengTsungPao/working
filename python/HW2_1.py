@@ -31,9 +31,9 @@ class MyFirstNetwork(nn.Module):
         super(MyFirstNetwork,self).__init__() 
         self.layer1 = nn.Linear(input_size,hidden_size) 
         self.layer2 = nn.Linear(hidden_size,output_size)
-    def __getitem__(self):
-        first  = [self.layer1.weight,self.layer1.bias]
-        second = [self.layer2.weight,self.layer2.bias]
+    def layer(self):
+        first  = [self.layer1.weight.data,self.layer1.bias.data]
+        second = [self.layer2.weight.data,self.layer2.bias.data]
         return first,second
     def forward(self,input): 
         out = self.layer1(input) 
@@ -85,59 +85,54 @@ class DogsAndCatsDataset(Dataset):
     def __init__(self,root_dir,size=(224,224)):
         self.files = glob(root_dir)
         self.size = size
-        self.arr = np.array([[1,0],[1,0],[1,0],[1,0],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[0,1],[1,0],
-                             [0,1],[0,1],[0,1],[0,1],[1,0],[1,0],[0,1],[0,1],[1,0],[0,1],[1,0],[1,0],
-                             [0,1],[1,0],[1,0],[0,1],[0,1],[1,0]], float)
+        self.arr = np.array([[1,0],[0,1]],float)
     def __len__(self):
         return len(self.files)
     def __getitem__(self,idx):
         input = Variable(torch.from_numpy(np.asarray(Image.open(self.files[idx]).resize((1,224*224)), float)))
-        target = Variable(torch.from_numpy(self.arr[idx])) 
+        if(idx<12500):
+            target = Variable(torch.from_numpy(self.arr[0]))
+        else:
+            target = Variable(torch.from_numpy(self.arr[1])) 
         return input,target
 
-dataset=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogs-vs-cats/sample/*.jpg")
+dataset=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogs-vs-cats/classifier/*.jpg")
 
 import torch.optim as optim
+from time import perf_counter
 loss_fn = nn.MSELoss()
 model1 = nn.Linear(224*224,56*56)
 model2 = nn.Linear(56*56,28*28)
 model3 = nn.Linear(28*28,2)
 optimizer = optim.SGD(model1.parameters(), lr = 0.00001,momentum=0.9)
-for input, target in dataset:
+print("Training......")
 
-    #print(input.float().type())
-    #print (model.weight.type())
+index = 0
+t1 = perf_counter()
+t  = t1
+for input, target in dataset:
     data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
-    print(model(data/(3*(255.)**2)**0.5))
-    output = model1(data/(3*(255.)**2)**0.5)
-    output = myRelu(output)
-    output = model2(output)
-    output = myRelu(output)
-    output = model3(output)    
+    output = model(data/(3*(255.)**2)**0.5)
     output = F.softmax(output,dim=1)
-    print(output)    
     optimizer.zero_grad()
     loss = loss_fn(output, target.float())
     loss.backward()
     optimizer.step()
+    index+=1
+    if(perf_counter()-t>30):
+        t = perf_counter()
+        print("Completion ratio :",str(index*100.0/25000)+"%")
+t2  = perf_counter()
 
+print(model)
+print("--------------------------------------")
+print("layer1 :","\nweight :\n",model.layer()[0][0].numpy(),"\nbias :\n",model.layer()[0][1].numpy())
+print("")
+print("layer2 :","\nweight :\n",model.layer()[1][0].numpy(),"\nbias :\n",model.layer()[1][1].numpy())
+print("time :",t2-t1)
 
-#a=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogs-vs-cats/sample_test/*.jpg")
-#print("------------------------")
-#data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
-#output = model3(model2(model1(data/(3*(255.)**2)**0.5)))
-#print(output)
-
-
-
-def f(x,index):
-    sum=0
-    for i in range(len(x)):
-        sum+=np.e**(x[i])
-    return -x[index]+np.log(sum)
-
-a=f([0.0649,0.0901,-0.3965],0)
-b=f([-0.2551,0.0602,-0.4174],1)
-print((a**2+b**2)**0.5)
-print(a,b)
-print((a+b)/2)
+print("\ntest.....")
+test = DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogs-vs-cats/sample_test/*.jpg")
+data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
+output = model3(model2(model1(data/(3*(255.)**2)**0.5)))
+print(output)
