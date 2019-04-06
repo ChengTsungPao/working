@@ -140,7 +140,6 @@ dataset=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogs-vs-cat
 
 # In[14]:
 
-
 # for demo
 import torch.optim as optim
 loss_fn = nn.MSELoss()
@@ -153,7 +152,12 @@ for input, target in dataset:
     #print(input.float().type())
     #print (model.weight.type())
     data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
-    output = model3(model2(model1(data/(3*(255.)**2)**0.5)))
+    output = model1(data/(3*(255.)**2)**0.5)
+    output = myRelu(output)
+    output = model2(output)
+    output = myRelu(output)
+    output = model3(output)    
+    output = F.softmax(output,dim=1)
     print(output)
     optimizer.zero_grad()
     loss = loss_fn(output, target.float())
@@ -161,8 +165,22 @@ for input, target in dataset:
     optimizer.step()
 
 
-a=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogs-vs-cats/sample_test/*.jpg")
-print("------------------------")
-data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
-output = model3(model2(model1(data/(3*(255.)**2)**0.5)))
-print(output)
+#a=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogs-vs-cats/sample_test/*.jpg")
+#print("------------------------")
+#data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
+#output = model3(model2(model1(data/(3*(255.)**2)**0.5)))
+#print(output)
+
+
+
+def f(x,index):
+    sum=0
+    for i in range(len(x)):
+        sum+=np.e**(x[i])
+    return -x[index]+np.log(sum)
+
+a=f([0.0649,0.0901,-0.3965],0)
+b=f([-0.2551,0.0602,-0.4174],1)
+print((a**2+b**2)**0.5)
+print(a,b)
+print((a+b)/2)
