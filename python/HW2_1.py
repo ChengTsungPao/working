@@ -42,7 +42,8 @@ class MyFirstNetwork(nn.Module):
         out = F.softmax(out,dim=1)
         return out
 
-model = MyFirstNetwork(224*224,56*56,2)
+model = MyFirstNetwork(56*56*3,28*28*3,2)
+model = model.cuda()
 print(model)
 
 
@@ -83,14 +84,18 @@ from PIL import Image
 from torch.utils.data import Dataset
 # ### Optimizer
 class DogsAndCatsDataset(Dataset):
-    def __init__(self,root_dir,size=(224,224)):
+    def __init__(self,root_dir,size=(56,56)):
         self.files = glob(root_dir)
         self.size = size
         self.arr = np.array([[1,0],[0,1]],float)
     def __len__(self):
         return len(self.files)
     def __getitem__(self,idx):
-        input = Variable(torch.from_numpy(np.asarray(Image.open(self.files[idx]).resize((1,224*224)), float)))
+        input = Variable(torch.from_numpy(np.asarray(Image.open(self.files[idx]).resize((self.size)), float).reshape(1,-1)))
+        #tmp=input.data.numpy()[0][0]
+        #for i in range(len(input)):    
+        #    tmp=np.hstack((input.data.numpy()[i+1][0]))
+        
         if(idx<12500):
             target = Variable(torch.from_numpy(self.arr[0]))
         else:
@@ -98,19 +103,36 @@ class DogsAndCatsDataset(Dataset):
         return input,target
 
 dataset=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogs-vs-cats/classifier/*.jpg")
+#print(len(dataset[0][0][0]))
+#print(dataset[0][0])
+#print(dataset[0])
+#print(dataset[0][0][:,:,0].view(1,-1)+dataset[0][0][:,:,1].view(1,-1))
+
+#tmp=dataset[0][0].data.numpy()[0][0]
+#for i in range(50*50):    
+#    tmp=np.hstack((tmp,dataset[0][0].data.numpy()[i+1][0]))  
+#print(tmp)
 
 import torch.optim as optim
 from time import perf_counter
 loss_fn = nn.MSELoss()
-optimizer = optim.SGD(model.parameters(), lr = 0.0001,momentum=0.9)
+loss_fn = loss_fn.cuda()
+optimizer = optim.SGD(model.parameters(), lr = 0.00001,momentum=0.9)
 print("Training......")
 
 index = 0
 t1 = perf_counter()
 t  = t1
+
 for input, target in dataset:
-    data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
-    output = model(data/(3*(255.)**2)**0.5)
+    if torch.cuda.is_available():
+        input = Variable(input.cuda())
+        target = Variable(target.cuda())
+    else:
+        input, target = Variable(input), Variable(target)
+    #data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
+    data=input.float()
+    output = model(data)
     optimizer.zero_grad()
     loss = loss_fn(output, target.float())
     loss.backward()
@@ -119,17 +141,22 @@ for input, target in dataset:
     if(perf_counter()-t > 30):
         t = perf_counter()
         print("Completion ratio :",str(index*100.0/25000)+"%")
+        
 t2  = perf_counter()
 
 print(model)
 print("--------------------------------------")
-print("layer1 :","\nweight :\n",model.layer()[0][0].numpy(),"\nbias :\n",model.layer()[0][1].numpy())
+print("layer1 :","\nweight :\n",model.layer()[0][0].cpu().numpy(),"\nbias :\n",model.layer()[0][1].cpu().numpy())
 print("")
-print("layer2 :","\nweight :\n",model.layer()[1][0].numpy(),"\nbias :\n",model.layer()[1][1].numpy())
+print("layer2 :","\nweight :\n",model.layer()[1][0].cpu().numpy(),"\nbias :\n",model.layer()[1][1].cpu().numpy())
 print("time :",str((t2-t1)/60.0)+"min")
 
 print("\ntest.....")
 test = DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogs-vs-cats/sample_test/*.jpg")
-data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
-output = model(data/(3*(255.)**2)**0.5)
-print(output)
+#data=input[:,:,0].view(1,-1).float()+input[:,:,1].view(1,-1).float()+input[:,:,2].view(1,-1).float()
+output1 = test[0][0].cuda()
+output2 = test[1][0].cuda()
+output1 = model(output1.float())
+output2 = model(output2 .float())
+print(output1)
+print(output2)
