@@ -20,7 +20,7 @@ def Cij(delta,mode,ri=[0,0],rj=[0,0]):
     def Nonedeg_real():
         value = dblquad(lambda Px,Py:((-np.cos(pow(Px,Py,ri,rj))*np.sin(Py)
                                       -np.sin(pow(Px,Py,ri,rj))*np.sin(Px))*const
-                        *R(Px,Py,delta)/(2.0*R(Px,Py,delta))),
+                        *delta/(2.0*R(Px,Py,delta))),
                         0,
                         2*np.pi,
                         lambda Py:0,
@@ -29,7 +29,7 @@ def Cij(delta,mode,ri=[0,0],rj=[0,0]):
     def Nonedeg_imag():
         value = dblquad(lambda Px,Py:((-np.sin(pow(Px,Py,ri,rj))*np.sin(Py)
                                       +np.cos(pow(Px,Py,ri,rj))*np.sin(Px))*const
-                        *R(Px,Py,delta)/(2.0*R(Px,Py,delta))),
+                        *delta/(2.0*R(Px,Py,delta))),
                         0,
                         2*np.pi,
                         lambda Py:0,
@@ -40,7 +40,7 @@ def Cij(delta,mode,ri=[0,0],rj=[0,0]):
     def leftdeg_real():
         value = dblquad(lambda Px,Py:((-np.cos(pow(Px,Py,ri,rj))*np.sin(Py)
                                       +np.sin(pow(Px,Py,ri,rj))*np.sin(Px))*const
-                        *R(Px,Py,delta)/(2.0*R(Px,Py,delta))),
+                        *delta/(2.0*R(Px,Py,delta))),
                         0,
                         2*np.pi,
                         lambda Py:0,
@@ -49,7 +49,7 @@ def Cij(delta,mode,ri=[0,0],rj=[0,0]):
     def leftdeg_imag():
         value = dblquad(lambda Px,Py:((-np.cos(pow(Px,Py,ri,rj))*np.sin(Px)
                                       -np.sin(pow(Px,Py,ri,rj))*np.sin(Py))*const
-                        *R(Px,Py,delta)/(2.0*R(Px,Py,delta))),
+                        *delta/(2.0*R(Px,Py,delta))),
                         0,
                         2*np.pi,
                         lambda Py:0,
@@ -108,15 +108,6 @@ print(Cij(4,0,[2,3],[3,2]))
 print(Cij(4,1,[2,3],[3,2]))
 print(Cij(4,2,[2,3],[3,2]))
 print(Cij(4,3,[2,3],[3,2]))
-
-'''
-test = 1
-for i in range(10):
-    for j in range(10):
-        print("")
-'''
-
-
 
 
 
