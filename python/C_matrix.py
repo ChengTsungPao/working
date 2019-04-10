@@ -128,7 +128,7 @@ def make_C_matrix(DELTA, site_size):
         for j in range(total_site):
             ri = [i%site_size[1],i/site_size[1]]
             rj = [j%site_size[1],j/site_size[1]]
-            print(i, j, ri, rj)
+            #print(i, j, ri, rj)
             Cij_cell = make_Cij(DELTA, ri, rj)
             for a in range(2):
                 for b in range(2):
@@ -139,6 +139,7 @@ def make_C_matrix(DELTA, site_size):
 DELTA = 4
 site_size = (2, 2)
 A = make_C_matrix(DELTA, site_size)
+print(A)
 
         
     
