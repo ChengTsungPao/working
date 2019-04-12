@@ -19,7 +19,6 @@ public class CheckPoint4105054025 extends CheckPoint{
         else{
             return false;
         }   
-
         
     }
 
