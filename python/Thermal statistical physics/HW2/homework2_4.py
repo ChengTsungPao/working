@@ -1,5 +1,5 @@
 import numpy as np
-import time,random
+import random
 import matplotlib.pylab as plt
 
 def dise(sides,trials,N):
