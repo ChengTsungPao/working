@@ -18,7 +18,7 @@ def dise(sides,trials,N):
 
 plt.subplot(121)
 N=2
-sides=6
+sides=4
 trials=100000
 dise_sum=range(1*N,sides*N+1)
 probability=dise(sides,trials,N)/float(trials)
@@ -30,6 +30,20 @@ plt.plot(dise_sum,probability,"-o",label="N="+str(N)+" sides="+str(sides))
 plt.legend()
 
 plt.subplot(122)
+N=2
+sides=6
+trials=100000
+dise_sum=range(1*N,sides*N+1)
+probability=dise(sides,trials,N)/float(trials)
+plt.title("Probability Distribution of dises")
+plt.xlabel("sum of the dises")
+plt.ylabel("probability")
+plt.xticks(dise_sum)
+plt.plot(dise_sum,probability,"-o",label="N="+str(N)+" sides="+str(sides))
+plt.legend()
+plt.tight_layout()
+plt.show()
+
 N=3
 sides=6
 trials=100000
@@ -41,6 +55,4 @@ plt.ylabel("probability")
 plt.xticks(dise_sum)
 plt.plot(dise_sum,probability,"-o",label="N="+str(N)+" sides="+str(sides))
 plt.legend()
-
-plt.tight_layout()
 plt.show()
