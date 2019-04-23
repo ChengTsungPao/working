@@ -8,24 +8,24 @@ public class ratation_matrix {
 		int N, M;
 		int count=1;
 		Scanner scn = new Scanner(System.in);
-		System.out.printf("¿é¤J¯x°}¤j¤p");
+		System.out.printf("Input the N:");
 		N = scn.nextInt();
-		System.out.printf("¿é¤J¤è¦V¡A0:¶¶®É°w¡F1:°f®É°w");
+		System.out.printf("Input the M:");
 		M = scn.nextInt();
 		int[][] array = new int[N][N];
 		
 		if (M == 0) {
 			
-			for (int row=0; row < N/2 ; row++) {		/*±±¨îÂ¶°é¦¸¼Æ*/
-				for(int col=row; col< N-row-1; col++)	/*¦V¥k*/
+			for (int row=0; row < N/2 ; row++) {		/*ï¿½ï¿½ï¿½ï¿½Â¶ï¿½é¦¸ï¿½ï¿½*/
+				for(int col=row; col< N-row-1; col++)	/*ï¿½Vï¿½k*/
 					array[row][col] = count++;
 				
-				for (int col=row; col < N-row-1;col++)	/*¦V¤U*/
+				for (int col=row; col < N-row-1;col++)	/*ï¿½Vï¿½U*/
 					array[col][N-row-1]=count++;
 				
-				for(int col=N-row-1; col>row; col--)	/*¦V¥ª*/
+				for(int col=N-row-1; col>row; col--)	/*ï¿½Vï¿½ï¿½*/
 					array[N-row-1][col]=count++;
-				for (int col=N-row-1; col>row; col--)	/*¦V¤W*/
+				for (int col=N-row-1; col>row; col--)	/*ï¿½Vï¿½W*/
 					array[col][row]=count++;
 			}
 		}
@@ -44,10 +44,10 @@ public class ratation_matrix {
 			}
 		
 		}
-		if (N%2 != 0)			/*¯x°}¤j¤p¬°©_¼Æ¡A¥²¶·¸É¤W¤¤¤ßÂI*/
+		if (N%2 != 0)			/*ï¿½xï¿½}ï¿½jï¿½pï¿½ï¿½ï¿½_ï¿½Æ¡Aï¿½ï¿½ï¿½ï¿½ï¿½É¤Wï¿½ï¿½ï¿½ï¿½ï¿½I*/
 			array[N/2][N/2] = count;
 		
-		for(int row=0; row<N; row++) { 		/*¦L¥X¯x°}*/
+		for(int row=0; row<N; row++) { 		/*ï¿½Lï¿½Xï¿½xï¿½}*/
 			for(int col=0; col<N;col++) {
 				System.out.printf("%2d",array[row][col]);
 				System.out.printf(" ");
