@@ -2,10 +2,10 @@ import numpy as np
 import matplotlib.pylab as plt
 
 def Dirac(alpha,x):
-    value = np.e**(-(x**2)/(2*alpha**2))/(2*np.pi*alpha)**0.5
+    value = np.e**(-(x**2)/(2*alpha**2))/(2*np.pi*alpha**2)**0.5
     return value
 
-x=np.linspace(-2,2,10000)
+x=np.linspace(-0.1,0.1,500)
 alpha=[1,0.1,0.01,0.001]
 color=["orange","blue","green","red"]
 for i in range(len(alpha)):
