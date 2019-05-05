@@ -1,0 +1,5 @@
+
+If you want to open the "ipynb" in github,
+go to the "https://nbviewer.jupyter.org/".
+
+(input the url on that web)
