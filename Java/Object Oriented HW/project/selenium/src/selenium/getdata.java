@@ -26,7 +26,7 @@ public class getdata {
 			//System.out.println(e.getText());
 		}
 		System.out.println(immediate_data);	
-		//driver.close();
+		driver.close();
 	}
 	
 	public void History_data(String[] day) {
@@ -53,10 +53,28 @@ public class getdata {
     		}
         }
 		System.out.println(history_data);
-		//driver.close();
+		driver.close();
 	}
 	
+	public String[] parameter = new String[15];;
+	public float[] number = new float[15];;
+	public String[] unit = new String[15];
+	
+	public int count;
+	public String[] tmp;
 	public void Immediate_data_process() {
+		tmp = immediate_data.split(": |:|    \n|   \n|  \n| \n|\n| ");
+		count=0;
+		for(int i=0;i<tmp.length;i++) {
+			//System.out.printf("%d %s\n",i,tmp[i]);
+			if(tmp[i].toCharArray()[0]=='(' && tmp[i].toCharArray()[tmp[i].length()-1]==')') {
+				System.out.printf("%s %s %s\n",tmp[i],tmp[i+1],tmp[i+2]);
+				parameter[count] = tmp[i];
+				number[count] = Float.parseFloat(tmp[i+1]);
+				unit[count++] = tmp[i+2];				
+			}			
+
+		}
 		
 	}
 	
