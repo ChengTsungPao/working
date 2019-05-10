@@ -17,7 +17,7 @@ import javax.swing.*;
 public class childGui extends JFrame{
 
     public childGui(String data){
-        super("The title");
+        super("Instant Data");
         setLayout(new GridBagLayout()); 
         String[] line = data.split("\n");
         

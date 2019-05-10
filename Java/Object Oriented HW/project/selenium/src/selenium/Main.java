@@ -7,7 +7,7 @@ public class Main{
 
         parentGui go = new parentGui();
         go.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        go.setSize(600,400);
+        go.setSize(400,300);
         go.setVisible(true);
         
     }

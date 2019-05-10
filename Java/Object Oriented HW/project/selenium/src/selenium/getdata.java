@@ -14,7 +14,7 @@ public class getdata {
 	
 	public void Immediate_data() {
 		WebDriver driver = new ChromeDriver();
-		driver.get("http://211.20.129.217/EnvServAQR/query.aspx"); 
+		driver.get("http://211.20.129.217/EnvServAQR/notice.aspx"); 
         driver.findElement(By.id("Button1")).click(); 
         List<WebElement> itemList = driver.findElements(By.tagName("td")); 
         line=0;
@@ -25,13 +25,13 @@ public class getdata {
 			}
 			//System.out.println(e.getText());
 		}
-		System.out.println(immediate_data);	
+		//System.out.println(immediate_data);	
 		driver.close();
 	}
 	
 	public void History_data(String[] day) {
 		WebDriver driver = new ChromeDriver();
-		driver.get("http://211.20.129.217/EnvServAQR/query.aspx");
+		driver.get("http://211.20.129.217/EnvServAQR/notice.aspx");
         driver.findElement(By.id("Button1")).click();
         driver.findElement(By.id("Button2")).click();     
         for(int i=0;i<day.length;i++) {
@@ -52,7 +52,7 @@ public class getdata {
     			//System.out.println(e.getText());
     		}
         }
-		System.out.println(history_data);
+		//System.out.println(history_data);
 		driver.close();
 	}
 	
@@ -69,7 +69,7 @@ public class getdata {
 		for(int i=0;i<tmp.length;i++) {
 			//System.out.printf("%d %s\n",i,tmp[i]);
 			if(tmp[i].toCharArray()[0]=='(' && tmp[i].toCharArray()[tmp[i].length()-1]==')') {
-				System.out.printf("%s %s %s\n",tmp[i],tmp[i+1],tmp[i+2]);
+				//System.out.printf("%s %s %s\n",tmp[i],tmp[i+1],tmp[i+2]);
 				parameter[count] = tmp[i];
 				try {
 					number[count] = Double.parseDouble(tmp[i+1]);					
