@@ -56,6 +56,7 @@ public class getdata {
 		driver.close();
 	}
 	
+	public String total = "";
 	public String[] parameter = new String[15];;
 	public double[] number = new double[15];;
 	public String[] unit = new String[15];
@@ -74,9 +75,9 @@ public class getdata {
 					number[count] = Double.parseDouble(tmp[i+1]);					
 				}catch(Exception e) {
 					number[count] = -1;
-				}
-				
-				unit[count++] = tmp[i+2];				
+				}				
+				unit[count++] = tmp[i+2];	
+				total=total+tmp[i]+" "+tmp[i+1]+" "+tmp[i+2]+"\n";
 			}			
 
 		}

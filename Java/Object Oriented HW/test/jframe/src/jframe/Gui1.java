@@ -18,11 +18,11 @@ public class Gui1 extends JFrame{
  
     public JTextField tf;
 
-    public Gui1(){
+    public Gui1(String str){
         super("The title");
         setLayout(new GridBagLayout());        
 
-        JTextArea jTextArea1 = new JTextArea("NO (¤@®ñ¤Æ´á): 7.13 ppb");
+        JTextArea jTextArea1 = new JTextArea(str);
         jTextArea1.setBackground(SystemColor.control);
         GridBagConstraints bag3 = new GridBagConstraints();
         bag3.gridx = 100;

@@ -17,7 +17,7 @@ import javax.swing.*;
 public class Gui extends JFrame{
 
     private JButton reg,reg1;  
-    public JTextField tf;
+    public JTextField tf,tf1;
 
     public Gui(){
         super("The title");
@@ -38,16 +38,29 @@ public class Gui extends JFrame{
         
         tf = new JTextField("This is a sentece", 20);
         tf.setFont(new Font("Serif", Font.PLAIN, 14));
+        GridBagConstraints bag5 = new GridBagConstraints();
+        bag5.gridx = 50;
+        bag5.gridy = 200;
+        bag5.gridwidth = 20;
+        bag5.gridheight = 20;
+        bag5.weightx = 0;
+        bag5.weighty = 0;
+        //bag5.fill = GridBagConstraints.NONE;
+        //bag5.anchor = GridBagConstraints.WEST;
+        add(tf, bag5); 
+        
+        tf1 = new JTextField("kind", 20);
+        tf1.setFont(new Font("Serif", Font.PLAIN, 14));
         GridBagConstraints bag2 = new GridBagConstraints();
         bag2.gridx = 50;
-        bag2.gridy = 200;
+        bag2.gridy = 100;
         bag2.gridwidth = 20;
         bag2.gridheight = 20;
         bag2.weightx = 0;
         bag2.weighty = 0;
         //bag2.fill = GridBagConstraints.NONE;
         //bag2.anchor = GridBagConstraints.WEST;
-        add(tf, bag2); 
+        add(tf1, bag2); 
         
         GridBagConstraints bag1 = new GridBagConstraints();
         reg = new JButton("History data");
@@ -64,7 +77,7 @@ public class Gui extends JFrame{
         GridBagConstraints bag4 = new GridBagConstraints();
         reg1 = new JButton("Instant data");
         bag4.gridy = -90;
-        bag4.gridwidth = 20;
+        bag4.gridwidth = -120;
         bag4.gridheight = 20;
         bag4.weightx = 0;
         bag4.weighty = 0;
@@ -85,15 +98,22 @@ public class Gui extends JFrame{
         	
             if(event.getActionCommand()=="Instant data"){
                 System.out.println(event.getActionCommand());
-                
-                Gui1 go = new Gui1();
+                //getdatagraph use = new getdatagraph();
+                //Gui1 go = new Gui1(use.instant_button());
+                String str = "NO (¤@®ñ¤Æ´á): 7.13 ppb";
+                Gui1 go = new Gui1(str);
                 //go.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 go.setSize(600,400);
                 go.setVisible(true);
                 
+                
             }
             if(event.getActionCommand()=="History data") {
             	System.out.println(tf.getText());
+            	String[] d = tf.getText().split(" ");
+            	String[] label = {tf1.getText(),"time",tf1.getText(),tf1.getText()};
+            	//getdatagraph use = new getdatagraph(d,label);
+            	//use.history_button();
             }
             JOptionPane.showMessageDialog(null, String.format("%s", event.getActionCommand()));
         }
