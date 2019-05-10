@@ -42,6 +42,7 @@ public class getdatagraph {
 		}
 		double[] y = data.all_data[0];
 		creategraph line = new creategraph(legend);
+		System.out.printf("%d %d\n",x.length,y.length);
 		line.graph(x,y);
 		line.show();
 	}
