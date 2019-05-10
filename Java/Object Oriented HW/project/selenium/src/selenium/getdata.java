@@ -95,8 +95,13 @@ public class getdata {
 				System.out.printf("%d %s\n",18*i+j,tmp[18*i+j]);
 				count=0;
 				if(j==10 || j==11) count=1;
-				for(int k=0;k<24;k++) {					
-					all_data[j-1][k+24*i] = Double.parseDouble(lin[k+2+count]);
+				for(int k=0;k<24;k++) {	
+					try {
+						all_data[j-1][k+24*i] = Double.parseDouble(lin[k+2+count]);					
+					}catch(Exception e) {
+						all_data[j-1][k+24*i] = -1;
+					}
+					
 				}
 			}
 		}

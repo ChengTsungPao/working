@@ -21,9 +21,14 @@ public class parentGui extends JFrame{
 
     public parentGui(){
         super("The title");
-        setLayout(new GridBagLayout());        
-
-        JTextArea text = new JTextArea("NO (一氧化氮): 7.13 ppb");
+        setLayout(new GridBagLayout());      
+        
+        String tmp="可使用參數:\n\n"
+        		 + "NO (一氧化氮)                 NO2 (二氧化氮)\nNOx (氮氧化物)               SO2 (二氧化硫)\n"
+        		 + "CO (一氧化碳)                 CH4 (甲烷)\nTHC (總碳氫化合物)        NMHC (非甲烷碳氫化合物)\n"
+        		 + "O3 (臭氧)                          PM10 (懸浮微粒PM10)\nPM2.5 (懸浮微粒PM2.5)  AT (大氣溫度)\n"
+        		 + "RH (相對溼度)                  WD (風向)";
+        JTextArea text = new JTextArea(tmp);
         text.setBackground(SystemColor.control);
         GridBagConstraints textlayout = new GridBagConstraints();
         textlayout.gridx = 100;
@@ -40,22 +45,22 @@ public class parentGui extends JFrame{
         daytextfield.setFont(new Font("Serif", Font.PLAIN, 14));
         GridBagConstraints daytextfieldlayout = new GridBagConstraints();
         daytextfieldlayout.gridx = 50;
-        daytextfieldlayout.gridy = 200;
-        daytextfieldlayout.gridwidth = 20;
-        daytextfieldlayout.gridheight = 20;
+        daytextfieldlayout.gridy = 0;
+        daytextfieldlayout.gridwidth = 50;
+        daytextfieldlayout.gridheight = 50;
         daytextfieldlayout.weightx = 0;
         daytextfieldlayout.weighty = 0;
         //daytextfieldlayout.fill = GridBagConstraints.NONE;
         //daytextfieldlayout.anchor = GridBagConstraints.WEST;
         add(daytextfield, daytextfieldlayout); 
         
-        labeltextfield = new JTextField("kind", 20);
+        labeltextfield = new JTextField("parameter", 20);
         labeltextfield.setFont(new Font("Serif", Font.PLAIN, 14));
         GridBagConstraints labeltextfieldlayout = new GridBagConstraints();
         labeltextfieldlayout.gridx = 50;
         labeltextfieldlayout.gridy = 100;
-        labeltextfieldlayout.gridwidth = 20;
-        labeltextfieldlayout.gridheight = 20;
+        labeltextfieldlayout.gridwidth = 50;
+        labeltextfieldlayout.gridheight = 50;
         labeltextfieldlayout.weightx = 0;
         labeltextfieldlayout.weighty = 0;
         //labeltextfieldlayout.fill = GridBagConstraints.NONE;
@@ -65,7 +70,7 @@ public class parentGui extends JFrame{
         historybutton = new JButton("History data");
         GridBagConstraints historybuttonlayout = new GridBagConstraints();
         historybuttonlayout.gridx = 50;
-        historybuttonlayout.gridy = -120;
+        historybuttonlayout.gridy = -200;
         historybuttonlayout.gridwidth = 20;
         historybuttonlayout.gridheight = 20;
         historybuttonlayout.weightx = 0;
@@ -76,8 +81,9 @@ public class parentGui extends JFrame{
         
         instantbutton = new JButton("Instant data");
         GridBagConstraints instantbuttonlayout = new GridBagConstraints();
-        instantbuttonlayout.gridy = -90;
-        instantbuttonlayout.gridwidth = -120;
+        instantbuttonlayout.gridx = 100;
+        instantbuttonlayout.gridy = -300;
+        instantbuttonlayout.gridwidth = 20;
         instantbuttonlayout.gridheight = 20;
         instantbuttonlayout.weightx = 0;
         instantbuttonlayout.weighty = 0;
@@ -97,17 +103,18 @@ public class parentGui extends JFrame{
         public void actionPerformed(ActionEvent event){
         	
             if(event.getActionCommand()=="Instant data"){
-                System.out.println(event.getActionCommand());
+                //System.out.println(event.getActionCommand());
                 getdatagraph use = new getdatagraph();
                 childGui go = new childGui(use.instant_button());
-                go.setSize(600,400);
+                go.setSize(800,350);
                 go.setVisible(true);                                
             }
             if(event.getActionCommand()=="History data") {
-            	System.out.println(daytextfield.getText());
+            	//System.out.println(daytextfield.getText());
+            	//System.out.println(labeltextfield.getText());
             	String[] d = daytextfield.getText().split(" ");
-            	String[] label = {labeltextfield.getText(),"time",labeltextfield.getText(),labeltextfield.getText()};
-            	getdatagraph use = new getdatagraph(d,label);
+            	//String[] label = {labeltextfield.getText(),"time",labeltextfield.getText(),labeltextfield.getText()};
+            	getdatagraph use = new getdatagraph(d,labeltextfield.getText());
             	use.history_button();
             }
             //JOptionPane.showMessageDialog(null, String.format("%s", event.getActionCommand()));
