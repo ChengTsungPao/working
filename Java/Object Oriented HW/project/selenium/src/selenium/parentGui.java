@@ -24,10 +24,10 @@ public class parentGui extends JFrame{
         setLayout(new GridBagLayout());      
         
         String tmp="可使用參數:\n\n"
-        		 + "NO (一氧化氮)                 NO2 (二氧化氮)\nNOx (氮氧化物)               SO2 (二氧化硫)\n"
-        		 + "CO (一氧化碳)                 CH4 (甲烷)\nTHC (總碳氫化合物)        NMHC (非甲烷碳氫化合物)\n"
-        		 + "O3 (臭氧)                          PM10 (懸浮微粒PM10)\nPM2.5 (懸浮微粒PM2.5)  AT (大氣溫度)\n"
-        		 + "RH (相對溼度)                  WD (風向)\n\n";
+        		 + "NO (一氧化氮)                     NO2 (二氧化氮)\nNOx (氮氧化物)                   SO2 (二氧化硫)\n"
+        		 + "CO (一氧化碳)                     CH4 (甲烷)\nTHC (總碳氫化合物)            NMHC (非甲烷碳氫化合物)\n"
+        		 + "O3 (臭氧)                              PM10 (懸浮微粒PM10)\nPM2.5 (懸浮微粒PM2.5)      AT (大氣溫度)\n"
+        		 + "RH (相對溼度)                      WD (風向)\n\n";
         JTextArea text = new JTextArea(tmp);
         text.setBackground(SystemColor.control);
         GridBagConstraints textlayout = new GridBagConstraints();
