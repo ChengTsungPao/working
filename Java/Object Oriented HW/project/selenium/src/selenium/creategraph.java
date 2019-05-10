@@ -144,7 +144,7 @@ public class creategraph {
 
             jf.getContentPane().add(scrollPane);
             jf.pack();
-            jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            jf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             jf.setTitle(Filename+" "+image.getWidth()+" x "+image.getHeight());
             jf.setLocationRelativeTo(null);
             jf.setVisible(true);
