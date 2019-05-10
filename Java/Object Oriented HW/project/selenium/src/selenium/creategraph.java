@@ -30,8 +30,26 @@ import org.jfree.data.general.DatasetUtilities;
 
 public class creategraph {
 	
-	public void graph() {
-		CategoryDataset dataset = createDataset();
+	public String title;
+	public String xlabel;
+	public String ylabel;
+	public String linename;
+	
+	public creategraph() {
+		title = "title";
+		xlabel = "xlabel";
+		ylabel = "ylabel";
+		linename = "linename";
+	}
+	public creategraph(String[] legend) {
+		title = legend[0];
+		xlabel = legend[1];
+		ylabel = legend[2];
+		linename = legend[3];
+	}
+	
+	public void graph(String[] a,double[] b) {
+		CategoryDataset dataset = createDataset(a,b);
 		JFreeChart freeChart = createChart(dataset);
 		saveAsFile(freeChart, "D:\\program\\vscode_workspace\\private\\working\\Java\\Object Oriented HW\\project\\selenium\\line.jpg", 600, 400);
 		
@@ -62,11 +80,12 @@ public class creategraph {
 			}
 		}
 	}
+
 	private JFreeChart createChart(CategoryDataset categoryDataset) {
 
-		JFreeChart jfreechart = ChartFactory.createLineChart("graph", 
-				"year", 
-				"number", 
+		JFreeChart jfreechart = ChartFactory.createLineChart(title, 
+				xlabel, 
+				ylabel, 
 				categoryDataset, 
 				PlotOrientation.VERTICAL, true, 
 				false, 
@@ -86,18 +105,17 @@ public class creategraph {
 		renderer.setBaseItemLabelsVisible(true);
 		return jfreechart;
 	}
-	private CategoryDataset createDataset() {
-		String[] rowKeys = {"A"};
-		String[] colKeys = {"0:00", "1:00", "2:00", "7:00", "8:00", "9:00",
-				"10:00", "11:00", "12:00", "13:00", "16:00", "20:00", "21:00",
-				"23:00"};
-		double[][] data = {{4, 3, 1, 1, 1, 1, 2, 2, 2, 1, 8, 2, 1, 1},};
-
+	
+	
+	private CategoryDataset createDataset(String[] colKeys,double[] b) {
+		String[] rowKeys = {linename};
+		double[][] data = {b,};	
 		// DefaultCategoryDataset categoryDataset = new
 		// DefaultCategoryDataset();
 		// categoryDataset.addValue(10, "rowKey", "colKey");
 		return DatasetUtilities.createCategoryDataset(rowKeys, colKeys, data);
 	}
+	
 	
 	/////////////////////////    ShowImage        /////////////////////////////
     String Filename;
@@ -111,12 +129,10 @@ public class creategraph {
     private void LoadFile()
     {
             Filename="line.jpg";
-            try
-            {
+            try{
                     image=ImageIO.read(new File(Filename));
             }
-            catch(Exception e)
-            {
+            catch(Exception e){
                     javax.swing.JOptionPane.showMessageDialog(null, "¸ü¤J¹ÏÀÉ¿ù»~: "+Filename);
                     image=null;
             }

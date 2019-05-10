@@ -46,7 +46,7 @@ public class getdata {
     			if(line++==40) {
     				history_data+=e.getText();
         			if(i<day.length-1) {
-        				history_data+="\nnextdata\n";
+        				history_data+="nextdata";
         			}
     			}
     			//System.out.println(e.getText());
@@ -57,7 +57,7 @@ public class getdata {
 	}
 	
 	public String[] parameter = new String[15];;
-	public float[] number = new float[15];;
+	public double[] number = new double[15];;
 	public String[] unit = new String[15];
 	
 	public int count;
@@ -70,7 +70,12 @@ public class getdata {
 			if(tmp[i].toCharArray()[0]=='(' && tmp[i].toCharArray()[tmp[i].length()-1]==')') {
 				System.out.printf("%s %s %s\n",tmp[i],tmp[i+1],tmp[i+2]);
 				parameter[count] = tmp[i];
-				number[count] = Float.parseFloat(tmp[i+1]);
+				try {
+					number[count] = Double.parseDouble(tmp[i+1]);					
+				}catch(Exception e) {
+					number[count] = -1;
+				}
+				
 				unit[count++] = tmp[i+2];				
 			}			
 
@@ -78,8 +83,23 @@ public class getdata {
 		
 	}
 	
+	public double[][] all_data;
 	public void History_data_process() {
-		
+		String[] lin;
+		tmp = history_data.split("nextdata|\n");
+		all_data = new double[16][24*history_data.split("nextdata").length];
+		for(int i=0;i<history_data.split("nextdata").length;i++) {
+			for(int j=1;j<17;j++) {				
+				lin = tmp[18*i+j].split(" ");
+				System.out.printf("%d %s\n",18*i+j,tmp[18*i+j]);
+				count=0;
+				if(j==10 || j==11) count=1;
+				for(int k=0;k<24;k++) {					
+					all_data[j-1][k+24*i] = Double.parseDouble(lin[k+2+count]);
+				}
+			}
+		}
+
 	}
 
 }
