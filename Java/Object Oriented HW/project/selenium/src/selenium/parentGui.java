@@ -16,78 +16,78 @@ import javax.swing.*;
 
 public class parentGui extends JFrame{
 
-    private JButton reg,reg1;  
-    public JTextField tf,tf1;
+    private JButton historybutton,instantbutton;  
+    public JTextField daytextfield,labeltextfield;
 
     public parentGui(){
         super("The title");
         setLayout(new GridBagLayout());        
 
-        JTextArea jTextArea1 = new JTextArea("NO (一氧化氮): 7.13 ppb");
-        jTextArea1.setBackground(SystemColor.control);
-        GridBagConstraints bag3 = new GridBagConstraints();
-        bag3.gridx = 100;
-        bag3.gridy = 0;
-        bag3.gridwidth = 20;
-        bag3.gridheight = 20;
-        bag3.weightx = 0;
-        bag3.weighty = 0;
-        //bag3.fill = GridBagConstraints.NONE;
-        //bag3.anchor = GridBagConstraints.NORTH;               
-        add(jTextArea1, bag3); 
+        JTextArea text = new JTextArea("NO (一氧化氮): 7.13 ppb");
+        text.setBackground(SystemColor.control);
+        GridBagConstraints textlayout = new GridBagConstraints();
+        textlayout.gridx = 100;
+        textlayout.gridy = 0;
+        textlayout.gridwidth = 20;
+        textlayout.gridheight = 20;
+        textlayout.weightx = 0;
+        textlayout.weighty = 0;
+        //textlayout.fill = GridBagConstraints.NONE;
+        //textlayout.anchor = GridBagConstraints.NORTH;               
+        add(text, textlayout); 
         
-        tf = new JTextField("This is a sentece", 20);
-        tf.setFont(new Font("Serif", Font.PLAIN, 14));
-        GridBagConstraints bag5 = new GridBagConstraints();
-        bag5.gridx = 50;
-        bag5.gridy = 200;
-        bag5.gridwidth = 20;
-        bag5.gridheight = 20;
-        bag5.weightx = 0;
-        bag5.weighty = 0;
-        //bag5.fill = GridBagConstraints.NONE;
-        //bag5.anchor = GridBagConstraints.WEST;
-        add(tf, bag5); 
+        daytextfield = new JTextField("This is a sentece", 20);
+        daytextfield.setFont(new Font("Serif", Font.PLAIN, 14));
+        GridBagConstraints daytextfieldlayout = new GridBagConstraints();
+        daytextfieldlayout.gridx = 50;
+        daytextfieldlayout.gridy = 200;
+        daytextfieldlayout.gridwidth = 20;
+        daytextfieldlayout.gridheight = 20;
+        daytextfieldlayout.weightx = 0;
+        daytextfieldlayout.weighty = 0;
+        //daytextfieldlayout.fill = GridBagConstraints.NONE;
+        //daytextfieldlayout.anchor = GridBagConstraints.WEST;
+        add(daytextfield, daytextfieldlayout); 
         
-        tf1 = new JTextField("kind", 20);
-        tf1.setFont(new Font("Serif", Font.PLAIN, 14));
-        GridBagConstraints bag2 = new GridBagConstraints();
-        bag2.gridx = 50;
-        bag2.gridy = 100;
-        bag2.gridwidth = 20;
-        bag2.gridheight = 20;
-        bag2.weightx = 0;
-        bag2.weighty = 0;
-        //bag2.fill = GridBagConstraints.NONE;
-        //bag2.anchor = GridBagConstraints.WEST;
-        add(tf1, bag2); 
+        labeltextfield = new JTextField("kind", 20);
+        labeltextfield.setFont(new Font("Serif", Font.PLAIN, 14));
+        GridBagConstraints labeltextfieldlayout = new GridBagConstraints();
+        labeltextfieldlayout.gridx = 50;
+        labeltextfieldlayout.gridy = 100;
+        labeltextfieldlayout.gridwidth = 20;
+        labeltextfieldlayout.gridheight = 20;
+        labeltextfieldlayout.weightx = 0;
+        labeltextfieldlayout.weighty = 0;
+        //labeltextfieldlayout.fill = GridBagConstraints.NONE;
+        //labeltextfieldlayout.anchor = GridBagConstraints.WEST;
+        add(labeltextfield, labeltextfieldlayout); 
         
-        GridBagConstraints bag1 = new GridBagConstraints();
-        reg = new JButton("History data");
-        bag1.gridx = 50;
-        bag1.gridy = -120;
-        bag1.gridwidth = 20;
-        bag1.gridheight = 20;
-        bag1.weightx = 0;
-        bag1.weighty = 0;
-        //bag1.fill = GridBagConstraints.NONE;
-        //bag1.anchor = GridBagConstraints.WEST;
-        add(reg, bag1);
+        historybutton = new JButton("History data");
+        GridBagConstraints historybuttonlayout = new GridBagConstraints();
+        historybuttonlayout.gridx = 50;
+        historybuttonlayout.gridy = -120;
+        historybuttonlayout.gridwidth = 20;
+        historybuttonlayout.gridheight = 20;
+        historybuttonlayout.weightx = 0;
+        historybuttonlayout.weighty = 0;
+        //historybuttonlayout.fill = GridBagConstraints.NONE;
+        //historybuttonlayout.anchor = GridBagConstraints.WEST;
+        add(historybutton, historybuttonlayout);
         
-        GridBagConstraints bag4 = new GridBagConstraints();
-        reg1 = new JButton("Instant data");
-        bag4.gridy = -90;
-        bag4.gridwidth = -120;
-        bag4.gridheight = 20;
-        bag4.weightx = 0;
-        bag4.weighty = 0;
-        //bag4.fill = GridBagConstraints.NONE;
-        //bag4.anchor = GridBagConstraints.WEST;
-        add(reg1, bag4);  
+        instantbutton = new JButton("Instant data");
+        GridBagConstraints instantbuttonlayout = new GridBagConstraints();
+        instantbuttonlayout.gridy = -90;
+        instantbuttonlayout.gridwidth = -120;
+        instantbuttonlayout.gridheight = 20;
+        instantbuttonlayout.weightx = 0;
+        instantbuttonlayout.weighty = 0;
+        //instantbuttonlayout.fill = GridBagConstraints.NONE;
+        //instantbuttonlayout.anchor = GridBgConstraints.WEST;
+        add(instantbutton, instantbuttonlayout);  
         
         HandlerClass handler = new HandlerClass();
-        reg.addActionListener(handler);
-        reg1.addActionListener(handler);
+        historybutton.addActionListener(handler);
+        instantbutton.addActionListener(handler);
         
         
     }
@@ -100,22 +100,17 @@ public class parentGui extends JFrame{
                 System.out.println(event.getActionCommand());
                 getdatagraph use = new getdatagraph();
                 childGui go = new childGui(use.instant_button());
-                //String str = "NO (一氧化氮): 7.13 ppb";
-                //childGui1 go = new childGui1(str);
-                //go.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 go.setSize(600,400);
-                go.setVisible(true);
-                
-                
+                go.setVisible(true);                                
             }
             if(event.getActionCommand()=="History data") {
-            	System.out.println(tf.getText());
-            	String[] d = tf.getText().split(" ");
-            	String[] label = {tf1.getText(),"time",tf1.getText(),tf1.getText()};
+            	System.out.println(daytextfield.getText());
+            	String[] d = daytextfield.getText().split(" ");
+            	String[] label = {labeltextfield.getText(),"time",labeltextfield.getText(),labeltextfield.getText()};
             	getdatagraph use = new getdatagraph(d,label);
             	use.history_button();
             }
-            JOptionPane.showMessageDialog(null, String.format("%s", event.getActionCommand()));
+            //JOptionPane.showMessageDialog(null, String.format("%s", event.getActionCommand()));
         }
 
     }

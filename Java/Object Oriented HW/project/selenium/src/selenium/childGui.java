@@ -15,29 +15,22 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class childGui extends JFrame{
- 
-    public JTextField tf;
 
-    public childGui(String str){
+    public childGui(String data){
         super("The title");
-        setLayout(new GridBagLayout());        
-
-        JTextArea jTextArea1 = new JTextArea(str);
-        jTextArea1.setBackground(SystemColor.control);
-        GridBagConstraints bag3 = new GridBagConstraints();
-        bag3.gridx = 100;
-        bag3.gridy = 0;
-        bag3.gridwidth = 20;
-        bag3.gridheight = 20;
-        bag3.weightx = 0;
-        bag3.weighty = 0;
-        //bag3.fill = GridBagConstraints.NONE;
-        //bag3.anchor = GridBagConstraints.NORTH;               
-        add(jTextArea1, bag3);    
-
-        
-
-        
+        setLayout(new GridBagLayout());    
+        JTextArea text = new JTextArea(data);
+        text.setBackground(SystemColor.control);
+        GridBagConstraints textlayout = new GridBagConstraints();
+        textlayout.gridx = 100;
+        textlayout.gridy = 0;
+        textlayout.gridwidth = 20;
+        textlayout.gridheight = 20;
+        textlayout.weightx = 0;
+        textlayout.weighty = 0;
+        //textlayout.fill = GridBagConstraints.NONE;
+        //textlayout.anchor = GridBagConstraints.NORTH;               
+        add(text, textlayout);           
         
     }
 
