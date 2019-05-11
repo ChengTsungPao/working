@@ -1,6 +1,5 @@
 package selenium;
 
-import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
@@ -9,10 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
 import java.awt.SystemColor;
-
-import javax.swing.JOptionPane;
 import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
 public class parentGui extends JFrame{
@@ -33,103 +29,71 @@ public class parentGui extends JFrame{
         JTextArea text = new JTextArea(tmp);
         text.setBackground(SystemColor.control);
         GridBagConstraints textlayout = new GridBagConstraints();
-        //textlayout.gridx = 1;
-        //textlayout.gridy = 1;
         textlayout.gridwidth = 0;
         textlayout.gridheight = 30;
         textlayout.weightx = 0;
-        textlayout.weighty = 0;
-        //textlayout.fill = GridBagConstraints.NONE;
-        //textlayout.anchor = GridBagConstraints.NORTH;               
+        textlayout.weighty = 0;           
         add(text, textlayout);         
         
         historyCheckBox = new JCheckBox("儲存歷史數據");
         historyCheckBox.setFont(new Font("Serif", Font.PLAIN, 14));
         GridBagConstraints historyCheckBoxlayout = new GridBagConstraints();
-        //historyCheckBoxlayout.gridx = 1;
-        //historyCheckBoxlayout.gridy = 1;
         historyCheckBoxlayout.gridwidth = 15;
         historyCheckBoxlayout.gridheight = 30;
         historyCheckBoxlayout.weightx = 0;
         historyCheckBoxlayout.weighty = 0;
-        //historyCheckBoxlayout.fill = GridBagConstraints.NONE;
-        //historyCheckBoxlayout.anchor = GridBagConstraints.WEST;
         add(historyCheckBox, historyCheckBoxlayout); 
         
         instantCheckBox = new JCheckBox("儲存即時數據");
         instantCheckBox.setFont(new Font("Serif", Font.PLAIN, 14));
         GridBagConstraints instantCheckBoxlayout = new GridBagConstraints();
-        //instantCheckBoxlayout.gridx = 1;
-        //instantCheckBoxlayout.gridy = 1;
         instantCheckBoxlayout.gridwidth = 15;
         instantCheckBoxlayout.gridheight = 30;
         instantCheckBoxlayout.weightx = 0;
         instantCheckBoxlayout.weighty = 0;
-        //instantCheckBoxlayout.fill = GridBagConstraints.NONE;
-        //instantCheckBoxlayout.anchor = GridBagConstraints.WEST;
         add(instantCheckBox, instantCheckBoxlayout);   
         
         JLabel blank = new JLabel("");
         blank.setFont(new Font("Serif", Font.PLAIN, 14));
         GridBagConstraints blanklayout = new GridBagConstraints();
-        //blanklayout1.gridx = 1;
-        //blanklayout1.gridy = 1;
         blanklayout.gridwidth = 0;
         blanklayout.gridheight = 30;
         blanklayout.weightx = 0;
         blanklayout.weighty = 0;
-        //blanklayout.fill = GridBagConstraints.NONE;
-        //blanklayout.anchor = GridBagConstraints.WEST;
         add(blank, blanklayout); 
         
         daytextfield = new JTextField("Input the day before", 20);
         daytextfield.setFont(new Font("Serif", Font.PLAIN, 14));
         GridBagConstraints daytextfieldlayout = new GridBagConstraints();
-        //daytextfieldlayout.gridx = 1;
-        //daytextfieldlayout.gridy = 1;
         daytextfieldlayout.gridwidth = 30;
         daytextfieldlayout.gridheight = 30;
         daytextfieldlayout.weightx = 0;
         daytextfieldlayout.weighty = 0;
-        //daytextfieldlayout.fill = GridBagConstraints.NONE;
-        //daytextfieldlayout.anchor = GridBagConstraints.WEST;
         add(daytextfield, daytextfieldlayout); 
         
         historybutton = new JButton("History data");
         GridBagConstraints historybuttonlayout = new GridBagConstraints();
-        //historybuttonlayout.gridx = 1;
-        //historybuttonlayout.gridy = 1;
         historybuttonlayout.gridwidth = 0;
         historybuttonlayout.gridheight = 30;
         historybuttonlayout.weightx = 0;
         historybuttonlayout.weighty = 0;
-        //historybuttonlayout.fill = GridBagConstraints.NONE;
-        //historybuttonlayout.anchor = GridBagConstraints.WEST;
         add(historybutton, historybuttonlayout);
         
         labeltextfield = new JTextField("Input the parameter", 20);
         labeltextfield.setFont(new Font("Serif", Font.PLAIN, 14));
         GridBagConstraints labeltextfieldlayout = new GridBagConstraints();
-        //labeltextfieldlayout.gridx = 1;
-        //labeltextfieldlayout.gridy = 1;
         labeltextfieldlayout.gridwidth = 30;
         labeltextfieldlayout.gridheight = 30;
         labeltextfieldlayout.weightx = 0;
         labeltextfieldlayout.weighty = 0;
-        //labeltextfieldlayout.fill = GridBagConstraints.NONE;
-        //labeltextfieldlayout.anchor = GridBagConstraints.WEST;
         add(labeltextfield, labeltextfieldlayout); 
                 
         instantbutton = new JButton("Instant  data");
         GridBagConstraints instantbuttonlayout = new GridBagConstraints();
-        //instantbuttonlayout.gridx = 1;
-        //instantbuttonlayout.gridy = -30;
         instantbuttonlayout.gridwidth = 0;
         instantbuttonlayout.gridheight = 30;
         instantbuttonlayout.weightx = 0;
         instantbuttonlayout.weighty = 0;
-        //instantbuttonlayout.fill = GridBagConstraints.NONE;
-        //instantbuttonlayout.anchor = GridBgConstraints.WEST;
         add(instantbutton, instantbuttonlayout);  
         
         HandlerClass handler = new HandlerClass();

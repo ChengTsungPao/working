@@ -7,10 +7,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-//import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.FileWriter;
+
 
 public class getdata {
 	

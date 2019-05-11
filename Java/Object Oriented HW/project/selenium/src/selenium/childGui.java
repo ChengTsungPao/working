@@ -1,18 +1,9 @@
 package selenium;
 
-import java.awt.FlowLayout;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JButton;
 import javax.swing.JTextArea;
 import java.awt.SystemColor;
-
-import javax.swing.JOptionPane;
 import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
 
 public class childGui extends JFrame{
 

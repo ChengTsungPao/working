@@ -1,23 +1,15 @@
 package selenium;
 
-import java.awt.*;
-import javax.swing.*;
-import java.io.*;
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -145,7 +137,7 @@ public class creategraph {
             jf.getContentPane().add(scrollPane);
             jf.pack();
             jf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            jf.setTitle(Filename+" "+image.getWidth()+" x "+image.getHeight());
+            jf.setTitle("Air of parameter data graph");
             jf.setLocationRelativeTo(null);
             jf.setVisible(true);
     }
