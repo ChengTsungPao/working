@@ -1,11 +1,16 @@
 package selenium;
 
+import java.util.Date; 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 //import org.openqa.selenium.htmlunit.HtmlUnitDriver;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.FileWriter;
 
 public class getdata {
 	
@@ -106,6 +111,39 @@ public class getdata {
 			}
 		}
 
+	}
+	
+	
+	public void File_immediate(){
+		try {
+			SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+			Date date = new Date();
+			String strDate = sdFormat.format(date);
+			FileWriter f = new FileWriter("./mydata/Instant.txt",true);		
+			f.write(strDate);
+			f.write(total);
+			f.write("\r\n");
+			f.close();
+		}
+	    catch(IOException ie) {
+	        ie.printStackTrace();
+	    }
+	}
+	
+	public void File_History(String[] day) {
+		try {
+			FileWriter f = new FileWriter("./mydata/History.txt",true);		
+			for(int i=0;i<day.length;i++) {
+				f.write(day[i]+"\r\n");
+				for(int j=1;j<17;j++) {				
+					f.write(tmp[18*i+j]+"\r\n");
+				}
+			}
+			f.close();
+		}
+	    catch(IOException ie) {
+	        ie.printStackTrace();
+	    }
 	}
 
 }

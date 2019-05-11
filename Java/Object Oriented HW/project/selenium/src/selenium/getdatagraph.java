@@ -26,15 +26,17 @@ public class getdatagraph {
 		choose(label);		
 	}
 	
-	public String instant_button(){
+	public String instant_button(int flag){
 		data.Immediate_data();
 		data.Immediate_data_process();
+		if(flag==1) data.File_immediate();
 		return data.immediate_data;
 	}
 	
-	public void history_button(){
+	public void history_button(int flag){
 		data.History_data(day);
 		data.History_data_process();
+		if(flag==1) data.File_History(day);
 		String[] x = new String[day.length*24];
 		for(int i=0;i<x.length;i++) {
 			x[i]=String.valueOf(i);

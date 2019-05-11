@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
 import java.awt.SystemColor;
 
@@ -17,6 +18,7 @@ import javax.swing.*;
 public class parentGui extends JFrame{
 
     private JButton historybutton,instantbutton;  
+    private JCheckBox historyCheckBox,instantCheckBox,instantCheckBox1; 
     public JTextField daytextfield,labeltextfield;
 
     public parentGui(){
@@ -27,7 +29,7 @@ public class parentGui extends JFrame{
         		 + "NO (一氧化氮)                     NO2 (二氧化氮)\nNOx (氮氧化物)                   SO2 (二氧化硫)\n"
         		 + "CO (一氧化碳)                     CH4 (甲烷)\nTHC (總碳氫化合物)            NMHC (非甲烷碳氫化合物)\n"
         		 + "O3 (臭氧)                              PM10 (懸浮微粒PM10)\nPM2.5 (懸浮微粒PM2.5)      AT (大氣溫度)\n"
-        		 + "RH (相對溼度)                      WD (風向)\n\n";
+        		 + "RH (相對溼度)                      WD (風向)\n";
         JTextArea text = new JTextArea(tmp);
         text.setBackground(SystemColor.control);
         GridBagConstraints textlayout = new GridBagConstraints();
@@ -39,7 +41,46 @@ public class parentGui extends JFrame{
         textlayout.weighty = 0;
         //textlayout.fill = GridBagConstraints.NONE;
         //textlayout.anchor = GridBagConstraints.NORTH;               
-        add(text, textlayout); 
+        add(text, textlayout);         
+        
+        historyCheckBox = new JCheckBox("儲存歷史數據");
+        historyCheckBox.setFont(new Font("Serif", Font.PLAIN, 14));
+        GridBagConstraints historyCheckBoxlayout = new GridBagConstraints();
+        //historyCheckBoxlayout.gridx = 1;
+        //historyCheckBoxlayout.gridy = 1;
+        historyCheckBoxlayout.gridwidth = 15;
+        historyCheckBoxlayout.gridheight = 30;
+        historyCheckBoxlayout.weightx = 0;
+        historyCheckBoxlayout.weighty = 0;
+        //historyCheckBoxlayout.fill = GridBagConstraints.NONE;
+        //historyCheckBoxlayout.anchor = GridBagConstraints.WEST;
+        add(historyCheckBox, historyCheckBoxlayout); 
+        
+        instantCheckBox = new JCheckBox("儲存即時數據");
+        instantCheckBox.setFont(new Font("Serif", Font.PLAIN, 14));
+        GridBagConstraints instantCheckBoxlayout = new GridBagConstraints();
+        //instantCheckBoxlayout.gridx = 1;
+        //instantCheckBoxlayout.gridy = 1;
+        instantCheckBoxlayout.gridwidth = 15;
+        instantCheckBoxlayout.gridheight = 30;
+        instantCheckBoxlayout.weightx = 0;
+        instantCheckBoxlayout.weighty = 0;
+        //instantCheckBoxlayout.fill = GridBagConstraints.NONE;
+        //instantCheckBoxlayout.anchor = GridBagConstraints.WEST;
+        add(instantCheckBox, instantCheckBoxlayout);   
+        
+        JLabel blank = new JLabel("");
+        blank.setFont(new Font("Serif", Font.PLAIN, 14));
+        GridBagConstraints blanklayout = new GridBagConstraints();
+        //blanklayout1.gridx = 1;
+        //blanklayout1.gridy = 1;
+        blanklayout.gridwidth = 0;
+        blanklayout.gridheight = 30;
+        blanklayout.weightx = 0;
+        blanklayout.weighty = 0;
+        //blanklayout.fill = GridBagConstraints.NONE;
+        //blanklayout.anchor = GridBagConstraints.WEST;
+        add(blank, blanklayout); 
         
         daytextfield = new JTextField("Input the day before", 20);
         daytextfield.setFont(new Font("Serif", Font.PLAIN, 14));
@@ -94,7 +135,8 @@ public class parentGui extends JFrame{
         HandlerClass handler = new HandlerClass();
         historybutton.addActionListener(handler);
         instantbutton.addActionListener(handler);
-        
+        historyCheckBox.addActionListener(handler);
+        instantCheckBox.addActionListener(handler);
         
     }
 
@@ -102,20 +144,24 @@ public class parentGui extends JFrame{
 
         public void actionPerformed(ActionEvent event){
         	
-            if(event.getActionCommand()=="Instant  data"){
+        	if(event.getActionCommand()=="Instant  data"){
+        		int flag = 0;
+            	if(instantCheckBox.isSelected()) flag=1;
                 //System.out.println(event.getActionCommand());
                 getdatagraph use = new getdatagraph();
-                childGui go = new childGui(use.instant_button());
+                childGui go = new childGui(use.instant_button(flag));
                 go.setSize(800,350);
                 go.setVisible(true);                                
             }
             if(event.getActionCommand()=="History data") {
+            	int flag = 0;
+            	if(historyCheckBox.isSelected()) flag=1;
             	//System.out.println(daytextfield.getText());
             	//System.out.println(labeltextfield.getText());
             	String[] d = daytextfield.getText().split(" ");
             	//String[] label = {labeltextfield.getText(),"time",labeltextfield.getText(),labeltextfield.getText()};
             	getdatagraph use = new getdatagraph(d,labeltextfield.getText());
-            	use.history_button();
+            	use.history_button(flag);
             }
             //JOptionPane.showMessageDialog(null, String.format("%s", event.getActionCommand()));
         }
