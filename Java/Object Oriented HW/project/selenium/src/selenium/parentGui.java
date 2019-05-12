@@ -109,23 +109,19 @@ public class parentGui extends JFrame{
         public void actionPerformed(ActionEvent event){
         	
         	if(event.getActionCommand()=="Instant  data"){
-        		int flag = 0;
-            	if(instantCheckBox.isSelected()) flag=1;
                 //System.out.println(event.getActionCommand());
                 getdatagraph use = new getdatagraph();
-                childGui go = new childGui(use.instant_button(flag));
+                childGui go = new childGui(use.instant_button(instantCheckBox.isSelected()));
                 go.setSize(800,350);
                 go.setVisible(true);                                
             }
             if(event.getActionCommand()=="History data") {
-            	int flag = 0;
-            	if(historyCheckBox.isSelected()) flag=1;
             	//System.out.println(daytextfield.getText());
             	//System.out.println(labeltextfield.getText());
             	String[] d = daytextfield.getText().split(" ");
             	//String[] label = {labeltextfield.getText(),"time",labeltextfield.getText(),labeltextfield.getText()};
             	getdatagraph use = new getdatagraph(d,labeltextfield.getText());
-            	use.history_button(flag);
+            	use.history_button(historyCheckBox.isSelected());
             }
             //JOptionPane.showMessageDialog(null, String.format("%s", event.getActionCommand()));
         }
