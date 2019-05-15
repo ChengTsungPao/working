@@ -19,9 +19,11 @@ public class main {
 		String selected = dropDown.getFirstSelectedOption().getText();
 		System.out.println(selected);
 		List<WebElement> Options = dropDown.getOptions();
-		Options.get(2).getText();
+		//Options.get(2).getText();
 		Options.get(0).click();
-		Options.get(2).click();
+		Options.get(76).click();
+
+		
 		driver.findElement(By.id("ctl05_btnQuery")).click();
         List<WebElement> itemList = driver.findElements(By.tagName("td")); 
         //List<WebElement> itemList = driver.findElements(By.xpath(".//table[class='TABLE_G']")); 

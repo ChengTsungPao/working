@@ -14,9 +14,10 @@ import java.io.IOException;
 public class getdata {
 	
 	public String immediate_data="", history_data="";
-	public int line;
+	public int line,key;
 	
-	public void Immediate_data() {
+	public void Immediate_data(String wh) {
+		where(wh);
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--headless");		
 		WebDriver driver = new ChromeDriver(options);
@@ -35,7 +36,8 @@ public class getdata {
 		driver.close();
 	}
 	
-	public void History_data(String[] day) {
+	public void History_data(String[] day,String wh) {
+		where(wh);
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--headless");		
 		WebDriver driver = new ChromeDriver(options);
@@ -62,6 +64,48 @@ public class getdata {
         }
 		//System.out.println(history_data);
 		driver.close();
+	}
+	
+	public void where(String wh) {
+		if(wh=="台北") {
+			key = 5;
+		}else if(wh=="新北") {
+			key = 6;
+		}else if(wh=="桃園") {
+			key = 20;
+		}else if(wh=="新竹") {
+			key = 27;
+		}else if(wh=="苗栗") {
+			key = 30;
+		}else if(wh=="台中") {
+			key = 35;
+		}else if(wh=="彰化") {
+			key = 38;
+		}else if(wh=="雲林") {
+			key = 46;
+		}else if(wh=="嘉義") {
+			key = 49;
+		}else if(wh=="台南") {
+			key = 53;
+		}else if(wh=="高雄") {
+			key = 64;
+		}else if(wh=="屏東") {
+			key = 66;
+		}else if(wh=="台東") {
+			key = 73;
+		}else if(wh=="花蓮") {
+			key = 71;
+		}else if(wh=="宜蘭") {
+			key = 69;
+		}else if(wh=="澎湖") {
+			key = 76;
+		}else if(wh=="基隆") {
+			key = 4;
+		}else if(wh=="南投") {
+			key = 41;
+		}
+		
+		
 	}
 	
 	public String total = "";

@@ -22,7 +22,7 @@ public class parentGui extends JFrame{
     private JButton historybutton,instantbutton;  
     private JCheckBox historyCheckBox,instantCheckBox,instantCheckBox1; 
     //private JRadioButton city;
-    private JRadioButton[] city = new JRadioButton[17];
+    private JRadioButton[] city = new JRadioButton[18];
     public JTextField daytextfield,labeltextfield;
     private ButtonGroup group;
 
@@ -55,25 +55,28 @@ public class parentGui extends JFrame{
         imagePanel.setVisible(true);
         
         
-        JTextArea blank1 = new JTextArea("                                                                         "
-        		                       + "                                                                         "
-        		                       + "                                                                         ");
+        JTextArea blank1 = new JTextArea("                                                                                    "
+        		+ "                                                                        " );
         blank1.setOpaque(false);
         imagePanel.add(blank1); 
         
-        
-        String tmp="可使用參數:\n\n"
-       		 + "NO (一氧化氮)                     NO2 (二氧化氮)\nNOx (氮氧化物)                   SO2 (二氧化硫)\n"
-       		 + "CO (一氧化碳)                     CH4 (甲烷)\nTHC (總碳氫化合物)            NMHC (非甲烷碳氫化合物)\n"
-       		 + "O3 (臭氧)                              PM10 (懸浮微粒PM10)\nPM2.5 (懸浮微粒PM2.5)      AT (大氣溫度)\n"
-       		 + "RH (相對溼度)                      WD (風向)\n";
-        JTextArea blank2 = new JTextArea("                                                                            "
-        		+ "                                                                                                   "
-        		+ "                                                                                                  "
-        		+ "");
+        JTextArea blank2 = new JTextArea("                                                                               "
+        		+ "                     ");
         //text.setBackground(Color.white);//SystemColor.control
         blank2.setOpaque(false);       
-        imagePanel.add(blank2); 
+        imagePanel.add(blank2);
+        
+        city[17] = new JRadioButton("基隆       "
+				+ "                                                                     ");
+		//Tapie.setFont(new Font("Serif", Font.PLAIN, 14));
+        city[17].setOpaque(false); 
+        imagePanel.add(city[17]); 
+        
+
+        
+        
+
+ 
         
         JTextArea blank3 = new JTextArea("                                                                            "
         		+ "              ");
@@ -498,7 +501,7 @@ public class parentGui extends JFrame{
             	if(event.getActionCommand()=="Instant  data"){
                     //System.out.println(event.getActionCommand());
                     getdatagraph use = new getdatagraph();
-                    childGui go = new childGui(use.instant_button(instantCheckBox.isSelected()));
+                    childGui go = new childGui(use.instant_button(instantCheckBox.isSelected(),wh));
                     go.setSize(800,350);
                     go.setVisible(true);                                
                 }
@@ -511,7 +514,7 @@ public class parentGui extends JFrame{
                     	//System.out.println(labeltextfield.getText());
                     	String[] d = daytextfield.getText().split(" ");                	
                     	getdatagraph use = new getdatagraph(d,labeltextfield.getText());
-                    	use.history_button(historyCheckBox.isSelected());
+                    	use.history_button(historyCheckBox.isSelected(),wh);
                 	}
                 }
         	}
@@ -523,16 +526,10 @@ public class parentGui extends JFrame{
 }
 
 class ImagePanel extends JPanel {  
-    //public ImagePanel() {  
-    //    super(new BorderLayout()); 
-    //}  
-  
     public void paintComponent(Graphics g) {  
         super.paintComponent(g);  
         ImageIcon img = new ImageIcon("D:\\program\\vscode_workspace\\private\\working\\Java\\Object Oriented HW\\test\\finalprojecttest\\graph.jpg"); 
         setSize(800, 600);
-        
-        //setPreferredSize(new Dimension(-300, 600));
         img.paintIcon(this, g, 0, 0);  
 
     }  
