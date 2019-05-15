@@ -92,14 +92,8 @@ public class childGui extends JFrame{
         JTextArea text = new JTextArea(ans);
         text.setBackground(SystemColor.control);
         GridBagConstraints textlayout = new GridBagConstraints();
-        textlayout.gridx = 100;
-        textlayout.gridy = 0;
         textlayout.gridwidth = 20;
-        textlayout.gridheight = 20;
-        textlayout.weightx = 0;
-        textlayout.weighty = 0;
-        //textlayout.fill = GridBagConstraints.NONE;
-        //textlayout.anchor = GridBagConstraints.NORTH;               
+        textlayout.gridheight = 20;             
         add(text, textlayout);           
         
     }

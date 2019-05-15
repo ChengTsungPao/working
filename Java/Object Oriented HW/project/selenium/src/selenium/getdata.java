@@ -7,9 +7,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import java.io.FileWriter;
 import java.io.IOException;
-
 
 public class getdata {
 	
@@ -17,7 +17,9 @@ public class getdata {
 	public int line;
 	
 	public void Immediate_data() {
-		WebDriver driver = new ChromeDriver();
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--headless");		
+		WebDriver driver = new ChromeDriver(options);
 		driver.get("http://211.20.129.217/EnvServAQR/notice.aspx"); 
         driver.findElement(By.id("Button1")).click(); 
         List<WebElement> itemList = driver.findElements(By.tagName("td")); 
@@ -34,7 +36,9 @@ public class getdata {
 	}
 	
 	public void History_data(String[] day) {
-		WebDriver driver = new ChromeDriver();
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--headless");		
+		WebDriver driver = new ChromeDriver(options);
 		driver.get("http://211.20.129.217/EnvServAQR/notice.aspx");
         driver.findElement(By.id("Button1")).click();
         driver.findElement(By.id("Button2")).click();     
