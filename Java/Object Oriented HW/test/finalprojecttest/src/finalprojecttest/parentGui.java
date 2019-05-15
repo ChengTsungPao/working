@@ -11,15 +11,20 @@ import javax.swing.JTextArea;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JRadioButton;
 import java.awt.*;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+
 
 public class parentGui extends JFrame{
 
     private JButton historybutton,instantbutton;  
-    private JCheckBox historyCheckBox,instantCheckBox,instantCheckBox1,city; 
+    private JCheckBox historyCheckBox,instantCheckBox,instantCheckBox1; 
+    //private JRadioButton city;
+    private JRadioButton[] city = new JRadioButton[17];
     public JTextField daytextfield,labeltextfield;
-    
+    private ButtonGroup group;
 
 
     public parentGui(){
@@ -75,11 +80,11 @@ public class parentGui extends JFrame{
         blank3.setOpaque(false);
         imagePanel.add(blank3);    
         
-        city = new JCheckBox("台北"
+        city[0] = new JRadioButton("台北"
 				+ "              ");
 		//Tapie.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city); 
+        city[0].setOpaque(false); 
+        imagePanel.add(city[0]); 
         
         JTextArea text1 = new JTextArea("可使用參數:                                                           ");
         
@@ -92,15 +97,15 @@ public class parentGui extends JFrame{
         blank4.setOpaque(false);
         imagePanel.add(blank4); 
 
-        city = new JCheckBox("桃園");
-        city.setOpaque(false); 
-        imagePanel.add(city);
+        city[1] = new JRadioButton("桃園");
+        city[1].setOpaque(false); 
+        imagePanel.add(city[1]);
         
-        city = new JCheckBox("新北"
+        city[2] = new JRadioButton("新北"
 				+ "           ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city);       
+        city[2].setOpaque(false); 
+        imagePanel.add(city[2]);       
 
         
         JTextArea text2 = new JTextArea("NO (一氧化氮)                     NO2 (二氧化氮)"
@@ -114,17 +119,17 @@ public class parentGui extends JFrame{
         blank5.setOpaque(false);
         imagePanel.add(blank5);
         
-        city = new JCheckBox("新竹"
+        city[3] = new JRadioButton("新竹"
 				+ "         ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city);   
+        city[3].setOpaque(false); 
+        imagePanel.add(city[3]);   
         
-        city = new JCheckBox("宜蘭"
+        city[4] = new JRadioButton("宜蘭"
 				+ "      ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city);      
+        city[4].setOpaque(false); 
+        imagePanel.add(city[4]);      
         
         
         
@@ -138,11 +143,11 @@ public class parentGui extends JFrame{
         blank6.setOpaque(false);
         imagePanel.add(blank6);        
         
-        city = new JCheckBox("苗栗"
+        city[5] = new JRadioButton("苗栗"
 				+ "                                          ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city);       
+        city[5].setOpaque(false); 
+        imagePanel.add(city[5]);       
         
         JTextArea text4 = new JTextArea("CO (一氧化碳)                     CH4 (甲烷)              ");
         //text.setBackground(Color.white);//SystemColor.control
@@ -154,11 +159,11 @@ public class parentGui extends JFrame{
         blank7.setOpaque(false);
         imagePanel.add(blank7);        
         
-        city = new JCheckBox("台中"
+        city[6] = new JRadioButton("台中"
 				+ "                                                  ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city);         
+        city[6].setOpaque(false); 
+        imagePanel.add(city[6]);         
         
         JTextArea text5 = new JTextArea("THC (總碳氫化合物)            NMHC (非甲烷碳氫化合物)");
         //text.setBackground(Color.white);//SystemColor.control
@@ -171,11 +176,11 @@ public class parentGui extends JFrame{
         blank8.setOpaque(false);
         imagePanel.add(blank8);        
         
-        city = new JCheckBox("彰化"
+        city[7] = new JRadioButton("彰化"
 				+ "                                                          ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city);        
+        city[7].setOpaque(false); 
+        imagePanel.add(city[7]);        
         
         JTextArea text6 = new JTextArea("O3 (臭氧)                              PM10 (懸浮微粒PM10)              ");
         //text.setBackground(Color.white);//SystemColor.control
@@ -187,22 +192,22 @@ public class parentGui extends JFrame{
         blank9.setOpaque(false);
         imagePanel.add(blank9); 
         
-        city = new JCheckBox("雲林            ");
+        city[8] = new JRadioButton("雲林            ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city);        
+        city[8].setOpaque(false); 
+        imagePanel.add(city[8]);        
         
-        city = new JCheckBox("南投"
+        city[9] = new JRadioButton("南投"
 				+ "      ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city); 
+        city[9].setOpaque(false); 
+        imagePanel.add(city[9]); 
         
-        city = new JCheckBox("花蓮"
+        city[10] = new JRadioButton("花蓮"
 				+ "              ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city);        
+        city[10].setOpaque(false); 
+        imagePanel.add(city[10]);        
         
         JTextArea text7 = new JTextArea("PM2.5 (懸浮微粒PM2.5)      AT (大氣溫度)                                               ");
         //text.setBackground(Color.white);//SystemColor.control
@@ -214,16 +219,16 @@ public class parentGui extends JFrame{
         blank10.setOpaque(false);
         imagePanel.add(blank10); 
         
-        city = new JCheckBox("澎湖                      ");
+        city[11] = new JRadioButton("澎湖                      ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city); 
+        city[11].setOpaque(false); 
+        imagePanel.add(city[11]); 
         
-        city = new JCheckBox("嘉義"
+        city[12] = new JRadioButton("嘉義"
 				+ "                                                           ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city); 
+        city[12].setOpaque(false); 
+        imagePanel.add(city[12]); 
         
         JTextArea text8 = new JTextArea("RH (相對溼度)                      WS (風速)                        ");
         //text.setBackground(Color.white);//SystemColor.control
@@ -245,11 +250,11 @@ public class parentGui extends JFrame{
         blank12.setOpaque(false);
         imagePanel.add(blank12);  
         
-        city = new JCheckBox("台南"
+        city[13] = new JRadioButton("台南"
 				+ "                                                              ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city); 
+        city[13].setOpaque(false); 
+        imagePanel.add(city[13]); 
         
 		instantCheckBox = new JCheckBox("儲存即時數據        ");
         instantCheckBox.setFont(new Font("Serif", Font.PLAIN, 14));
@@ -266,17 +271,17 @@ public class parentGui extends JFrame{
         blank13.setOpaque(false);
         imagePanel.add(blank13); 
         
-        city = new JCheckBox("高雄"
+        city[14] = new JRadioButton("高雄"
 				+ "        ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city); 
+        city[14].setOpaque(false); 
+        imagePanel.add(city[14]); 
         
-        city = new JCheckBox("台東"
+        city[15] = new JRadioButton("台東"
 				+ "                             ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city); 
+        city[15].setOpaque(false); 
+        imagePanel.add(city[15]); 
         
         daytextfield = new JTextField("Input the date before", 20);
         daytextfield.setFont(new Font("Serif", Font.PLAIN, 14));
@@ -292,11 +297,11 @@ public class parentGui extends JFrame{
         
 
         
-        city = new JCheckBox("屏東"
+        city[16] = new JRadioButton("屏東"
 				+ "                                                 ");
         //New_Taipei.setFont(new Font("Serif", Font.PLAIN, 14));
-        city.setOpaque(false); 
-        imagePanel.add(city); 
+        city[16].setOpaque(false); 
+        imagePanel.add(city[16]); 
         
         labeltextfield = new JTextField("Input the parameter", 20);
         labeltextfield.setFont(new Font("Serif", Font.PLAIN, 14));
@@ -461,6 +466,11 @@ public class parentGui extends JFrame{
         historybuttonlayout.gridheight = 30;
         imagePanel.add(historybutton, historybuttonlayout);*/
         
+        group = new ButtonGroup();
+        for(JRadioButton c:city) {
+        	group.add(c);
+        }
+        
         HandlerClass handler = new HandlerClass();
         historybutton.addActionListener(handler);
         instantbutton.addActionListener(handler);
@@ -475,26 +485,36 @@ public class parentGui extends JFrame{
     private class HandlerClass implements ActionListener{
 
         public void actionPerformed(ActionEvent event){
-        	
-        	if(event.getActionCommand()=="Instant  data"){
-                //System.out.println(event.getActionCommand());
-                getdatagraph use = new getdatagraph();
-                childGui go = new childGui(use.instant_button(instantCheckBox.isSelected()));
-                go.setSize(800,350);
-                go.setVisible(true);                                
-            }
-            if(event.getActionCommand()=="History data") {
-            	if(daytextfield.getText().equals("Input the date before") || daytextfield.getText().equals("")) {
-            		JOptionPane.showMessageDialog(null, String.format("%s", "Please input the date !!!"));
-            		
-            	}else {
-                	//System.out.println(daytextfield.getText());
-                	//System.out.println(labeltextfield.getText());
-                	String[] d = daytextfield.getText().split(" ");                	
-                	getdatagraph use = new getdatagraph(d,labeltextfield.getText());
-                	use.history_button(historyCheckBox.isSelected());
-            	}
-            }
+        	String wh="NULL";        	
+        	for(JRadioButton c:city) {
+        		if(c.isSelected()) {
+        			wh = c.getText();
+        			break;
+        		}
+        	}
+        	if(wh=="NULL") {
+        		JOptionPane.showMessageDialog(null, String.format("%s", "Please choose the city !!!"));
+        	}else {
+            	if(event.getActionCommand()=="Instant  data"){
+                    //System.out.println(event.getActionCommand());
+                    getdatagraph use = new getdatagraph();
+                    childGui go = new childGui(use.instant_button(instantCheckBox.isSelected()));
+                    go.setSize(800,350);
+                    go.setVisible(true);                                
+                }
+                if(event.getActionCommand()=="History data") {
+                	if(daytextfield.getText().equals("Input the date before") || daytextfield.getText().equals("")) {
+                		JOptionPane.showMessageDialog(null, String.format("%s", "Please input the date !!!"));
+                		
+                	}else {
+                    	//System.out.println(daytextfield.getText());
+                    	//System.out.println(labeltextfield.getText());
+                    	String[] d = daytextfield.getText().split(" ");                	
+                    	getdatagraph use = new getdatagraph(d,labeltextfield.getText());
+                    	use.history_button(historyCheckBox.isSelected());
+                	}
+                }
+        	}
             
         }
 

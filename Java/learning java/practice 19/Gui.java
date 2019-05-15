@@ -24,7 +24,7 @@ public class Gui extends JFrame{
         tf = new JTextField("This is a sentece", 25);
         add(tf);
         
-        pb = new JRadioButton("plain", true);
+        pb = new JRadioButton("plain", false);
         bb = new JRadioButton("blod", false);  
         ib = new JRadioButton("italic", false);  
         bib = new JRadioButton("blod and italic", false);
