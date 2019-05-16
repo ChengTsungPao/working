@@ -10,7 +10,7 @@ public class childGui extends JFrame{
     public childGui(String data){
         super("Instant Data");
         setLayout(new GridBagLayout()); 
-        String[] line = data.split("\n");
+        /*String[] line = data.split("\n");
         
         char[] tmp;
         String temp;
@@ -86,10 +86,10 @@ public class childGui extends JFrame{
         String ans="";
         for(int i=0;i<line.length;i++) {
         	ans=ans+line[i]+"\n";        	
-        }
+        }*/
       
 
-        JTextArea text = new JTextArea(ans);
+        JTextArea text = new JTextArea(data);//ans
         text.setBackground(SystemColor.control);
         GridBagConstraints textlayout = new GridBagConstraints();
         textlayout.gridwidth = 20;

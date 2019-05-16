@@ -110,3 +110,16 @@
 (懸浮微粒PM10) 49 μg
 (懸浮微粒PM2.5) 25 μg
 
+2019/05/16 01:52:12SO2 None
+CO None
+O3 None
+PM10 None
+NOx None
+NO None
+NO2 None
+THC None
+NMHC None
+AMB_TEMP None
+CH4 None
+RH None
+

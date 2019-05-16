@@ -28,14 +28,14 @@ public class getdatagraph {
 	
 	public String instant_button(boolean b,String wh){
 		data.Immediate_data(wh);
-		data.Immediate_data_process();
+		//data.Immediate_data_process();
 		if(b) data.File_immediate();
 		return data.immediate_data;
 	}
 	
 	public void history_button(boolean b,String wh){
 		data.History_data(day,wh);
-		data.History_data_process();
+		//data.History_data_process();
 		if(b) data.File_History(day);
 		String[] x = new String[day.length*24];
 		for(int i=0;i<x.length;i++) {

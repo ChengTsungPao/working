@@ -491,10 +491,11 @@ public class parentGui extends JFrame{
         	String wh="NULL";        	
         	for(JRadioButton c:city) {
         		if(c.isSelected()) {
-        			wh = c.getText();
+        			wh = c.getText().replaceAll(" ", "");;
         			break;
         		}
         	}
+        	System.out.println(wh);
         	if(wh=="NULL") {
         		JOptionPane.showMessageDialog(null, String.format("%s", "Please choose the city !!!"));
         	}else {
