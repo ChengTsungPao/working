@@ -38,7 +38,13 @@ public class getdata {
 		driver.close();
 	}*/
 	
-	public void Immediate_data(String wh) {
+	/*public void Immediate_data(String wh) {
+		
+		SimpleDateFormat sdFormat = new SimpleDateFormat("MM/dd");
+		Date date = new Date();
+		String strDate = sdFormat.format(date);
+		
+		
 		where(wh);
 		//ChromeOptions options = new ChromeOptions();
 		//options.addArguments("--headless");		
@@ -107,8 +113,8 @@ public class getdata {
 						flag=0;
 						for(String y:tmp) {	
 							//System.out.println(y.split(" ")[0]);
-							if(y.split(" ")[0].equals("05/16")) {
-								immediate_data=immediate_data+y+"\n";
+							if(y.split(" ")[0].equals(strDate)) {
+								immediate_data=immediate_data+a+" "+y+"\n";
 								flag=1;
 								break;
 							}
@@ -138,7 +144,7 @@ public class getdata {
 							}							
 						}
 						
-					}*/
+					}
 					if(line>30) break;			
 				}
 				
@@ -162,9 +168,9 @@ public class getdata {
 				Options2 = dropDown2.getOptions();
 				
 
-			}	
+			}
 
-			/*if(line++==28) {
+			if(line++==28) {
 				tmp=e.getText().split("\n");
 				flag=0;
 				for(String y:tmp) {	
@@ -180,7 +186,7 @@ public class getdata {
 					immediate_data=immediate_data+a+" None"+"\n";
 				}
 				
-			}*/
+			}
 		
 
 			
@@ -188,7 +194,98 @@ public class getdata {
 		}
 		System.out.println(immediate_data);	
 		//driver.close();
-	}
+	}*/
+	
+	public void Immediate_data(String wh) {
+		
+		SimpleDateFormat sdFormat = new SimpleDateFormat("MM/dd");
+		Date date = new Date();
+		String strDate = sdFormat.format(date);
+		
+		
+		where(wh);
+		//ChromeOptions options = new ChromeOptions();
+		//options.addArguments("--headless");		
+		WebDriver driver = new ChromeDriver();//options
+		driver.get("https://taqm.epa.gov.tw/taqm/tw/HourlyData.aspx"); 
+		WebElement select1 = driver.findElement(By.id("ctl05_lbSite"));
+		Select dropDown1 = new Select(select1); 
+		List<WebElement> Options1 = dropDown1.getOptions();
+		
+		
+		System.out.println(key);
+		Options1.get(0).click();
+		Options1.get(key).click();
+		
+		WebElement select2 = driver.findElement(By.id("ctl05_lbParam"));
+		Select dropDown2 = new Select(select2);
+		List<WebElement> Options2 = dropDown2.getOptions();
+		
+        String a;
+		for(int i=0;i<Options2.size();i++) {	
+			a = Options2.get(i).getText();			
+			if(a.equals("NO") ||
+			   a.equals("AMB_TEMP") ||
+			   a.equals("NO2") ||
+			   a.equals("NOx") ||
+			   a.equals("SO2") ||
+			   a.equals("CO") ||
+			   a.equals("CH4") ||
+			   a.equals("THC") ||
+			   a.equals("NMHC") ||
+		       a.equals("O3") ||
+			   a.equals("PM10") ||
+			   a.equals("RH") ) {
+				if(i>0) {
+					Options2.get(i).click();
+				}
+				
+			}
+		}
+		
+        try {
+            Thread.sleep(2000);
+        	//driver.wait(5000);
+        } catch (InterruptedException n) {
+            n.printStackTrace(); 
+        }
+		
+		driver.findElement(By.id("ctl05_btnQuery")).click();
+        try {
+            Thread.sleep(15000);
+        	//driver.wait(5000);
+        } catch (InterruptedException n) {
+            n.printStackTrace(); 
+        }
+		
+		
+        List<WebElement> itemList = driver.findElements(By.tagName("td")); 
+        
+        line=0;
+		for(WebElement e : itemList) {
+			//System.out.println("line="+line);
+			//System.out.println(e.getText());
+
+			//driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+			if(line++==28) {
+				tmp=e.getText().split("\n");
+				flag=0;
+				for(String y:tmp) {	
+					//System.out.println(y.split(" ")[0]);
+					if(y.split(" ")[0].equals(strDate)) {
+						immediate_data=immediate_data+" "+y+"\n";
+						flag=1;
+						
+					}
+
+				}
+				if(flag==0) {
+					immediate_data=immediate_data+" None"+"\n";
+				}
+			
+			}
+		}
+	}	
 	
 	/*public void History_data(String[] day,String wh) {
 		where(wh);
@@ -220,9 +317,109 @@ public class getdata {
 		driver.close();
 	}*/
 	
-	public void History_data(String[] day,String wh) {
+	public void History_data(String[] day,String wh,int find) {
 		where(wh);
+		
 		if(day.length==1) {
+			//ChromeOptions options = new ChromeOptions();
+			//options.addArguments("--headless");		
+			WebDriver driver = new ChromeDriver();//options
+			driver.get("https://taqm.epa.gov.tw/taqm/tw/HourlyData.aspx"); 
+			WebElement select1 = driver.findElement(By.id("ctl05_lbSite"));
+			Select dropDown1 = new Select(select1); 
+			List<WebElement> Options1 = dropDown1.getOptions();
+			
+			
+			System.out.println(key);
+			Options1.get(0).click();
+			Options1.get(key).click();
+			
+			WebElement select2 = driver.findElement(By.id("ctl05_lbParam"));
+			Select dropDown2 = new Select(select2);
+			List<WebElement> Options2 = dropDown2.getOptions();
+			
+	        String a;
+			for(int i=0;i<Options2.size();i++) {	
+				a = Options2.get(i).getText();			
+				if(a.equals("NO") ||
+				   a.equals("AMB_TEMP") ||
+				   a.equals("NO2") ||
+				   a.equals("NOx") ||
+				   a.equals("SO2") ||
+				   a.equals("CO") ||
+				   a.equals("CH4") ||
+				   a.equals("THC") ||
+				   a.equals("NMHC") ||
+			       a.equals("O3") ||
+				   a.equals("PM10") ||
+				   a.equals("RH") ) {
+					if(i>0) {
+						Options2.get(i).click();
+					}
+					
+				}
+			}
+			
+	        driver.findElement(By.id("ctl05_txtDateS")).clear();
+			driver.findElement(By.id("ctl05_txtDateS")).sendKeys(day[0]);
+			
+			
+	        driver.findElement(By.id("ctl05_txtDateE")).clear();
+			driver.findElement(By.id("ctl05_txtDateE")).sendKeys(day[0]);
+			driver.findElement(By.id("ctl05_txtDateE")).sendKeys(Keys.ENTER); 
+			
+	        try {
+	            Thread.sleep(2000);
+	        	//driver.wait(5000);
+	        } catch (InterruptedException n) {
+	            n.printStackTrace(); 
+	        }
+			
+			driver.findElement(By.id("ctl05_btnQuery")).click();
+	        try {
+	            Thread.sleep(10000);
+	        	//driver.wait(5000);
+	        } catch (InterruptedException n) {
+	            n.printStackTrace(); 
+	        }
+			
+			
+	        List<WebElement> itemList = driver.findElements(By.tagName("td")); 
+	        
+	        line=0;
+	        
+			for(WebElement e : itemList) {
+				System.out.println("line="+line);
+				System.out.println(e.getText());
+	
+				//driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+				if(line++==28) {			        
+					tmp=e.getText().split("\n");
+					flag=0;
+					for(String y:tmp) {	
+						System.out.println(y.split(" ")[0]);
+				        try {
+							if(Integer.parseInt(y.split(" ")[0].split("/")[0])==Integer.parseInt(day[0].split("/")[1]) &&
+									   Integer.parseInt(y.split(" ")[0].split("/")[1])==Integer.parseInt(day[0].split("/")[2])) {
+										history_data=history_data+y+"\n";
+										flag=1;								
+									}
+				        } catch (NumberFormatException n) {
+				            //n.printStackTrace(); 
+				        	System.out.print("");
+				        }
+					}
+					if(flag==0) {
+						history_data=history_data+"None"+"\n";
+					}
+					break;
+				}
+			}
+	
+			System.out.println(history_data);
+
+		}else {
+			
 			//ChromeOptions options = new ChromeOptions();
 			//options.addArguments("--headless");		
 			WebDriver driver = new ChromeDriver();//options
@@ -243,119 +440,64 @@ public class getdata {
 			Select dropDown2 = new Select(select2);
 			List<WebElement> Options2 = dropDown2.getOptions();
 			
+			Options2.get(0).click();
+			Options2.get(find).click();
+			
+			
+			
 
-	        List<WebElement> itemList; 
+	         
 	        
             driver.findElement(By.id("ctl05_txtDateS")).clear();
     		driver.findElement(By.id("ctl05_txtDateS")).sendKeys(day[0]);
     		
     		
             driver.findElement(By.id("ctl05_txtDateE")).clear();
-    		driver.findElement(By.id("ctl05_txtDateE")).sendKeys(day[0]);
+    		driver.findElement(By.id("ctl05_txtDateE")).sendKeys(day[1]);
     		driver.findElement(By.id("ctl05_txtDateE")).sendKeys(Keys.ENTER); 
 			
-			String a;
-			String[] tmp,tmp1;
-			int times=0;
-			for(int i=0;i<Options2.size();i++) {
-				a = Options2.get(i).getText();			
-				if(a.equals("NO") ||
-				   a.equals("AMB_TEMP") ||
-				   a.equals("NO2") ||
-				   a.equals("NOx") ||
-				   a.equals("SO2") ||
-				   a.equals("CO") ||
-				   a.equals("CH4") ||
-				   a.equals("THC") ||
-				   a.equals("NMHC") ||
-			       a.equals("O3") ||
-				   a.equals("PM10") ||
-				   a.equals("RH") ) {
-					
-					if(i>0) {
-						Options2.get(0).click();
-						Options2.get(i).click();
-					}
-					
-			        try {
-			            Thread.sleep(1000);
-			        } catch (InterruptedException n) {
-			            n.printStackTrace(); 
-			        }
-					
-
-			        
-					driver.findElement(By.id("ctl05_btnQuery")).click();
-					
-			        try {
-			            Thread.sleep(4000);
-			        } catch (InterruptedException n) {
-			            n.printStackTrace(); 
-			        }
-					
-			        itemList = driver.findElements(By.tagName("td")); 
-			        
-			        line=0;
-					for(WebElement e : itemList) {
-						//System.out.println("line="+line);
-						//System.out.println(e.getText());
-
-						//driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-						if(line++==28) {
-							tmp=e.getText().split("\n");
-							flag=0;
-							for(String y:tmp) {	
-								//System.out.println(y.split(" ")[0]);
-								if(y.split(" ")[0].equals("05/16")) {
-									immediate_data=immediate_data+y+"\n";
-									flag=1;
-									break;
-								}
-		
-							}
-							if(flag==0) {
-								immediate_data=immediate_data+a+" None"+"\n";
-							}
-						
-						}
-						if(line>30) break;			
-					}
-					
-					//System.out.println(Options2.get(7).getText());
-					driver.close();
-					
-					
-					driver = new ChromeDriver();//options
-					driver.get("https://taqm.epa.gov.tw/taqm/tw/HourlyData.aspx"); 
-					select1 = driver.findElement(By.id("ctl05_lbSite"));
-					dropDown1 = new Select(select1); 
-					Options1 = dropDown1.getOptions();
-					
-					
-					System.out.println(key);
-					Options1.get(0).click();
-					Options1.get(key).click();
-					
-					select2 = driver.findElement(By.id("ctl05_lbParam"));
-					dropDown2 = new Select(select2);
-					Options2 = dropDown2.getOptions();
-					
-		            driver.findElement(By.id("ctl05_txtDateS")).clear();
-		    		driver.findElement(By.id("ctl05_txtDateS")).sendKeys(day[0]);
-		    		
-		    		
-		            driver.findElement(By.id("ctl05_txtDateE")).clear();
-		    		driver.findElement(By.id("ctl05_txtDateE")).sendKeys(day[0]);
-		    		driver.findElement(By.id("ctl05_txtDateE")).sendKeys(Keys.ENTER); 
-
-				}	
-			}
-
-		}else {
+	        try {
+	            Thread.sleep(1000);
+	        } catch (InterruptedException n) {
+	            n.printStackTrace(); 
+	        }
+			driver.findElement(By.id("ctl05_btnQuery")).click();
 			
-			
-			
-			
+	        try {
+	            Thread.sleep(5000);
+	        } catch (InterruptedException n) {
+	            n.printStackTrace(); 
+	        }
+	        List<WebElement> itemList = driver.findElements(By.tagName("td")); 
+	        
+	        String tmp = "";
+	        line = 0;
+	        for(WebElement e : itemList) {
+	        	if(line++==28) {
+	        		tmp=e.getText();
+	        		break;
+	        	}
+	        
+	        }
+	        String[] tmp1 = tmp.split("\n");
+	        for(int i=0;i<tmp1.length;i++) {
+	        	//System.out.println(tmp1[i].split(" ")[0].split("/")[0]);
+		        try {
+		        	if(Integer.parseInt(tmp1[i].split(" ")[0].split("/")[0])==Integer.parseInt(day[0].split("/")[1]) &&
+		 	        	   Integer.parseInt(tmp1[i].split(" ")[0].split("/")[1])==Integer.parseInt(day[0].split("/")[2])) {
+		 	        		for(;i<tmp1.length;i++) {
+		 	        			history_data = history_data+tmp1[i]+"\n";	        			
+		 	        		}
+		 	        	}
+		        } catch (NumberFormatException n) {
+		            //n.printStackTrace(); 
+		        	System.out.print("");
+		        }
+
+	        }
+        
+	        System.out.println(history_data);
+	        
 		}
 		
 	}
@@ -432,7 +574,7 @@ public class getdata {
 		
 	}*/
 	
-	public double[][] all_data;
+	/*public double[][] all_data;
 	public void History_data_process() {
 		String[] lin;
 		tmp = history_data.split("nextdata|\n");
@@ -454,6 +596,11 @@ public class getdata {
 			}
 		}
 
+	}*/
+	
+	public void History_data_process(String[] day) {
+		
+		
 	}
 	
 	
@@ -473,15 +620,13 @@ public class getdata {
 	    }
 	}
 	
-	public void File_History(String[] day) {
+	public void File_History(String[] day,String label) {
 		try {
-			FileWriter f = new FileWriter("./mydata/History.txt",true);		
-			for(int i=0;i<day.length;i++) {
-				f.write(day[i]+"\r\n");
-				for(int j=1;j<17;j++) {				
-					f.write(tmp[18*i+j]+"\r\n");
-				}
-			}
+			FileWriter f = new FileWriter("./mydata/History.txt",true);	
+			f.write(label);
+			f.write("\r\n");
+			f.write(history_data);
+			f.write("\r\n");
 			f.close();
 		}
 	    catch(IOException ie) {

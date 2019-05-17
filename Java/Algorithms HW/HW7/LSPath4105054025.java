@@ -49,6 +49,6 @@ public class LSPath4105054025 extends LSPath{
 
         LSPath7106056079 test = new LSPath7106056079();
 
-        return test.Ans;
+        return test.Ans(list);
     }
 }

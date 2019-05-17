@@ -513,7 +513,7 @@ public class parentGui extends JFrame{
                 	}else {
                     	//System.out.println(daytextfield.getText());
                     	//System.out.println(labeltextfield.getText());
-                    	String[] d = daytextfield.getText().split(" ");                	
+                    	String[] d = daytextfield.getText().split("~");                	
                     	getdatagraph use = new getdatagraph(d,labeltextfield.getText());
                     	use.history_button(historyCheckBox.isSelected(),wh);
                 	}

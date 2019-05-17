@@ -14,16 +14,17 @@ public class main {
 		WebDriver driver = new ChromeDriver();
 		driver.get("https://taqm.epa.gov.tw/taqm/tw/HourlyData.aspx"); 
 		//driver.findElement(By.name("")).click();
-		WebElement select = driver.findElement(By.id("ctl05_lbSite"));
+		WebElement select = driver.findElement(By.id("ctl05_lbParam"));
 		//select.click();
 		Select dropDown = new Select(select);           
 		String selected = dropDown.getFirstSelectedOption().getText();
 		System.out.println(selected);
 		List<WebElement> Options = dropDown.getOptions();
 		//Options.get(2).getText();
-		Options.get(0).click();		
-		Options.get(41).click();
-		driver.findElement(By.id("ctl05_btnQuery")).click();
+		//Options.get(0).click();	
+		Options.get(2).click();
+		Options.get(5).click();
+		
 		//driver.navigate().refresh();
 		//Options = dropDown.getOptions();
 		//Options.get(0).click();
@@ -32,7 +33,18 @@ public class main {
 		//driver.findElement(By.id("ctl05_txtDateE")).sendKeys(Keys.ENTER);
 		//driver.findElement(By.id("ctl05_txtDateE")).sendKeys(Keys.ENTER);
 		//driver.findElement(By.id("ctl05_btnQuery")).click();
-		Thread.sleep(5000);
+		
+        driver.findElement(By.id("ctl05_txtDateS")).clear();
+		driver.findElement(By.id("ctl05_txtDateS")).sendKeys("2019/05/05");
+		
+		
+        driver.findElement(By.id("ctl05_txtDateE")).clear();
+		driver.findElement(By.id("ctl05_txtDateE")).sendKeys("2019/05/05");
+		driver.findElement(By.id("ctl05_txtDateE")).sendKeys(Keys.ENTER); 
+		
+		Thread.sleep(2000);
+		driver.findElement(By.id("ctl05_btnQuery")).click();
+		Thread.sleep(4000);
         List<WebElement> itemList = driver.findElements(By.tagName("td")); 
         //List<WebElement> itemList = driver.findElements(By.xpath(".//table[class='TABLE_G']")); 
         int line=0;
@@ -43,8 +55,9 @@ public class main {
 			if(line>30) break;
 			line++;
 		}
+		System.out.println("---------------------");
 		System.out.println(tmp);
-		line=0;
+		/*line=0;
 		String ans="";
 		for(String x : tmp.split("\n")){
 			System.out.println("line:"+(line)+"  "+x);
@@ -53,7 +66,8 @@ public class main {
 				ans=x;
 			}
 		}
-		System.out.println(ans);
+		System.out.println(ans);*/
+		System.out.println(Integer.valueOf("05"));
 	}
 
 
