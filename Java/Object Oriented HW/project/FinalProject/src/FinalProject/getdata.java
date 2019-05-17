@@ -85,6 +85,7 @@ public class getdata {
 				tmp=e.getText().split("\n");
 				flag=0;
 				for(String y:tmp) {	
+					System.out.println(y);
 					if(y.split(" ")[0].equals(strDate)) {
 						immediate_data=immediate_data+" "+y+"\n";
 						flag=1;						

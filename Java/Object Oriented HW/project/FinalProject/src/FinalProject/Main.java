@@ -14,6 +14,7 @@ public class Main{
         go.getContentPane().setVisible(true);
         go.setSize(800,600);
         go.setVisible(true);
+        go.setResizable(false);
     }  
     
 }
