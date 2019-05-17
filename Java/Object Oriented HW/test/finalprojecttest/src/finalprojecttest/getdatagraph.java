@@ -36,17 +36,30 @@ public class getdatagraph {
 	
 	public void history_button(boolean b,String wh){
 		data.History_data(day,wh,find);
-		//data.History_data_process(day);
+		data.History_data_process(day);
 		if(b) data.File_History(day,legend[3]);
-		String[] x = new String[day.length*24];
-		for(int i=0;i<x.length;i++) {
-			x[i]=String.valueOf(i);
+		
+		if(day.length==1) {
+			String[] x = new String[data.all_data1[0].length];
+			for(int i=0;i<x.length;i++) {
+				x[i]=String.valueOf(i);
+			}
+			double[][] y = data.all_data1;
+			creategraph line = new creategraph(legend);
+			//System.out.printf("%d %d\n",x.length,y.length);
+			line.graph(x,y);
+			line.shows();
+		}else {
+			String[] x = new String[data.all_data2.length];
+			for(int i=0;i<x.length;i++) {
+				x[i]=String.valueOf(i);
+			}
+			double[] y = data.all_data2;
+			creategraph line = new creategraph(legend);
+			//System.out.printf("%d %d\n",x.length,y.length);
+			line.graph(x,y);
+			line.show();
 		}
-		//double[] y = data.all_data[find];
-		//creategraph line = new creategraph(legend);
-		//System.out.printf("%d %d\n",x.length,y.length);
-		//line.graph(x,y);
-		//line.show();
 	}
 	
 	public void choose(String a) {

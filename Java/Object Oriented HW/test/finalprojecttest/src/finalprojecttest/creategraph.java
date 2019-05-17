@@ -56,6 +56,18 @@ public class creategraph {
 		saveAsFile(freeChart, "D:\\program\\vscode_workspace\\private\\working\\Java\\Object Oriented HW\\test\\finalprojecttest\\line.jpg", 600, 400);
 		new picturetest();
 	}
+	
+	public void graph(String[] a,double[][] b) {
+		
+		for(int i=0;i<b.length;i++) {
+			CategoryDataset dataset = createDataset(a,b[i]);
+			JFreeChart freeChart = createChart(dataset);
+			saveAsFile(freeChart, "D:\\program\\vscode_workspace\\private\\working\\Java\\Object Oriented HW\\test\\finalprojecttest\\line"+String.valueOf(i)+".jpg", 375, 255);
+		}	
+
+		
+	}
+	
 	private void saveAsFile(JFreeChart chart, String outputPath,
 			int weight, int height) {
 		FileOutputStream out = null;
@@ -66,7 +78,7 @@ public class creategraph {
 			}
 			out = new FileOutputStream(outputPath);
 
-			ChartUtilities.writeChartAsJPEG(out, chart, 600, 400);
+			ChartUtilities.writeChartAsJPEG(out, chart, weight, height);
 			out.flush();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -123,6 +135,10 @@ public class creategraph {
     String Filename;
     BufferedImage image;
     JFrame jf;
+    public void shows()
+    {
+    	new picturetest();
+    }
     public void show()
     {
             LoadFile();
@@ -153,9 +169,9 @@ public class creategraph {
     }
     
     public class picturetest extends JFrame{
-        private String [][] imgbox = new String[][]{{"graph1.jpg","graph1.jpg","graph2.jpg","graph2.jpg"},
-                        {"graph3.jpg","graph4.jpg","graph5.jpg","graph2.jpg"},
-                        {"graph6.jpg","graph7.jpg","graph8.jpg","graph2.jpg"}};
+        private String [][] imgbox = new String[][]{{"line1.jpg","line2.jpg","line3.jpg","line4.jpg"},
+                        {"line5.jpg","line6.jpg","line7.jpg","line8.jpg"},
+                        {"line9.jpg","line10.jpg","line11.jpg","line12.jpg"}};
         private ImageIcon [] imgUP = new ImageIcon[12];
         private JLabel jl[] = new JLabel[12];
         private Container c;
@@ -164,15 +180,15 @@ public class creategraph {
         	
             super("利用按鈕控制圖片切換");
             c = this.getContentPane();
-            setSize(1000,600);
+            setSize(1500,800);
         
             this.setResizable(false);//視窗放大按鈕無效 
             
-            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             setLayout(new GridLayout(3,4));
             for(int i =0 ; i < 3 ; i++ ){
             	for(int j =0 ; j < 4 ; j++ ) {
-                    imgUP[i*4+j] = new ImageIcon("D:\\program\\vscode_workspace\\private\\working\\Java\\Object Oriented HW\\test\\manygraph\\"+imgbox[i][j]);
+                    imgUP[i*4+j] = new ImageIcon("D:\\program\\vscode_workspace\\private\\working\\Java\\Object Oriented HW\\test\\finalprojecttest\\"+imgbox[i][j]);
                     jl[i*4+j] = new JLabel(imgUP[i*3+j]);
                     c.add(jl[i*4+j]);
             	}

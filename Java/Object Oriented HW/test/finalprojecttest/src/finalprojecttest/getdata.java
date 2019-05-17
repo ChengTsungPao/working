@@ -598,7 +598,42 @@ public class getdata {
 
 	}*/
 	
+	public double[][] all_data1;
+	public double[] all_data2;
 	public void History_data_process(String[] day) {
+		String[] data2,data1 = history_data.split("\n");
+		if(day.length==1) {
+			all_data1 = new double[data1.length][24];
+			for(int kind=0;kind<data1.length;kind++) {
+				data2 = data1[kind].split(" ");
+				for(int num=1;num<data2.length;num++) {					
+					try {
+						all_data1[kind][num-1] = Double.parseDouble(data2[num]);					
+					}catch(Exception e) {
+						all_data1[kind][num-1] = -1;
+					}
+				}
+			}			
+		}else {
+			all_data2 = new double[data1.length*24];
+			for(int date=0;date<data1.length;date++) {
+				data2 = data1[date].split(" ");
+				for(int num=1;num<data2.length;num++) {					
+					try {
+						//System.out.println(data2[num]);
+						all_data2[date*(data2.length-1)+num-1] = Double.parseDouble(data2[num]);					
+					}catch(Exception e) {
+						all_data2[date*(data2.length-1)+num-1] = -1;
+					}
+				}
+			}
+		}
+		
+		
+	}
+	
+	public void Immediate_data_process() {
+		
 		
 		
 	}
