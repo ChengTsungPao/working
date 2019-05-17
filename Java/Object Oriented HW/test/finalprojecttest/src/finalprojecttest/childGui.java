@@ -10,9 +10,16 @@ public class childGui extends JFrame{
     public childGui(String data){
         super("Instant Data");
         setLayout(new GridBagLayout()); 
-        /*String[] line = data.split("\n");
+        String[] line = data.split("\n");
+        String ans="空氣數據:\n\n";
+        System.out.println(line.length);
+        String[] blank = {"                 ","\n","                     ","\n","                 ","\n","                 ","\n","          ","\n","                  ","\n"};
+        for(int i=0;i<line.length;i++) {
+        	ans+=line[i]+blank[i];
+        }
+       
         
-        char[] tmp;
+        /*char[] tmp;
         String temp;
         
         temp="";
@@ -83,13 +90,13 @@ public class childGui extends JFrame{
         }
         line[8]=temp;
         
-        String ans="";
+        
         for(int i=0;i<line.length;i++) {
         	ans=ans+line[i]+"\n";        	
         }*/
       
 
-        JTextArea text = new JTextArea(data);//ans
+        JTextArea text = new JTextArea(ans);//ans
         text.setBackground(SystemColor.control);
         GridBagConstraints textlayout = new GridBagConstraints();
         textlayout.gridwidth = 20;

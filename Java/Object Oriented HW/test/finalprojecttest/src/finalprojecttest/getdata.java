@@ -15,7 +15,7 @@ import org.openqa.selenium.support.ui.Select;
 
 public class getdata {
 	
-	public String immediate_data="", history_data="";
+	public String immediate_data="", history_data="",location;
 	public int line,key=5,flag;
 	
 	/*public void Immediate_data(String wh) {
@@ -236,6 +236,7 @@ public class getdata {
 		       a.equals("O3") ||
 			   a.equals("PM10") ||
 			   a.equals("RH") ) {
+				//System.out.println(a);
 				if(i>0) {
 					Options2.get(i).click();
 				}
@@ -285,6 +286,7 @@ public class getdata {
 			
 			}
 		}
+		System.out.println(immediate_data);
 	}	
 	
 	/*public void History_data(String[] day,String wh) {
@@ -389,15 +391,15 @@ public class getdata {
 	        line=0;
 	        
 			for(WebElement e : itemList) {
-				System.out.println("line="+line);
-				System.out.println(e.getText());
+				//System.out.println("line="+line);
+				//System.out.println(e.getText());
 	
 				//driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 				if(line++==28) {			        
 					tmp=e.getText().split("\n");
 					flag=0;
 					for(String y:tmp) {	
-						System.out.println(y.split(" ")[0]);
+						//System.out.println(y.split(" ")[0]);
 				        try {
 							if(Integer.parseInt(y.split(" ")[0].split("/")[0])==Integer.parseInt(day[0].split("/")[1]) &&
 									   Integer.parseInt(y.split(" ")[0].split("/")[1])==Integer.parseInt(day[0].split("/")[2])) {
@@ -503,6 +505,7 @@ public class getdata {
 	}
 	
 	public void where(String wh) {
+		location=wh;
 		if(wh.equals("台北")) {
 			key = 5;
 		}else if(wh.equals("新北")) {
@@ -641,13 +644,23 @@ public class getdata {
 	
 	public void File_immediate(){
 		try {
-			SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+			String[] air = {"SO2 (ppb)","CO (ppm)","O3 (ppb)","PM10 (μg/m3)","NOx (ppb)","NO (ppb)",
+							"NO2 (ppb)","THC (ppm)","NMHC (ppm)","AT (℃)","CH4 (ppm)","RH (%)"};
+			SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
 			Date date = new Date();
 			String strDate = sdFormat.format(date);
-			FileWriter f = new FileWriter("./mydata/Instant.txt",true);		
-			f.write(strDate);
-			f.write(immediate_data);
-			f.write("\r\n");
+			String tmp="";
+			FileWriter f = new FileWriter("./mydata/Instant.txt",true);	
+			
+			for(int i=0;i<immediate_data.split("\n").length;i++) {
+				f.write(location+"\r\n");
+				f.write(air[i]+"\r\n");
+				f.write(strDate.split("/| ")[1]+"/"+strDate.split("/| ")[2]+" "+immediate_data.split("\n")[i].split(" ")[Integer.parseInt(strDate.split(" ")[1].split(":")[0])]+"\r\n");
+				tmp = tmp + air[i] + " " + immediate_data.split("\n")[i].split(" ")[Integer.parseInt(strDate.split(" ")[1].split(":")[0])] + "\n";
+			}
+			immediate_data = tmp;			
+
+			
 			f.close();
 		}
 	    catch(IOException ie) {
@@ -657,12 +670,26 @@ public class getdata {
 	
 	public void File_History(String[] day,String label) {
 		try {
-			FileWriter f = new FileWriter("./mydata/History.txt",true);	
-			f.write(label);
-			f.write("\r\n");
-			f.write(history_data);
-			f.write("\r\n");
-			f.close();
+			String[] tmp = history_data.split("\n");
+			if(day.length==1) {
+				String[] air = {"SO2 (ppb)","CO (ppm)","O3 (ppb)","PM10 (μg/m3)","NOx (ppb)","NO (ppb)",
+								"NO2 (ppb)","THC (ppm)","NMHC (ppm)","AT (℃)","CH4 (ppm)","RH (%)"};
+				FileWriter f = new FileWriter("./mydata/History.txt",true);
+				for(int i=0;i<tmp.length;i++) {					
+					f.write(location+"\r\n");
+					f.write(air[i]+"\r\n");
+					f.write(tmp[i]+"\r\n");
+				}
+				f.close();
+			}else {
+				FileWriter f = new FileWriter("./mydata/History.txt",true);	
+				for(int i=0;i<tmp.length;i++) {
+					f.write(location+"\r\n");
+					f.write(label+"\r\n");
+					f.write(tmp[i]+"\r\n");
+				}
+				f.close();
+			}
 		}
 	    catch(IOException ie) {
 	        ie.printStackTrace();

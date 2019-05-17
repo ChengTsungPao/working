@@ -58,8 +58,14 @@ public class creategraph {
 	}
 	
 	public void graph(String[] a,double[][] b) {
-		
+		String[][] air = {{"SO2","SO2 (ppb)","SO2"},{"CO","CO (ppm)","CO"},{"O3","O3 (ppb)","O3"},
+				{"PM10","PM10 (£gg/m3)","PM10"},{"NOx","NOx (ppb)","NOx"},{"NO","NO (ppb)","NO"},
+				{"NO2","NO2 (ppb)","NO2"},{"Tetrahydrocannabinol","THC (ppm)","THC"},{"Non-Methane Hydrocarbon","NMHC (ppm)","NMHC"},
+				{"Air Tempature","AT (¢J)","AT"},{"CH4","CH4 (ppm)","CH4"},{"Relative Humidity","RH (%)","RH"}};
 		for(int i=0;i<b.length;i++) {
+			title=air[i][0];
+			ylabel=air[i][1];
+			linename=air[i][2];
 			CategoryDataset dataset = createDataset(a,b[i]);
 			JFreeChart freeChart = createChart(dataset);
 			saveAsFile(freeChart, "D:\\program\\vscode_workspace\\private\\working\\Java\\Object Oriented HW\\test\\finalprojecttest\\line"+String.valueOf(i)+".jpg", 375, 255);

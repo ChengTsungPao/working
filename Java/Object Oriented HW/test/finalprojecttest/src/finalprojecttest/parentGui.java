@@ -503,7 +503,7 @@ public class parentGui extends JFrame{
                     //System.out.println(event.getActionCommand());
                     getdatagraph use = new getdatagraph();
                     childGui go = new childGui(use.instant_button(instantCheckBox.isSelected(),wh));
-                    go.setSize(800,350);
+                    go.setSize(300,250);
                     go.setVisible(true);                                
                 }
                 if(event.getActionCommand()=="History data") {
