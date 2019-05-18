@@ -4,7 +4,6 @@ package FinalProject;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -14,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import java.awt.*;
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 
 
@@ -62,7 +60,7 @@ public class parentGui extends JFrame{
         
         
         city[0] = new JRadioButton(""
-				+ "              ");
+				+ "             ");
         city[0].setOpaque(false); 
         imagePanel.add(city[0]); 
         
@@ -187,7 +185,7 @@ public class parentGui extends JFrame{
         imagePanel.add(city[10]); 
         
         
-        JTextArea text7 = new JTextArea("PM2.5 (腶疊稬采PM2.5)      AT (放)                                               ");
+        JTextArea text7 = new JTextArea("RH (癸访)                      AT (放)                                               ");
         text7.setOpaque(false);       
         imagePanel.add(text7);
         
@@ -203,19 +201,20 @@ public class parentGui extends JFrame{
         
         
         city[12] = new JRadioButton("古竡"
-				+ "                                                           ");
+				+ "                                                          ");
         city[12].setOpaque(false); 
         imagePanel.add(city[12]); 
         
         
-        JTextArea text8 = new JTextArea("RH (癸访)                      WS (硉)                        ");
+        JTextArea text8 = new JTextArea("-------------------------   把计Α   -------------------------");
         text8.setOpaque(false);       
         imagePanel.add(text8);
         
         
         JTextArea blank11 = new JTextArea("                                                                            "
-        		+ "                                                                                                   "
+        		+ "                      块把计逆:                                                       "
         		+ "                                                                                              ");
+        blank11.setFont(new Font("Serif", Font.PLAIN, 14));
         blank11.setOpaque(false);
         imagePanel.add(blank11);          
 
@@ -226,7 +225,7 @@ public class parentGui extends JFrame{
         
         
         city[13] = new JRadioButton("玭"
-				+ "                                                              ");
+				+ "                                                             ");
         city[13].setOpaque(false); 
         imagePanel.add(city[13]); 
         

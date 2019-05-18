@@ -26,10 +26,16 @@ import org.jfree.data.general.DatasetUtilities;
 
 public class creategraph {
 	
+	public int number_of_graph;
 	public String title;
 	public String xlabel;
 	public String ylabel;
 	public String linename;
+	public String[][] air ;
+		  /*{{"SO2","SO2 (ppb)","SO2"},{"CO","CO (ppm)","CO"},{"O3","O3 (ppb)","O3"},
+			{"PM10","PM10 (£gg/m3)","PM10"},{"NOx","NOx (ppb)","NOx"},{"NO","NO (ppb)","NO"},
+			{"NO2","NO2 (ppb)","NO2"},{"Tetrahydrocannabinol","THC (ppm)","THC"},{"Non-Methane Hydrocarbon","NMHC (ppm)","NMHC"},
+			{"Air Tempature","AT (¢J)","AT"},{"CH4","CH4 (ppm)","CH4"},{"Relative Humidity","RH (%)","RH"}};*/
 	
 	public creategraph() {
 		title = "title";
@@ -51,17 +57,14 @@ public class creategraph {
 	}
 	
 	public void graphs(String[] a,double[][] b) {
-		String[][] air = {{"SO2","SO2 (ppb)","SO2"},{"CO","CO (ppm)","CO"},{"O3","O3 (ppb)","O3"},
-				{"PM10","PM10 (£gg/m3)","PM10"},{"NOx","NOx (ppb)","NOx"},{"NO","NO (ppb)","NO"},
-				{"NO2","NO2 (ppb)","NO2"},{"Tetrahydrocannabinol","THC (ppm)","THC"},{"Non-Methane Hydrocarbon","NMHC (ppm)","NMHC"},
-				{"Air Tempature","AT (¢J)","AT"},{"CH4","CH4 (ppm)","CH4"},{"Relative Humidity","RH (%)","RH"}};
-		for(int i=0;i<b.length;i++) {
+		number_of_graph = b.length;
+		for(int i=0;i<b.length;i++) {			
 			title=air[i][0];
 			ylabel=air[i][1];
 			linename=air[i][2];
 			CategoryDataset dataset = createDataset(a,b[i]);
 			JFreeChart freeChart = createChart(dataset);
-			saveAsFile(freeChart, "D:\\program\\vscode_workspace\\private\\working\\Java\\Object Oriented HW\\project\\FinalProject\\line"+String.valueOf(i)+".jpg", 375, 255);
+			saveAsFile(freeChart, "D:\\program\\vscode_workspace\\private\\working\\Java\\Object Oriented HW\\project\\FinalProject\\line"+String.valueOf(i+1)+".jpg", 375, 255);
 		}	
 
 		
@@ -184,9 +187,15 @@ public class creategraph {
             setLayout(new GridLayout(3,4));
             for(int i =0 ; i < 3 ; i++ ){
             	for(int j =0 ; j < 4 ; j++ ) {
-                    imgUP[i*4+j] = new ImageIcon("D:\\program\\vscode_workspace\\private\\working\\Java\\Object Oriented HW\\project\\FinalProject\\"+imgbox[i][j]);
-                    jl[i*4+j] = new JLabel(imgUP[i*3+j]);
-                    c.add(jl[i*4+j]);
+            		if(i*4+j<number_of_graph) {
+                        imgUP[i*4+j] = new ImageIcon("D:\\program\\vscode_workspace\\private\\working\\Java\\Object Oriented HW\\project\\FinalProject\\"+imgbox[i][j]);
+                        jl[i*4+j] = new JLabel(imgUP[i*4+j]);
+                        c.add(jl[i*4+j]);
+            		}else {
+                        imgUP[i*4+j] = new ImageIcon("D:\\program\\vscode_workspace\\private\\working\\Java\\Object Oriented HW\\project\\FinalProject\\NULL.jpg");
+                        jl[i*4+j] = new JLabel(imgUP[i*4+j]);
+                        c.add(jl[i*4+j]);
+            		}
             	}                
                 
             } 

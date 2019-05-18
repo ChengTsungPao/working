@@ -16,9 +16,15 @@ import org.openqa.selenium.support.ui.Select;
 
 public class getdata {
 	
+	public int[] wait = {5,10};
 	public String immediate_data="", history_data="",location;
 	public int line,key=5,flag;
 	public String[] tmp;
+	public String[][] air = new String[12][3];
+	public String[][] all_air = {{"SO2","SO2 (ppb)","SO2"},{"CO","CO (ppm)","CO"},{"O3","O3 (ppb)","O3"},
+			{"PM10","PM10 (£gg/m3)","PM10"},{"NOx","NOx (ppb)","NOx"},{"NO","NO (ppb)","NO"},
+			{"NO2","NO2 (ppb)","NO2"},{"Tetrahydrocannabinol","THC (ppm)","THC"},{"Non-Methane Hydrocarbon","NMHC (ppm)","NMHC"},
+			{"Air Tempature","AT (¢J)","AT"},{"CH4","CH4 (ppm)","CH4"},{"Relative Humidity","RH (%)","RH"}};
 	
 	public void Immediate_data(String wh) {
 		
@@ -27,9 +33,9 @@ public class getdata {
 		String strDate = sdFormat.format(date);		
 		
 		where(wh);
-		//ChromeOptions options = new ChromeOptions();
-		//options.addArguments("--headless");		
-		WebDriver driver = new ChromeDriver();//options
+		ChromeOptions options = new ChromeOptions();
+		options.addArguments("--headless");		
+		WebDriver driver = new ChromeDriver(options);
 		driver.get("https://taqm.epa.gov.tw/taqm/tw/HourlyData.aspx");
 		
 		WebElement select1 = driver.findElement(By.id("ctl05_lbSite"));
@@ -64,7 +70,7 @@ public class getdata {
 		
 		
         try {
-            Thread.sleep(5000);        	
+            Thread.sleep(wait[0]*1000);        	
         } catch (InterruptedException n) {
             n.printStackTrace(); 
         }		
@@ -72,7 +78,7 @@ public class getdata {
 		
 		
         try {
-            Thread.sleep(10000);        	
+            Thread.sleep(wait[1]*1000);        	
         } catch (InterruptedException n) {
             n.printStackTrace(); 
         }		
@@ -80,14 +86,24 @@ public class getdata {
         
         
         line=0;
+        int index=0;
+        String airname;
+        String[] temp;
 		for(WebElement e : itemList) {
 			if(line++==28) {
 				tmp=e.getText().split("\n");
-				flag=0;
-				for(String y:tmp) {	
-					System.out.println(y);
-					if(y.split(" ")[0].equals(strDate)) {
-						immediate_data=immediate_data+" "+y+"\n";
+				flag=0;				
+				for(int i=0;i<tmp.length;i++) {					
+					if(tmp[i].split(" ")[0].equals(strDate)) {
+						immediate_data=immediate_data+" "+tmp[i]+"\n";
+						temp = tmp[i-2].split("¡G|¡]");						
+						airname = temp[temp.length-2];						
+						if(airname.equals("AMB_TEMP")) airname = "AT";
+						for(int j=0;j<all_air.length;j++) {
+							if(airname.equals(all_air[j][2])) {
+								air[index++] = all_air[j];
+							}
+						}					
 						flag=1;						
 					}
 				}
@@ -106,9 +122,9 @@ public class getdata {
 		where(wh);		
 		if(day.length==1) {
 			
-			//ChromeOptions options = new ChromeOptions();
-			//options.addArguments("--headless");		
-			WebDriver driver = new ChromeDriver();//options
+			ChromeOptions options = new ChromeOptions();
+			options.addArguments("--headless");		
+			WebDriver driver = new ChromeDriver(options);
 			driver.get("https://taqm.epa.gov.tw/taqm/tw/HourlyData.aspx"); 
 			
 			WebElement select1 = driver.findElement(By.id("ctl05_lbSite"));
@@ -152,7 +168,7 @@ public class getdata {
 			
 			
 	        try {
-	            Thread.sleep(5000);	        	
+	            Thread.sleep(wait[0]*1000);	        	
 	        } catch (InterruptedException n) {
 	            n.printStackTrace(); 
 	        }			
@@ -160,23 +176,34 @@ public class getdata {
 			
 			
 	        try {
-	            Thread.sleep(10000);	        	
+	            Thread.sleep(wait[1]*1000);	        	
 	        } catch (InterruptedException n) {
 	            n.printStackTrace(); 
 	        }			
 	        List<WebElement> itemList = driver.findElements(By.tagName("td")); 
 	        
 	        
-	        line=0;	        
+	        line=0;	 
+	        int index=0;
+	        String airname;
+	        String[] temp;
 			for(WebElement e : itemList) {
 				if(line++==28) {			        
 					tmp=e.getText().split("\n");
-					flag=0;
-					for(String y:tmp) {							
+					flag=0;					
+					for(int i=0;i<tmp.length;i++) {
 				        try {
-							if(Integer.parseInt(y.split(" ")[0].split("/")[0])==Integer.parseInt(day[0].split("/")[1]) &&
-									   Integer.parseInt(y.split(" ")[0].split("/")[1])==Integer.parseInt(day[0].split("/")[2])) {
-										history_data=history_data+y+"\n";
+							if(Integer.parseInt(tmp[i].split(" ")[0].split("/")[0])==Integer.parseInt(day[0].split("/")[1]) &&
+									   Integer.parseInt(tmp[i].split(" ")[0].split("/")[1])==Integer.parseInt(day[0].split("/")[2])) {
+										history_data=history_data+tmp[i]+"\n";
+										temp = tmp[i-2].split("¡G|¡]");
+										airname = temp[temp.length-2];										
+										if(airname.equals("AMB_TEMP")) airname = "AT";
+										for(int j=0;j<all_air.length;j++) {
+											if(airname.equals(all_air[j][2])) {
+												air[index++] = all_air[j];
+											}
+										}	
 										flag=1;								
 									}
 				        } catch (NumberFormatException n) {				            
@@ -190,13 +217,13 @@ public class getdata {
 				}
 			}
 			driver.close();
-			System.out.println(history_data);
-
+			System.out.println(history_data);		
+			
 		}else {
 			
-			//ChromeOptions options = new ChromeOptions();
-			//options.addArguments("--headless");		
-			WebDriver driver = new ChromeDriver();//options
+			ChromeOptions options = new ChromeOptions();
+			options.addArguments("--headless");		
+			WebDriver driver = new ChromeDriver(options);
 			driver.get("https://taqm.epa.gov.tw/taqm/tw/HourlyData.aspx"); 
     		
 			WebElement select1 = driver.findElement(By.id("ctl05_lbSite"));
@@ -219,7 +246,7 @@ public class getdata {
     		
 			
 	        try {
-	            Thread.sleep(5000);
+	            Thread.sleep(wait[0]*1000);
 	        } catch (InterruptedException n) {
 	            n.printStackTrace(); 
 	        }
@@ -227,7 +254,7 @@ public class getdata {
 			
 			
 	        try {
-	            Thread.sleep(10000);
+	            Thread.sleep(wait[1]*1000);
 	        } catch (InterruptedException n) {
 	            n.printStackTrace(); 
 	        }
@@ -238,7 +265,7 @@ public class getdata {
 	        line = 0;
 	        for(WebElement e : itemList) {
 	        	if(line++==28) {
-	        		tmp=e.getText();
+	        		tmp=e.getText();	        		
 	        		break;
 	        	}
 	        
@@ -250,7 +277,7 @@ public class getdata {
 		 	        	   Integer.parseInt(tmp1[i].split(" ")[0].split("/")[1])==Integer.parseInt(day[0].split("/")[2])) {
 		 	        		for(;i<tmp1.length;i++) {
 		 	        			history_data = history_data+tmp1[i]+"\n";	        			
-		 	        		}
+		 	        		}	
 		 	        	}
 		        } catch (NumberFormatException n) {		            
 		        	System.out.print("");
@@ -268,13 +295,11 @@ public class getdata {
 	
 	public void Immediate_data_process() {
 		String tmp="";
-		String[] air = {"SO2 (ppb)","CO (ppm)","O3 (ppb)","PM10 (£gg/m3)","NOx (ppb)","NO (ppb)",
-				"NO2 (ppb)","THC (ppm)","NMHC (ppm)","AT (¢J)","CH4 (ppm)","RH (%)"};
 		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
 		Date date = new Date();
 		String strDate = sdFormat.format(date);
 		for(int i=0;i<immediate_data.split("\n").length;i++) {			
-			tmp = tmp + air[i] + " " + immediate_data.split("\n")[i].split(" ")[Integer.parseInt(strDate.split(" ")[1].split(":")[0])] + "\n";
+			tmp = tmp + air[i][1] + " " + immediate_data.split("\n")[i].split(" ")[Integer.parseInt(strDate.split(" ")[1].split(":")[0])] + "\n";
 		}
 		immediate_data=tmp;		
 	}
@@ -310,15 +335,13 @@ public class getdata {
 	
 	public void File_immediate(){
 		try {
-			String[] air = {"SO2 (ppb)","CO (ppm)","O3 (ppb)","PM10 (£gg/m3)","NOx (ppb)","NO (ppb)",
-							"NO2 (ppb)","THC (ppm)","NMHC (ppm)","AT (¢J)","CH4 (ppm)","RH (%)"};
 			SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
 			Date date = new Date();
 			String strDate = sdFormat.format(date);			
 			FileWriter f = new FileWriter("./mydata/Instant.txt",true);				
 			for(int i=0;i<immediate_data.split("\n").length;i++) {
 				f.write(location+"\r\n");
-				f.write(air[i]+"\r\n");
+				f.write(air[i][1]+"\r\n");
 				f.write(strDate.split("/| ")[1]+"/"+strDate.split("/| ")[2]+" "+immediate_data.split("\n")[i].split(" ")[2]+"\r\n");
 			}					
 			f.close();
@@ -332,12 +355,10 @@ public class getdata {
 		try {
 			String[] tmp = history_data.split("\n");
 			if(day.length==1) {
-				String[] air = {"SO2 (ppb)","CO (ppm)","O3 (ppb)","PM10 (£gg/m3)","NOx (ppb)","NO (ppb)",
-								"NO2 (ppb)","THC (ppm)","NMHC (ppm)","AT (¢J)","CH4 (ppm)","RH (%)"};
 				FileWriter f = new FileWriter("./mydata/History.txt",true);
 				for(int i=0;i<tmp.length;i++) {					
 					f.write(location+"\r\n");
-					f.write(air[i]+"\r\n");
+					f.write(air[i][1]+"\r\n");
 					f.write(tmp[i]+"\r\n");
 				}
 				f.close();

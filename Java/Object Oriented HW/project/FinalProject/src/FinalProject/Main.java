@@ -1,8 +1,6 @@
 package FinalProject;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.ImageIcon;
 import java.awt.*;
 
 public class Main{
@@ -15,6 +13,7 @@ public class Main{
         go.setSize(800,600);
         go.setVisible(true);
         go.setResizable(false);
+        
     }  
     
 }
