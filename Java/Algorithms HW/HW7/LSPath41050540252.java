@@ -10,17 +10,19 @@ public class LSPath41050540252 extends LSPath{
 
     public void Max_Connected(){
         int max = -1;
+        visited = new boolean[data.size()];
         for(int i=0;i<data.size();i++){
-            visited = new boolean[data.size()];
-            for(int j=0;j<data.size();j++){
-                visited[j] = false;
-            }
-            num = 0;            
-            dfs(data.get(i).get(0));
-            //System.out.println();
-            if(num>max){
-                max = num;
-                start = i;
+            visited[i] = false;
+        }
+        for(int i=0;i<data.size();i++){
+            if(!visited[data.get(i).get(0)]){
+                num = 0;            
+                dfs(data.get(i).get(0));
+                //System.out.println();
+                if(num>max){
+                    max = num;
+                    start = i;
+                }
             }
         }        
     }
