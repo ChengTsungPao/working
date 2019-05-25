@@ -295,10 +295,10 @@ public class getdata {
 	
 	public void Immediate_data_process() {
 		String tmp="";
-		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		Date date = new Date();
 		String strDate = sdFormat.format(date);
-		for(int i=0;i<immediate_data.split("\n").length;i++) {			
+		for(int i=0;i<immediate_data.split("\n").length;i++) {	
 			tmp = tmp + air[i][1] + " " + immediate_data.split("\n")[i].split(" ")[Integer.parseInt(strDate.split(" ")[1].split(":")[0])] + "\n";
 		}
 		immediate_data=tmp;		
