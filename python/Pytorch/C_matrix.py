@@ -2,7 +2,6 @@
 import numpy as np
 from scipy.integrate import dblquad
 
-
 def make_C_matrix(DELTA, site_size):
     def eps(Px,Py):
         value = 2*((np.cos(Px))**2+(np.cos(Py))**2)
@@ -27,7 +26,8 @@ def make_C_matrix(DELTA, site_size):
                             0,
                             2*np.pi,
                             lambda Py:0,
-                            lambda Py:2*np.pi)  
+                            lambda Py:2*np.pi,
+                            )  
             return value[0]        
         def Nonedeg_imag():
             value = dblquad(lambda Px,Py:((-np.sin(pow(Px,Py,ri,rj))*np.sin(Py)
@@ -126,8 +126,8 @@ def make_C_matrix(DELTA, site_size):
     C_matrix = np.zeros([total_site*2, total_site*2], dtype=complex)
     for i in range(total_site):
         for j in range(total_site):
-            ri = [i%site_size[1],i/site_size[1]]
-            rj = [j%site_size[1],j/site_size[1]]
+            ri = [i/site_size[1],i%site_size[1]]
+            rj = [j/site_size[1],j%site_size[1]]
             #print(i, j, ri, rj)
             Cij_cell = make_Cij(DELTA, ri, rj)
             for a in range(2):
@@ -141,13 +141,14 @@ site_size = (2, 2)
 A = make_C_matrix(DELTA, site_size)
 print(A)
 
-        
-    
-    
-    
 
+import matplotlib.pylab as plt
+plt.imshow(np.abs(A))       
+plt.show()  
+    
+ 
 
-        
+     
 
 
 
