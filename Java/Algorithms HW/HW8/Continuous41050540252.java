@@ -1,15 +1,12 @@
 public class Continuous41050540252 extends Continuous{
 
-    public  int min_sum(int[] list){
-        int min=0,sum=0;
-        for(int i=0;i<list.length;i++){
-            for(int j=i;j<list.length;j++){
-                sum+=list[j];
-                if((i==0 && j==0) || sum < min){
-                    min = sum;
-                }
-            }
-            sum = 0;
+    public int min_sum(int[] list){
+
+        int sum = 0, max = 0, min = list[0];
+        for (int x:list) {    
+            if(sum > max) max = sum;
+            sum += x;
+            if(sum - max < min) min = sum - max;
         }
         return min;
     }
