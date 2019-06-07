@@ -3,9 +3,9 @@ public class Continuous41050540252 extends Continuous{
     public int min_sum(int[] list){
 
         int sum = 0, max = 0, min = list[0];
-        for (int x:list) {    
+        for (int i=0;i<list.length;i++) {    
             if(sum > max) max = sum;
-            sum += x;
+            sum += list[i];
             if(sum - max < min) min = sum - max;
         }
         return min;
