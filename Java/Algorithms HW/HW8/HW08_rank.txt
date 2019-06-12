@@ -1,0 +1,116 @@
+2019-06-09 15:29:59
+0    Continuous4106056008            stats: Correct                                     time: 0.011634       
+1    Continuous41050540253           stats: Correct                                     time: 0.011928       
+2    Continuous4104053107            stats: Correct                                     time: 0.012501       
+3    Continuous4106056036_1          stats: Correct                                     time: 0.012754       
+4    Continuous4106056022_1          stats: Correct                                     time: 0.012864       
+5    Continuous4106056018            stats: Correct                                     time: 0.012874       
+6    Continuous4106056031            stats: Correct                                     time: 0.012896       
+7    Continuous7106056145            stats: Correct                                     time: 0.012897       
+8    Continuous4106053037_2          stats: Correct                                     time: 0.012914       
+9    Continuous4106056006            stats: Correct                                     time: 0.012925       
+10   Continuous4105021032            stats: Correct                                     time: 0.012929       
+11   Continuous4106056019            stats: Correct                                     time: 0.013024       
+12   Continuous4105028015            stats: Correct                                     time: 0.013063       
+13   Continuous7107056072_t3         stats: Correct                                     time: 0.013069       
+14   Continuous4104052050_2          stats: Correct                                     time: 0.013070       
+15   Continuous4104056017            stats: Correct                                     time: 0.013090       
+16   Continuous4105053025            stats: Correct                                     time: 0.013131       
+17   Continuous7107056113            stats: Correct                                     time: 0.013136       
+18   Continuous4105053115            stats: Correct                                     time: 0.013160       
+19   Continuous4106029012            stats: Correct                                     time: 0.013198       
+20   Continuous4105053130            stats: Correct                                     time: 0.013200       
+21   Continuous4106056017_2          stats: Correct                                     time: 0.013201       
+22   Continuous0107209224_5          stats: Correct                                     time: 0.013202       
+23   Continuous4105053137_1          stats: Correct                                     time: 0.013202       
+24   Continuous4106056001            stats: Correct                                     time: 0.013237       
+25   Continuous4106056009            stats: Correct                                     time: 0.013248       
+26   Continuous0107209315_3          stats: Correct                                     time: 0.013302       
+27   Continuous7107056113_           stats: Correct                                     time: 0.013343       
+28   Continuous4106056007            stats: Correct                                     time: 0.013343       
+29   Continuous4105053132            stats: Correct                                     time: 0.013350       
+30   Continuous4106056044_3          stats: Correct                                     time: 0.013364       
+31   Continuous0107209221            stats: Correct                                     time: 0.013367       
+32   Continuous4105053123            stats: Correct                                     time: 0.013373       
+33   Continuous4106056030            stats: Correct                                     time: 0.013385       
+34   Continuous4106056014            stats: Correct                                     time: 0.013395       
+35   Continuous0107209224_6          stats: Correct                                     time: 0.013399       
+36   Continuous4106056017            stats: Correct                                     time: 0.013442       
+37   Continuous4105053123_2          stats: Correct                                     time: 0.013501       
+38   Continuous_4106056046_1         stats: Correct                                     time: 0.013542       
+39   Continuous4105053137            stats: Correct                                     time: 0.013604       
+40   Continuous4105053036            stats: Correct                                     time: 0.013638       
+41   Continuous4105053104            stats: Correct                                     time: 0.013674       
+42   Continuous4106029034            stats: Correct                                     time: 0.013737       
+43   Continuous41050540254           stats: Correct                                     time: 0.013773       
+44   Continuous4105053140            stats: Correct                                     time: 0.013819       
+45   Continuous41050540252           stats: Correct                                     time: 0.013848       
+46   Continuous4106053037_3          stats: Correct                                     time: 0.013867       
+47   Continuous4106056003            stats: Correct                                     time: 0.013877       
+48   Continuous4105053016            stats: Correct                                     time: 0.013884       
+49   Continuous4107054020            stats: Correct                                     time: 0.013925       
+50   Continuous4105056041_1          stats: Correct                                     time: 0.014057       
+51   Continuous4104056017_3          stats: Correct                                     time: 0.014170       
+52   Continuous4105053006            stats: Correct                                     time: 0.014232       
+53   Continuous4105054025            stats: Correct                                     time: 0.014397       
+54   Continuous4106056045            stats: Correct                                     time: 0.014496       
+55   Continuous41040560462           stats: Correct                                     time: 0.014676       
+56   Continuous4105056041_4          stats: Correct                                     time: 0.014696       
+57   Continuous4103043042            stats: Correct                                     time: 0.014746       
+58   Continuous4106029030            stats: Correct                                     time: 0.014779       
+59   Continuous4104056046            stats: Correct                                     time: 0.014862       
+60   Continuous7107056074            stats: Correct                                     time: 0.014975       
+61   Continuous7106056079            stats: Correct                                     time: 0.015207       
+62   Continuous4106056033            stats: Correct                                     time: 0.015340       
+63   Continuous4104064053_3          stats: Correct                                     time: 0.016009       
+64   Continuous7107056116            stats: Correct                                     time: 0.016110       
+65   Continuous4106056015            stats: Correct                                     time: 0.016212       
+66   Continuous4106056016_3          stats: Correct                                     time: 0.016280       
+67   Continuous4106029023            stats: Correct                                     time: 0.016336       
+68   Continuous4106056026            stats: Correct                                     time: 0.016447       
+69   Continuous7107056113__          stats: Correct                                     time: 0.016578       
+70   Continuous4104064053_2          stats: Correct                                     time: 0.016706       
+71   Continuous4106056021            stats: Correct                                     time: 0.017122       
+72   Continuous4105056041_2          stats: Correct                                     time: 0.017953       
+73   Continuous4106056010_4          stats: Correct                                     time: 0.018093       
+74   Continuous4106056010_5          stats: Correct                                     time: 0.018139       
+75   Continuous4106056016            stats: Correct                                     time: 0.018644       
+76   Continuous4106056024            stats: Correct                                     time: 0.019494       
+77   Continuous4106056016_4          stats: Correct                                     time: 0.019655       
+78   Continuous4106056016_2          stats: Correct                                     time: 0.019720       
+79   Continuous4106056005            stats: Correct                                     time: 0.019738       
+80   Continuous4105053113__5         stats: Correct                                     time: 0.019747       
+81   Continuous4104056017_1          stats: Correct                                     time: 0.019756       
+82   Continuous4106056002            stats: Correct                                     time: 0.019849       
+83   Continuous4105053113__4         stats: Correct                                     time: 0.019895       
+84   Continuous4104064053_GD         stats: Correct                                     time: 0.019944       
+85   Continuous4104064053_DP         stats: Correct                                     time: 0.020044       
+86   Continuous4105053041            stats: Correct                                     time: 0.020094       
+87   Continuous4106056012            stats: Correct                                     time: 0.020701       
+88   Continuous41050560012th         stats: Correct                                     time: 0.020747       
+89   Continuous4104064053_first      stats: Correct                                     time: 0.020860       
+90   Continuous4105056001            stats: Correct                                     time: 0.020993       
+91   Continuous4105053044            stats: Correct                                     time: 0.021109       
+92   Continuous4105053044_2          stats: Correct                                     time: 0.021625       
+93   Continuous4105053102            stats: Correct                                     time: 0.022616       
+94   Continuous4105056027            stats: Correct                                     time: 0.030414       
+95   Continuous4105061003_3          stats: Correct                                     time: 0.034238       
+96   Continuous4104029028_1          stats: Correct                                     time: 1.133384       
+97   Continuous4104029028            stats: Correct                                     time: 1.224370       
+98   Continuous4106056014_           stats: Correct                                     time: 1.343261       
+99   Continuous41050540255           stats: Correct                                     time: 1.355261       
+100  Continuous4106056040            stats: Correct                                     time: 1.395145       
+101  Continuous4106056038            stats: Correct                                     time: 1.397177       
+102  Continuous0107209237_3          stats: Correct                                     time: 2.806475       
+103  Continuous4105056041_3          stats: Correct                                     time: 841.687813     
+104  Continuous4104029007            stats: Error: function min_sum() Wrong Answer.     time: 0.000000       
+105  Continuous_4106056046_4         stats: Error: compiler error.                      time: 0.000000       
+106  Continuous_4106056046_5         stats: Error: compiler error.                      time: 0.000000       
+107  Continuous41050560013rd         stats: Error: function min_sum() Wrong Answer.     time: 0.000000       
+108  Continuous_4106056046_2         stats: Error: compiler error.                      time: 0.000000       
+109  Continuous4104064053_4          stats: Error: compiler error.                      time: 0.000000       
+110  Continuous_4106056046_3         stats: Error: compiler error.                      time: 0.000000       
+111  Continuous4105056012            stats: Error: function min_sum() Wrong Answer.     time: 0.000000       
+112  Continuous4106056027            stats: Error: function min_sum() Wrong Answer.     time: 0.000000       
+113  Continuous4101054030            stats: Error: function min_sum() Wrong Answer.     time: 0.000000       
+114  Continuous4105053102burst       stats: Error: Over 600s.                           time: 3167.663064    
