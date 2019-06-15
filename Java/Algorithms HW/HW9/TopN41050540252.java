@@ -58,6 +58,14 @@ public class TopN41050540252 extends TopN{
         }else{
             return answer;
         }*/
+        int index = 0;
+        for(int i=num;i<answer.length;i++){
+            while(status[index]!=0){
+                index++;
+            }
+            answer[i] = index + 1; 
+            index++;           
+        }
         return answer;           
     } 
 }
