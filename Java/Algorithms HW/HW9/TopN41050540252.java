@@ -28,7 +28,7 @@ public class TopN41050540252 extends TopN{
             ans_status[i]=0;
             answer[i]=0;
         }
-        int tmp,num=0;
+        int tmp;
         for(int i=0;i<max;i++){
             if(status[i]>ans_status[n-1]){
                 ans_status[n-1]=status[i];
@@ -46,25 +46,7 @@ public class TopN41050540252 extends TopN{
                         break;
                     }              
                 }
-            }
-            if(status[i]>0) num++;
-        }
-        /*if(answer.length>num){
-            int[] ans = new int[num];
-            for(int i=0;i<num;i++){
-                ans[i]=answer[i];
-            }
-            return ans;
-        }else{
-            return answer;
-        }*/
-        int index = 0;
-        for(int i=num;i<answer.length;i++){
-            while(status[index]!=0){
-                index++;
-            }
-            answer[i] = index + 1; 
-            index++;           
+            }            
         }
         return answer;           
     } 
