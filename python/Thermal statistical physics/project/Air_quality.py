@@ -32,49 +32,6 @@ def where(wh):
     }   
     return value.get(wh,"11") 
 
-
-def Web_crawler(date, wh):  
-    options = Options()
-    options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
-    driver = webdriver.Chrome(chrome_options=options)#chrome_options=options
-    driver.get("https://taqm.epa.gov.tw/taqm/tw/HourlyData.aspx")
-    select1 = Select(driver.find_element_by_id('ctl05_lbSite'))
-    select1.deselect_by_value("84")
-    select1.select_by_value(wh)
-
-    select2 = Select(driver.find_element_by_id("ctl05_lbParam"))
-    select2.select_by_value("2")
-    select2.select_by_value("3")
-    select2.select_by_value("4")
-    select2.select_by_value("7")
-
-    driver.find_element_by_id("ctl05_txtDateS").clear()
-    driver.find_element_by_id("ctl05_txtDateS").send_keys(date)    
-    driver.find_element_by_id("ctl05_txtDateE").clear()
-    driver.find_element_by_id("ctl05_txtDateE").send_keys(date)    
-    driver.find_element_by_id("ctl05_btnQuery").click()
-
-    time.sleep(5)
-    #driver.find_element_by_tag_name("td").text
-    webdriverlist = driver.find_element_by_id("ctl05_Repeater1_ctl01_gv").text
-    webdriverlist += "\n"+driver.find_element_by_id("ctl05_Repeater1_ctl02_gv").text
-    webdriverlist += "\n"+driver.find_element_by_id("ctl05_Repeater1_ctl03_gv").text
-    webdriverlist += "\n"+driver.find_element_by_id("ctl05_Repeater1_ctl04_gv").text
-    webdriverlist += "\n"+driver.find_element_by_id("ctl05_Repeater1_ctl05_gv").text
-    datalist = []
-    for i in range(1,10,2):
-        tmp = webdriverlist.split("\n")[i].split(" ")
-        for i in range(len(tmp)):
-            try:
-                tmp[i] = float(tmp[i])
-            except:
-                pass
-        datalist.append(tmp)
-    print(datalist)
-    driver.close()
-    return datalist
-
 def month_last_date(month):
     if(month==0): month=12
     value = {
@@ -92,6 +49,16 @@ def month_last_date(month):
         12 : 31
     }   
     return value.get(month,None)
+
+def kind_of_air(kind):
+    value = {
+        "PM10" : 0,
+        "SO2"  : 1,
+        "CO"   : 2,
+        "O3"   : 3,
+        "NO2"  : 4,
+    }   
+    return value.get(kind,None)   
 
 def formula(quality_data):
     def air(mode,inputdata):
@@ -202,28 +169,72 @@ def Quality(day1,day2,hour):
 
 def grade(quality_number):
     if(quality_number>=0 and quality_number<20):
-        s = ""
+        s = "空氣品質優良"
     elif(quality_number>=20 and quality_number<40):
-        s = "對敏感族群"
+        s = "對少數敏感族群不佳"
     elif(quality_number>=40 and quality_number<60):
-        s = "" 
+        s = "不建議出遊" 
     elif(quality_number>=60 and quality_number<80):
-        s = "" 
+        s = "建議待在室內" 
     elif(quality_number>=80 and quality_number<=100):
-        s = ""            
+        s = "請把握當下"            
     else:
         s = "program error"
     return s
 
 def close():
     window1.destroy()
+from selenium.webdriver.common.keys import Keys
+def Web_crawler(date, wh):  
+    options = Options()
+    options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    driver = webdriver.Chrome(chrome_options=options)#chrome_options=options
+    driver.get("https://taqm.epa.gov.tw/taqm/tw/HourlyData.aspx")
+    select1 = Select(driver.find_element_by_id('ctl05_lbSite'))
+    select1.deselect_by_value("84")
+    select1.select_by_value(wh)
+
+    select2 = Select(driver.find_element_by_id("ctl05_lbParam"))
+    select2.select_by_value("2")
+    select2.select_by_value("3")
+    select2.select_by_value("4")
+    select2.select_by_value("7")
+
+    driver.find_element_by_id("ctl05_txtDateS").clear()
+    driver.find_element_by_id("ctl05_txtDateS").send_keys(date)    
+    driver.find_element_by_id("ctl05_txtDateE").clear()
+    driver.find_element_by_id("ctl05_txtDateE").send_keys(date)
+    driver.find_element_by_id("ctl05_txtDateE").send_keys(Keys.ENTER)
+    time.sleep(3)
+    driver.find_element_by_id("ctl05_btnQuery").click()
+
+    time.sleep(10)
+    #driver.find_element_by_tag_name("td").text
+    webdriverlist = driver.find_element_by_id("ctl05_Repeater1_ctl01_gv").text
+    webdriverlist += "\n"+driver.find_element_by_id("ctl05_Repeater1_ctl02_gv").text
+    webdriverlist += "\n"+driver.find_element_by_id("ctl05_Repeater1_ctl03_gv").text
+    webdriverlist += "\n"+driver.find_element_by_id("ctl05_Repeater1_ctl04_gv").text
+    webdriverlist += "\n"+driver.find_element_by_id("ctl05_Repeater1_ctl05_gv").text
+    datalist = []
+    for i in range(1,10,2):
+        tmp = webdriverlist.split("\n")[i].split(" ")
+        for i in range(len(tmp)):
+            try:
+                tmp[i] = float(tmp[i])
+            except:
+                pass
+        datalist.append(tmp)
+    print(datalist)
+    driver.close()
+    return datalist
 
 def history_getdata():
     window2 = tk.Tk()
     window2.title("alert")
     window2.geometry("300x200")
     window2.resizable(False, False) 
-    label = ttk.Label(window2, text = " Wait for about 20 second...",font=(None,20))
+    label = ttk.Label(window2, text = " Wait for about 30 second...",font=(None,20))
     label0 = ttk.Label(window2, text = " We need to crawler the data...",font=(None,15))
     label.grid(pady=25)
     label0.grid(pady=25)
@@ -248,31 +259,32 @@ def history_getdata():
         date = tmp[0]+"/"+tmp[1]+"/"+tmp[2] 
         day2 = Web_crawler(date, where(wh))
         #print(day2)
-    #print(day1)
+        #print(day1)
+        
+        print(Quality(day1,day2,int(datehour.split("/")[-1])))
+        print(grade(Quality(day1,day2,int(datehour.split("/")[-1]))))
+        window2.destroy()
 
- 
-    print(Quality(day1,day2,int(datehour.split("/")[-1])))
-    print(grade(Quality(day1,day2,int(datehour.split("/")[-1]))))
-    window2.destroy()
+        window1 = tk.Tk()
+        window1.title("result")
+        window1.geometry("320x200")
+        window1.resizable(False, False) 
+        blank1 = ttk.Label(window1, text = "    ", font=(None,15)) 
+        label1 = ttk.Label(window1, text = "< 空氣品質檢測結果 >", font=(None,20)) 
+        label2 = ttk.Label(window1, text = "空氣指數 : "+str(Quality(day1,day2,int(datehour.split("/")[-1]))), font=(None,15))
+        label3 = ttk.Label(window1, text = "出遊建議 : "+grade(Quality(day1,day2,int(datehour.split("/")[-1]))), font=(None,15))
+        button = ttk.Button(window1, text = "關閉", command = close)
 
-    window1 = tk.Tk()
-    window1.title("result")
-    window1.geometry("300x200")
-    window1.resizable(False, False) 
-    blank1 = ttk.Label(window1, text = "    ", font=(None,15)) 
-    label1 = ttk.Label(window1, text = "<空氣品質檢測結果>", font=(None,20)) 
-    label2 = ttk.Label(window1, text = "空氣指數 : "+str(Quality(day1,day2,int(datehour.split("/")[-1]))), font=(None,15))
-    label3 = ttk.Label(window1, text = "出遊建議 : "+grade(Quality(day1,day2,int(datehour.split("/")[-1]))), font=(None,15))
-    button = ttk.Button(window1, text = "關閉", command = close)
+        blank1.grid(row=0,column=0,pady=10)    
+        label1.grid(row=0,column=1,pady=15)
+        label2.grid(row=1,column=1,pady=10)
+        label3.grid(row=2,column=1,pady=10)
+        blank1.grid(row=3,column=0,pady=10)  
+        button.grid(row=3,column=1,pady=10)
 
-    blank1.grid(row=0,column=0,pady=10)    
-    label1.grid(row=0,column=1,pady=15)
-    label2.grid(row=1,column=1,pady=10)
-    label3.grid(row=2,column=1,pady=10)
-    blank1.grid(row=3,column=0,pady=10)  
-    button.grid(row=3,column=1,pady=10)
-
-    window1.mainloop()
+        window1.mainloop()
+    else:
+        window2.destroy()
 
 def instant_getdata():  
     global window1 
@@ -280,7 +292,7 @@ def instant_getdata():
     window2.title("alert")
     window2.geometry("300x200")
     window2.resizable(False, False) 
-    label = ttk.Label(window2, text = " Wait for about 20 second...",font=(None,20))
+    label = ttk.Label(window2, text = " Wait for about 30 second...",font=(None,20))
     label0 = ttk.Label(window2, text = " We need to crawler the data...",font=(None,15))
     label.grid(pady=25)
     label0.grid(pady=25)
@@ -305,13 +317,13 @@ def instant_getdata():
     print(Quality(day1,day2,int(datehour.split("/")[-1])))
     print(grade(Quality(day1,day2,int(datehour.split("/")[-1]))))
     window2.destroy()
-    
+
     window1 = tk.Tk()
     window1.title("result")
-    window1.geometry("300x200")
+    window1.geometry("320x200")
     window1.resizable(False, False) 
     blank1 = ttk.Label(window1, text = "    ", font=(None,15)) 
-    label1 = ttk.Label(window1, text = "<空氣品質檢測結果>", font=(None,20)) 
+    label1 = ttk.Label(window1, text = "< 空氣品質檢測結果 >", font=(None,20)) 
     label2 = ttk.Label(window1, text = "空氣指數 : "+str(Quality(day1,day2,int(datehour.split("/")[-1]))), font=(None,15))
     label3 = ttk.Label(window1, text = "出遊建議 : "+grade(Quality(day1,day2,int(datehour.split("/")[-1]))), font=(None,15))
     button = ttk.Button(window1, text = "關閉", command = close)
@@ -324,18 +336,6 @@ def instant_getdata():
     button.grid(row=3,column=1,pady=10)
 
     window1.mainloop()
-    
-
-def kind_of_air(kind):
-    value = {
-        "PM10" : 0,
-        "SO2"  : 1,
-        "CO"   : 2,
-        "O3"   : 3,
-        "NO2"  : 4,
-    }   
-    return value.get(kind,None)    
-
 
 def graph():
     global mode
@@ -349,6 +349,9 @@ def graph():
             data[i-1] = day1[index][i]
         else:
             data[i-1] = -1
+    plt.title("CO")
+    plt.xlabel("hr")
+    plt.ylabel("ppm")
     plt.plot(range(1,len(data)+1),data,"-o")
     plt.xticks(range(1,len(data)+1))
     plt.show()    
