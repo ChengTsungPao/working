@@ -226,72 +226,172 @@ def Web_crawler(date, wh):
                 pass
         datalist.append(tmp)
     print(datalist)
-    #driver.close()
+    driver.close()
     return datalist
 
-def history_getdata():
-    window2 = tk.Tk()
-    window2.title("alert")
-    window2.geometry("300x200")
-    window2.resizable(False, False) 
-    label = ttk.Label(window2, text = " Wait for about 30 second...",font=(None,20))
-    label0 = ttk.Label(window2, text = " We need to crawler the data...",font=(None,15))
-    label.grid(pady=25)
-    label0.grid(pady=25)
-    window2.update_idletasks()
-    window2.update()
+def data_base(year, month, day):
+    start = "2019/01/01"
+    end   = "2019/05/31"    
+    flag = 0
+    if(year>int(start.split("/")[0])):
+        flag += 1
+    elif(year==int(start.split("/")[0])):
+        if(month>int(start.split("/")[1])):
+            flag += 1
+        elif(month==int(start.split("/")[1])):
+            if(day>=int(start.split("/")[2])):
+                flag += 1
+    if(year<int(end.split("/")[0])):
+        flag += 1
+    elif(year==int(end.split("/")[0])):
+        if(month<int(end.split("/")[1])):
+            flag += 1
+        elif(month==int(end.split("/")[1])):
+            if(day<=int(end.split("/")[2])):
+                flag += 1
+    if(flag==2):
+        judge=True
+    else:
+        judge=False
+    return judge
 
 
-    global day1,day2,mode,window1
-    print(entry1.get())
+
+def history_getdata(): 
+    global day1,day2,mode,window1    
     datehour = entry1.get()
     wh = entry2.get()
-    tmp = datehour.split("/")
-    date = tmp[0]+"/"+tmp[1]+"/"+tmp[2]
-    day1 = Web_crawler(date, where(wh))
-   
-    if(mode==1):
-        if(int(tmp[2])==1):
-            tmp[2]=str(month_last_date(int(tmp[1])-1))
-            if(int(tmp[1])==1): 
-                tmp[0]=str(int(tmp[0])-1)
-                tmp[1]="12"
-            else:
-                tmp[1]=str(int(tmp[1])-1)            
+    tmp = datehour.split("/")    
+    temp = datehour.split("/")
+    if(int(temp[2])==1):
+        temp[2]=str(month_last_date(int(temp[1])-1))
+        if(int(temp[1])==1): 
+            temp[0]=str(int(temp[0])-1)
+            temp[1]="12"
         else:
-            tmp[2]=str(int(tmp[2])-1)
-        date = tmp[0]+"/"+tmp[1]+"/"+tmp[2] 
-        day2 = Web_crawler(date, where(wh))
-        #print(day2)
-        #print(day1)
-        
-        print(Quality(day1,day2,int(datehour.split("/")[-1])))
-        print(grade(Quality(day1,day2,int(datehour.split("/")[-1]))))
-        window2.destroy()
-
-        window1 = tk.Tk()
-        window1.title("result")
-        window1.geometry("320x200")
-        window1.resizable(False, False) 
-        blank1 = ttk.Label(window1, text = "    ", font=(None,15)) 
-        label1 = ttk.Label(window1, text = "< 空氣品質檢測結果 >", font=(None,20)) 
-        label2 = ttk.Label(window1, text = "空氣指數 : "+str(Quality(day1,day2,int(datehour.split("/")[-1]))), font=(None,15))
-        label3 = ttk.Label(window1, text = "出遊建議 : "+grade(Quality(day1,day2,int(datehour.split("/")[-1]))), font=(None,15))
-        button = ttk.Button(window1, text = "關閉", command = close)
-
-        blank1.grid(row=0,column=0,pady=10)    
-        label1.grid(row=0,column=1,pady=15)
-        label2.grid(row=1,column=1,pady=10)
-        label3.grid(row=2,column=1,pady=10)
-        blank1.grid(row=3,column=0,pady=10)  
-        button.grid(row=3,column=1,pady=10)
-
-        window1.mainloop()
+            temp[1]=str(int(temp[1])-1)            
     else:
-        window2.destroy()
+        temp[2]=str(int(temp[2])-1)
+
+    if(data_base(int(tmp[0]),int(tmp[1]),int(tmp[2])) and 
+        data_base(int(temp[0]),int(temp[1]),int(temp[2]))):
+
+        air = ["PM10","SO2","CO","O3","NO2"]
+        data = []
+        for i in air:
+            f = open("./data/"+wh+"/"+wh+i+".txt",'r')
+            line = f.readline()
+            flag = 0
+            while line:
+                try:
+                    if(int(line[0])==0 or int(line[0])==1):
+                        if(flag==1 or (int(line.split(" ")[0].split("/")[0])==int(temp[1]) and
+                            int(line.split(" ")[0].split("/")[1])==int(temp[2]))):
+                            flag += 1
+                            data.append(line)
+                except:
+                    pass            
+                line = f.readline()
+                if(flag==2): break
+            f.close()
+        day1 = []
+        day2 = []
+        for i in range(1,10,2):
+            temp = []
+            for j in data[i].split(" "):
+                try:
+                    temp.append(float(j))
+                except:
+                    temp.append(j)
+            day1.append(temp)
+        for i in range(0,10,2):
+            temp = []
+            for j in data[i].split(" "):
+                try:
+                    temp.append(float(j))
+                except:
+                    temp.append(j)
+            day2.append(temp)
+
+        if(mode==1):
+            window1 = tk.Tk()
+            window1.title("result")
+            window1.geometry("320x200")
+            window1.resizable(False, False) 
+            blank1 = ttk.Label(window1, text = "    ", font=(None,15)) 
+            label1 = ttk.Label(window1, text = "< 空氣品質檢測結果 >", font=(None,20)) 
+            label2 = ttk.Label(window1, text = "空氣指數 : "+str(Quality(day1,day2,int(datehour.split("/")[-1]))), font=(None,15))
+            label3 = ttk.Label(window1, text = "出遊建議 : "+grade(Quality(day1,day2,int(datehour.split("/")[-1]))), font=(None,15))
+            button = ttk.Button(window1, text = "關閉", command = close)
+
+            blank1.grid(row=0,column=0,pady=10)    
+            label1.grid(row=0,column=1,pady=15)
+            label2.grid(row=1,column=1,pady=10)
+            label3.grid(row=2,column=1,pady=10)
+            blank1.grid(row=3,column=0,pady=10)  
+            button.grid(row=3,column=1,pady=10)
+
+            window1.mainloop()  
+
+    else:  
+
+        window2 = tk.Tk()
+        window2.title("alert")
+        window2.geometry("300x200")
+        window2.resizable(False, False) 
+        label = ttk.Label(window2, text = " Wait for about 30 second...",font=(None,20))
+        label0 = ttk.Label(window2, text = " We need to crawler the data...",font=(None,15))
+        label.grid(pady=25)
+        label0.grid(pady=25)
+        window2.update_idletasks()
+        window2.update()
+
+        date = tmp[0]+"/"+tmp[1]+"/"+tmp[2]
+        day1 = Web_crawler(date, where(wh))   
+        if(mode==1):
+            if(int(tmp[2])==1):
+                tmp[2]=str(month_last_date(int(tmp[1])-1))
+                if(int(tmp[1])==1): 
+                    tmp[0]=str(int(tmp[0])-1)
+                    tmp[1]="12"
+                else:
+                    tmp[1]=str(int(tmp[1])-1)            
+            else:
+                tmp[2]=str(int(tmp[2])-1)
+            date = tmp[0]+"/"+tmp[1]+"/"+tmp[2] 
+            day2 = Web_crawler(date, where(wh))
+            
+            print(Quality(day1,day2,int(datehour.split("/")[-1])))
+            print(grade(Quality(day1,day2,int(datehour.split("/")[-1]))))
+            window2.destroy()
+
+            window1 = tk.Tk()
+            window1.title("result")
+            window1.geometry("320x200")
+            window1.resizable(False, False) 
+            blank1 = ttk.Label(window1, text = "    ", font=(None,15)) 
+            label1 = ttk.Label(window1, text = "< 空氣品質檢測結果 >", font=(None,20)) 
+            label2 = ttk.Label(window1, text = "空氣指數 : "+str(Quality(day1,day2,int(datehour.split("/")[-1]))), font=(None,15))
+            label3 = ttk.Label(window1, text = "出遊建議 : "+grade(Quality(day1,day2,int(datehour.split("/")[-1]))), font=(None,15))
+            button = ttk.Button(window1, text = "關閉", command = close)
+
+            blank1.grid(row=0,column=0,pady=10)    
+            label1.grid(row=0,column=1,pady=15)
+            label2.grid(row=1,column=1,pady=10)
+            label3.grid(row=2,column=1,pady=10)
+            blank1.grid(row=3,column=0,pady=10)  
+            button.grid(row=3,column=1,pady=10)
+
+            window1.mainloop()
+        else:
+            window2.destroy()
 
 def instant_getdata():  
     global window1 
+    datehour = time.strftime("%Y/%m/%d/%H", time.localtime())
+    wh = entry2.get()
+    tmp = datehour.split("/")
+
     window2 = tk.Tk()
     window2.title("alert")
     window2.geometry("300x200")
@@ -303,12 +403,8 @@ def instant_getdata():
     window2.update_idletasks()
     window2.update()
 
-    datehour = time.strftime("%Y/%m/%d/%H", time.localtime())
-    wh = entry2.get()
-    tmp = datehour.split("/")
     date = tmp[0]+"/"+tmp[1]+"/"+tmp[2]
-    day1 = Web_crawler(date, where(wh))
-    
+    day1 = Web_crawler(date, where(wh))    
     if(int(tmp[2])==1):
         tmp[2]=str(month_last_date(int(tmp[1])-1))
         if(int(tmp[1])==1): 
@@ -320,8 +416,7 @@ def instant_getdata():
         tmp[2]=str(int(tmp[2])-1)
     date = tmp[0]+"/"+tmp[1]+"/"+tmp[2] 
     day2 = Web_crawler(date, where(wh))
-    #print(day2)
-    #print(day1)    
+
     print(Quality(day1,day2,int(datehour.split("/")[-1])))
     print(grade(Quality(day1,day2,int(datehour.split("/")[-1]))))
     window2.destroy()
