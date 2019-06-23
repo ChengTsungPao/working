@@ -6,7 +6,7 @@ import matplotlib.pylab as plt
 import tkinter as tk
 from tkinter import ttk
 import tkinter.font as tkFont
-import time
+import time,copy
 
 mode = 1
 def where(wh):
@@ -72,7 +72,7 @@ def Web_crawler(date, wh):
                 pass
         datalist.append(tmp)
     print(datalist)
-    #driver.close()
+    driver.close()
     return datalist
 
 def month_last_date(month):
@@ -93,8 +93,120 @@ def month_last_date(month):
     }   
     return value.get(month,None)
 
+def formula(quality_data):
+    def air(mode,inputdata):
+        def PM10(data):
+            if(data>=0 and data<35):
+                q = 1
+            elif(data>=35 and data<60):
+                q = 2
+            elif(data>=60 and data<75):
+                q = 3
+            elif(data>=75 and data<100):
+                q = 4
+            elif(data>=100):
+                q = 5 
+            return q      
+        def SO2(data):
+            if(data>=0 and data<30):
+                q = 1
+            elif(data>=30 and data<140):
+                q = 2
+            elif(data>=140 and data<200):
+                q = 3
+            elif(data>=200 and data<300):
+                q = 4
+            elif(data>=300):
+                q = 5 
+            return q 
+        def CO(data):
+            if(data>=0 and data<5):
+                q = 1
+            elif(data>=5 and data<10):
+                q = 2
+            elif(data>=10 and data<15):
+                q = 3
+            elif(data>=15 and data<30):
+                q = 4
+            elif(data>=30):
+                q = 5 
+            return q   
+        def O3(data):
+            if(data>=0 and data<60):
+                q = 1
+            elif(data>=60 and data<130):
+                q = 2
+            elif(data>=130 and data<200):
+                q = 3
+            elif(data>=200 and data<400):
+                q = 4
+            elif(data>=400):
+                q = 5 
+            return q 
+        def NO2(data):        
+            if(data>=0 and data<300):
+                q = 1
+            elif(data>=300 and data<600):
+                q = 2
+            elif(data>=600 and data<1200):
+                q = 3
+            elif(data>=1200 and data<1600):
+                q = 4
+            elif(data>=1600):
+                q = 5 
+            return q 
+        value = {
+            0 : PM10(inputdata),
+            1 : SO2(inputdata),
+            2 : CO(inputdata),
+            3 : O3(inputdata),
+            4 : NO2(inputdata)
+        }   
+        return value.get(mode,None)             
 
-def getdata():
+    quality_number = 0
+    for i in range(len(quality_data)):
+        quality_number += (air(i,quality_data[i]))**3
+    quality_number = (quality_number/len(quality_data))*100/125
+    return quality_number
+
+
+
+def Quality(day1,day2,hour):
+    times = [8,8,8,8,8]
+    hour -= 1
+    
+    data = []
+    if(hour==0): hour = 23
+    for i in range(len(times)):
+        tmp = []
+        for j in range(hour+1,0,-1):
+            if(type(day1[i][j])==float):
+                tmp.append(day1[i][j])
+                times[i] -= 1
+            elif(times[i]==0):
+                break
+        for j in range(23+1,0,-1):
+            if(type(day2[i][j])==float):
+                tmp.append(day2[i][j])
+                times[i] -= 1
+            elif(times[i]==0):
+                break   
+        data.append(copy.copy(tmp))  
+
+        quality_data = []
+        for i in range(len(data)):
+            sum = 0
+            for j in range(len(data[i])):
+                sum += data[i][j]
+            quality_data.append(sum/data[i][j])
+    return formula(quality_data)
+
+                       
+
+
+
+def history_getdata():
     global day1,day2,mode
     print(entry1.get())
     datehour = entry1.get()
@@ -111,8 +223,26 @@ def getdata():
             tmp[2]=str(int(tmp[2])-1)
         date = tmp[0]+"/"+tmp[1]+"/"+tmp[2] 
         day2 = Web_crawler(date, where(wh))
-        print(day2)
-    print(day1)
+        #print(day2)
+    #print(day1)
+
+def instant_getdata():    
+    datehour = time.strftime("%Y/%m/%d/%H", time.localtime())
+    wh = entry2.get()
+    tmp = datehour.split("/")
+    date = tmp[0]+"/"+tmp[1]+"/"+tmp[2]
+    day1 = Web_crawler(date, where(wh))
+    
+    if(int(tmp[2])==1):
+        if(int(tmp[1])==1): tmp[0]=str(int(tmp[0])-1)
+        tmp[2]=str(month_last_date(int(tmp[1])-1))
+    else:
+        tmp[2]=str(int(tmp[2])-1)
+    date = tmp[0]+"/"+tmp[1]+"/"+tmp[2] 
+    day2 = Web_crawler(date, where(wh))
+    #print(day2)
+    #print(day1)    
+
     
 
 def kind_of_air(kind):
@@ -129,7 +259,7 @@ def kind_of_air(kind):
 def graph():
     global mode
     mode = 0
-    getdata()
+    history_getdata()
     mode = 1
     index = kind_of_air(entry3.get())
     data = np.zeros(len(day1[index])-1, float)
@@ -139,6 +269,7 @@ def graph():
         else:
             data[i-1] = -1
     plt.plot(range(1,len(data)+1),data,"-o")
+    plt.xticks(range(1,len(data)+1))
     plt.show()    
 
 
@@ -163,19 +294,21 @@ entryText1.set("2019/05/05/11")#"XXXX/XX/XX/XX"
 
 entryText2 = tk.StringVar()
 entry2 = ttk.Entry(window, textvariable=entryText2, font=(None,15)) 
-entryText2.set("Input the city")
+entryText2.set("台北")#"Input the city"
 
 entryText3 = tk.StringVar()
 entry3 = ttk.Entry(window, textvariable=entryText3, font=(None,15)) 
-entryText3.set("")
+entryText3.set("CO")#"Input the air parameter"
 
-botton2 = ttk.Button(window, text = "過去空氣品質", width=20, command = getdata)
+botton1 = ttk.Button(window, text = "即時空氣品質", width=20, command = instant_getdata)
+botton2 = ttk.Button(window, text = "過去空氣品質", width=20, command = history_getdata)
 botton3 = ttk.Button(window, text = "顯示數據圖", width=20, command = graph)
 
 
 label0.grid(row=1, column=1, padx=15, pady=15)
 label1.grid(row=2, column=0, padx=15, pady=15)
 entry1.grid(row=2, column=1, padx=15, pady=15, ipady=5, ipadx=80)
+botton1.grid(row=2, column=2, padx=15, pady=15, ipady=3, ipadx=3)
 label2.grid(row=3, column=0, padx=15, pady=15)
 entry2.grid(row=3, column=1, padx=15, pady=15, ipady=5, ipadx=80)
 botton2.grid(row=3, column=2, padx=15, pady=15, ipady=3, ipadx=3)
