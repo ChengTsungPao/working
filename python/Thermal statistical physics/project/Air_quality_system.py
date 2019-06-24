@@ -12,8 +12,8 @@ import time,copy
 ################################################################
 
 Internet_waiting_time = 10
-air_valid_time = [8,8,8,8,8]
-data_base_range = ["2019/01/01","2019/05/31"]
+air_valid_time = [24,5,8,4,5]
+data_base_range = ["2019/01/01","2019/05/30"]
 
 ################################################################
 
@@ -197,7 +197,11 @@ def formula(quality_data):
     for i in range(len(quality_data)):
         quality_number += (air(i,quality_data[i]))**3
     quality_number = (quality_number/len(quality_data))*100/125
-    return quality_number
+    if(quality_number<=20.64):
+        quality_number = quality_number*4
+    else:
+        quality_number = 20.64*4 + (quality_number-20.64)*(100-20.64*4)/(100-20.64)
+    return round(quality_number,2)
 
 def Quality(day1,day2,hour):
     times = air_valid_time
@@ -230,15 +234,15 @@ def Quality(day1,day2,hour):
     return formula(quality_data)
 
 def grade(quality_number):
-    if(quality_number>=0 and quality_number<20):
+    if(quality_number>=0 and quality_number<30):
         s = "空氣品質優良"
-    elif(quality_number>=20 and quality_number<40):
+    elif(quality_number>=30 and quality_number<60):
         s = "對少數敏感族群不佳"
-    elif(quality_number>=40 and quality_number<60):
+    elif(quality_number>=60 and quality_number<83):
         s = "不建議出遊" 
-    elif(quality_number>=60 and quality_number<80):
-        s = "建議待在室內" 
-    elif(quality_number>=80 and quality_number<=100):
+    elif(quality_number>=83 and quality_number<90):
+        s = "對健康造成危害" 
+    elif(quality_number>=90 and quality_number<=100):
         s = "請把握當下"            
     else:
         s = "program error"
