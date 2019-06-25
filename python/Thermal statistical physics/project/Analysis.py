@@ -2,19 +2,14 @@ import numpy as np
 import matplotlib.pylab as plt
 import copy
 
-#wh = "高雄"
-#air = "CO"
 def analysis(wh, air):
 
     f = open("./data/"+wh+"/"+wh+air+".txt",'r')
     line = f.readline()
-    print(wh)
-    print(air)
     data = []
     while line:
         try:
             if(int(line[0])==0 or int(line[0])==1):
-                #print(line) 
                 tmp = line.split(" ")
                 for i in range(1,len(tmp)):
                     try:
@@ -24,16 +19,11 @@ def analysis(wh, air):
         except:
             a = 1
         line = f.readline()
-
-    #print(data)
-
-
     tmp = 1
     status = np.zeros(10, int)
     temp = 0
     for i in range(len(data)-1):
-        #print(abs((data[i+1]-data[temp])*100/data[temp]))
-        
+        #print(abs((data[i+1]-data[temp])*100/data[temp]))       
         try:
             if(abs((data[i+1]-data[temp])*100/data[temp])<50):
                 tmp += 1 
@@ -50,37 +40,30 @@ def analysis(wh, air):
                 tmp = 1
         except:
             pass
-
-
-    print(status)
-
+    #print(status)
     times = 0
-    sum = 0
-    for i in range(len(status)):
-        sum += i*status[i]
-        times += status[i]
-    print(sum/times)
+    for i in range(len(status)):        
+        times += status[i]    
 
     mid = 0
     for i in range(len(status)):
         mid += status[i]
         if(mid > times/2):
             break
-    print(i)
-
-
-    plt.plot(range(len(status)),status)
-    plt.show()
+    print(wh+" "+str(i))
+    #plt.plot(range(len(status)),status)
+    #plt.show()
 
 
 wh = ["台北","新北","桃園","新竹","苗栗","台中","彰化","雲林","嘉義",
       "台南","高雄","屏東","台東","花蓮","宜蘭","澎湖","基隆","南投"]
 
 air = ["PM10","SO2","CO","O3","NO2"]
-air = ["O3"]
 for j in air:
+    print("===================="+j+" 中位數====================")
     for i in wh:    
         analysis(i,j)
+    print("\n")
 
 
 
