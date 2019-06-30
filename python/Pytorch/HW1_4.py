@@ -47,7 +47,7 @@ def optimize(learning_rate):
     b.data -= learning_rate * b.grad.data
 
 learning_rate = 1e-4
-
+'''
 x,y = get_data()               # x - represents training data, y - represents target variables
 w,b = get_weights()            # w,b - Learnable parameters
 for i in range(1000):
@@ -62,7 +62,7 @@ plot_variable(x, y_pred, label='Fitted line')
 plt.legend()
 plt.show()
 print("---------------------------------------------------")
-
+'''
 class DogsAndCatsDataset(Dataset):
     def __init__(self,root_dir,size=(224,224)):
         self.files = glob(root_dir)
@@ -75,13 +75,13 @@ class DogsAndCatsDataset(Dataset):
         return img,label
 
 image=DogsAndCatsDataset("D:/program/vscode_workspace/private/data/dogscats/sample/train/cats/*.jpg")
-plt.imshow(image[0][0])
-plt.show()
-print(image[0][1])
+#plt.imshow(image[0][0])
+#plt.show()
+#print(image[0][1])
 from torch.utils.data import Dataset, DataLoader
 
 dataloader = DataLoader(image,batch_size=2,num_workers=2)
-print(type(dataloader))
+#print(type(dataloader))
 
 def main():
     for imgs , labels in dataloader:
@@ -95,6 +95,5 @@ def main():
 
 if __name__ == '__main__':
     main()
-
 
 
