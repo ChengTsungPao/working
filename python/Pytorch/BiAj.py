@@ -10,7 +10,7 @@ def eps(kx,ky,mu):
 
 @jit
 def R(kx,ky,delta,mu):
-    value = eps(kx,ky,mu)**2+(delta**2)*((np.sin(kx))**2+(np.sin(ky))**2)
+    value = (eps(kx,ky,mu)**2+(delta**2)*((np.sin(kx))**2+(np.sin(ky))**2))**0.5
     return value
 
 def first_Integrate(delta,mu,start,end):
