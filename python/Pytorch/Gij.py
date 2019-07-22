@@ -10,7 +10,7 @@ def eps(kx,ky,mu):
 
 @jit
 def R(kx,ky,delta,mu):
-    value = eps(kx,ky,mu)**2+(delta**2)*((np.sin(kx))**2+(np.sin(ky))**2)
+    value = (eps(kx,ky,mu)**2+(delta**2)*((np.sin(kx))**2+(np.sin(ky))**2))**0.5
     return value
 
 def P(kx,ky,start,end):
@@ -172,18 +172,16 @@ def Gij_optimization(delta,mu,size):
             c1 = [1,1]
             c2 = [1,1]
             if(vector[0]*vector[1]<0):
-                c1[1] = -1                
+                c1[1] = -1   
 
-            if(vector[0]<=0 and vector[1]>=0): 
+            if(vector[0]<0 and vector[1]<0):             
                 c2[0] = -1
-                vector = np.abs(vector)
-            elif(vector[0]<=0 and vector[1]>=0): 
                 c2[1] = -1
-                vector = np.abs(vector)
-            elif(vector[0]<=0 and vector[1]>=0): 
-                c1[0] = -1
+            elif(vector[0]<0):
+                c2[0] = -1
+            elif(vector[1]<0):
                 c2[1] = -1
-                vector = np.abs(vector)
+            vector = np.abs(vector)
 
             firstcc = first_database_cc[vector[0],vector[1]]
             firstss = first_database_ss[vector[0],vector[1]]
