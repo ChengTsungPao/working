@@ -13,9 +13,18 @@ def R(kx,ky,delta,mu):
     value = (eps(kx,ky,mu)**2+(delta**2)*((np.sin(kx))**2+(np.sin(ky))**2))**0.5
     return value
 
+@jit
+def f(delta,mu,start,end,kx,ky):
+    value = eps(kx,ky,mu)*(np.cos(kx*(end[0]-start[0]))*np.cos(ky*(end[1]-start[1])))/R(kx,ky,delta,mu)                                 
+    return value
+
+@jit
+def s(delta,mu,start,end,kx,ky):
+    value = delta*np.sin(kx)*np.sin(kx*(end[0]-start[0]))*np.cos(ky*(end[1]-start[1]))/R(kx,ky,delta,mu)                              
+    return value
+
 def first_Integrate(delta,mu,start,end):
-    value = dblquad(lambda kx,ky:(eps(kx,ky,mu)*(np.cos(kx*(end[0]-start[0]))*np.cos(ky*(end[1]-start[1])))                                 )
-                                 /R(kx,ky,delta,mu),
+    value = dblquad(lambda kx,ky:f(delta,mu,start,end,kx,ky),
                     0,
                     np.pi,
                     lambda ky:0,
@@ -24,8 +33,7 @@ def first_Integrate(delta,mu,start,end):
     return -value[0]/(np.pi)**2  
 
 def second_Integrate(delta,mu,start,end):
-    value = dblquad(lambda kx,ky:(delta*np.sin(kx)*np.sin(kx*(end[0]-start[0]))*np.cos(ky*(end[1]-start[1])))
-                                 /R(kx,ky,delta,mu),
+    value = dblquad(lambda kx,ky:s(delta,mu,start,end,kx,ky),
                     0,
                     np.pi,
                     lambda ky:0,

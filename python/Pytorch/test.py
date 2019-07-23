@@ -53,7 +53,7 @@ def first_Integrate(delta,mu,start,end):
     return value[0]/(2*(np.pi)**2)
 
 def second_Integrate(delta,mu,start,end):    
-    value = dblquad(lambda kx,ky:s(delta,mu,start,end,kx,ky),
+    value = dblquad(lambda kx,ky:t(delta,mu,start,end,kx,ky),
                     0,
                     np.pi,
                     lambda ky:0,
@@ -133,7 +133,7 @@ size = [2,2]
 
 print("\nGij(delta,mu,size):\n")
 t1 = time.perf_counter()
-print(Gij(delta,mu,size))
+#print(Gij(delta,mu,size))
 t2 = time.perf_counter()
 print("time : "+str(t2-t1))
 
