@@ -46,9 +46,9 @@ def BiAj(delta,mu,size):
     BA = np.zeros((number, number),float)    
     for i in range(number):
         for j in range(number):
-            start = [int(i/size[0]),i%size[0]]
+            start = [int(i/size[0]),i%size[0]]            
             end = [int(j/size[0]),j%size[0]]
-            BA[i,j] = first_Integrate(delta,mu,start,end) + second_Integrate(delta,mu,start,end)
+            BA[i,j] = first_Integrate(delta,mu,start,end) + second_Integrate(delta,mu,start,end)       
     return BA
 
 def BiAj_optimization(delta,mu,size):
@@ -75,9 +75,10 @@ def BiAj_optimization(delta,mu,size):
             BA[i,j] = first_database[vector[0],vector[1]] + c*second_database[vector[0],vector[1]]
     return BA
 
+n = input("input the size of BiAj: ")
 delta = 0.5
 mu = 0.5
-size = [2,2]
+size = [int(n),int(n)]
 
 print("\nBiAj(delta,mu,size):\n")
 t1 = time.perf_counter()
