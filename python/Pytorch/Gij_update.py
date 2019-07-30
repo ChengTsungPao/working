@@ -29,44 +29,47 @@ def cc(kx,ky,start,end):
     return value
 
 @jit
-def f(delta,mu,start,end,kx,ky):
+def f(kx,ky,delta,mu,start,end):
     value = cc(kx,ky,start,end)*eps(kx,ky,mu)/R(kx,ky,delta,mu)
     return value
 
 @jit
-def s(delta,mu,start,end,kx,ky):
+def s(kx,ky,delta,mu,start,end):
     value = np.sin(kx)*sc(kx,ky,start,end)/R(kx,ky,delta,mu)
     return value
 
 @jit
-def t(delta,mu,start,end,kx,ky):
+def t(kx,ky,delta,mu,start,end):
     value = np.sin(ky)*cs(kx,ky,start,end)/R(kx,ky,delta,mu)
     return value
 
 def first_Integrate(delta,mu,start,end):
-    value = dblquad(lambda kx,ky:f(delta,mu,start,end,kx,ky),
+    value = dblquad(f,
                     0,
                     np.pi,
                     lambda ky:0,
                     lambda ky:np.pi,
+                    args=(delta,mu,start,end)
                     )      
     return value[0]/(2*(np.pi)**2)
 
 def second_Integrate(delta,mu,start,end):    
-    value = dblquad(lambda kx,ky:s(delta,mu,start,end,kx,ky),
+    value = dblquad(s,
                     0,
                     np.pi,
                     lambda ky:0,
                     lambda ky:np.pi,
+                    args=(delta,mu,start,end)
                     )      
     return delta*value[0]/(2*(np.pi)**2)
 
 def third_Integrate(delta,mu,start,end):   
-    value = dblquad(lambda kx,ky:t(delta,mu,start,end,kx,ky),
+    value = dblquad(t,
                     0,
                     np.pi,
                     lambda ky:0,
                     lambda ky:np.pi,
+                    args=(delta,mu,start,end)
                     )      
     return delta*value[0]/(2*(np.pi)**2)
 
