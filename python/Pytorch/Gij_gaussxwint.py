@@ -75,7 +75,7 @@ def gaussxwint_double(f,a,b,N):
         I += sum(f(xp,yp[i])*wpx*wpy[i])
     return I
 
-def first_Integrate(delta,mu,start,end,N):
+def first_Integrate(delta,mu,start,end,N):    
     value = gaussxwint_double(lambda kx,ky:f(delta,mu,start,end,kx,ky),0,np.pi,N)   
     return value/(2*(np.pi)**2)
 
