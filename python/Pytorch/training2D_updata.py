@@ -21,7 +21,7 @@ def get_data(time, N, phase=[5,1]):
             print("error")
         return m
 
-    file = np.load('D:/program/vscode_workspace/private/data/project_data/{},BA_matrix_train,N={},delta=1.npz'.format(time,N))
+    file = np.load('D:/program/vscode_workspace/private/data/project_data/train/{},BA_matrix_train,N={},delta=1.npz'.format(time,N))
 
     test_input = np.concatenate((file["BA"][800 + move(phase[0]) : 1000 + move(phase[0])],
                                  file["BA"][800 + move(phase[1]): 1000 + move(phase[1])]))
