@@ -3,25 +3,19 @@ import torch.nn as nn
 import torch.utils.data as Data
 
 class CNN(nn.Module):
-    def __init__(self,conv1,conv2):
+    def __init__(self,conv1,conv2,linear):
         super(CNN, self).__init__()
-        self.conv1 = nn.Sequential(  # input shape (1, 28, 28)
-            nn.Conv2d(
-                in_channels=conv1[0],      # input height
-                out_channels=conv1[1],    # n_filters
-                kernel_size=conv1[2],      # filter size
-                stride=conv1[3],           # filter movement/step
-                padding=conv1[4],      # 如果想要 con2d 出来的图片长宽没有变化, padding=(kernel_size-1)/2 当 stride=1
-            ),      # output shape (16, 28, 28)
-            nn.ReLU(),    # activation
-            nn.MaxPool2d(kernel_size=2),    # 在 2x2 空间里向下采样, output shape (16, 14, 14)
-        )
-        self.conv2 = nn.Sequential(  # input shape (16, 14, 14)
-            nn.Conv2d(conv2[0], conv2[1], conv2[2], conv2[3], conv2[4]),  # output shape (32, 14, 14)
-            nn.ReLU(),  # activation
-            nn.MaxPool2d(2),  # output shape (32, 7, 7)
-        )
-        self.out = nn.Linear(32 * 7 * 7, 2)   # fully connected layer, output 10 classes
+        self.conv1 = nn.Sequential(
+            nn.Conv3d(conv1[0],conv1[1],kernel_size=conv1[2],stride=conv1[3],padding=conv1[4]),
+            nn.ReLU(),
+            nn.MaxPool3d(kernel_size=(1,2,2),stride=(1,2,2))
+            )
+        self.conv2 = nn.Sequential(
+            nn.Conv3d(conv2[0],conv2[1],kernel_size=conv2[2],stride=conv2[3],padding=conv2[4]),
+            nn.ReLU(),
+            nn.MaxPool3d(kernel_size=(2,2,2),stride=(2,2,2))
+            )
+        self.out = nn.Linear(linear[0], linear[1])   # fully connected layer, output 10 classes
 
     def forward(self, x):
         x = self.conv1(x)
@@ -30,7 +24,7 @@ class CNN(nn.Module):
         output = self.out(x)
         return output
 
-cnn = CNN((1, 16, 5, 1, 2),(16, 32, 5, 1, 2))
+cnn = CNN((3, 16, (3,3,3), 1, (1,1,1)),(64, 128, (3,3,3), 1, (1,1,1)),(32 * 7 * 7, 2))
 
 EPOCH = 1           # 训练整批数据多少次, 为了节约时间, 我们只训练一次
 BATCH_SIZE = 50

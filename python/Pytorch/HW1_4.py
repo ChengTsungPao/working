@@ -85,6 +85,8 @@ dataloader = DataLoader(image,batch_size=2,num_workers=2)
 
 def main():
     for imgs , labels in dataloader:
+        print(image)
+        print(labels)
         for i in range(len(imgs)):
             plt.subplot(241+i)
             plt.title(labels[i])
