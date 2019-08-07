@@ -23,7 +23,7 @@ def get_test_data(data,phase):
             cut[0] = i
         if(cut[1] < i and int(data["phase"][i])==phase):
             cut[1] = i  
-    return data["BA"][cut[0]:cut[1]],data["phase"][cut[0]:cut[1]]
+    return data["BA"][cut[0]:cut[1]+1],data["phase"][cut[0]:cut[1]+1]
 
 class CNN(nn.Module):
     def __init__(self,conv1,conv2,linear):
@@ -57,10 +57,6 @@ class CNN(nn.Module):
 
 model = torch.load(filename)
 
-file = np.load((path+'/test/{},BA_matrix_test,N={},delta=1.npz').format(particle_data[0],particle_data[1]))            
-test1 = TensorDataset(torch.tensor(get_test_data(file,classify_phase[0])[0]),torch.tensor(get_test_data(file,classify_phase[0])[1]))
-test2 = TensorDataset(torch.tensor(get_test_data(file,classify_phase[1])[0]),torch.tensor(get_test_data(file,classify_phase[1])[1]))
-
 def Probability(data,target):
     p = []
     for i in range(len(data)):
@@ -68,6 +64,7 @@ def Probability(data,target):
         p.append(output[0][target])
     return p
 
+file = np.load((path+'/test/{},BA_matrix_test,N={},delta=1.npz').format(particle_data[0],particle_data[1]))
 target1 = Probability(get_test_data(file,classify_phase[0])[0],0) 
 target2 = Probability(get_test_data(file,classify_phase[1])[0],0) 
 plt.plot(range(len(target1)+len(target2)),target1+target2)

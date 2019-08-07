@@ -59,7 +59,7 @@ def get_test_data(data,phase):
             cut[0] = i
         if(cut[1] < i and int(data["phase"][i])==phase):
             cut[1] = i  
-    return data["BA"][cut[0]:cut[1]],data["phase"][cut[0]:cut[1]]
+    return data["BA"][cut[0]:cut[1]+1],data["phase"][cut[0]:cut[1]+1]
 
 class CNN(nn.Module):
     def __init__(self,conv1,conv2,linear):
