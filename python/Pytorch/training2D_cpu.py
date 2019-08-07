@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader, TensorDataset, Dataset
 path = './data'
 classify_phase = [5,1]
 particle_data = ["20190804","6"]
+number_of_particle = int(particle_data[1])*int(particle_data[1])
 
 EPOCH = 1          
 LR = 0.001  
@@ -51,19 +52,14 @@ total_data = get_train_data(particle_data[0],particle_data[1],classify_phase)
 test_data  = TensorDataset(total_data[0],total_data[1])
 train_data = TensorDataset(total_data[2],total_data[3])
 
-def get_test_data(data,phase=[5,1]):    
-    cut1 = [len(data["phase"]),0]
-    cut2 = [len(data["phase"]),0]       
+def get_test_data(data,phase):    
+    cut = [len(data["phase"]),0]     
     for i in range(len(data["phase"])):        
-        if(cut1[0] > i and int(data["phase"][i])==phase[0]):
-            cut1[0] = i
-        if(cut1[1] < i and int(data["phase"][i])==phase[0]):
-            cut1[1] = i
-        if(cut2[0] > i and int(data["phase"][i])==phase[1]):
-            cut2[0] = i
-        if(cut2[1] < i and int(data["phase"][i])==phase[1]):
-            cut2[1] = i    
-    return cut1,cut2
+        if(cut[0] > i and int(data["phase"][i])==phase):
+            cut[0] = i
+        if(cut[1] < i and int(data["phase"][i])==phase):
+            cut[1] = i  
+    return data["BA"][cut[0]:cut[1]],data["phase"][cut[0]:cut[1]]
 
 class CNN(nn.Module):
     def __init__(self,conv1,conv2,linear):
@@ -100,7 +96,7 @@ cnn = CNN(internet[0],internet[1],internet[2])
 def Accuracy(data):        
     s = 0
     for step, (b_x, b_y) in enumerate(data):            
-        a = torch.reshape(b_x,(-1,1,36,36))   
+        a = torch.reshape(b_x,(-1,1,number_of_particle,number_of_particle))   
         output = cnn(a.float())         
         if(b_y.numpy()<np.mean(classify_phase) and output[0][0]>output[0][1]):
             s += 1 
@@ -117,7 +113,7 @@ def main():
         print("epoch:"+str(epoch)+"\n")
         
         for step, (b_x, b_y) in enumerate(train_dataloader):   
-            a = torch.reshape(b_x,(-1,1,36,36))
+            a = torch.reshape(b_x,(-1,1,number_of_particle,number_of_particle))
             b = torch.tensor((b_y.numpy()>np.mean(classify_phase))*1.)
             output = cnn(a.float())   
             optimizer.zero_grad()        
@@ -134,10 +130,9 @@ def main():
             print("epoch:"+str(epoch))
             print("  training:"+str(Accuracy(train_data)))
             print("  predict :"+str(Accuracy(test_data)))
-            file = np.load((path+'/test/{},BA_matrix_test,N={},delta=1.npz').format(particle_data[0],particle_data[1]))
-            r = get_test_data(file,[5,1])
-            test1 = TensorDataset(torch.tensor(file["BA"][r[0][0]:r[0][1]]),torch.tensor(file["phase"][r[0][0]:r[0][1]]))
-            test2 = TensorDataset(torch.tensor(file["BA"][r[1][0]:r[1][1]]),torch.tensor(file["phase"][r[1][0]:r[1][1]]))
+            file = np.load((path+'/test/{},BA_matrix_test,N={},delta=1.npz').format(particle_data[0],particle_data[1]))            
+            test1 = TensorDataset(torch.tensor(get_test_data(file,classify_phase[0])[0]),torch.tensor(get_test_data(file,classify_phase[0])[1]))
+            test2 = TensorDataset(torch.tensor(get_test_data(file,classify_phase[1])[0]),torch.tensor(get_test_data(file,classify_phase[1])[1]))
             tmp = (Accuracy(test1)*len(test1)+Accuracy(test2)*len(test2))/(len(test1)+len(test2))
             print("  total_predict :"+str(tmp))
             acc.append(tmp)
