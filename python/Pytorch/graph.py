@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader, TensorDataset, Dataset
 #path = 'D:/program/vscode_workspace/private/data/project_data'
 path = './data'
 #filename = '20190807154918,phase=[5, 1],gpu.pkl'
-filename = input("input the filename:")
+filename = input("input the filename: ")
 
 classify_phase = [5,1]
 particle_data = ["20190804","6"]
