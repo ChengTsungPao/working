@@ -1,0 +1,69 @@
+import time
+import numpy as np
+from glob import glob
+
+import torch
+import torch.nn as nn
+import torch.utils.data as Data
+from torch.utils.data import DataLoader, TensorDataset, Dataset
+path = 'D:/program/vscode_workspace/private/data/project_data'
+classify_phase = [5,1]
+particle_data = ["20190804","6"]
+
+EPOCH = 1          
+LR = 0.001  
+BATCH_SIZE = 3
+internet = [(1, 16, 5, 1, 2),(16, 32, 5, 1, 2),(32 * 9 * 9, 512, 2)]
+
+
+def get_train_data(time, N, phase=[5,1]):
+
+    def move(ph):
+        if(ph==5):
+            m = 0
+        elif(ph==1):
+            m = 1000
+        elif(ph==3):
+            m = 2000
+        elif(ph==7):
+            m = 3000
+        else:
+            print("error")
+        return m
+
+    file = np.load((path+'/train/{},BA_matrix_train,N={},delta=1.npz').format(time,N))
+
+    test_input = np.concatenate((file["BA"][800 + move(phase[0]) : 1000 + move(phase[0])],
+                                 file["BA"][800 + move(phase[1]): 1000 + move(phase[1])]))
+    test_target = np.concatenate((file["phase"][800 + move(phase[0]) : 1000 + move(phase[0])],
+                                  file["phase"][800 + move(phase[1]) : 1000 + move(phase[1])]))
+    train_input = np.concatenate((file["BA"][0 + move(phase[0]) : 800 + move(phase[0])],
+                                  file["BA"][0 + move(phase[1]) : 800 + move(phase[1])]))
+    train_target = np.concatenate((file["phase"][0 + move(phase[0]) : 800 + move(phase[0])],
+                                   file["phase"][0 + move(phase[1]) : 800 + move(phase[1])]))
+    return [torch.tensor(test_input   ,dtype=torch.float64),
+            torch.tensor(test_target,dtype=torch.float64),
+            torch.tensor(train_input   ,dtype=torch.float64),
+            torch.tensor(train_target,dtype=torch.float64)]
+
+total_data = get_train_data(particle_data[0],particle_data[1],classify_phase)
+test_data  = TensorDataset(total_data[0],total_data[1])
+train_data = TensorDataset(total_data[2],total_data[3])
+def main():
+    model = torch.load('net.pkl')
+    def Accuracy(data):        
+        s = 0
+        for step, (b_x, b_y) in enumerate(data):            
+            a = torch.reshape(b_x,(-1,1,36,36))   
+            a = a.cuda()
+            output = model(a.float())         
+            if(b_y.numpy()<np.mean(classify_phase) and output[0][0]>output[0][1]):
+                s += 1 
+            elif(b_y.numpy()>np.mean(classify_phase) and output[0][0]<output[0][1]):                
+                s += 1
+        return s/len(data) 
+
+    print(Accuracy(train_data))
+
+if __name__ == '__main__':
+    main()
