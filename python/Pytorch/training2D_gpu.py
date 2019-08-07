@@ -65,53 +65,52 @@ def get_test_data(data,phase=[5,1]):
             cut2[1] = i    
     return cut1,cut2
 
-def main():          
-    class CNN(nn.Module):
-        def __init__(self,conv1,conv2,linear):
-            super(CNN, self).__init__()
-            self.conv1 = nn.Sequential(  
-                nn.Conv2d(
-                    in_channels=conv1[0],      
-                    out_channels=conv1[1],    
-                    kernel_size=conv1[2],     
-                    stride=conv1[3],          
-                    padding=conv1[4],      
-                ),      
-                nn.ReLU(),    
-                nn.MaxPool2d(kernel_size=2), 
-            )
-            self.conv2 = nn.Sequential(  
-                nn.Conv2d(conv2[0], conv2[1], conv2[2], conv2[3], conv2[4]),  
-                nn.ReLU(),  
-                nn.MaxPool2d(2),  
-            )
-            self.layer = nn.Linear(linear[0], linear[1])  
-            self.out = nn.Linear(linear[1], linear[2])  
+class CNN(nn.Module):
+    def __init__(self,conv1,conv2,linear):
+        super(CNN, self).__init__()
+        self.conv1 = nn.Sequential(  
+            nn.Conv2d(
+                in_channels=conv1[0],      
+                out_channels=conv1[1],    
+                kernel_size=conv1[2],     
+                stride=conv1[3],          
+                padding=conv1[4],      
+            ),      
+            nn.ReLU(),    
+            nn.MaxPool2d(kernel_size=2), 
+        )
+        self.conv2 = nn.Sequential(  
+            nn.Conv2d(conv2[0], conv2[1], conv2[2], conv2[3], conv2[4]),  
+            nn.ReLU(),  
+            nn.MaxPool2d(2),  
+        )
+        self.layer = nn.Linear(linear[0], linear[1])  
+        self.out = nn.Linear(linear[1], linear[2])
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = x.view(x.size(0), -1)   
+        x = self.layer(x)
+        x = self.out(x)
+        output = nn.functional.softmax(x,dim=1)
+        return output
 
-        def forward(self, x):
-            x = self.conv1(x)
-            x = self.conv2(x)
-            x = x.view(x.size(0), -1)   
-            x = self.layer(x)
-            x = self.out(x)
-            output = nn.functional.softmax(x,dim=1)
-            return output
+cnn = CNN(internet[0],internet[1],internet[2])  
+cnn = cnn.cuda() 
 
-    cnn = CNN(internet[0],internet[1],internet[2])  
-    cnn = cnn.cuda() 
+def Accuracy(data):        
+    s = 0
+    for step, (b_x, b_y) in enumerate(data):            
+        a = torch.reshape(b_x,(-1,1,36,36))   
+        a = a.cuda()
+        output = cnn(a.float())         
+        if(b_y.numpy()<np.mean(classify_phase) and output[0][0]>output[0][1]):
+            s += 1 
+        elif(b_y.numpy()>np.mean(classify_phase) and output[0][0]<output[0][1]):                
+            s += 1
+    return s/len(data)
 
-    def Accuracy(data):        
-        s = 0
-        for step, (b_x, b_y) in enumerate(data):            
-            a = torch.reshape(b_x,(-1,1,36,36))   
-            a = a.cuda()
-            output = cnn(a.float())         
-            if(b_y.numpy()<np.mean(classify_phase) and output[0][0]>output[0][1]):
-                s += 1 
-            elif(b_y.numpy()>np.mean(classify_phase) and output[0][0]<output[0][1]):                
-                s += 1
-        return s/len(data)  
-
+def main():
     acc = []  
     train_dataloader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True, num_workers=2) 
     optimizer = torch.optim.Adam(cnn.parameters(), lr=LR)  
@@ -140,7 +139,7 @@ def main():
             print("epoch:"+str(epoch))
             print("  training:"+str(Accuracy(train_data)))
             print("  predict :"+str(Accuracy(test_data)))
-            file = np.load((path+'/test/{},BA_matrix_test,N={},delta=1.npz').format("20190804","6"))
+            file = np.load((path+'/test/{},BA_matrix_test,N={},delta=1.npz').format(particle_data[0],particle_data[1]))
             r = get_test_data(file,[5,1])
             test1 = TensorDataset(torch.tensor(file["BA"][r[0][0]:r[0][1]]),torch.tensor(file["phase"][r[0][0]:r[0][1]]))
             test2 = TensorDataset(torch.tensor(file["BA"][r[1][0]:r[1][1]]),torch.tensor(file["phase"][r[1][0]:r[1][1]]))
@@ -149,8 +148,7 @@ def main():
             acc.append(tmp)
     print("\n")
     print(acc)
-    #torch.save(cnn, time.strftime("%Y%m%d%H%M%S", time.localtime())+",phase="+str(classify_phase)+'.pkl')
-
-
+    torch.save(cnn, time.strftime("%Y%m%d%H%M%S", time.localtime())+",phase="+str(classify_phase)+',gpu.pkl')
+    
 if __name__ == '__main__':
     main()
