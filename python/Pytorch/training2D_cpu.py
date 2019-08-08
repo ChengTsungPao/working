@@ -138,7 +138,7 @@ def main():
             acc.append(tmp)
     print("\n")
     print(acc)
-    torch.save(cnn, time.strftime("%Y%m%d%H%M%S", time.localtime())+",phase="+str(classify_phase)+',cpu.pkl')
+    torch.save(cnn, time.strftime("%Y%m%d%H%M", time.localtime())+",phase="+str(classify_phase)+",N="+particle_data[1]+',gpu.pkl')
 
 
 if __name__ == '__main__':
