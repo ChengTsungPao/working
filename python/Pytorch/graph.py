@@ -69,9 +69,9 @@ target1 = Probability(get_test_data(file,classify_phase[0])[0],0)
 target2 = Probability(get_test_data(file,classify_phase[1])[0],0) 
 plt.plot(range(len(target1)+len(target2)),target1+target2)
 
-#target1 = Probability(get_test_data(file,classify_phase[0])[0],1) 
-#target2 = Probability(get_test_data(file,classify_phase[1])[0],1) 
-#plt.plot(range(len(target1)+len(target2)),target1+target2)
+#target3 = Probability(get_test_data(file,classify_phase[0])[0],1) 
+#target4 = Probability(get_test_data(file,classify_phase[1])[0],1) 
+#plt.plot(range(len(target3)+len(target4)),target3+target4)
 
 plt.show()
 
