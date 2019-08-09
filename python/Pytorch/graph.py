@@ -7,12 +7,18 @@ import torch.nn as nn
 import torch.utils.data as Data
 from torch.utils.data import DataLoader, TensorDataset, Dataset
 
-#path = 'D:/program/vscode_workspace/private/data/project_data'
-path = './data'
-filename = '20190807154918,phase=[5, 1],gpu.pkl'
+path = 'D:/program/vscode_workspace/private/data/project_data'
+#path = './data'
+filename = input("input the filename: ")
+#graph = input("input the graph name: ") 
+#npzname = input("input the npzname: ")
 
 classify_phase = [5,1]
+classify_phase[0] = int(filename.split("[")[1][0]) 
+classify_phase[1] = int(filename.split("]")[0][-1])
+
 particle_data = ["20190804","6"]
+particle_data[1] = filename.split("N=")[1][0]
 number_of_particle = int(particle_data[1])*int(particle_data[1])
 
 def get_test_data(data,phase):    
@@ -54,24 +60,26 @@ class CNN(nn.Module):
         output = nn.functional.softmax(x,dim=1)
         return output
 
-model = torch.load(filename)
+model = torch.load("D:/program/vscode_workspace/private/data/project_train/model/"+filename)
 
 def Probability(data,target):
     p = []
     for i in range(len(data)):
         output = model(torch.tensor(data[i]).reshape(1,1,number_of_particle,number_of_particle).float().cuda())
-        p.append(output[0][target])
+        p.append(output[0][target].cpu().data.numpy())
     return p
 
 file = np.load((path+'/test/{},BA_matrix_test,N={},delta=1.npz').format(particle_data[0],particle_data[1]))
 target1 = Probability(get_test_data(file,classify_phase[0])[0],0) 
 target2 = Probability(get_test_data(file,classify_phase[1])[0],0) 
-plt.plot(range(len(target1)+len(target2)),target1+target2)
+plt.plot(range(len(target1)+len(target2)),target1+target2,"o")
 
-#target3 = Probability(get_test_data(file,classify_phase[0])[0],1) 
-#target4 = Probability(get_test_data(file,classify_phase[1])[0],1) 
-#plt.plot(range(len(target3)+len(target4)),target3+target4)
-
+target3 = Probability(get_test_data(file,classify_phase[0])[0],1) 
+target4 = Probability(get_test_data(file,classify_phase[1])[0],1) 
+plt.plot(range(len(target3)+len(target4)),target3+target4,"o")
 plt.show()
+
+#plt.savefig(graph)
+#np.savez("./npzfile/"+npzname,phase1 = target1+target2,phase2 = target3+target4)
 
 
