@@ -80,6 +80,12 @@ plt.plot(range(len(target3)+len(target4)),target3+target4,"o")
 plt.show()
 
 #plt.savefig(graph)
-#np.savez("./npzfile/"+npzname,phase1 = target1+target2,phase2 = target3+target4)
+
+'''
+if(classify_phase[0]<classify_phase[1]):
+    np.savez("./npzfile/"+npzname,phase1 = target1+target2,phase2 = target3+target4)
+else:
+    np.savez("./npzfile/"+npzname,phase1 = target3+target4,phase2 = target1+target2)
+'''
 
 
