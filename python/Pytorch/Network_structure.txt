@@ -1,0 +1,152 @@
+神經網路結構
+
+N = 5
+CNN(
+  (conv1): Sequential(
+    (0): Conv2d(1, 16, kernel_size=(4, 4), stride=(1, 1), padding=(2, 2))
+    (1): ReLU()
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(16, 32, kernel_size=(4, 4), stride=(1, 1), padding=(2, 2))
+    (1): ReLU()
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  )
+  (layer): Linear(in_features=1568, out_features=512, bias=True)
+  (out): Linear(in_features=512, out_features=2, bias=True)
+)
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv2d-1           [-1, 16, 26, 26]             272
+              ReLU-2           [-1, 16, 26, 26]               0
+         MaxPool2d-3           [-1, 16, 13, 13]               0
+            Conv2d-4           [-1, 32, 14, 14]           8,224
+              ReLU-5           [-1, 32, 14, 14]               0
+         MaxPool2d-6             [-1, 32, 7, 7]               0
+            Linear-7                  [-1, 512]         803,328
+            Linear-8                    [-1, 2]           1,026
+================================================================
+Total params: 812,850
+Trainable params: 812,850
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.00
+Forward/backward pass size (MB): 0.30
+Params size (MB): 3.10
+Estimated Total Size (MB): 3.40
+----------------------------------------------------------------
+
+
+N = 6
+CNN(
+  (conv1): Sequential(
+    (0): Conv2d(1, 16, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): ReLU()
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(16, 32, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): ReLU()
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  )
+  (layer): Linear(in_features=2592, out_features=512, bias=True)
+  (out): Linear(in_features=512, out_features=2, bias=True)
+)
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv2d-1           [-1, 16, 36, 36]             416
+              ReLU-2           [-1, 16, 36, 36]               0
+         MaxPool2d-3           [-1, 16, 18, 18]               0
+            Conv2d-4           [-1, 32, 18, 18]          12,832
+              ReLU-5           [-1, 32, 18, 18]               0
+         MaxPool2d-6             [-1, 32, 9, 9]               0
+            Linear-7                  [-1, 512]       1,327,616
+            Linear-8                    [-1, 2]           1,026
+================================================================
+Total params: 1,341,890
+Trainable params: 1,341,890
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.00
+Forward/backward pass size (MB): 0.54
+Params size (MB): 5.12
+Estimated Total Size (MB): 5.66
+----------------------------------------------------------------
+
+
+N = 7
+CNN(
+  (conv1): Sequential(
+    (0): Conv2d(1, 16, kernel_size=(4, 4), stride=(1, 1), padding=(2, 2))
+    (1): ReLU()
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(16, 32, kernel_size=(4, 4), stride=(1, 1), padding=(2, 2))
+    (1): ReLU()
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  )
+  (layer): Linear(in_features=5408, out_features=512, bias=True)
+  (out): Linear(in_features=512, out_features=2, bias=True)
+)
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv2d-1           [-1, 16, 50, 50]             272
+              ReLU-2           [-1, 16, 50, 50]               0
+         MaxPool2d-3           [-1, 16, 25, 25]               0
+            Conv2d-4           [-1, 32, 26, 26]           8,224
+              ReLU-5           [-1, 32, 26, 26]               0
+         MaxPool2d-6           [-1, 32, 13, 13]               0
+            Linear-7                  [-1, 512]       2,769,408
+            Linear-8                    [-1, 2]           1,026
+================================================================
+Total params: 2,778,930
+Trainable params: 2,778,930
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.01
+Forward/backward pass size (MB): 1.06
+Params size (MB): 10.60
+Estimated Total Size (MB): 11.67
+----------------------------------------------------------------
+
+
+N = 8
+CNN(
+  (conv1): Sequential(
+    (0): Conv2d(1, 16, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): ReLU()
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv2d(16, 32, kernel_size=(5, 5), stride=(1, 1), padding=(2, 2))
+    (1): ReLU()
+    (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  )
+  (layer): Linear(in_features=8192, out_features=512, bias=True)
+  (out): Linear(in_features=512, out_features=2, bias=True)
+)
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv2d-1           [-1, 16, 64, 64]             416
+              ReLU-2           [-1, 16, 64, 64]               0
+         MaxPool2d-3           [-1, 16, 32, 32]               0
+            Conv2d-4           [-1, 32, 32, 32]          12,832
+              ReLU-5           [-1, 32, 32, 32]               0
+         MaxPool2d-6           [-1, 32, 16, 16]               0
+            Linear-7                  [-1, 512]       4,194,816
+            Linear-8                    [-1, 2]           1,026
+================================================================
+Total params: 4,209,090
+Trainable params: 4,209,090
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.02
+Forward/backward pass size (MB): 1.69
+Params size (MB): 16.06
+Estimated Total Size (MB): 17.76
+----------------------------------------------------------------
