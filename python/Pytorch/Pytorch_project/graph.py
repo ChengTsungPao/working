@@ -20,6 +20,10 @@ classify_phase[1] = int(filename.split("]")[0][-1])
 particle_data = ["20190804","6"]
 particle_data[1] = filename.split("N=")[1][0]
 number_of_particle = int(particle_data[1])*int(particle_data[1])
+if(classify_phase[0]==5 or classify_phase[0]==1 or classify_phase[0]==3 or classify_phase[0]==7):
+    delta = "1"
+else:
+    delta = "-1"
 
 def get_test_data(data,phase):    
     cut = [len(data["phase"]),0]     
@@ -69,7 +73,7 @@ def Probability(data,target):
         p.append(output[0][target].cpu().data.numpy())
     return p
 
-file = np.load((path+'/test/{},BA_matrix_test,N={},delta=1.npz').format(particle_data[0],particle_data[1]))
+file = np.load((path+'/test/{},BA_matrix_test,N={},delta={}.npz').format(particle_data[0],particle_data[1],delta))
 target1 = Probability(get_test_data(file,classify_phase[0])[0],0) 
 target2 = Probability(get_test_data(file,classify_phase[1])[0],0) 
 plt.plot(range(len(target1)+len(target2)),target1+target2,"o")

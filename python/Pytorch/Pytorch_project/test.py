@@ -1,17 +1,17 @@
 import numpy as np
 path = 'D:/program/vscode_workspace/private/data/project_data'
-particle_data = ["20190804","6"]
-file = np.load((path+'/test/{},BA_matrix_test,N={},delta=1.npz').format(particle_data[0],particle_data[1]))
+particle_data = ["20190811","6"]
+file = np.load((path+'/test/{},BA_matrix_test,N={},delta=-1.npz').format(particle_data[0],particle_data[1]))
 s = [0,0,0,0]
 for i in range(len(file["phase"])):    
     #print(file["phase"][i])
-    if(int(file["phase"][i])==5):
+    if(int(file["phase"][i])==6):
         s[0] += 1
-    elif(int(file["phase"][i])==1):
+    elif(int(file["phase"][i])==2):
         s[1] += 1
     elif(int(file["phase"][i])==3):
         s[2] += 1   
-    elif(int(file["phase"][i])==7):
+    elif(int(file["phase"][i])==8):
         s[3] += 1
 
 print(s)

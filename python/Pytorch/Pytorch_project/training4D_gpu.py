@@ -9,6 +9,7 @@ from torch.utils.data import DataLoader, TensorDataset, Dataset
 
 #path = 'D:/program/vscode_workspace/private/data/project_data'
 path = './data'
+delta = "1"
 classify_phase = [5,1]
 particle_data = ["20190804","6"]
 number_of_particle = int(particle_data[1])*int(particle_data[1])
@@ -16,24 +17,24 @@ number_of_particle = int(particle_data[1])*int(particle_data[1])
 EPOCH = 1          
 LR = 0.001  
 BATCH_SIZE = 3
-internet = [(1, 16, 5, 1, 2),(16, 32, 5, 1, 2),(32 * 9 * 9, 512, 2)]
+internet = [(6, 16, (3,3,3), 1, (1,1,1)),(16, 32, (2,2,2), 1, (1,1,1)),(32 * 2 * 2 * 2, 128, 2)]
 
 def get_train_data(time, N, phase=[5,1]):
 
     def move(ph):
-        if(ph==5):
+        if(ph==5 or ph==6):
             m = 0
-        elif(ph==1):
+        elif(ph==1 or ph==2):
             m = 1000
-        elif(ph==3):
+        elif(ph==3 or ph==4):
             m = 2000
-        elif(ph==7):
+        elif(ph==7 or ph==8):
             m = 3000
         else:
             print("error")
         return m
 
-    file = np.load((path+'/train/{},BA_matrix_train,N={},delta=1.npz').format(time,N))
+    file = np.load((path+'/train/{},BA_matrix_train,N={},delta={}.npz').format(time,N,delta))
 
     test_input = np.concatenate((file["BA"][800 + move(phase[0]) : 1000 + move(phase[0])],
                                  file["BA"][800 + move(phase[1]): 1000 + move(phase[1])]))
@@ -73,12 +74,12 @@ class CNN(nn.Module):
                 padding=conv1[4],      
             ),      
             nn.ReLU(),    
-            nn.MaxPool2d(kernel_size=2), 
+            nn.MaxPool3d(kernel_size=(2,2,2),stride=(2,2,2)), 
         )
         self.conv2 = nn.Sequential(  
             nn.Conv3d(conv2[0], conv2[1], conv2[2], conv2[3], conv2[4]),  
             nn.ReLU(),  
-            nn.MaxPool2d(2),  
+            nn.MaxPool3d(kernel_size=(2,2,2),stride=(2,2,2)),  
         )
         self.layer = nn.Linear(linear[0], linear[1])  
         self.out = nn.Linear(linear[1], linear[2])
@@ -97,7 +98,7 @@ cnn = cnn.cuda()
 def Accuracy(data):        
     s = 0
     for step, (b_x, b_y) in enumerate(data):            
-        a = torch.reshape(b_x,(-1,1,number_of_particle,number_of_particle))   
+        a = torch.reshape(b_x,(-1,int(particle_data[1]),int(particle_data[1]),int(particle_data[1]),int(particle_data[1])))   
         a = a.cuda()
         output = cnn(a.float())         
         if(b_y.numpy()<np.mean(classify_phase) and output[0][0]>output[0][1]):
@@ -116,7 +117,7 @@ def main():
         print("epoch:"+str(epoch)+"\n")
         
         for step, (b_x, b_y) in enumerate(train_dataloader):   
-            a = torch.reshape(b_x,(-1,1,number_of_particle,number_of_particle))
+            a = torch.reshape(b_x,(-1,int(particle_data[1]),int(particle_data[1]),int(particle_data[1]),int(particle_data[1])))
             b = torch.tensor((b_y.numpy()>np.mean(classify_phase))*1.)
             a = a.cuda()
             b = b.cuda()
@@ -135,7 +136,7 @@ def main():
             print("epoch:"+str(epoch))
             print("  training:"+str(Accuracy(train_data)))
             print("  predict :"+str(Accuracy(test_data)))
-            file = np.load((path+'/test/{},BA_matrix_test,N={},delta=1.npz').format(particle_data[0],particle_data[1]))            
+            file = np.load((path+'/test/{},BA_matrix_test,N={},delta={}.npz').format(particle_data[0],particle_data[1],delta))            
             test1 = TensorDataset(torch.tensor(get_test_data(file,classify_phase[0])[0]),torch.tensor(get_test_data(file,classify_phase[0])[1]))
             test2 = TensorDataset(torch.tensor(get_test_data(file,classify_phase[1])[0]),torch.tensor(get_test_data(file,classify_phase[1])[1]))
             tmp = (Accuracy(test1)*len(test1)+Accuracy(test2)*len(test2))/(len(test1)+len(test2))

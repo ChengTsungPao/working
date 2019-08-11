@@ -1,0 +1,49 @@
+¿é¤J°Ñ¼Æ
+
+classify_phase = [5,1]
+		 [1,3]
+		 [3,7]             delta = 1
+---------------------------------------------
+		 [6,2]             delta = -1
+		 [2,4]
+		 [4,8]
+
+particle_data = ["20190804","5"]
+		["20190804","6"]
+		["20190804","7"]
+		["20190804","8"]    delta = 1
+---------------------------------------------
+		["20190811","5"]    delta = -1
+		["20190811","6"]
+		["20190811","7"]
+		["20190811","8"]
+
+
+internet = [(1, 16, 4, 1, 2),(16, 32, 4, 1, 2),(32 *  7 *  7, 512, 2)] #5x5
+internet = [(1, 16, 5, 1, 2),(16, 32, 5, 1, 2),(32 *  9 *  9, 512, 2)] #6x6
+internet = [(1, 16, 4, 1, 2),(16, 32, 4, 1, 2),(32 * 13 * 13, 512, 2)] #7x7
+internet = [(1, 16, 5, 1, 2),(16, 32, 5, 1, 2),(32 * 16 * 16, 512, 2)] #8x8
+
+EPOCH = 1000          
+LR = 0.001  
+BATCH_SIZE = 50
+
+
+
+
+
+code:
+
+classify_phase[0] = int(input("classify_phase[0] = "))
+classify_phase[1] = int(input("classify_phase[1] = "))
+particle_data[0] = input("particle_data[0] = ")
+particle_data[1] = input("particle_data[1] = ")
+net = input("internet[0] = ")
+net = net.strip("()").split(",")
+internet[0] = (int(net[0]),int(net[1]),int(net[2]),int(net[3]),int(net[4]))
+net = input("internet[1] = ")
+net = net.strip("()").split(",")
+internet[1] = (int(net[0]),int(net[1]),int(net[2]),int(net[3]),int(net[4]))
+net = input("internet[2] = ")
+net = net.strip("()").split(",")
+internet[2] = (int(net[0]),int(net[1]),int(net[2]))
