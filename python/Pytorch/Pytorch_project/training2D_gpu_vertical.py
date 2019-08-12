@@ -9,9 +9,9 @@ from torch.utils.data import DataLoader, TensorDataset, Dataset
 
 #path = 'D:/program/vscode_workspace/private/data/project_data'
 path = './data'
-delta = "1"
-classify_phase = [5,1,3,7]
-particle_data = ["20190804","6"]
+mu = "0.5"
+classify_phase = [1,2]
+particle_data = ["20190813","6"]
 number_of_particle = int(particle_data[1])*int(particle_data[1])
 
 EPOCH = 1          
@@ -21,19 +21,13 @@ internet = [(1, 16, 5, 1, 2),(16, 32, 5, 1, 2),(32 * 9 * 9, 512, 4)]
 
 def get_train_data(time, N):
 
-    def comb(ph1,ph2):
-        return np.concatenate((ph1,ph2))
+    file = np.load((path+'/train/{},BA_matrix_train,N={},mu={}.npz').format(time,N,mu))
 
-    file = np.load((path+'/train/{},BA_matrix_train,N={},delta={}.npz').format(time,N,delta))
-
-    test_input = comb(comb(file["BA"][ 800:1000],file["BA"][1800:2000]),
-                      comb(file["BA"][2800:3000],file["BA"][3800:4000]))
-    test_target = comb(comb(file["phase"][ 800:1000],file["phase"][1800:2000]),
-                       comb(file["phase"][2800:3000],file["phase"][3800:4000]))
-    train_input = comb(comb(file["BA"][   0: 800],file["BA"][1000:1800]),
-                       comb(file["BA"][2000:2800],file["BA"][3000:3800]))
-    train_target = comb(comb(file["phase"][   0: 800],file["phase"][1000:1800]),
-                        comb(file["phase"][2000:2800],file["phase"][3000:3800]))
+    test_input = np.concatenate((file["BA"][ 800:1000],file["BA"][1800:2000]))                      
+    test_target = np.concatenate((file["phase"][ 800:1000],file["phase"][1800:2000]))                       
+    train_input = np.concatenate((file["BA"][   0: 800],file["BA"][1000:1800]))                      
+    train_target = np.concatenate((file["phase"][   0: 800],file["phase"][1000:1800]))
+                        
     return [torch.tensor(test_input   ,dtype=torch.float64),
             torch.tensor(test_target,dtype=torch.float64),
             torch.tensor(train_input   ,dtype=torch.float64),
@@ -82,17 +76,9 @@ def Accuracy(data):
         a = torch.reshape(b_x,(-1,1,number_of_particle,number_of_particle))   
         a = a.cuda()
         output = cnn(a.float())         
-        if(int(b_y.numpy())==int(classify_phase[0]) and 
-           output[0][0]>output[0][1] and output[0][0]>output[0][2] and output[0][0]>output[0][3]):
+        if(b_y.numpy()<np.mean(classify_phase) and output[0][0]>output[0][1]):
             s += 1 
-        elif(int(b_y.numpy())==int(classify_phase[1]) and 
-             output[0][1]>output[0][0] and output[0][1]>output[0][2] and output[0][1]>output[0][3]):                
-            s += 1
-        elif(int(b_y.numpy())==int(classify_phase[2]) and 
-             output[0][2]>output[0][0] and output[0][2]>output[0][1] and output[0][2]>output[0][3]):                
-            s += 1
-        elif(int(b_y.numpy())==int(classify_phase[3]) and 
-             output[0][3]>output[0][0] and output[0][3]>output[0][1] and output[0][3]>output[0][2]):                
+        elif(b_y.numpy()>np.mean(classify_phase) and output[0][0]<output[0][1]):                
             s += 1
     return s/len(data)
 
@@ -106,18 +92,8 @@ def main():
         print("epoch:"+str(epoch)+"\n")
         
         for step, (b_x, b_y) in enumerate(train_dataloader):   
-            a = torch.reshape(b_x,(-1,1,number_of_particle,number_of_particle))            
-            b = []
-            for i in b_y.numpy():
-                if(int(i)==int(classify_phase[0])):
-                    b.append(0)
-                elif(int(i)==int(classify_phase[1])):
-                    b.append(1)
-                elif(int(i)==int(classify_phase[2])):
-                    b.append(2)
-                elif(int(i)==int(classify_phase[3])):
-                    b.append(3)
-            b = torch.tensor(b)
+            a = torch.reshape(b_x,(-1,1,number_of_particle,number_of_particle))
+            b = torch.tensor((b_y.numpy()>np.mean(classify_phase))*1.)
             a = a.cuda()
             b = b.cuda()
             output = cnn(a.float())   
@@ -135,7 +111,7 @@ def main():
             print("epoch:"+str(epoch))
             print("  training:"+str(Accuracy(train_data)))
             print("  predict :"+str(Accuracy(test_data)))
-            file = np.load((path+'/test/{},BA_matrix_test,N={},delta={}.npz').format(particle_data[0],particle_data[1],delta))            
+            file = np.load((path+'/test/{},BA_matrix_test,N={},mu={}.npz').format(particle_data[0],particle_data[1],mu))            
             test = TensorDataset(torch.tensor(file["BA"]),torch.tensor(file["phase"]))
             tmp = Accuracy(test)
             print("  total_predict :"+str(tmp))
