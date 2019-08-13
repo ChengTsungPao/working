@@ -13,31 +13,46 @@ filename = input("input the filename: ")
 #graph = input("input the graph name: ") 
 #npzname = input("input the npzname: ")
 
-classify_phase = [5,1]
-classify_phase[0] = int(filename.split("[")[1][0]) 
-classify_phase[1] = int(filename.split("]")[0][-1])
+classify = filename.split("[")[1].split("]")[0]
+classify = classify.split(",")
+classify_phase = []
+for i in range(len(classify)):
+    classify_phase.append(int(classify[i]))
+
 
 particle_data = ["20190804","6"]
 particle_data[1] = filename.split("N=")[1][0]
 number_of_particle = int(particle_data[1])*int(particle_data[1])
 
-flag = 0
 if(abs(classify_phase[0]-classify_phase[1])==1):
-    flag = 1
-
-if(classify_phase[0]==5 or classify_phase[0]==1 or classify_phase[0]==3 or classify_phase[0]==7):
-    delta = "1"
+    if(classify_phase[0]==1):
+        line = "mu=0.5"
+    elif(classify_phase[0]==3):
+        line = "mu=3"
+    elif(classify_phase[0]==7):
+        line = "mu=5"
+    elif(classify_phase[0]==5):
+        line = "mu=-1"
+elif(classify_phase[0]%2==1):
+    line = "delta=1"
+elif(classify_phase[0]%2==0):
+    line = "delta=-1"
 else:
-    delta = "-1"
+    print("please input the correct phase !!!")
 
-def get_test_data(data,phase):    
-    cut = [len(data["phase"]),0]     
-    for i in range(len(data["phase"])):        
-        if(cut[0] > i and int(data["phase"][i])==phase):
-            cut[0] = i
-        if(cut[1] < i and int(data["phase"][i])==phase):
-            cut[1] = i  
-    return data["BA"][cut[0]:cut[1]+1],data["phase"][cut[0]:cut[1]+1]
+def get_test_data(phase):  
+    BA = []
+    file = np.load((path+'/test/{},BA_matrix_test,N={},{}.npz').format(particle_data[0],particle_data[1],line))
+    for i in range(len(phase)):
+        cut = [len(file["phase"]),0]     
+        for j in range(len(file["phase"])):        
+            if(cut[0] > j and int(file["phase"][j])==phase[i]):
+                cut[0] = j
+            if(cut[1] < j and int(file["phase"][j])==phase[i]):
+                cut[1] = j 
+        BA += file["BA"][cut[0]:cut[1]+1].tolist()        
+
+    return np.array(BA)
 
 class CNN(nn.Module):
     def __init__(self,conv1,conv2,linear):
@@ -78,23 +93,23 @@ def Probability(data,target):
         p.append(output[0][target].cpu().data.numpy())
     return p
 
-file = np.load((path+'/test/{},BA_matrix_test,N={},delta={}.npz').format(particle_data[0],particle_data[1],delta))
-target1 = Probability(get_test_data(file,classify_phase[0])[0],0) 
-target2 = Probability(get_test_data(file,classify_phase[1])[0],0) 
-plt.plot(range(len(target1)+len(target2)),target1+target2,"o")
+target = []
+for i in range(len(classify_phase)):
+    target.append(Probability(get_test_data(classify_phase),i)) 
+    plt.plot(range(len(target[i])),target[i],"o")
 
-target3 = Probability(get_test_data(file,classify_phase[0])[0],1) 
-target4 = Probability(get_test_data(file,classify_phase[1])[0],1) 
-plt.plot(range(len(target3)+len(target4)),target3+target4,"o")
 plt.show()
 
 #plt.savefig(graph)
 
 '''
-if(classify_phase[0]<classify_phase[1]):
-    np.savez("./npzfile/"+npzname,phase1 = target1+target2,phase2 = target3+target4)
+if(len(classify_phase)==2):
+    np.savez("./npzfile/"+npzname,phase1 = target[0],phase2 = target[1])
+elif(len(classify_phase)==4):
+    np.savez("./npzfile/"+npzname,phase1 = target[0],phase2 = target[1],phase3 = target[2],phase4 = target[3])
 else:
-    np.savez("./npzfile/"+npzname,phase1 = target3+target4,phase2 = target1+target2)
+    print("please input the correct phase !!!")    
 '''
+
 
 

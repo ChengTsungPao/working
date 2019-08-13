@@ -19,7 +19,14 @@ BATCH_SIZE = 3
 internet = [(1, 16, 5, 1, 2),(16, 32, 5, 1, 2),(32 * 9 * 9, 512, 2)]
 
 if(abs(classify_phase[0]-classify_phase[1])==1):
-    line = "mu=1"
+    if(classify_phase[0]==1):
+        line = "mu=0.5"
+    elif(classify_phase[0]==3):
+        line = "mu=3"
+    elif(classify_phase[0]==7):
+        line = "mu=5"
+    elif(classify_phase[0]==5):
+        line = "mu=-1"
 elif(classify_phase[0]%2==1):
     line = "delta=1"
 elif(classify_phase[0]%2==0):
@@ -27,22 +34,30 @@ elif(classify_phase[0]%2==0):
 else:
     print("please input the correct phase !!!")
 
-def get_train_data(time, N, phase):
+def get_train_data(phase):
 
     def move(ph):
-        if(ph==5 or ph==6):
-            m = 0
-        elif(ph==1 or ph==2):
-            m = 1000
-        elif(ph==3 or ph==4):
-            m = 2000
-        elif(ph==7 or ph==8):
-            m = 3000
+        if(line=="delta=1" or line=="delta=-1"):
+            if(ph==5 or ph==6):
+                m = 0
+            elif(ph==1 or ph==2):
+                m = 1000
+            elif(ph==3 or ph==4):
+                m = 2000
+            elif(ph==7 or ph==8):
+                m = 3000
+            else:
+                print("error")
         else:
-            print("error")
+            if(ph==5 or ph==1 or ph==3 or ph==7):
+                m = 0
+            elif(ph==6 or ph==2 or ph==4 or ph==8):
+                m = 1000
+            else:
+                print("error")            
         return m
 
-    file = np.load((path+'/train/{},BA_matrix_train,N={},{}.npz').format(time,N,line))
+    file = np.load((path+'/train/{},BA_matrix_train,N={},{}.npz').format(particle_data[0],particle_data[1],line))
 
     test_input = []
     test_target = []
@@ -65,7 +80,7 @@ def get_train_data(time, N, phase):
             torch.tensor(train_input   ,dtype=torch.float64),
             torch.tensor(train_target,dtype=torch.float64)]
 
-total_data = get_train_data(particle_data[0],particle_data[1],classify_phase)
+total_data = get_train_data(classify_phase)
 test_data  = TensorDataset(total_data[0],total_data[1])
 train_data = TensorDataset(total_data[2],total_data[3])
 
@@ -166,7 +181,7 @@ def main():
                 print("target:\n"+str(b.data))
                 print("\n")
 
-        if(epoch%10==0):        
+        if(epoch%100==0):        
             print("epoch:"+str(epoch))
             print("  training:"+str(Accuracy(train_data)))
             print("  predict :"+str(Accuracy(test_data)))   
