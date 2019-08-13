@@ -20,6 +20,11 @@ classify_phase[1] = int(filename.split("]")[0][-1])
 particle_data = ["20190804","6"]
 particle_data[1] = filename.split("N=")[1][0]
 number_of_particle = int(particle_data[1])*int(particle_data[1])
+
+flag = 0
+if(abs(classify_phase[0]-classify_phase[1])==1):
+    flag = 1
+
 if(classify_phase[0]==5 or classify_phase[0]==1 or classify_phase[0]==3 or classify_phase[0]==7):
     delta = "1"
 else:
