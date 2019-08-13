@@ -20,7 +20,7 @@ internet = [(1, 16, 5, 1, 2),(16, 32, 5, 1, 2),(32 * 9 * 9, 512, 2)]
 
 if(abs(classify_phase[0]-classify_phase[1])==1):
     if(classify_phase[0]==1):
-        line = "mu=0.5"
+        line = "mu=1"
     elif(classify_phase[0]==3):
         line = "mu=3"
     elif(classify_phase[0]==7):

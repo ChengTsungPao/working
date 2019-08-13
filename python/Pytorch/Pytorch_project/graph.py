@@ -20,13 +20,13 @@ for i in range(len(classify)):
     classify_phase.append(int(classify[i]))
 
 
-particle_data = ["20190804","6"]
+particle_data = ["20190813","6"]
 particle_data[1] = filename.split("N=")[1][0]
 number_of_particle = int(particle_data[1])*int(particle_data[1])
 
 if(abs(classify_phase[0]-classify_phase[1])==1):
     if(classify_phase[0]==1):
-        line = "mu=0.5"
+        line = "mu=1"
     elif(classify_phase[0]==3):
         line = "mu=3"
     elif(classify_phase[0]==7):
