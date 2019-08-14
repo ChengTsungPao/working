@@ -90,6 +90,7 @@ def Probability(data,target):
     p = []
     for i in range(len(data)):
         output = model(torch.tensor(data[i]).reshape(1,1,number_of_particle,number_of_particle).float().cuda())
+        #output = model(torch.tensor(data[i]).reshape(-1,int(particle_data[1]),int(particle_data[1]),int(particle_data[1]),int(particle_data[1])).float().cuda())
         p.append(output[0][target].cpu().data.numpy())
     return p
 

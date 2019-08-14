@@ -20,13 +20,13 @@ internet = [(6, 16, (3,3,3), 1, (1,1,1)),(16, 32, (2,2,2), 1, (1,1,1)),(32 * 2 *
 
 if(abs(classify_phase[0]-classify_phase[1])==1):
     if(classify_phase[0]==1):
-        line = "mu=1"
+        line = "mu=1.0"
     elif(classify_phase[0]==3):
-        line = "mu=3"
+        line = "mu=3.0"
     elif(classify_phase[0]==7):
-        line = "mu=5"
+        line = "mu=5.0"
     elif(classify_phase[0]==5):
-        line = "mu=-1"
+        line = "mu=-1.0"
 elif(classify_phase[0]%2==1):
     line = "delta=1"
 elif(classify_phase[0]%2==0):
