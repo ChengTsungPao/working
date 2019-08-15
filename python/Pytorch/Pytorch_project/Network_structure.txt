@@ -1,5 +1,8 @@
 神經網路結構
 
+
+Two dimension :
+
 N = 5
 CNN(
   (conv1): Sequential(
@@ -149,4 +152,161 @@ Input size (MB): 0.02
 Forward/backward pass size (MB): 1.69
 Params size (MB): 16.06
 Estimated Total Size (MB): 17.76
+----------------------------------------------------------------
+
+
+
+
+
+Four dimension :
+
+N = 5
+CNN(
+  (conv1): Sequential(
+    (0): Conv3d(5, 16, kernel_size=(2, 2, 2), stride=(1, 1, 1), padding=(1, 1, 1))
+    (1): ReLU()
+    (2): MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv3d(16, 32, kernel_size=(2, 2, 2), stride=(1, 1, 1), padding=(1, 1, 1))
+    (1): ReLU()
+    (2): MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (layer): Linear(in_features=256, out_features=128, bias=True)
+  (out): Linear(in_features=128, out_features=2, bias=True)
+)
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv3d-1          [-1, 16, 6, 6, 6]             656
+              ReLU-2          [-1, 16, 6, 6, 6]               0
+         MaxPool3d-3          [-1, 16, 3, 3, 3]               0
+            Conv3d-4          [-1, 32, 4, 4, 4]           4,128
+              ReLU-5          [-1, 32, 4, 4, 4]               0
+         MaxPool3d-6          [-1, 32, 2, 2, 2]               0
+            Linear-7                  [-1, 128]          32,896
+            Linear-8                    [-1, 2]             258
+================================================================
+Total params: 37,938
+Trainable params: 37,938
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.00
+Forward/backward pass size (MB): 0.09
+Params size (MB): 0.14
+Estimated Total Size (MB): 0.24
+----------------------------------------------------------------
+
+
+N = 6
+CNN(
+  (conv1): Sequential(
+    (0): Conv3d(6, 16, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+    (1): ReLU()
+    (2): MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv3d(16, 32, kernel_size=(2, 2, 2), stride=(1, 1, 1), padding=(1, 1, 1))
+    (1): ReLU()
+    (2): MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (layer): Linear(in_features=256, out_features=128, bias=True)
+  (out): Linear(in_features=128, out_features=2, bias=True)
+)
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv3d-1          [-1, 16, 6, 6, 6]           2,608
+              ReLU-2          [-1, 16, 6, 6, 6]               0
+         MaxPool3d-3          [-1, 16, 3, 3, 3]               0
+            Conv3d-4          [-1, 32, 4, 4, 4]           4,128
+              ReLU-5          [-1, 32, 4, 4, 4]               0
+         MaxPool3d-6          [-1, 32, 2, 2, 2]               0
+            Linear-7                  [-1, 128]          32,896
+            Linear-8                    [-1, 2]             258
+================================================================
+Total params: 39,890
+Trainable params: 39,890
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.00
+Forward/backward pass size (MB): 0.09
+Params size (MB): 0.15
+Estimated Total Size (MB): 0.25
+----------------------------------------------------------------
+
+
+N = 7
+CNN(
+  (conv1): Sequential(
+    (0): Conv3d(7, 16, kernel_size=(2, 2, 2), stride=(1, 1, 1), padding=(1, 1, 1))
+    (1): ReLU()
+    (2): MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv3d(16, 32, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+    (1): ReLU()
+    (2): MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (layer): Linear(in_features=256, out_features=128, bias=True)
+  (out): Linear(in_features=128, out_features=2, bias=True)
+)
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv3d-1          [-1, 16, 8, 8, 8]             912
+              ReLU-2          [-1, 16, 8, 8, 8]               0
+         MaxPool3d-3          [-1, 16, 4, 4, 4]               0
+            Conv3d-4          [-1, 32, 4, 4, 4]          13,856
+              ReLU-5          [-1, 32, 4, 4, 4]               0
+         MaxPool3d-6          [-1, 32, 2, 2, 2]               0
+            Linear-7                  [-1, 128]          32,896
+            Linear-8                    [-1, 2]             258
+================================================================
+Total params: 47,922
+Trainable params: 47,922
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.01
+Forward/backward pass size (MB): 0.17
+Params size (MB): 0.18
+Estimated Total Size (MB): 0.36
+----------------------------------------------------------------
+
+
+N = 8
+CNN(
+  (conv1): Sequential(
+    (0): Conv3d(8, 16, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+    (1): ReLU()
+    (2): MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (conv2): Sequential(
+    (0): Conv3d(16, 32, kernel_size=(3, 3, 3), stride=(1, 1, 1), padding=(1, 1, 1))
+    (1): ReLU()
+    (2): MaxPool3d(kernel_size=(2, 2, 2), stride=(2, 2, 2), padding=0, dilation=1, ceil_mode=False)
+  )
+  (layer): Linear(in_features=256, out_features=128, bias=True)
+  (out): Linear(in_features=128, out_features=2, bias=True)
+)
+----------------------------------------------------------------
+        Layer (type)               Output Shape         Param #
+================================================================
+            Conv3d-1          [-1, 16, 8, 8, 8]           3,472
+              ReLU-2          [-1, 16, 8, 8, 8]               0
+         MaxPool3d-3          [-1, 16, 4, 4, 4]               0
+            Conv3d-4          [-1, 32, 4, 4, 4]          13,856
+              ReLU-5          [-1, 32, 4, 4, 4]               0
+         MaxPool3d-6          [-1, 32, 2, 2, 2]               0
+            Linear-7                  [-1, 128]          32,896
+            Linear-8                    [-1, 2]             258
+================================================================
+Total params: 50,482
+Trainable params: 50,482
+Non-trainable params: 0
+----------------------------------------------------------------
+Input size (MB): 0.02
+Forward/backward pass size (MB): 0.17
+Params size (MB): 0.19
+Estimated Total Size (MB): 0.38
 ----------------------------------------------------------------

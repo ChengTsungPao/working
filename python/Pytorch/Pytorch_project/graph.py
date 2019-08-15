@@ -55,26 +55,6 @@ def get_test_data(phase):
     return np.array(BA)
 
 class CNN(nn.Module):
-    def __init__(self,conv1,conv2,linear):
-        super(CNN, self).__init__()
-        self.conv1 = nn.Sequential(  
-            nn.Conv2d(
-                in_channels=conv1[0],      
-                out_channels=conv1[1],    
-                kernel_size=conv1[2],     
-                stride=conv1[3],          
-                padding=conv1[4],      
-            ),      
-            nn.ReLU(),    
-            nn.MaxPool2d(kernel_size=2), 
-        )
-        self.conv2 = nn.Sequential(  
-            nn.Conv2d(conv2[0], conv2[1], conv2[2], conv2[3], conv2[4]),  
-            nn.ReLU(),  
-            nn.MaxPool2d(2),  
-        )
-        self.layer = nn.Linear(linear[0], linear[1])  
-        self.out = nn.Linear(linear[1], linear[2])  
     def forward(self, x):
         x = self.conv1(x)
         x = self.conv2(x)
