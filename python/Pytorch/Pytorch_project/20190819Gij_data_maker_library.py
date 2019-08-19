@@ -142,7 +142,7 @@ if not os.path.exists(test_path):
 #創建日期標籤
 date = strftime("%Y%m%d",localtime()) 
 
-file_name = "{},BA_matrix,N={},delta={}".format(date,N,delta)
+file_name = "{},Gij_matrix,N={},delta={}".format(date,N,delta)
 savez(train_path+file_name, data = data, delta=delta, mu=mu)
 
 #load example
@@ -178,7 +178,7 @@ def phase(delta,mu):
 #def 訓練用的資料
 def train_data_maker(N, delta, mu_point_list, Dir=".\\"):
 
-    BA_list, phase_label = [],[]
+    Gij_list, phase_label = [],[]
     mu_list = []
     #創建放此三資料矩陣
 
@@ -197,8 +197,8 @@ def train_data_maker(N, delta, mu_point_list, Dir=".\\"):
     #此處將mu設為全域變數以超出函數範圍使用
 
     for mu in mu_list:
-    	#對於每個mu跑BA矩陣並將矩陣及相態存入對應list
-        BA_list.append(Gij(delta,mu,[int(N),int(N)]))
+    	#對於每個mu跑Gij矩陣並將矩陣及相態存入對應list
+        Gij_list.append(Gij(delta,mu,[int(N),int(N)]))
         phase_label.append(phase(delta,mu) )
         count += 1
         print((count/total)*100.,'%')
@@ -208,8 +208,8 @@ def train_data_maker(N, delta, mu_point_list, Dir=".\\"):
     date = strftime("%Y%m%d", localtime())
 
     #將list存成npz檔
-    file_name = "{},BA_matrix_train,N={},delta={}".format(date,N,delta)
-    savez(Dir+file_name, BA=BA_list, phase=phase_label, delta=delta, mu=mu_list)
+    file_name = "{},Gij_matrix_train,N={},delta={}".format(date,N,delta)
+    savez(Dir+file_name, Gij=Gij_list, phase=phase_label, delta=delta, mu=mu_list)
     
     print('train data save done, filename is : ',file_name)
 
@@ -218,7 +218,7 @@ def train_data_maker(N, delta, mu_point_list, Dir=".\\"):
 #def 測試用的資料
 def test_data_maker(N, delta, Dir=".\\"):
 
-    BA_list, phase_label = [],[]
+    Gij_list, phase_label = [],[]
     mu_list = []
     #創建放此三資料矩陣
 
@@ -235,8 +235,8 @@ def test_data_maker(N, delta, Dir=".\\"):
 	#此處將mu設為全域變數以超出函數範圍使用
 
     for mu in mu_list:
-    	#對於每個mu跑BA矩陣並將矩陣及相態存入對應list
-        BA_list.append(Gij(delta,mu,[int(N),int(N)]))
+    	#對於每個mu跑Gij矩陣並將矩陣及相態存入對應list
+        Gij_list.append(Gij(delta,mu,[int(N),int(N)]))
         phase_label.append(phase(delta,mu) )
         count += 1
         print((count/total)*100.,'%')
@@ -246,8 +246,8 @@ def test_data_maker(N, delta, Dir=".\\"):
     date = strftime("%Y%m%d", localtime())
 
     #將list存成npz檔
-    file_name = "{},BA_matrix_test,N={},delta={}".format(date,N,delta)
-    savez(Dir+file_name, BA=BA_list, phase=phase_label, delta=delta, mu=mu_list)
+    file_name = "{},Gij_matrix_test,N={},delta={}".format(date,N,delta)
+    savez(Dir+file_name, Gij=Gij_list, phase=phase_label, delta=delta, mu=mu_list)
     
     print('test data save done, filename is : ',file_name)
 
