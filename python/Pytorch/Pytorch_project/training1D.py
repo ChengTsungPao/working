@@ -10,23 +10,23 @@ from torch.utils.data import DataLoader, TensorDataset, Dataset
 #path = 'D:/program/vscode_workspace/private/data/project_data'
 path = './data'
 classify_phase = [5,1]
-particle_data = ["20190804","6"]
+particle_data = ["20190823","6"]
 number_of_particle = int(particle_data[1])*int(particle_data[1])
 
 EPOCH = 1    
 LR = 0.001  
 BATCH_SIZE = 3
-internet = (36 * 36, 512, 2)
+internet = (number_of_particle*2, number_of_particle, 2)
 
 if(abs(classify_phase[0]-classify_phase[1])==1):
     if(classify_phase[0]==1):
-        line = "mu=1.0"
+        line = "mu=1"
     elif(classify_phase[0]==3):
-        line = "mu=3.0"
+        line = "mu=3"
     elif(classify_phase[0]==7):
-        line = "mu=5.0"
+        line = "mu=5"
     elif(classify_phase[0]==5):
-        line = "mu=-1.0"
+        line = "mu=-1"
 elif(classify_phase[0]%2==1):
     line = "delta=1"
 elif(classify_phase[0]%2==0):
@@ -57,7 +57,7 @@ def get_train_data(phase):
                 print("error")            
         return m
 
-    file = np.load((path+'/train/{},BA_matrix_train,N={},{}.npz').format(particle_data[0],particle_data[1],line))
+    file = np.load((path+'/train/{},G_matrix_train,N={},{}.npz').format(particle_data[0],particle_data[1],line))
 
     test_input = []
     test_target = []
@@ -65,9 +65,9 @@ def get_train_data(phase):
     train_target = []
 
     for i in range(len(phase)):
-        test_input += file["BA"][800 + move(phase[i]) : 1000 + move(phase[i])].tolist()
+        test_input += file["eigenvalue"][800 + move(phase[i]) : 1000 + move(phase[i])].tolist()
         test_target += file["phase"][800 + move(phase[i]) : 1000 + move(phase[i])].tolist()
-        train_input += file["BA"][0 + move(phase[i]) : 800 + move(phase[i])].tolist()
+        train_input += file["eigenvalue"][0 + move(phase[i]) : 800 + move(phase[i])].tolist()
         train_target += file["phase"][0 + move(phase[i]) : 800 + move(phase[i])].tolist()
 
     test_input = np.array(test_input)
@@ -87,7 +87,7 @@ train_data = TensorDataset(total_data[2],total_data[3])
 def get_test_data(phase):  
     BA = []
     ph = []  
-    file = np.load((path+'/test/{},BA_matrix_test,N={},{}.npz').format(particle_data[0],particle_data[1],line))
+    file = np.load((path+'/test/{},G_matrix_test,N={},{}.npz').format(particle_data[0],particle_data[1],line))
     for i in range(len(phase)):
         cut = [len(file["phase"]),0]     
         for j in range(len(file["phase"])):        
@@ -95,7 +95,7 @@ def get_test_data(phase):
                 cut[0] = j
             if(cut[1] < j and int(file["phase"][j])==phase[i]):
                 cut[1] = j 
-        BA += file["BA"][cut[0]:cut[1]+1].tolist()
+        BA += file["eigenvalue"][cut[0]:cut[1]+1].tolist()
         ph += file["phase"][cut[0]:cut[1]+1].tolist()
 
     return TensorDataset(torch.tensor(np.array(BA)),torch.tensor(np.array(ph)))
@@ -120,7 +120,7 @@ dnn = dnn.cuda()
 def Accuracy(data):        
     s = 0
     for step, (b_x, b_y) in enumerate(data):            
-        a = torch.reshape(b_x,(-1,number_of_particle*number_of_particle))   
+        a = torch.reshape(b_x,(-1,number_of_particle*2))   
         a = a.cuda()
         output = dnn(a.float())   
         index = np.argmax(output[0].cpu().data.numpy())      
@@ -138,7 +138,7 @@ def main():
         print("epoch:"+str(epoch)+"\n")
         
         for step, (b_x, b_y) in enumerate(train_dataloader):   
-            a = torch.reshape(b_x,(-1,number_of_particle*number_of_particle))
+            a = torch.reshape(b_x,(-1,number_of_particle*2))
             b = []
             for i in b_y.numpy():
                 if(int(i)==int(classify_phase[0])):
@@ -153,7 +153,7 @@ def main():
             a = a.cuda()
             b = b.cuda()
             output = dnn(a.float())   
-            optimizer.zero_grad()        
+            optimizer.zero_grad()      
             loss = loss_func(output, b.long())             
             loss.backward()               
             optimizer.step()             
