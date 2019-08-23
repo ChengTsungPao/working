@@ -54,7 +54,7 @@ def get_test_data(phase):
 
     return np.array(BA)
 
-class CNN(nn.Module):
+class DNN(nn.Module):
     def forward(self, x):
         x = x.view(x.size(0), -1)   
         x = self.layer(x)
