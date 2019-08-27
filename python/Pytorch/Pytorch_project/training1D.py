@@ -10,8 +10,9 @@ from torch.utils.data import DataLoader, TensorDataset, Dataset
 #path = 'D:/program/vscode_workspace/private/data/project_data'
 path = './data'
 classify_phase = [5,1]
-particle_data = ["20190823","6"]
-number_of_particle = int(particle_data[1])*int(particle_data[1])
+kind_of_data = ["eigenvalue","phase"]
+particle_data = ["20190823","G_matrix","6"]
+number_of_particle = int(particle_data[2])*int(particle_data[2])
 
 EPOCH = 1    
 LR = 0.001  
@@ -57,7 +58,7 @@ def get_train_data(phase):
                 print("error")            
         return m
 
-    file = np.load((path+'/train/{},G_matrix_train,N={},{}.npz').format(particle_data[0],particle_data[1],line))
+    file = np.load((path+'/train/{},{}_train,N={},{}.npz').format(particle_data[0],particle_data[1],particle_data[2],line))
 
     test_input = []
     test_target = []
@@ -65,10 +66,10 @@ def get_train_data(phase):
     train_target = []
 
     for i in range(len(phase)):
-        test_input += file["eigenvalue"][800 + move(phase[i]) : 1000 + move(phase[i])].tolist()
-        test_target += file["phase"][800 + move(phase[i]) : 1000 + move(phase[i])].tolist()
-        train_input += file["eigenvalue"][0 + move(phase[i]) : 800 + move(phase[i])].tolist()
-        train_target += file["phase"][0 + move(phase[i]) : 800 + move(phase[i])].tolist()
+        test_input += file[kind_of_data[0]][800 + move(phase[i]) : 1000 + move(phase[i])].tolist()
+        test_target += file[kind_of_data[1]][800 + move(phase[i]) : 1000 + move(phase[i])].tolist()
+        train_input += file[kind_of_data[0]][0 + move(phase[i]) : 800 + move(phase[i])].tolist()
+        train_target += file[kind_of_data[1]][0 + move(phase[i]) : 800 + move(phase[i])].tolist()
 
     test_input = np.array(test_input)
     test_target = np.array(test_target)
@@ -85,20 +86,20 @@ test_data  = TensorDataset(total_data[0],total_data[1])
 train_data = TensorDataset(total_data[2],total_data[3])
 
 def get_test_data(phase):  
-    BA = []
+    data = []
     ph = []  
-    file = np.load((path+'/test/{},G_matrix_test,N={},{}.npz').format(particle_data[0],particle_data[1],line))
+    file = np.load((path+'/test/{},{}_test,N={},{}.npz').format(particle_data[0],particle_data[1],particle_data[2],line))
     for i in range(len(phase)):
-        cut = [len(file["phase"]),0]     
-        for j in range(len(file["phase"])):        
-            if(cut[0] > j and int(file["phase"][j])==phase[i]):
+        cut = [len(file[kind_of_data[1]]),0]     
+        for j in range(len(file[kind_of_data[1]])):        
+            if(cut[0] > j and int(file[kind_of_data[1]][j])==phase[i]):
                 cut[0] = j
-            if(cut[1] < j and int(file["phase"][j])==phase[i]):
+            if(cut[1] < j and int(file[kind_of_data[1]][j])==phase[i]):
                 cut[1] = j 
-        BA += file["eigenvalue"][cut[0]:cut[1]+1].tolist()
-        ph += file["phase"][cut[0]:cut[1]+1].tolist()
+        data += file[kind_of_data[0]][cut[0]:cut[1]+1].tolist()
+        ph += file[kind_of_data[1]][cut[0]:cut[1]+1].tolist()
 
-    return TensorDataset(torch.tensor(np.array(BA)),torch.tensor(np.array(ph)))
+    return TensorDataset(torch.tensor(np.array(data)),torch.tensor(np.array(ph)))
 
 test_data_all = get_test_data(classify_phase)
 
@@ -172,7 +173,7 @@ def main():
             acc.append(tmp)
     print("\n")
     print(acc)
-    torch.save(dnn, time.strftime("%Y%m%d%H%M", time.localtime())+",phase="+str(classify_phase)+",N="+particle_data[1]+',gpu.pkl')
+    torch.save(dnn, time.strftime("%Y%m%d%H%M", time.localtime())+",phase="+str(classify_phase)+",N="+particle_data[2]+',gpu.pkl')
     
 if __name__ == '__main__':
     main()

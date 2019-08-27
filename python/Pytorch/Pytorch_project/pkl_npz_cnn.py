@@ -19,10 +19,10 @@ classify_phase = []
 for i in range(len(classify)):
     classify_phase.append(int(classify[i]))
 
-
-particle_data = ["20190804","6"]
-particle_data[1] = filename.split("N=")[1][0]
-number_of_particle = int(particle_data[1])*int(particle_data[1])
+kind_of_data = ["BA","phase"]
+particle_data = ["20190804","BA_matrix","6"]
+particle_data[2] = filename.split("N=")[1][0]
+number_of_particle = int(particle_data[2])*int(particle_data[2])
 
 if(abs(classify_phase[0]-classify_phase[1])==1):
     if(classify_phase[0]==1):
@@ -41,18 +41,18 @@ else:
     print("please input the correct phase !!!")
 
 def get_test_data(phase):  
-    BA = []
-    file = np.load((path+'/test/{},BA_matrix_test,N={},{}.npz').format(particle_data[0],particle_data[1],line))
+    data = []
+    file = np.load((path+'/test/{},{}_test,N={},{}.npz').format(particle_data[0],particle_data[1],particle_data[2],line))
     for i in range(len(phase)):
-        cut = [len(file["phase"]),0]     
-        for j in range(len(file["phase"])):        
-            if(cut[0] > j and int(file["phase"][j])==phase[i]):
+        cut = [len(file[kind_of_data[1]]),0]     
+        for j in range(len(file[kind_of_data[1]])):        
+            if(cut[0] > j and int(file[kind_of_data[1]][j])==phase[i]):
                 cut[0] = j
-            if(cut[1] < j and int(file["phase"][j])==phase[i]):
+            if(cut[1] < j and int(file[kind_of_data[1]][j])==phase[i]):
                 cut[1] = j 
-        BA += file["BA"][cut[0]:cut[1]+1].tolist()        
+        data += file[kind_of_data[0]][cut[0]:cut[1]+1].tolist()        
 
-    return np.array(BA)
+    return np.array(data)
 
 class CNN(nn.Module):
     def forward(self, x):
@@ -69,8 +69,8 @@ model = torch.load("D:/program/vscode_workspace/private/data/project_train/model
 def Probability(data,target):
     p = []
     for i in range(len(data)):
-        output = model(torch.tensor(data[i]).reshape(1,1,number_of_particle,number_of_particle).float().cuda())
-        #output = model(torch.tensor(data[i]).reshape(-1,int(particle_data[1]),int(particle_data[1]),int(particle_data[1]),int(particle_data[1])).float().cuda())
+        #output = model(torch.tensor(data[i]).reshape(1,1,number_of_particle,number_of_particle).float().cuda())
+        output = model(torch.tensor(data[i]).reshape(-1,int(particle_data[2]),int(particle_data[2]),int(particle_data[2]),int(particle_data[2])).float().cuda())
         p.append(output[0][target].cpu().data.numpy())
     return p
 
