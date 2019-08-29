@@ -16,7 +16,7 @@ number_of_particle = int(particle_data[2])*int(particle_data[2])
 
 EPOCH = 1    
 LR = 0.001
-STEPLR = [EPOCH,0]  
+STEPLR = [EPOCH,1]  
 BATCH_SIZE = 3
 internet = (number_of_particle*2, number_of_particle, 2)
 
