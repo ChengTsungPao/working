@@ -15,7 +15,8 @@ particle_data = ["20190823","G_matrix","6"]
 number_of_particle = int(particle_data[2])*int(particle_data[2])
 
 EPOCH = 1    
-LR = 0.001  
+LR = 0.001
+STEPLR = [EPOCH,0]  
 BATCH_SIZE = 3
 internet = (number_of_particle*2, number_of_particle, 2)
 
@@ -133,11 +134,12 @@ def main():
     acc = []  
     train_dataloader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True, num_workers=2) 
     optimizer = torch.optim.Adam(dnn.parameters(), lr=LR)  
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=STEPLR[0], gamma=STEPLR[1])
     loss_func = nn.CrossEntropyLoss()   
     loss_func = loss_func.cuda() 
     for epoch in range(EPOCH):
         print("epoch:"+str(epoch)+"\n")
-        
+        scheduler.step()
         for step, (b_x, b_y) in enumerate(train_dataloader):   
             a = torch.reshape(b_x,(-1,number_of_particle*2))
             b = []
