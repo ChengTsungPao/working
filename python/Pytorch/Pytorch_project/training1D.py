@@ -140,6 +140,7 @@ def main():
     for epoch in range(EPOCH):
         print("epoch:"+str(epoch)+"\n")
         scheduler.step()
+        
         for step, (b_x, b_y) in enumerate(train_dataloader):   
             a = torch.reshape(b_x,(-1,number_of_particle*2))
             b = []
