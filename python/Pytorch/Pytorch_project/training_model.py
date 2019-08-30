@@ -139,6 +139,7 @@ def training1D(network,filename,mode):
         def forward(self, x):
             x = x.view(x.size(0), -1)   
             x = self.layer(x)
+            x = nn.functional.relu(x)
             x = self.out(x)
             output = nn.functional.softmax(x,dim=1)
             return output
