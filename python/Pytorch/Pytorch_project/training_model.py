@@ -7,6 +7,79 @@ import torch.nn as nn
 import torch.utils.data as Data
 from torch.utils.data import DataLoader, TensorDataset, Dataset
 
+class DNN(nn.Module):
+    def __init__(self,linear):
+        super(DNN, self).__init__()
+        self.layer = nn.Linear(linear[0], linear[1])  
+        self.out = nn.Linear(linear[1], linear[2])
+    def forward(self, x):
+        x = x.view(x.size(0), -1)   
+        x = self.layer(x)
+        x = nn.functional.relu(x)
+        x = self.out(x)
+        output = nn.functional.softmax(x,dim=1)
+        return output
+
+class CNN_2D(nn.Module):
+    def __init__(self,conv1,conv2,linear):
+        super(CNN_2D, self).__init__()
+        self.conv1 = nn.Sequential(  
+            nn.Conv2d(
+                in_channels=conv1[0],      
+                out_channels=conv1[1],    
+                kernel_size=conv1[2],     
+                stride=conv1[3],          
+                padding=conv1[4],      
+            ),      
+            nn.ReLU(),    
+            nn.MaxPool2d(kernel_size=2), 
+        )
+        self.conv2 = nn.Sequential(  
+            nn.Conv2d(conv2[0], conv2[1], conv2[2], conv2[3], conv2[4]),  
+            nn.ReLU(),  
+            nn.MaxPool2d(2),  
+        )
+        self.layer = nn.Linear(linear[0], linear[1])  
+        self.out = nn.Linear(linear[1], linear[2])
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = x.view(x.size(0), -1)   
+        x = self.layer(x)
+        x = self.out(x)
+        output = nn.functional.softmax(x,dim=1)
+        return output
+
+class CNN_4D(nn.Module):
+    def __init__(self,conv1,conv2,linear):
+        super(CNN_4D, self).__init__()
+        self.conv1 = nn.Sequential(  
+            nn.Conv3d(
+                in_channels=conv1[0],      
+                out_channels=conv1[1],    
+                kernel_size=conv1[2],     
+                stride=conv1[3],          
+                padding=conv1[4],      
+            ),      
+            nn.ReLU(),    
+            nn.MaxPool3d(kernel_size=(2,2,2),stride=(2,2,2)), 
+        )
+        self.conv2 = nn.Sequential(  
+            nn.Conv3d(conv2[0], conv2[1], conv2[2], conv2[3], conv2[4]),  
+            nn.ReLU(),  
+            nn.MaxPool3d(kernel_size=(2,2,2),stride=(2,2,2)),  
+        )
+        self.layer = nn.Linear(linear[0], linear[1])  
+        self.out = nn.Linear(linear[1], linear[2])
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = x.view(x.size(0), -1)   
+        x = self.layer(x)
+        x = self.out(x)
+        output = nn.functional.softmax(x,dim=1)
+        return output
+
 def which_line(classify_phase,mode):   
     if mode==False: 
         if(abs(classify_phase[0]-classify_phase[1])==1):
@@ -129,20 +202,6 @@ def training1D(network,filename,mode):
         return TensorDataset(torch.tensor(np.array(data)),torch.tensor(np.array(ph)))
 
     test_data_all = get_test_data(classify_phase)
-
-    global DNN
-    class DNN(nn.Module):
-        def __init__(self,linear):
-            super(DNN, self).__init__()
-            self.layer = nn.Linear(linear[0], linear[1])  
-            self.out = nn.Linear(linear[1], linear[2])
-        def forward(self, x):
-            x = x.view(x.size(0), -1)   
-            x = self.layer(x)
-            x = nn.functional.relu(x)
-            x = self.out(x)
-            output = nn.functional.softmax(x,dim=1)
-            return output
 
     dnn = DNN(internet)  
     dnn = dnn.cuda()     
@@ -293,38 +352,7 @@ def training2D(network,filename,mode):
 
     test_data_all = get_test_data(classify_phase)
 
-    global CNN
-    class CNN(nn.Module):
-        def __init__(self,conv1,conv2,linear):
-            super(CNN, self).__init__()
-            self.conv1 = nn.Sequential(  
-                nn.Conv2d(
-                    in_channels=conv1[0],      
-                    out_channels=conv1[1],    
-                    kernel_size=conv1[2],     
-                    stride=conv1[3],          
-                    padding=conv1[4],      
-                ),      
-                nn.ReLU(),    
-                nn.MaxPool2d(kernel_size=2), 
-            )
-            self.conv2 = nn.Sequential(  
-                nn.Conv2d(conv2[0], conv2[1], conv2[2], conv2[3], conv2[4]),  
-                nn.ReLU(),  
-                nn.MaxPool2d(2),  
-            )
-            self.layer = nn.Linear(linear[0], linear[1])  
-            self.out = nn.Linear(linear[1], linear[2])
-        def forward(self, x):
-            x = self.conv1(x)
-            x = self.conv2(x)
-            x = x.view(x.size(0), -1)   
-            x = self.layer(x)
-            x = self.out(x)
-            output = nn.functional.softmax(x,dim=1)
-            return output
-
-    cnn = CNN(internet[0],internet[1],internet[2])  
+    cnn = CNN_2D(internet[0],internet[1],internet[2])  
     cnn = cnn.cuda() 
 
     def Accuracy(data):        
@@ -472,38 +500,7 @@ def training4D(network,filename,mode):
 
     test_data_all = get_test_data(classify_phase)
 
-    global CNN
-    class CNN(nn.Module):
-        def __init__(self,conv1,conv2,linear):
-            super(CNN, self).__init__()
-            self.conv1 = nn.Sequential(  
-                nn.Conv3d(
-                    in_channels=conv1[0],      
-                    out_channels=conv1[1],    
-                    kernel_size=conv1[2],     
-                    stride=conv1[3],          
-                    padding=conv1[4],      
-                ),      
-                nn.ReLU(),    
-                nn.MaxPool3d(kernel_size=(2,2,2),stride=(2,2,2)), 
-            )
-            self.conv2 = nn.Sequential(  
-                nn.Conv3d(conv2[0], conv2[1], conv2[2], conv2[3], conv2[4]),  
-                nn.ReLU(),  
-                nn.MaxPool3d(kernel_size=(2,2,2),stride=(2,2,2)),  
-            )
-            self.layer = nn.Linear(linear[0], linear[1])  
-            self.out = nn.Linear(linear[1], linear[2])
-        def forward(self, x):
-            x = self.conv1(x)
-            x = self.conv2(x)
-            x = x.view(x.size(0), -1)   
-            x = self.layer(x)
-            x = self.out(x)
-            output = nn.functional.softmax(x,dim=1)
-            return output
-
-    cnn = CNN(internet[0],internet[1],internet[2])  
+    cnn = CNN_4D(internet[0],internet[1],internet[2])  
     cnn = cnn.cuda() 
 
     def Accuracy(data):        
