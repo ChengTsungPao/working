@@ -67,7 +67,29 @@ for pkl in load_filename(start,end):
 
             return np.array(data)
     
-        model = torch.load(pkl)
+        try:
+            model = torch.load(pkl)
+        except:
+            if(dimension==1):
+                class DNN(nn.Module):
+                    def forward(self, x):
+                        x = x.view(x.size(0), -1)   
+                        x = self.layer(x)
+                        x = self.out(x)
+                        output = nn.functional.softmax(x,dim=1)
+                        return output
+            elif(dimension==2 or dimension==4):
+                class CNN(nn.Module):
+                    def forward(self, x):
+                        x = self.conv1(x)
+                        x = self.conv2(x)
+                        x = x.view(x.size(0), -1)   
+                        x = self.layer(x)
+                        x = self.out(x)
+                        output = nn.functional.softmax(x,dim=1)
+                        return output
+            model = torch.load(pkl)
+        
 
         def Probability(data,target):
             p = []

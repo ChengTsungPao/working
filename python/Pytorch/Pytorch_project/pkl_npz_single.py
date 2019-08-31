@@ -56,7 +56,28 @@ def get_test_data(phase):
 
     return np.array(data)
 
-model = torch.load("D:/program/vscode_workspace/private/data/project_train/model/"+filename)
+try:
+    model = torch.load("D:/program/vscode_workspace/private/data/project_train/model/"+filename)
+except:
+    if(dimension==1):
+        class DNN(nn.Module):
+            def forward(self, x):
+                x = x.view(x.size(0), -1)   
+                x = self.layer(x)
+                x = self.out(x)
+                output = nn.functional.softmax(x,dim=1)
+                return output
+    elif(dimension==2 or dimension==4):
+        class CNN(nn.Module):
+            def forward(self, x):
+                x = self.conv1(x)
+                x = self.conv2(x)
+                x = x.view(x.size(0), -1)   
+                x = self.layer(x)
+                x = self.out(x)
+                output = nn.functional.softmax(x,dim=1)
+                return output
+    model = torch.load("D:/program/vscode_workspace/private/data/project_train/model/"+filename)
 
 def Probability(data,target):
     p = []
