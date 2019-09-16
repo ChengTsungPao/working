@@ -30,6 +30,11 @@ for pkl in load_filename(start,end):
         classify = pkl.split("[")[1].split("]")[0]
         classify = classify.split(",")
         classify_phase = []
+
+        if(dimension==1): 
+            classify_phase_change = copy.copy(classify_phase)
+            classify_phase = [5,1,3,7]
+
         for i in range(len(classify)):
             classify_phase.append(int(classify[i]))
 
@@ -104,18 +109,31 @@ for pkl in load_filename(start,end):
             return p
 
         target = []
-        for i in range(len(classify_phase)):
-            target.append(Probability(get_test_data(classify_phase),i)) 
-            plt.plot(range(len(target[i])),target[i],"o")
-        plt.show()    
+        if(dimension!=1):
+            for i in range(len(classify_phase)):
+                target.append(Probability(get_test_data(classify_phase),i)) 
+                plt.plot(range(len(target[i])),target[i],"o")
+            plt.show()    
 
-        #if(len(classify_phase)==2):
-        #    np.savez("./npzfile/"+pkl.split(".pkl")[0],phase1 = target[0],phase2 = target[1])
-        #elif(len(classify_phase)==4):
-        #    np.savez("./npzfile/"+pkl.split(".pkl")[0],phase1 = target[0],phase2 = target[1],phase3 = target[2],phase4 = target[3])
-        #else:
-        #    print("please input the correct phase !!!")
-                
+            #if(len(classify_phase)==2):
+            #    np.savez("./npzfile/"+pkl.split(".pkl")[0],phase1 = target[0],phase2 = target[1])
+            #elif(len(classify_phase)==4):
+            #    np.savez("./npzfile/"+pkl.split(".pkl")[0],phase1 = target[0],phase2 = target[1],phase3 = target[2],phase4 = target[3])
+            #else:
+            #    print("please input the correct phase !!!")
+        else:
+            for i in range(len(classify_phase_change)-int(classify_phase_change[2]==9)):
+                target.append(Probability(get_test_data(classify_phase),i)) 
+                plt.plot(range(len(target[i])),target[i],"o")
+            plt.show()
+            
+            #if(classify_phase_change[2]==9):
+            #    np.savez("./npzfile/"+pkl.split(".pkl")[0],phase1 = target[0],phase2 = target[1])
+            #elif(classify_phase_change[2]==11):
+            #    np.savez("./npzfile/"+pkl.split(".pkl")[0],phase1 = target[0],phase2 = target[1],phase3 = target[2])
+            #else:
+            #    print("please input the correct phase !!!") 
+
         print(pkl)
     except:
         print(pkl+" error")
