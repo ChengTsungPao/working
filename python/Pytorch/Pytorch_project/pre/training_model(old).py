@@ -133,51 +133,93 @@ def training1D(network,filename,mode):
     BATCH_SIZE = network[3] 
     internet = network[4] 
 
-    line = which_line(classify_phase,mode)
+    line = "delta=1"
+    classify_phase_test = [5,1,3,7]
+
+    def phmode(ph):
+        m = 0
+        try:
+            if(ph[0]==9 and ph[1]==10 and ph[2]==9):
+                m = 1
+            elif(ph[0]==9 and ph[1]==10 and ph[2]==11):
+                m = 2
+            else:
+                print("error1") 
+        except:
+            print("error2") 
+        return m    
 
 
     def get_train_data(phase):
 
-        def move(ph):
-            if(line=="delta=1" or line=="delta=-1"):
-                if(ph==5 or ph==6):
-                    m = 0
-                elif(ph==1 or ph==2):
-                    m = 1000
-                elif(ph==3 or ph==4):
-                    m = 2000
-                elif(ph==7 or ph==8):
-                    m = 3000
-                else:
-                    print("error")
-            else:
-                if(ph==5 or ph==1 or ph==3 or ph==7):
-                    m = 0
-                elif(ph==6 or ph==2 or ph==4 or ph==8):
-                    m = 1000
-                else:
-                    print("error")            
-            return m
 
         file = np.load((path+'/train/{},{}_train,N={},{}.npz').format(particle_data[0],particle_data[1],particle_data[2],line))
-
 
         test_input = []
         test_target = []
         train_input = []
         train_target = []
 
-        for i in range(len(phase)):
-            test_input += file[kind_of_data[0]][800 + move(phase[i]) : 1000 + move(phase[i])].tolist()
-            test_target += file[kind_of_data[1]][800 + move(phase[i]) : 1000 + move(phase[i])].tolist()
-            train_input += file[kind_of_data[0]][0 + move(phase[i]) : 800 + move(phase[i])].tolist()
-            train_target += file[kind_of_data[1]][0 + move(phase[i]) : 800 + move(phase[i])].tolist()
-
+        if(phmode(phase)==1):            
+            test_input =   file[kind_of_data[0]][ 800 : 1000].tolist() + \
+                           file[kind_of_data[0]][1800 : 2000].tolist() + \
+                           file[kind_of_data[0]][2800 : 3000].tolist() + \
+                           file[kind_of_data[0]][3800 : 4000].tolist()
+            test_target =  file[kind_of_data[1]][ 800 : 1000].tolist() + \
+                           file[kind_of_data[1]][1800 : 2000].tolist() + \
+                           file[kind_of_data[1]][2800 : 3000].tolist() + \
+                           file[kind_of_data[1]][3800 : 4000].tolist()
+            train_input =  file[kind_of_data[0]][   0 :  800].tolist() + \
+                           file[kind_of_data[0]][1000 : 1800].tolist() + \
+                           file[kind_of_data[0]][2000 : 2800].tolist() + \
+                           file[kind_of_data[0]][3000 : 3800].tolist()
+            train_target = file[kind_of_data[1]][   0 :  800].tolist() + \
+                           file[kind_of_data[1]][1000 : 1800].tolist() + \
+                           file[kind_of_data[1]][2000 : 2800].tolist() + \
+                           file[kind_of_data[1]][3000 : 3800].tolist()
+        elif(phmode(phase)==2):
+            test_input =   file[kind_of_data[0]][ 800 : 1000].tolist() + \
+                           file[kind_of_data[0]][1400 : 1500].tolist() + \
+                           file[kind_of_data[0]][2400 : 2500].tolist() + \
+                           file[kind_of_data[0]][3800 : 4000].tolist()
+            test_target =  file[kind_of_data[1]][ 800 : 1000].tolist() + \
+                           file[kind_of_data[1]][1400 : 1500].tolist() + \
+                           file[kind_of_data[1]][2400 : 2500].tolist() + \
+                           file[kind_of_data[1]][3800 : 4000].tolist()
+            train_input =  file[kind_of_data[0]][   0 :  800].tolist() + \
+                           file[kind_of_data[0]][1000 : 1400].tolist() + \
+                           file[kind_of_data[0]][2000 : 2400].tolist() + \
+                           file[kind_of_data[0]][3000 : 3800].tolist()
+            train_target = file[kind_of_data[1]][   0 :  800].tolist() + \
+                           file[kind_of_data[1]][1000 : 1400].tolist() + \
+                           file[kind_of_data[1]][2000 : 2400].tolist() + \
+                           file[kind_of_data[1]][3000 : 3800].tolist()
+        else:
+            print("error")
 
         test_input = np.array(test_input)
         test_target = np.array(test_target)
         train_input = np.array(train_input)
         train_target = np.array(train_target)
+
+        if(phmode(phase)==1):
+            test_target = np.where(test_target==5,9,test_target)
+            test_target = np.where(test_target==1,10,test_target)
+            test_target = np.where(test_target==3,10,test_target)
+            test_target = np.where(test_target==7,9,test_target)
+            train_target = np.where(train_target==5,9,train_target)
+            train_target = np.where(train_target==1,10,train_target)
+            train_target = np.where(train_target==3,10,train_target)
+            train_target = np.where(train_target==7,9,train_target)
+        elif(phmode(phase)==2):
+            test_target = np.where(test_target==5,9,test_target)
+            test_target = np.where(test_target==1,10,test_target)
+            test_target = np.where(test_target==3,10,test_target)
+            test_target = np.where(test_target==7,11,test_target)
+            train_target = np.where(train_target==5,9,train_target)
+            train_target = np.where(train_target==1,10,train_target)
+            train_target = np.where(train_target==3,10,train_target)
+            train_target = np.where(train_target==7,11,train_target)
 
         return [torch.tensor(test_input   ,dtype=torch.float64),
                 torch.tensor(test_target,dtype=torch.float64),
@@ -201,10 +243,20 @@ def training1D(network,filename,mode):
                     cut[1] = j 
             data += file[kind_of_data[0]][cut[0]:cut[1]+1].tolist()
             ph += file[kind_of_data[1]][cut[0]:cut[1]+1].tolist()
+        ph = np.array(ph)
+        if(phmode(classify_phase)==1):
+            ph = np.where(ph==5,9,ph)
+            ph = np.where(ph==1,10,ph)
+            ph = np.where(ph==3,10,ph)
+            ph = np.where(ph==7,9,ph)
+        elif(phmode(classify_phase)==2):
+            ph = np.where(ph==5,9,ph)
+            ph = np.where(ph==1,10,ph)
+            ph = np.where(ph==3,10,ph)
+            ph = np.where(ph==7,11,ph)
+        return TensorDataset(torch.tensor(np.array(data)),torch.tensor(ph))
 
-        return TensorDataset(torch.tensor(np.array(data)),torch.tensor(np.array(ph)))
-
-    test_data_all = get_test_data(classify_phase)
+    test_data_all = get_test_data(classify_phase_test)
 
     dnn = DNN(internet)  
     dnn = dnn.cuda()     
