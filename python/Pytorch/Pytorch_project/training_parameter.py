@@ -38,7 +38,7 @@ path = './data'
 
 #單一參數 training1D example
 filename = [path, [9,10,9], ["eigenvalue","phase"], ["20190823","G_matrix","6"]] #[路徑, 相態, [數據類型, 答案], [數據生成日期, BA or Gij, N]]
-network = [1, 0.001, [1,0] , 3, (36*2, 36, 2)]                                #[epoch, learning rate, [step_size, gamma], batch_size, internet]
+network = [1, 0.001, [1,1] , 3, (36*2, 36, 2)]                                #[epoch, learning rate, [step_size, gamma], batch_size, internet]
 One_dimension_network(network,filename,False)                                 #False:mu=1 True:mu=1.0 
 
 #大量參數 training1D example
@@ -57,12 +57,12 @@ all_training(parameter,False,1)
 
 #單一參數 training2D example
 filename = [path, [5,1], ["BA","phase"], ["20190804","BA_matrix","6"]]
-network = [1, 0.001, [1,0] , 3, [(1, 16, 5, 1, 2),(16, 32, 5, 1, 2),(32 * 9 * 9, 512, 2)]]
+network = [1, 0.001, [1,1] , 3, [(1, 16, 5, 1, 2),(16, 32, 5, 1, 2),(32 * 9 * 9, 512, 2)]]
 Two_dimension_network(network,filename,True)
 
 
 #單一參數 training4D example
 filename = [path, [5,1], ["BA","phase"], ["20190804","BA_matrix","6"]]
-network = [1, 0.001, [1,0] , 3, [(6, 16, (3,3,3), 1, (1,1,1)),(16, 32, (2,2,2), 1, (1,1,1)),(32 * 2 * 2 * 2, 128, 2)]]
+network = [1, 0.001, [1,1] , 3, [(6, 16, (3,3,3), 1, (1,1,1)),(16, 32, (2,2,2), 1, (1,1,1)),(32 * 2 * 2 * 2, 128, 2)]]
 Four_dimension_network(network,filename,True)
 
