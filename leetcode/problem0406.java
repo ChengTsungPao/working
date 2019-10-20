@@ -7,7 +7,7 @@ class Solution {
         return ans;        
     }
 }
-class problem406{
+class problem0406{
     public static void main(String[] args) {
         int[][] arr = {{7,0}, {4,4}, {7,1}, {5,0}, {6,1}, {5,2}};
         Solution s = new Solution();
