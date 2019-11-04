@@ -163,8 +163,8 @@ def Gij_optimization(delta,mu,size):
 
         G[2*0  ,2*j  ] = 1/2 - first
         G[2*0+1,2*j+1] = 1/2 + first
-        G[2*0+1,2*j  ] = complex(-second, -third)
-        G[2*0  ,2*j+1] = complex(second, -third)
+        G[2*0  ,2*j+1] = complex(-second, -third)
+        G[2*0+1,2*j  ] = complex(second, -third)
     
     for i in range(1,number):
         for j in range(number):
@@ -196,8 +196,8 @@ def Gij_optimization(delta,mu,size):
 
             G[2*i  ,2*j  ] = 1/2 - first
             G[2*i+1,2*j+1] = 1/2 + first
-            G[2*i+1,2*j  ] = complex(-second, -third)
-            G[2*i  ,2*j+1] = complex(second, -third)
+            G[2*i  ,2*j+1] = complex(-second, -third)
+            G[2*i+1,2*j  ] = complex(second, -third)
     return G
 
 delta = 0.5

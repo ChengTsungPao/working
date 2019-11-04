@@ -43,6 +43,14 @@ def t(delta,mu,start,end,kx,ky):
     value = np.sin(ky)*cs(kx,ky,start,end)/R(kx,ky,delta,mu)
     return value
 
+@jit
+def I(m,n):
+    if(m==0 and n==0):
+        value = 1
+    else:
+        value = 0
+    return value  
+
 def gaussxw(N):
     # Initial approximation to roots of the Legendre polynomial
     a = np.linspace(3,4*N-1,N)/(4*N+2)
@@ -94,8 +102,9 @@ def Gij(delta,mu,size,N):
         for j in range(number):
             start = [int(i/size[0]),i%size[0]]
             end = [int(j/size[0]),j%size[0]]
-            G[2*i  ,2*j  ] = 1/2 - first_Integrate(delta,mu,start,end,N)
-            G[2*i+1,2*j+1] = 1/2 + first_Integrate(delta,mu,start,end,N)
+            k = I(end[0]-start[0],end[1]-start[1])
+            G[2*i  ,2*j  ] = k/2 - first_Integrate(delta,mu,start,end,N)
+            G[2*i+1,2*j+1] = k/2 + first_Integrate(delta,mu,start,end,N)
             G[2*i  ,2*j+1] = complex(-second_Integrate(delta,mu,start,end,N), -third_Integrate(delta,mu,start,end,N))
             G[2*i+1,2*j  ] = complex(second_Integrate(delta,mu,start,end,N), -third_Integrate(delta,mu,start,end,N))
     return G
@@ -119,8 +128,9 @@ def Gij_optimization(delta,mu,size,N):
         second_database[int(j/size[0]),j%size[0]] = second
         third_database[int(j/size[0]),j%size[0]] = third
 
-        G[2*0  ,2*j  ] = 1/2 - first
-        G[2*0+1,2*j+1] = 1/2 + first
+        k = I(j//size[0]-0,j%size[0]-0)
+        G[2*0  ,2*j  ] = k/2 - first
+        G[2*0+1,2*j+1] = k/2 + first
         G[2*0  ,2*j+1] = complex(-second, -third)
         G[2*0+1,2*j  ] = complex(second, -third)
     
@@ -138,15 +148,16 @@ def Gij_optimization(delta,mu,size,N):
             second = second_database[vector[0],vector[1]]
             third = third_database[vector[0],vector[1]]
 
-            G[2*i  ,2*j  ] = 1/2 - first
-            G[2*i+1,2*j+1] = 1/2 + first
+            k = I(j//size[0]-i//size[0],j%size[0]-i%size[0])
+            G[2*i  ,2*j  ] = k/2 - first
+            G[2*i+1,2*j+1] = k/2 + first
             G[2*i  ,2*j+1] = complex(-c[0]*second, -c[1]*third)
             G[2*i+1,2*j  ] = complex(c[0]*second, -c[1]*third)
     return G
 
 N = 100
-delta = 0.5
-mu = 0.5
+delta = 1
+mu = 1
 size = [2,2]
 
 print("\nGij(delta,mu,size):\n")

@@ -42,6 +42,14 @@ def t(kx,ky,delta,mu,start,end):
     value = np.sin(ky)*cs(kx,ky,start,end)/R(kx,ky,delta,mu)
     return value
 
+@jit
+def I(m,n):
+    if(m==0 and n==0):
+        value = 1
+    else:
+        value = 0
+    return value    
+
 def first_Integrate(delta,mu,start,end):
     value = dblquad(f,
                     0,
@@ -91,8 +99,9 @@ def Gij(delta,mu,size):
         second_database[int(j/size[0]),j%size[0]] = second
         third_database[int(j/size[0]),j%size[0]] = third
 
-        G[2*0  ,2*j  ] = 1/2 - first
-        G[2*0+1,2*j+1] = 1/2 + first
+        k = I(j//size[0]-0,j%size[0]-0)
+        G[2*0  ,2*j  ] = k/2 - first
+        G[2*0+1,2*j+1] = k/2 + first
         G[2*0  ,2*j+1] = complex(-second, -third)
         G[2*0+1,2*j  ] = complex(second, -third)
     
@@ -110,8 +119,9 @@ def Gij(delta,mu,size):
             second = second_database[vector[0],vector[1]]
             third = third_database[vector[0],vector[1]]
 
-            G[2*i  ,2*j  ] = 1/2 - first
-            G[2*i+1,2*j+1] = 1/2 + first
+            k = I(j//size[0]-i//size[0],j%size[0]-i%size[0])
+            G[2*i  ,2*j  ] = k/2 - first
+            G[2*i+1,2*j+1] = k/2 + first
             G[2*i  ,2*j+1] = complex(-c[0]*second, -c[1]*third)
             G[2*i+1,2*j  ] = complex(c[0]*second, -c[1]*third)
     return G
@@ -119,8 +129,8 @@ def Gij(delta,mu,size):
 def Gij_eigen(delta,mu,size):
     return np.linalg.eigh(Gij(delta,mu,size))
 
-delta = 0.5
-mu = 0.5
+delta = 1 
+mu = 1
 size = [2,2]
 
 print("\nGij:\n")
@@ -132,6 +142,3 @@ print(eigen[0])
 
 print("\neigenmatrix:\n")
 print(eigen[1])
-
-
-

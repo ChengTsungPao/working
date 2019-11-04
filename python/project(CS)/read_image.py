@@ -4,7 +4,7 @@ from PIL import Image
 
 dx = -10
 lineweight = 10
-filename = "Height 092605.bmp"
+filename = "test1.bmp"
 path = "D:/program/vscode_workspace/private/data/project_image(CS)/"
 
 im = Image.open(path+filename)
