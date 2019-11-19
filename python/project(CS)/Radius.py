@@ -45,6 +45,17 @@ print(r[max_right[0]],max_right[1])
 print("\nMax-left pos and value:\n   ", end="")
 print(r[max_left[0]],max_left[1])
 
+bottom = 0
+index = 0
+for i in range(len(bright)):
+    if(i>50):
+        bottom = bright[i]
+        index = i
+        break
+
+in_height = np.mean([min_center[1],min_center[1],max_right[1],max_left[1]])
+out_height = np.mean([bottom,bottom,max_right[1],max_left[1]])
+
 plt.subplot(121)
 plt.title("Bright Image")
 plt.axis('off')
@@ -55,10 +66,15 @@ plt.axis('off')
 plt.imshow(im)
 plt.show()
 
-plt.scatter([r[min_center[0]],r[max_right[0]],r[max_left[0]]],[min_center[1],max_right[1],max_left[1]],color = "r")
+
+plt.scatter([r[index],r[min_center[0]],r[max_right[0]],r[max_left[0]]],[bottom,min_center[1],max_right[1],max_left[1]],color = "r")
 plt.title("Calculate Bright")
 plt.xlabel("width (\u03BCm)")
 plt.ylabel("brightness")
+plt.plot([r[0],r[-1]],[bottom,bottom],color = "r")
+plt.plot([r[max_left[0]],r[max_right[0]]],[in_height,in_height],label = "in")
+plt.plot([r[0],r[-1]],[out_height,out_height],label = "out")
 plt.plot(r,bright)
+plt.legend()
 plt.show()
 
