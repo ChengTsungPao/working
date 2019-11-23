@@ -2,10 +2,13 @@ import numpy as np
 from scipy.integrate import dblquad
 from numba import jit
 import time
+import warnings
+
+warnings.filterwarnings('ignore')
 
 @jit
-def eps(kx,ky,mu):
-    value = np.cos(kx)+np.cos(ky)+(mu/2.0-2)
+def eps(kx,ky,mu):     
+    value = t*(np.cos(kx)+np.cos(ky))+(mu/2.0-2*t)
     return value
 
 @jit
@@ -76,10 +79,10 @@ def BiAj_optimization(delta,mu,size):
                 vector[0] = abs(vector[0])
             BA[i,j] = first_database[vector[0],vector[1]] + c*second_database[vector[0],vector[1]]
     return BA
-
+t = 0.5
 n = input("input the size of BiAj: ")
-delta = 0.5
-mu = 0.5
+delta = 1*t
+mu = 5*t
 size = [int(n),int(n)]
 
 print("\nBiAj(delta,mu,size):\n")

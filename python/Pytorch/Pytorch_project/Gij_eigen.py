@@ -1,10 +1,13 @@
 import numpy as np
 from scipy.integrate import dblquad
 from numba import jit
+import warnings
+
+warnings.filterwarnings('ignore')
 
 @jit
 def eps(kx,ky,mu):
-    value = np.cos(kx)+np.cos(ky)+(mu/2.0-2)
+    value = (np.cos(kx)+np.cos(ky))+(mu/2.0-2*a)
     return value
 
 @jit
@@ -128,9 +131,10 @@ def Gij(delta,mu,size):
 
 def Gij_eigen(delta,mu,size):
     return np.linalg.eigh(Gij(delta,mu,size))
-
-delta = 1 
-mu = 1
+'''
+a = 0.5
+delta = 1*a
+mu = 5*a
 size = [2,2]
 
 print("\nGij:\n")
@@ -142,3 +146,15 @@ print(eigen[0])
 
 print("\neigenmatrix:\n")
 print(eigen[1])
+'''
+
+import matplotlib.pylab as plt
+a = 1
+delta = 1
+mu = 8
+size = [3,3]
+for i in range(1):
+    e = Gij_eigen(delta,mu,size)[0]
+    plt.plot(range(len(e)),e,"o")
+    plt.show()
+    #mu += 0.5
