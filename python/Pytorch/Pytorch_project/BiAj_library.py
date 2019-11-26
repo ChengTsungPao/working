@@ -8,7 +8,7 @@ warnings.filterwarnings('ignore')
 
 @jit
 def eps(kx,ky,mu):     
-    value = t*(np.cos(kx)+np.cos(ky))+(mu/2.0-2*t)
+    value = 0.5*(np.cos(kx)+np.cos(ky))+(mu/2.0-2*0.5)
     return value
 
 @jit
@@ -79,10 +79,10 @@ def BiAj_optimization(delta,mu,size):
                 vector[0] = abs(vector[0])
             BA[i,j] = first_database[vector[0],vector[1]] + c*second_database[vector[0],vector[1]]
     return BA
-t = 0.5
+
 n = input("input the size of BiAj: ")
-delta = 1*t
-mu = 5*t
+delta = 1
+mu = 1
 size = [int(n),int(n)]
 
 print("\nBiAj(delta,mu,size):\n")

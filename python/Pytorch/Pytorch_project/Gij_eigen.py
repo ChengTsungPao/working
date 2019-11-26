@@ -7,7 +7,7 @@ warnings.filterwarnings('ignore')
 
 @jit
 def eps(kx,ky,mu):
-    value = T*(np.cos(kx)+np.cos(ky))+(mu/2.0-2*T)
+    value = 0.5*(np.cos(kx)+np.cos(ky))+(mu/2.0-2*0.5)
     return value
 
 @jit
@@ -132,7 +132,6 @@ def Gij(delta,mu,size):
 def Gij_eigen(delta,mu,size):
     return np.linalg.eigh(Gij(delta,mu,size))
 
-T = 0.5
 delta = 1
 mu = 1
 size = [2,2]

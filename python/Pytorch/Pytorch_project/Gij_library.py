@@ -2,10 +2,13 @@ import numpy as np
 from scipy.integrate import dblquad
 from numba import jit
 import time
+import warnings
+
+warnings.filterwarnings('ignore')
 
 @jit
 def eps(kx,ky,mu):
-    value = np.cos(kx)+np.cos(ky)+(mu/2.0-2)
+    value = 0.5*(np.cos(kx)+np.cos(ky))+(mu/2.0-2*0.5)
     return value
 
 @jit
