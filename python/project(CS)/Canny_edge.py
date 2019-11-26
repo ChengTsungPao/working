@@ -168,7 +168,7 @@ path = "D:/program/vscode_workspace/private/data/project_image(CS)/"
 image = Image.open(path+filename)
 
 Rrange = [230 , 250]
-visible = False
+visible = True
 length = 10
 
 edges = Cannyedge(path,filename,visible)
