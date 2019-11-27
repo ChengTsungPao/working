@@ -53,13 +53,13 @@ def gaussxwint_double(f,a,b,N):
     return I
 
 def R(x,y):
-    return ((0.5*(cos(x)+cos(y))+(0.5*mu)-2*0.5)**2+(sin(x)**2+sin(y)**2)*(delta**2))**0.5
+    return (((cos(x)+cos(y))+(0.5*mu/0.5)-2)**2+(sin(x)**2+sin(y)**2)*(delta**2))**0.5
     
 
 def integral_term1(kx,ky):
     #need mu,delta,d_m,d_n
     term_1 = (1/abs(R(kx,ky)))
-    term_2_part1 = (0.5*(cos(kx)+cos(ky))+(0.5*mu)-2*0.5)*(cos(kx*d_m)*cos(ky*d_n))
+    term_2_part1 = ((cos(kx)+cos(ky))+(0.5*mu/0.5)-2)*(cos(kx*d_m)*cos(ky*d_n))
     term_2_part2 = 0
     term_2 = term_2_part1+term_2_part2
     return term_1*term_2

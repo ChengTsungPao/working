@@ -8,7 +8,7 @@ warnings.filterwarnings('ignore')
 
 @jit
 def eps(kx,ky,mu):
-    value = 0.5*(np.cos(kx)+np.cos(ky))+(mu/2.0-2*0.5)
+    value = (np.cos(kx)+np.cos(ky))+(mu/(2.0*0.5)-2)
     return value
 
 @jit
