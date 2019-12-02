@@ -6,23 +6,24 @@ import copy
 
 def Cannyedge(path,filename,visible=True):
     lowThreshold = 0
-    max_lowThreshold = 40
-    ratio = 3
-    kernel_size = 3
+    max_lowThreshold = 0#40
+    #ratio = 3
+    #kernel_size = 3
     img = cv2.imread(path+filename)
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    blur_gray = cv2.GaussianBlur(gray,(kernel_size, kernel_size), cv2.BORDER_DEFAULT)
-    edges = cv2.Canny(blur_gray, lowThreshold, max_lowThreshold)
+    #blur_gray = cv2.GaussianBlur(gray,(kernel_size, kernel_size), cv2.BORDER_DEFAULT)
+    edges = cv2.Canny(gray, lowThreshold, max_lowThreshold)
     if(visible):
-        plt.imshow(edges, cmap='Greys_r')
-        plt.show()
+        cv2.imshow('detected circles',edges)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
     return edges
 
 def HighCircle(edges,Rrange,visible=True):
     img = edges
     cimg = cv2.cvtColor(edges,cv2.COLOR_GRAY2BGR)
     #img = cv2.medianBlur(edges,5)
-    circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,20,param1=50,param2=30,minRadius=Rrange[0],maxRadius=Rrange[1])
+    circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,20,param1=20,param2=50,minRadius=Rrange[0],maxRadius=Rrange[1])
     circles = np.uint16(np.around(circles))
     center = []
     for i in circles[0,:]:  
@@ -94,14 +95,14 @@ def IndexVal(arr,s):
         print("please input the correct mpde")
         return 0
     return np.where(arr[index[0]:index[1]]==val)[0][0]+index[0],val 
-
-def Radiuscal(bright,length,visible):
+pos = []
+def Radiuscal(bright,Pixellength,visible):
     init = -5
     InRadius , OutRadius = 0 , 0
     in_Radius = [[] for i in range(4)]
     out_Radius = [[] for i in range(4)]
     for index in range(len(bright)):
-        r = np.linspace(0,length,len(bright[index]))
+        r = np.linspace(0,Pixellength*len(bright[index]),len(bright[index]))
         min_center = IndexVal(bright[index],"min")
         max_right = IndexVal(bright[index],"max-right")
         max_left = IndexVal(bright[index],"max-left")
@@ -138,7 +139,8 @@ def Radiuscal(bright,length,visible):
             c = 1
         r = c*r
         
-        h = length/len(r)
+        pos.append(ans)
+        h = Pixellength
         InRadius , OutRadius = InRadius+c*(ans[3]-ans[2])*h/4 ,  OutRadius+c*(ans[1]-ans[0])*h/4   
 
         if(visible):
@@ -168,16 +170,52 @@ path = "D:/program/vscode_workspace/private/data/project_image(CS)/"
 image = Image.open(path+filename)
 
 Rrange = [230 , 250]
-visible = True
-length = 10
+#Rrange = [10 , 80]
+visible = False
+Pixellength = 10/image.size[0]
 
 edges = Cannyedge(path,filename,visible)
 center = HighCircle(edges,Rrange,visible)
 data , bright = Radiusline(image,center[0],visible)
-InRadius , OutRadius = Radiuscal(bright,length,visible)
+InRadius , OutRadius = Radiuscal(bright,Pixellength,visible)
 print("---------------------------------------")
 print(" InRadius : "+str(InRadius))
 print("OutRadius : "+str(OutRadius))
 
-  
+
+def dot(x,y,k):
+    data[y][x] = 0
+    if k>=5: return
+    dot(x+1,y,k+1)
+    dot(x,y+1,k+1)
+    dot(x,y-1,k+1)
+    dot(x-1,y,k+1)
+    dot(x+1,y+1,k+1)
+    dot(x-1,y-1,k+1)
+    dot(x-1,y+1,k+1)
+    dot(x+1,y-1,k+1)
+
+dot(center[0][0]+(pos[0][3]-pos[0][2])//2,center[0][1]+(pos[0][3]-pos[0][2])//2,0)
+dot(center[0][0]-(pos[0][3]-pos[0][2])//2,center[0][1]-(pos[0][3]-pos[0][2])//2,0)
+dot(center[0][0]+(pos[0][1]-pos[0][0])//2,center[0][1]+(pos[0][1]-pos[0][0])//2,0)
+dot(center[0][0]-(pos[0][1]-pos[0][0])//2,center[0][1]-(pos[0][1]-pos[0][0])//2,0)
+
+dot(center[0][0]-(pos[1][3]-pos[1][2])//2,center[0][1]+(pos[1][3]-pos[1][2])//2,0)
+dot(center[0][0]+(pos[1][3]-pos[1][2])//2,center[0][1]-(pos[1][3]-pos[1][2])//2,0)
+dot(center[0][0]-(pos[1][1]-pos[1][0])//2,center[0][1]+(pos[1][1]-pos[1][0])//2,0)
+dot(center[0][0]+(pos[1][1]-pos[1][0])//2,center[0][1]-(pos[1][1]-pos[1][0])//2,0)
+
+dot(center[0][0],center[0][1]+(pos[2][3]-pos[2][2])//2,0)
+dot(center[0][0],center[0][1]-(pos[2][3]-pos[2][2])//2,0)
+dot(center[0][0],center[0][1]+(pos[2][1]-pos[2][0])//2,0)
+dot(center[0][0],center[0][1]-(pos[2][1]-pos[2][0])//2,0)
+
+dot(center[0][0]+(pos[3][3]-pos[3][2])//2,center[0][1],0)
+dot(center[0][0]-(pos[3][3]-pos[3][2])//2,center[0][1],0)
+dot(center[0][0]+(pos[3][1]-pos[3][0])//2,center[0][1],0)
+dot(center[0][0]-(pos[3][1]-pos[3][0])//2,center[0][1],0)
+
+plt.imshow(data)
+plt.show()
+
 
