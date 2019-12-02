@@ -19,14 +19,19 @@ def Cannyedge(path,filename,visible=True):
         cv2.destroyAllWindows()
     return edges
 
+rad = 0
+circles = 0
 def HighCircle(edges,Rrange,visible=True):
+    global circles
+    global rad
     img = edges
     cimg = cv2.cvtColor(edges,cv2.COLOR_GRAY2BGR)
     #img = cv2.medianBlur(edges,5)
     circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,20,param1=20,param2=50,minRadius=Rrange[0],maxRadius=Rrange[1])
     circles = np.uint16(np.around(circles))
-    center = []
+    center = []    
     for i in circles[0,:]:  
+        rad = (i[0],i[1]),i[2],(0,255,0),2
         center.append([i[0],i[1]])
         cv2.circle(cimg,(i[0],i[1]),i[2],(0,255,0),2) # draw the outer circle
         cv2.circle(cimg,(i[0],i[1]),2,(0,0,255),3) # draw the center of the circle
@@ -35,8 +40,9 @@ def HighCircle(edges,Rrange,visible=True):
         cv2.waitKey(0)
         cv2.destroyAllWindows()
     return center
-
+start = []
 def Radiusline(image,center,visible=True):    
+    global start
     L = image.convert("L")
     data = copy.copy(np.array(L))
     bright = [[] for i in range(4)]
@@ -44,7 +50,8 @@ def Radiusline(image,center,visible=True):
     col = center[0]
     x , y = 0 , 0
     if(row > col):
-        center_height = data[row][col]
+        center_height = data[row][col]        
+        start = [[row-col+x,0+x],[2*row-(row-col+x),0+x],[row,x],[x,col]]
         while row-col+x < len(data) and x < len(data):
             bright[0].append(data[row-col+x][0+x])
             bright[1].append(data[2*row-(row-col+x)][0+x])
@@ -61,6 +68,7 @@ def Radiusline(image,center,visible=True):
             data[i][col] = 0
     else:
         center_height = data[row][col]
+        start = [[0+y,col-row+y],[2*row-y,col-row+y],[row,y],[y,col]]
         while col-row+y < len(data) and y < len(data):
             bright[0].append(data[0+y][col-row+y])
             bright[1].append(data[2*row-y][col-row+y])
@@ -171,7 +179,7 @@ image = Image.open(path+filename)
 
 Rrange = [230 , 250]
 #Rrange = [10 , 80]
-visible = False
+visible = True
 Pixellength = 10/image.size[0]
 
 edges = Cannyedge(path,filename,visible)
@@ -184,7 +192,7 @@ print("OutRadius : "+str(OutRadius))
 
 
 def dot(x,y,k):
-    data[y][x] = 0
+    data[x][y] = 0
     if k>=5: return
     dot(x+1,y,k+1)
     dot(x,y+1,k+1)
@@ -195,27 +203,19 @@ def dot(x,y,k):
     dot(x-1,y+1,k+1)
     dot(x+1,y-1,k+1)
 
-dot(center[0][0]+(pos[0][3]-pos[0][2])//2,center[0][1]+(pos[0][3]-pos[0][2])//2,0)
-dot(center[0][0]-(pos[0][3]-pos[0][2])//2,center[0][1]-(pos[0][3]-pos[0][2])//2,0)
-dot(center[0][0]+(pos[0][1]-pos[0][0])//2,center[0][1]+(pos[0][1]-pos[0][0])//2,0)
-dot(center[0][0]-(pos[0][1]-pos[0][0])//2,center[0][1]-(pos[0][1]-pos[0][0])//2,0)
+for i in range(4):
+    dot(start[0][0]+pos[0][i],start[0][1]+pos[0][i],0)
+for i in range(4):
+    dot(start[1][0]-pos[1][i],start[1][1]+pos[1][i],0)
+for i in range(4):
+    dot(start[2][0],start[2][1]+pos[2][i],0)
+for i in range(4):
+    dot(start[3][0]+pos[3][i],start[3][1],0)
 
-dot(center[0][0]-(pos[1][3]-pos[1][2])//2,center[0][1]+(pos[1][3]-pos[1][2])//2,0)
-dot(center[0][0]+(pos[1][3]-pos[1][2])//2,center[0][1]-(pos[1][3]-pos[1][2])//2,0)
-dot(center[0][0]-(pos[1][1]-pos[1][0])//2,center[0][1]+(pos[1][1]-pos[1][0])//2,0)
-dot(center[0][0]+(pos[1][1]-pos[1][0])//2,center[0][1]-(pos[1][1]-pos[1][0])//2,0)
+#plt.imshow(data)
+#plt.show()
 
-dot(center[0][0],center[0][1]+(pos[2][3]-pos[2][2])//2,0)
-dot(center[0][0],center[0][1]-(pos[2][3]-pos[2][2])//2,0)
-dot(center[0][0],center[0][1]+(pos[2][1]-pos[2][0])//2,0)
-dot(center[0][0],center[0][1]-(pos[2][1]-pos[2][0])//2,0)
-
-dot(center[0][0]+(pos[3][3]-pos[3][2])//2,center[0][1],0)
-dot(center[0][0]-(pos[3][3]-pos[3][2])//2,center[0][1],0)
-dot(center[0][0]+(pos[3][1]-pos[3][0])//2,center[0][1],0)
-dot(center[0][0]-(pos[3][1]-pos[3][0])//2,center[0][1],0)
-
-plt.imshow(data)
-plt.show()
-
-
+cv2.circle(data,rad[0],rad[1],rad[2],rad[3])
+cv2.imshow('detected circles',data)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
