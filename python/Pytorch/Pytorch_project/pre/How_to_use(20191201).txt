@@ -12,7 +12,7 @@ step5 若為單一訓練,執行pkl_npz_single.py,然後輸入pkl檔之檔名,再
 
 
 註:
-  1. 預設data路徑為"./train_data" (相較於 training_*.py)
+  1. 預設data路徑為"./data" (相較於 training_*.py)
   2. 預設npz檔儲存路徑為"./npzfile" (相較於 pkl_npz_*.py)
   3. .pkl 和 pkl_npz_all.py 和 pkl_npz_single.py 需保持在同一路徑
   4. Training_parameter.txt 為之前大量訓練之所有參數
