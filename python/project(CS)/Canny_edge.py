@@ -5,8 +5,8 @@ from PIL import Image
 import copy
 
 def Cannyedge(path,filename,visible=True):
-    lowThreshold = 0
-    max_lowThreshold = 0#40
+    lowThreshold = 10
+    max_lowThreshold = 10#40
     #ratio = 3
     #kernel_size = 3
     img = cv2.imread(path+filename)
@@ -26,8 +26,10 @@ def HighCircle(edges,Rrange,visible=True):
     global rad
     img = edges
     cimg = cv2.cvtColor(edges,cv2.COLOR_GRAY2BGR)
-    #img = cv2.medianBlur(edges,5)
-    circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,20,param1=20,param2=50,minRadius=Rrange[0],maxRadius=Rrange[1])
+    #img = cv2.medianBlur(edges,5)   
+    circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,80,param1=10,param2=50,minRadius=Rrange[0],maxRadius=Rrange[1])
+    circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,1000,param1=10,param2=1,minRadius=Rrange[0],maxRadius=Rrange[1])
+    print(circles)
     circles = np.uint16(np.around(circles))
     center = []    
     for i in circles[0,:]:  
@@ -41,7 +43,7 @@ def HighCircle(edges,Rrange,visible=True):
         cv2.destroyAllWindows()
     return center
 start = []
-def Radiusline(image,center,visible=True):    
+def Radiusline(image,center,visible=True):    #需要改有問題
     global start
     L = image.convert("L")
     data = copy.copy(np.array(L))
@@ -88,7 +90,7 @@ def Radiusline(image,center,visible=True):
         plt.show()
     return data,bright
 
-def IndexVal(arr,s):
+def IndexVal(arr,s):   #需要改別偷懶
     init = 5
     if(s=="min"):
         index = [len(arr)//3+init,len(arr)*2//3-init]
@@ -149,7 +151,11 @@ def Radiuscal(bright,Pixellength,visible):
         
         pos.append(ans)
         h = Pixellength
-        InRadius , OutRadius = InRadius+c*(ans[3]-ans[2])*h/4 ,  OutRadius+c*(ans[1]-ans[0])*h/4   
+        InRadius , OutRadius = InRadius+c*(ans[3]-ans[2])*h/4 ,  OutRadius+c*(ans[1]-ans[0])*h/4 
+        #if(c*(ans[3]-ans[2])*h>InRadius):
+        #    InRadius = c*(ans[3]-ans[2])*h
+        #if(c*(ans[1]-ans[0])*h>OutRadius):
+        #    OutRadius = c*(ans[1]-ans[0])*h
 
         if(visible):
             print("\nMin pos and value:\n   ", end="")
@@ -173,12 +179,14 @@ def Radiuscal(bright,Pixellength,visible):
         plt.show()
     return InRadius , OutRadius
 
+filename = "Height 091205.bmp"
 filename = "test2.bmp"
 path = "D:/program/vscode_workspace/private/data/project_image(CS)/"
 image = Image.open(path+filename)
 
+
+Rrange = [10 , 50]
 Rrange = [230 , 250]
-#Rrange = [10 , 80]
 visible = True
 Pixellength = 10/image.size[0]
 
@@ -190,7 +198,7 @@ print("---------------------------------------")
 print(" InRadius : "+str(InRadius))
 print("OutRadius : "+str(OutRadius))
 
-
+'''
 def dot(x,y,k):
     data[x][y] = 0
     if k>=5: return
@@ -219,3 +227,4 @@ cv2.circle(data,rad[0],rad[1],rad[2],rad[3])
 cv2.imshow('detected circles',data)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
+'''
