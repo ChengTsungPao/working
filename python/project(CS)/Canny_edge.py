@@ -13,6 +13,7 @@ def Cannyedge(path,filename,visible=True):
     gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     #blur_gray = cv2.GaussianBlur(gray,(kernel_size, kernel_size), cv2.BORDER_DEFAULT)
     edges = cv2.Canny(gray, lowThreshold, max_lowThreshold)
+    #edges = gray
     if(visible):
         cv2.imshow('detected circles',edges)
         cv2.waitKey(0)
@@ -28,7 +29,7 @@ def HighCircle(edges,Rrange,visible=True):
     cimg = cv2.cvtColor(edges,cv2.COLOR_GRAY2BGR)
     #img = cv2.medianBlur(edges,5)   
     circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,80,param1=10,param2=50,minRadius=Rrange[0],maxRadius=Rrange[1])
-    circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,1000,param1=10,param2=1,minRadius=Rrange[0],maxRadius=Rrange[1])
+    #circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,1000,param1=10,param2=1,minRadius=Rrange[0],maxRadius=Rrange[1])
     print(circles)
     circles = np.uint16(np.around(circles))
     center = []    
@@ -180,13 +181,13 @@ def Radiuscal(bright,Pixellength,visible):
     return InRadius , OutRadius
 
 filename = "Height 091205.bmp"
-filename = "test2.bmp"
+#filename = "test2.bmp"
 path = "D:/program/vscode_workspace/private/data/project_image(CS)/"
 image = Image.open(path+filename)
 
 
 Rrange = [10 , 50]
-Rrange = [230 , 250]
+#Rrange = [230 , 250]
 visible = True
 Pixellength = 10/image.size[0]
 

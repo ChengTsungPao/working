@@ -12,8 +12,6 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-##############################################################################
-
 def data():
     path = "D:/program/vscode_workspace/private/data/project_RBM(phy)/"
     filename = "G_eigenvalue_train_L=20_mu=[0,10]_delta=1.npz"
@@ -23,6 +21,8 @@ def data():
 X, Y = data()
 X = (X - np.min(X, 0)) / (np.max(X, 0) + 0.0001)  # 0-1 scaling
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, random_state=0)
+
+#########################################################################################################################
 
 rbm = BernoulliRBM(random_state=0, verbose=True)
 rbm.learning_rate = 0.06
@@ -39,22 +39,9 @@ print(len(kmeans.labels_),len(Y_test))
 print(metrics.accuracy_score(Y_test, kmeans.labels_))
 
 #########################################################################################################################
-#########################################################################################################################
-#########################################################################################################################
-
-def data():
-    path = "D:/program/vscode_workspace/private/data/project_RBM(phy)/"
-    filename = "G_eigenvalue_train_L=20_mu=[0,10]_delta=1.npz"
-    f = np.load(path+filename)
-    return f["arr_0"],f["arr_1"]-1
-
-X, Y = data()
-X = (X - np.min(X, 0)) / (np.max(X, 0) + 0.0001)  # 0-1 scaling
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, random_state=0)
 
 logistic = KMeans(2)
 rbm = BernoulliRBM(random_state=0, verbose=True)
-
 rbm_features_classifier = Pipeline(steps=[('rbm', rbm), ('logistic', logistic)])
 
 rbm.learning_rate = 0.06
