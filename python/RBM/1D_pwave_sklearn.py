@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from scipy.ndimage import convolve
 from sklearn import linear_model, datasets, metrics
 from sklearn.model_selection import train_test_split
 from sklearn.neural_network import BernoulliRBM
