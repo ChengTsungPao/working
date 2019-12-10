@@ -19,7 +19,7 @@ def data():
     return f["arr_0"],f["arr_1"]-1
 
 X, Y = data()
-X = (X - np.min(X, 0)) / (np.max(X, 0) + 0.0001)  # 0-1 scaling
+X = (X - np.min(X, 0)) / (np.max(X, 0) + 0.0001)
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, random_state=0)
 
 #########################################################################################################################
