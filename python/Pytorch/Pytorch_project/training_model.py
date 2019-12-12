@@ -120,7 +120,7 @@ def training(network,filename,dimension):
 
     one_dimension_mode = 1  #1. phase=[9,10,9]
                             #2. phase=[5,1,3,7] 
-    if(one_dimension_mode==1):
+    if(one_dimension_mode==1 and dimension==1):
         classify_phase_test = [5,1,3,7]   # Don't forget to change !!!
         line = which_line(classify_phase_test)
     else:    

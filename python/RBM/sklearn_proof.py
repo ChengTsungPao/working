@@ -18,9 +18,15 @@ def data():
     f = np.load(path+filename)
     return f["arr_0"],f["arr_1"]-1
 
+def test():
+    path = "D:/program/vscode_workspace/private/data/project_RBM(phy)/"
+    filename = "G_eigenvalue_test_L=20_mu=[0,10]_delta=1.npz"
+    f = np.load(path+filename)
+    return f["arr_0"],f["arr_1"]-1
+
 X, Y = data()
-X = (X - np.min(X, 0)) / (np.max(X, 0) + 0.0001)
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, random_state=0)
+#X = (X - np.min(X, 0)) / (np.max(X, 0) + 0.0001)
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.5, random_state=0)
 
 #########################################################################################################################
 
@@ -55,5 +61,3 @@ print(Y_pred,end=" ")
 print(Y_test,end=" ")
 print(len(Y_pred),len(Y_test))
 print(metrics.accuracy_score(Y_test, rbm_features_classifier.predict(X_test)))
-
-
