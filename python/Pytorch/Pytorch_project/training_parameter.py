@@ -11,8 +11,6 @@ def Network(network,filename,dimension):
 def all_training(parameter,dimension):
     for p in parameter:
         Network(p[0],p[1],dimension) 
-    else:
-        print("Please input the correct dimension !!!")
 
 #path = 'D:/program/vscode_workspace/private/data/project_data'
 path = './train_data'
