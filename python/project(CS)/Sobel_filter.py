@@ -1,19 +1,24 @@
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
+
+
+import cv2
+import numpy as np
 import matplotlib.pylab as plt
 from PIL import Image
 import copy
 
-def Cannyedge(path,filename,visible=True):
-    lowThreshold = 10
-    max_lowThreshold = 10#40
-    #ratio = 3
-    #kernel_size = 3
-    img = cv2.imread(path+filename)
-    gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    #blur_gray = cv2.GaussianBlur(gray,(kernel_size, kernel_size), cv2.BORDER_DEFAULT)
-    edges = cv2.Canny(gray, lowThreshold, max_lowThreshold)
-    #edges = gray
+def Sobelfilter(path,filename,visible=True):
+    img = cv2.imread(path+filename,0)
+    laplacian = cv2.Laplacian(img,cv2.CV_64F)
+    sobelx = cv2.Sobel(img,cv2.CV_64F,1,0,ksize=3)
+    sobely = cv2.Sobel(img,cv2.CV_64F,0,1,ksize=3)
+    edges = np.uint8(np.absolute(sobely))
+    x = cv2.convertScaleAbs(sobelx)   
+    y = cv2.convertScaleAbs(sobely)
+    edges = cv2.addWeighted(x,0.5,y,0.5,0)
+
     if(visible):
         cv2.imshow('detected circles',edges)
         cv2.waitKey(0)
@@ -143,7 +148,7 @@ def IndexVal(arr,s,Pixellength):   #需要改別偷懶
         index = [tmp,tmp+int(para/Pixellength)]
         val = np.max(arr[index[0]:index[1]])
     else:
-        print("please input the correct mpde")
+        print("please input the correct mode")
         return 0
     return np.where(arr[index[0]:index[1]]==val)[0][0]+index[0],val 
 pos = []
@@ -232,7 +237,7 @@ Rrange = [230 , 250]
 visible = True
 Pixellength = 10/image.size[0]
 print(image.size)
-edges = Cannyedge(path,filename,visible)
+edges = Sobelfilter(path,filename,visible)
 center = HighCircle(edges,Rrange)
 data , bright = Radiusline(image,center[0],visible)
 InRadius , OutRadius = Radiuscal(bright,Pixellength,visible)
@@ -261,11 +266,13 @@ for i in range(4):
     dot(start[2][0],start[2][1]+pos[2][i],0)
 for i in range(4):
     dot(start[3][0]+pos[3][i],start[3][1],0)
-'''
+
 #plt.imshow(data)
 #plt.show()
 cv2.circle(data,rad[0],rad[1],rad[2],rad[3])
 cv2.imshow('detected circles',data)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-'''
+
+
+
