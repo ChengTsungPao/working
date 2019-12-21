@@ -30,7 +30,6 @@ def HighCircle(edges,Rrange,visible=True):
     #img = cv2.medianBlur(edges,5)   
     #circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,80,param1=10,param2=15,minRadius=Rrange[0],maxRadius=Rrange[1])
     circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,1000,param1=10,param2=1,minRadius=Rrange[0],maxRadius=Rrange[1])
-    print(circles)
     circles = np.uint16(np.around(circles))
     center = []    
     for i in circles[0,:]:  
