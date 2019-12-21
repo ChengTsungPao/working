@@ -237,7 +237,7 @@ visible = True
 Pixellength = 10/image.size[0]
 print(image.size)
 edges = Sobelfilter(path,filename,visible)
-center = HighCircle(edges,Rrange)
+center = HighCircle(edges,Rrange,visible)
 data , bright = Radiusline(image,center[0],visible)
 InRadius , OutRadius = Radiuscal(bright,Pixellength,visible)
 print("---------------------------------------")

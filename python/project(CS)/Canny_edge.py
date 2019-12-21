@@ -232,7 +232,7 @@ visible = True
 Pixellength = 10/image.size[0]
 print(image.size)
 edges = Cannyedge(path,filename,visible)
-center = HighCircle(edges,Rrange)
+center = HighCircle(edges,Rrange,visible)
 data , bright = Radiusline(image,center[0],visible)
 InRadius , OutRadius = Radiuscal(bright,Pixellength,visible)
 print("---------------------------------------")
@@ -260,11 +260,10 @@ for i in range(4):
     dot(start[2][0],start[2][1]+pos[2][i],0)
 for i in range(4):
     dot(start[3][0]+pos[3][i],start[3][1],0)
-'''
+
 #plt.imshow(data)
 #plt.show()
 cv2.circle(data,rad[0],rad[1],rad[2],rad[3])
 cv2.imshow('detected circles',data)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-'''
