@@ -220,7 +220,7 @@ def Radiuscal(bright,Pixellength,visible):
     return InRadius , OutRadius
 
 #filename = "Height 091205.bmp"
-filename = "test2.bmp"
+filename = "test3.bmp"
 path = "D:/program/vscode_workspace/private/data/project_image(CS)/health/"
 image = Image.open(path+filename)
 
