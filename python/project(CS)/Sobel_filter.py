@@ -1,10 +1,5 @@
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-
-
-import cv2
-import numpy as np
 import matplotlib.pylab as plt
 from PIL import Image
 import copy
