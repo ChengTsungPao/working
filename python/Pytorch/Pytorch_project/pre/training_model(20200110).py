@@ -116,8 +116,14 @@ def training(network,filename,dimension):
     STEPLR = network[2]  
     BATCH_SIZE = network[3] 
     internet = network[4] 
-  
-    line = which_line(classify_phase)
+
+    one_dimension_mode = 1  #1. phase=[9,10,9]
+                            #2. phase=[5,1,3,7] 
+    if(one_dimension_mode==1 and dimension==1):
+        classify_phase_test = [5,1,3,7]   # Don't forget to change !!!
+        line = which_line(classify_phase_test)
+    else:    
+        line = which_line(classify_phase)
 
     def move(ph):
         if(line=="delta=0.5" or line=="delta=-0.5"):
@@ -160,6 +166,16 @@ def training(network,filename,dimension):
         train_input = np.array(train_input)
         train_target = np.array(train_target)
 
+        if(dimension==1 and one_dimension_mode==1):
+            test_target = np.where(test_target==classify_phase_test[0],9,test_target)
+            test_target = np.where(test_target==classify_phase_test[1],10,test_target)
+            test_target = np.where(test_target==classify_phase_test[2],10,test_target)
+            test_target = np.where(test_target==classify_phase_test[3],9,test_target)
+            train_target = np.where(train_target==classify_phase_test[0],9,train_target)
+            train_target = np.where(train_target==classify_phase_test[1],10,train_target)
+            train_target = np.where(train_target==classify_phase_test[2],10,train_target)
+            train_target = np.where(train_target==classify_phase_test[3],9,train_target)
+
         return [torch.tensor(test_input  ,dtype=torch.float64),
                 torch.tensor(test_target ,dtype=torch.float64),
                 torch.tensor(train_input ,dtype=torch.float64),
@@ -179,12 +195,23 @@ def training(network,filename,dimension):
             data += file[kind_of_data[0]][cut[0]:cut[1]+1].tolist()
             ph += file[kind_of_data[1]][cut[0]:cut[1]+1].tolist()
 
+        if(dimension==1 and one_dimension_mode==1):
+            ph = np.array(ph)
+            ph = np.where(ph==classify_phase_test[0],9,ph)
+            ph = np.where(ph==classify_phase_test[1],10,ph)
+            ph = np.where(ph==classify_phase_test[2],10,ph)
+            ph = np.where(ph==classify_phase_test[3],9,ph)
+
         return TensorDataset(torch.tensor(np.array(data)),torch.tensor(np.array(ph)))   
 
-    total_data = get_train_data(classify_phase)    
+    if(dimension==1 and one_dimension_mode==1):
+        total_data = get_train_data(classify_phase_test)
+        test_data_all = get_test_data(classify_phase_test)
+    else:
+        total_data = get_train_data(classify_phase)
+        test_data_all = get_test_data(classify_phase)
     test_data  = TensorDataset(total_data[0],total_data[1])
     train_data = TensorDataset(total_data[2],total_data[3])
-    test_data_all = get_test_data(classify_phase)
 
     if(dimension==1):
         model = DNN(internet)  
