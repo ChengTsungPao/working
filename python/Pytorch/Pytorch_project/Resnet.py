@@ -1,163 +1,265 @@
-from glob import glob
-import os
+import time
 import numpy as np
-import matplotlib.pyplot as plt
-import shutil
-from torchvision import transforms, models
+from glob import glob
+
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
-from torch.optim import lr_scheduler
-from torch import optim
-from torchvision.datasets import ImageFolder
-from torchvision.utils import make_grid
-import time
-
-def get_train_data(phase):
-
-    file = np.load((path+'/train/{},{}_train,N={},{}.npz').format(particle_data[0],particle_data[1],particle_data[2],line))
-
-    test_input = []
-    test_target = []
-    train_input = []
-    train_target = []
-    
-    for i in range(len(phase)):
-        test_input += file[kind_of_data[0]][800 + move(phase[i]) : 1000 + move(phase[i])].tolist()
-        test_target += file[kind_of_data[1]][800 + move(phase[i]) : 1000 + move(phase[i])].tolist()
-        train_input += file[kind_of_data[0]][0 + move(phase[i]) : 800 + move(phase[i])].tolist()
-        train_target += file[kind_of_data[1]][0 + move(phase[i]) : 800 + move(phase[i])].tolist()
-
-    test_input = np.array(test_input)
-    test_target = np.array(test_target)
-    train_input = np.array(train_input)
-    train_target = np.array(train_target)
-
-    if(dimension==1 and one_dimension_mode==1):
-        test_target = np.where(test_target==classify_phase_test[0],9,test_target)
-        test_target = np.where(test_target==classify_phase_test[1],10,test_target)
-        test_target = np.where(test_target==classify_phase_test[2],10,test_target)
-        test_target = np.where(test_target==classify_phase_test[3],9,test_target)
-        train_target = np.where(train_target==classify_phase_test[0],9,train_target)
-        train_target = np.where(train_target==classify_phase_test[1],10,train_target)
-        train_target = np.where(train_target==classify_phase_test[2],10,train_target)
-        train_target = np.where(train_target==classify_phase_test[3],9,train_target)
-
-    return [torch.tensor(test_input  ,dtype=torch.float64),
-            torch.tensor(test_target ,dtype=torch.float64),
-            torch.tensor(train_input ,dtype=torch.float64),
-            torch.tensor(train_target,dtype=torch.float64)]
+import torch.utils.data as Data
+from torch.utils.data import DataLoader, TensorDataset, Dataset
 
 
-classify_phase = [5,1]
-total_data = get_train_data(classify_phase)
-test_data  = TensorDataset(total_data[0],total_data[1])
-train_data = TensorDataset(total_data[2],total_data[3])
-train_gen = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True, num_workers=2) 
-valid_gen = DataLoader(dataset=test_data, batch_size=BATCH_SIZE, shuffle=True, num_workers=2) 
+class DNN(nn.Module):
+    def __init__(self,linear):
+        super(DNN, self).__init__()
+        self.layer = nn.Linear(linear[0], linear[1])  
+        self.out = nn.Linear(linear[1], linear[2])
+    def forward(self, x):
+        x = x.view(x.size(0), -1)   
+        x = self.layer(x)
+        x = nn.functional.relu(x)
+        x = self.out(x)
+        output = nn.functional.softmax(x,dim=1)
+        return output
 
-def train_model(model, criterion, optimizer, scheduler,num_epochs = 5):
-    # Given training neural network: ResNet18,
-    # loss fcn(criterion) : Cross Entropy Loss,
-    # optimizer : Stochastic Gradient Descent plus momentum,
-    # learning rate adjusting.
-    
-    since = time.time() # count time
-    best_model_wts = model.state_dict() # return parameters of model
-    best_acc = 0.0 # record the best accuracy
-    
-    # run several epochs
-    for epoch in range(num_epochs):
-        print("Epoch {} / {}".format(epoch,num_epochs - 1))
-        print("-" * 30)
-        
-        # 'phase' means we're doing training or verifing
-        for phase in ['train','valid']:
-            if phase == 'train':
-                scheduler.step() # adjust learning rate
-                model.train(True) # do model training
+class CNN_2D(nn.Module):
+    def __init__(self,conv1,conv2,linear):
+        super(CNN_2D, self).__init__()
+        self.conv1 = nn.Conv2d(
+                        in_channels=conv1[0],      
+                        out_channels=conv1[1],    
+                        kernel_size=conv1[2],     
+                        stride=conv1[3],          
+                        padding=conv1[4],      
+                    )
+        self.conv2 =  nn.Conv2d(conv2[0], conv2[1], conv2[2], conv2[3], conv2[4])
+        self.bn = nn.Sequential(  
+            nn.BatchNorm2d(1),    
+            nn.ReLU(),    
+        )
+        self.layer = nn.Linear(int(linear[0]), linear[1])  
+        self.out = nn.Linear(linear[1], linear[2])
+    def forward(self, x):
+        add = x
+        x = self.conv1(x)
+        x = self.bn(x)
+        x = self.conv2(x)
+        x = self.bn(x)
+        x = x + add
+        x = x.view(x.size(0), -1)   
+        x = self.layer(x)
+        x = self.out(x)
+        output = nn.functional.softmax(x,dim=1)
+        return output
+
+class CNN_4D(nn.Module):
+    def __init__(self,conv1,conv2,linear):
+        super(CNN_4D, self).__init__()
+        self.conv1 = nn.Conv3d(
+                        in_channels=conv1[0],      
+                        out_channels=conv1[1],    
+                        kernel_size=conv1[2],     
+                        stride=conv1[3],          
+                        padding=conv1[4],      
+                    )
+        self.conv2 = nn.Conv3d(conv2[0], conv2[1], conv2[2], conv2[3], conv2[4])
+        self.bn = nn.Sequential(      
+            nn.BatchNorm2d(1),
+            nn.ReLU(),    
+        )
+        self.layer = nn.Linear(linear[0], linear[1])  
+        self.out = nn.Linear(linear[1], linear[2])
+    def forward(self, x):
+        add = x
+        x = self.conv1(x)
+        x = self.bn(x)
+        x = self.conv2(x)
+        x = self.bn(x)
+        x = x + add
+        x = x.view(x.size(0), -1)   
+        x = self.layer(x)
+        x = self.out(x)
+        output = nn.functional.softmax(x,dim=1)
+        return output
+
+def which_line(classify_phase):   
+    if(abs(classify_phase[0]-classify_phase[1])==1):
+        if(classify_phase[0]==1):
+            line = "delta=[0.5, -0.5]" #"mu=1"
+        elif(classify_phase[0]==3):
+            line = "mu=3"
+        elif(classify_phase[0]==7):
+            line = "mu=5"
+        elif(classify_phase[0]==5):
+            line = "mu=-1"
+    elif(classify_phase[0]%2==1):
+        line = "delta=0.5"
+    elif(classify_phase[0]%2==0):
+        line = "delta=-0.5"
+    else:
+        print("please input the correct phase !!!")
+    return line
+
+########################################################################################################################################
+########################################################################################################################################
+########################################################################################################################################
+
+def training(network,filename,dimension):
+
+    path = filename[0]
+    classify_phase = filename[1]
+    kind_of_data = filename[2]
+    particle_data = filename[3]
+    number_of_particle = int(particle_data[2])*int(particle_data[2])
+
+    EPOCH = network[0]    
+    LR = network[1] 
+    STEPLR = network[2]  
+    BATCH_SIZE = network[3] 
+    internet = network[4] 
+  
+    line = which_line(classify_phase)
+
+    def move(ph):
+        if(line=="delta=0.5" or line=="delta=-0.5"):
+            if(ph==5 or ph==6):
+                m = 0
+            elif(ph==1 or ph==2):
+                m = 1000
+            elif(ph==3 or ph==4):
+                m = 2000
+            elif(ph==7 or ph==8):
+                m = 3000
             else:
-                model.train(False)
-            
-            # record loss and correct(n.) of each epoch
-            running_loss = 0.0
-            running_corrects = 0
-            
-            loop_count = 0
-            
-            # iterate over data
-            for data in dataloaders[phase]: # dict_, phase is keyword
-                
-                # data is packed-figures in batches
-                inputs, labels = data # tuple,stores figures and labels
-                
-                # wrap them in Variables, and switch onto cuda if available
-                if torch.cuda.is_available():
-                    inputs = Variable(inputs.cuda())
-                    labels = Variable(labels.cuda())
-                else:
-                    inputs = Variable(inputs)
-                    labels = Variable(labels)
-                
-                # set parameters to 0
-                optimizer.zero_grad()
-                
-                # forward
-                outputs = model(inputs) # possibility, [[cat,dog]]
-                
-                # Maximum value of output data along axis[1],
-                # and its index, which is the prediction of model.
-                _, preds = torch.max(outputs.data, 1)
-                loss = criterion(outputs, labels)
-                
-                # If training, backward() & optimize parameters
-                if phase == 'train':
-                    loss.backward()
-                    optimizer.step()
-                
-                # statistics
-                running_loss += loss.item() # sum up the losses of this epoch
-                #print(preds,labels)
-                running_corrects += (preds == labels).sum().item() # True: += 1
-            
-            # rate of loss and accuracy
-            epoch_loss = running_loss / dataset_sizes[phase]
-            epoch_acc = running_corrects / dataset_sizes[phase]
-            
-            print("{} Loss: {:.4f} Acc: {:.4f}".format(
-                    phase, epoch_loss, epoch_acc))
-                    # :.4f means 4 decimals of input object
-            
-            # record best results
-            if phase == 'valid' and epoch_acc > best_acc:
-                best_acc = epoch_acc
-                best_model_wts = model.state_dict()
+                print("error")
+        else:
+            if(ph==5 or ph==1 or ph==3 or ph==7):
+                m = 0
+            elif(ph==6 or ph==2 or ph==4 or ph==8):
+                m = 1000
+            else:
+                print("error")            
+        return m
+
+    def get_train_data(phase):
+
+        file = np.load((path+'/train/{},{}_train,N={},{}.npz').format(particle_data[0],particle_data[1],particle_data[2],line))
+
+        test_input = []
+        test_target = []
+        train_input = []
+        train_target = []
         
-        print('-+' * 20)
-    time_elapsed = time.time() - since # record runtime
-    print("Training complete in {:.0f}m {:.0f}s".format(
-        time_elapsed // 60, time_elapsed % 60),
-          "\nBest vaue of Accuracy: {:4f}".format(best_acc))
-    
-    model.load_state_dict(best_model_wts)
-    return model
+        for i in range(len(phase)):
+            test_input += file[kind_of_data[0]][800 + move(phase[i]) : 1000 + move(phase[i])].tolist()
+            test_target += file[kind_of_data[1]][800 + move(phase[i]) : 1000 + move(phase[i])].tolist()
+            train_input += file[kind_of_data[0]][0 + move(phase[i]) : 800 + move(phase[i])].tolist()
+            train_target += file[kind_of_data[1]][0 + move(phase[i]) : 800 + move(phase[i])].tolist()
 
+        test_input = np.array(test_input)
+        test_target = np.array(test_target)
+        train_input = np.array(train_input)
+        train_target = np.array(train_target)
 
+        return [torch.tensor(test_input  ,dtype=torch.float64),
+                torch.tensor(test_target ,dtype=torch.float64),
+                torch.tensor(train_input ,dtype=torch.float64),
+                torch.tensor(train_target,dtype=torch.float64)]
 
-  # Loss and Optimizer
-lr = 1e-3
-criterion = nn.CrossEntropyLoss() # loss fcn
-optimizer_ft = optim.SGD(model_ft.parameters(),lr = lr,momentum = 0.9)
-exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft,step_size = 7,gamma = 0.1)  
-model_ft = models.resnet18(pretrained = True)
+    def get_test_data(phase):  
+        data = []
+        ph = []  
+        file = np.load((path+'/test/{},{}_test,N={},{}.npz').format(particle_data[0],particle_data[1],particle_data[2],line))
+        for i in range(len(phase)):
+            cut = [len(file[kind_of_data[1]]),0]     
+            for j in range(len(file[kind_of_data[1]])):        
+                if(cut[0] > j and int(file[kind_of_data[1]][j])==phase[i]):
+                    cut[0] = j
+                if(cut[1] < j and int(file[kind_of_data[1]][j])==phase[i]):
+                    cut[1] = j 
+            data += file[kind_of_data[0]][cut[0]:cut[1]+1].tolist()
+            ph += file[kind_of_data[1]][cut[0]:cut[1]+1].tolist()
 
-# fc: last layer of CNN, in_feature gives the same number
-#     of input data.
-num_ftrs = model_ft.fc.in_features
+        return TensorDataset(torch.tensor(np.array(data)),torch.tensor(np.array(ph)))   
 
-# output [P(0),P(1)], representing 'cat' and 'dog'.
-model_ft.fc = nn.Linear(num_ftrs, 2)
-if torch.cuda.is_available():
-    model_ft = model_ft.cuda()
+    total_data = get_train_data(classify_phase)    
+    test_data  = TensorDataset(total_data[0],total_data[1])
+    train_data = TensorDataset(total_data[2],total_data[3])
+    test_data_all = get_test_data(classify_phase)
 
-model_ft = train_model(model_ft, criterion, optimizer_ft, exp_lr_scheduler, num_epochs = 2)
+    if(dimension==1):
+        model = DNN(internet)  
+    elif(dimension==2):
+        model = CNN_2D(internet[0],internet[1],internet[2])
+    elif(dimension==4):
+        model = CNN_4D(internet[0],internet[1],internet[2])
+    else:
+        print("No model !!!")
+    model = model.cuda()     
+
+    def Accuracy(data):        
+        s = 0
+        for step, (b_x, b_y) in enumerate(data):            
+            if(dimension==1):   
+                a = torch.reshape(b_x,(-1,number_of_particle*2))
+            elif(dimension==2):
+                a = torch.reshape(b_x,(-1,1,number_of_particle,number_of_particle))
+            elif(dimension==4):
+                a = torch.reshape(b_x,(-1,int(particle_data[2]),int(particle_data[2]),int(particle_data[2]),int(particle_data[2])))
+            a = a.cuda()
+            output = model(a.float())   
+            index = np.argmax(output[0].cpu().data.numpy())      
+            if(int(b_y.numpy())==int(classify_phase[index])):
+                s += 1
+        return s/len(data)
+ 
+    acc = []  
+    train_dataloader = DataLoader(dataset=train_data, batch_size=BATCH_SIZE, shuffle=True, num_workers=2) 
+    optimizer = torch.optim.Adam(model.parameters(), lr=LR)  
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=STEPLR[0], gamma=STEPLR[1])
+    loss_func = nn.CrossEntropyLoss()   
+    loss_func = loss_func.cuda() 
+    for epoch in range(EPOCH):
+        print("epoch:"+str(epoch)+"\n")
+        scheduler.step()
+        
+        for step, (b_x, b_y) in enumerate(train_dataloader):
+            if(dimension==1):   
+                a = torch.reshape(b_x,(-1,number_of_particle*2))
+            elif(dimension==2):
+                a = torch.reshape(b_x,(-1,1,number_of_particle,number_of_particle))
+            elif(dimension==4):
+                a = torch.reshape(b_x,(-1,int(particle_data[2]),int(particle_data[2]),int(particle_data[2]),int(particle_data[2])))
+            b = []
+            for i in b_y.numpy():
+                if(int(i)==int(classify_phase[0])):
+                    b.append(0)
+                elif(int(i)==int(classify_phase[1])):
+                    b.append(1)
+                elif(int(i)==int(classify_phase[2])):
+                    b.append(2)
+                elif(int(i)==int(classify_phase[3])):
+                    b.append(3)            
+            b = torch.tensor(b)            
+            a = a.cuda()
+            b = b.cuda()
+            output = model(a.float())   
+            optimizer.zero_grad()      
+            loss = loss_func(output, b.long())             
+            loss.backward()               
+            optimizer.step()             
+            if(step%200==0):          
+                print("number of data:"+str(step))
+                print("output:\n"+str(output.data))
+                print("target:\n"+str(b.data))
+                print("\n")
+
+        if(epoch%100==0):        
+            print("epoch:"+str(epoch))
+            print("  training:"+str(Accuracy(train_data)))
+            print("  predict :"+str(Accuracy(test_data)))   
+            tmp = Accuracy(test_data_all)        
+            print("  total_predict :"+str(tmp))
+            acc.append(tmp)
+    print("\n")
+    print(acc)
+    torch.save(model,time.strftime("%Y%m%d%H%M%S", time.localtime())+",phase={},N={},dim={},gpu.pkl".format(str(classify_phase),particle_data[2],str(dimension)))
