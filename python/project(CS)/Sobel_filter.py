@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pylab as plt
 from PIL import Image
 import copy
+import find as ff
 
 def Sobelfilter(path,filename,visible=True):
     img = cv2.imread(path+filename,0)
@@ -28,8 +29,8 @@ def HighCircle(edges,Rrange,visible=True):
     img = edges
     cimg = cv2.cvtColor(edges,cv2.COLOR_GRAY2BGR)
     #img = cv2.medianBlur(edges,5)   
-    #circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,80,param1=10,param2=15,minRadius=Rrange[0],maxRadius=Rrange[1])
-    circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,1000,param1=10,param2=1,minRadius=Rrange[0],maxRadius=Rrange[1])
+    circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,80,param1=10,param2=15,minRadius=Rrange[0],maxRadius=Rrange[1])
+    #circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,1000,param1=10,param2=1,minRadius=Rrange[0],maxRadius=Rrange[1])
     circles = np.uint16(np.around(circles))
     center = []    
     for i in circles[0,:]:  
@@ -43,7 +44,7 @@ def HighCircle(edges,Rrange,visible=True):
         cv2.destroyAllWindows()
     return center
 start = []
-def Radiusline(image,center,visible=True):    #需要改有問題
+def Radiusline(image,center,Pixellength,visible=True):    #需要改有問題
     global start
     L = image.convert("L")
     data = copy.copy(np.array(L))
@@ -113,7 +114,6 @@ def Radiusline(image,center,visible=True):    #需要改有問題
             except:
                 pass
             y += 1
-            
         for i in range(y,len(data)):
             bright[2].append(data[row][i])
             data[row][i] = 0
@@ -146,16 +146,27 @@ def IndexVal(arr,s,Pixellength):   #需要改別偷懶
         return 0
     return np.where(arr[index[0]:index[1]]==val)[0][0]+index[0],val 
 pos = []
-def Radiuscal(bright,Pixellength,visible):
+def Radiuscal(path,filename,center,bright,Pixellength,visible):
     init = 0
     InRadius , OutRadius = 0 , 0
     in_Radius = [[] for i in range(4)]
     out_Radius = [[] for i in range(4)]
-    for index in range(len(bright)):
+    for index in [3,3,3,3]:#range(len(bright)):
         r = np.linspace(0,Pixellength*len(bright[index]),len(bright[index]))
         min_center = IndexVal(bright[index],"min",Pixellength)
         max_right = IndexVal(bright[index],"max-right",Pixellength)
         max_left = IndexVal(bright[index],"max-left",Pixellength)
+
+
+        img = cv2.imread(path+filename)
+        gray = copy.copy(cv2.cvtColor(img,cv2.COLOR_BGR2GRAY))
+        bright[index] = gray[center[7][1],:]
+        print(len(bright[index]))
+
+        tmp = ff.trace(gray,center[7])
+        min_center = tmp[1],bright[3][tmp[1]]
+        max_left = tmp[0],bright[3][tmp[0]]
+        max_right = tmp[2],bright[3][tmp[2]]
 
         in_height = np.mean([min_center[1],min_center[1],max_right[1],max_left[1]])
         out_height = np.mean([init,init,max_right[1],max_left[1]])
@@ -172,7 +183,9 @@ def Radiuscal(bright,Pixellength,visible):
         
         # print(in_Radius[index])
         # print(out_Radius[index])
-        
+        # print("---------------------")
+        # print(in_Radius)
+        # print(out_Radius)
         ans = [in_Radius[index][in_Radius[index].index(min_center[0])-1],in_Radius[index][in_Radius[index].index(min_center[0])+1]]
         for i in range(len(out_Radius[index])):
             if(out_Radius[index][i]>ans[0]):
@@ -220,53 +233,53 @@ def Radiuscal(bright,Pixellength,visible):
     return InRadius , OutRadius
 
 #filename = "Height 091205.bmp"
-filename = "test2.bmp"
+filename = "test12.bmp"
 path = "D:/program/vscode_workspace/private/data/project_image(CS)/health/"
 image = Image.open(path+filename)
 
-#Rrange = [40 , 50]
+Rrange = [30 , 40]  
 #Rrange = [80 , 100]
-Rrange = [230 , 250]
+#Rrange = [230 , 250] #單顆健康
 #Rrange = [100 , 150]
 visible = True
-Pixellength = 10/image.size[0]
+Pixellength = 50/image.size[0]
 print(image.size)
 edges = Sobelfilter(path,filename,visible)
 center = HighCircle(edges,Rrange,visible)
-data , bright = Radiusline(image,center[0],visible)
-InRadius , OutRadius = Radiuscal(bright,Pixellength,visible)
+data , bright = Radiusline(image,center[7],Pixellength,visible)
+InRadius , OutRadius = Radiuscal(path,filename,center,bright,Pixellength,False)
 print("---------------------------------------")
 print(" InRadius : "+str(InRadius))
 print("OutRadius : "+str(OutRadius))
 
 
-def dot(x,y,k):
-    data[x][y] = 0
-    if k>=5: return
-    dot(x+1,y,k+1)
-    dot(x,y+1,k+1)
-    dot(x,y-1,k+1)
-    dot(x-1,y,k+1)
-    dot(x+1,y+1,k+1)
-    dot(x-1,y-1,k+1)
-    dot(x-1,y+1,k+1)
-    dot(x+1,y-1,k+1)
+# def dot(x,y,k):
+#     data[x][y] = 0
+#     if k>=5: return
+#     dot(x+1,y,k+1)
+#     dot(x,y+1,k+1)
+#     dot(x,y-1,k+1)
+#     dot(x-1,y,k+1)
+#     dot(x+1,y+1,k+1)
+#     dot(x-1,y-1,k+1)
+#     dot(x-1,y+1,k+1)
+#     dot(x+1,y-1,k+1)
 
-for i in range(4):
-    dot(start[0][0]+pos[0][i],start[0][1]+pos[0][i],0)
-for i in range(4):
-    dot(start[1][0]-pos[1][i],start[1][1]+pos[1][i],0)
-for i in range(4):
-    dot(start[2][0],start[2][1]+pos[2][i],0)
-for i in range(4):
-    dot(start[3][0]+pos[3][i],start[3][1],0)
+# for i in range(4):
+#     dot(start[0][0]+pos[0][i],start[0][1]+pos[0][i],0)
+# for i in range(4):
+#     dot(start[1][0]-pos[1][i],start[1][1]+pos[1][i],0)
+# for i in range(4):
+#     dot(start[2][0],start[2][1]+pos[2][i],0)
+# for i in range(4):
+#     dot(start[3][0]+pos[3][i],start[3][1],0)
 
-#plt.imshow(data)
-#plt.show()
-cv2.circle(data,rad[0],rad[1],rad[2],rad[3])
-cv2.imshow('detected circles',data)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+# #plt.imshow(data)
+# #plt.show()
+# cv2.circle(data,rad[0],rad[1],rad[2],rad[3])
+# cv2.imshow('detected circles',data)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
 
 
 
