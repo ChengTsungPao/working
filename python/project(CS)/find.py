@@ -177,7 +177,7 @@ def Circle(imag,edges,Rrange,visible=True):
 
 # cen=Circle(img,edge,[30,40])
 
-# g=cv2.inRange(gray,90,110)
+# g=cv2.inRange(gray,90,110) #用這個參數
 # a=0
 # for c in cen:
 #     new=find(g,c)

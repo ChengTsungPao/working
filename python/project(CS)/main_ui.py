@@ -68,9 +68,6 @@ class Ui_MainWindow(object):
         font.setPointSize(14)
         self.in_rad_val.setFont(font)
         self.in_rad_val.setObjectName("in_rad_val")
-        self.picture = QtWidgets.QGraphicsView(self.centralwidget)
-        self.picture.setGeometry(QtCore.QRect(40, 90, 491, 361))
-        self.picture.setObjectName("picture")
         self.radioButton = QtWidgets.QRadioButton(self.centralwidget)
         self.radioButton.setGeometry(QtCore.QRect(570, 290, 121, 19))
         self.radioButton.setObjectName("radioButton")
@@ -86,11 +83,18 @@ class Ui_MainWindow(object):
         self.radioButton_5 = QtWidgets.QRadioButton(self.centralwidget)
         self.radioButton_5.setGeometry(QtCore.QRect(570, 410, 98, 19))
         self.radioButton_5.setObjectName("radioButton_5")
+        self.photo = QtWidgets.QLabel(self.centralwidget)
+        self.photo.setGeometry(QtCore.QRect(40, 80, 491, 361))
+        self.photo.setText("")
+        self.photo.setPixmap(QtGui.QPixmap("../../../data/project_image(CS)/Height 091203.bmp"))
+        self.photo.setObjectName("photo")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 25))
         self.menubar.setObjectName("menubar")
         self.menufile = QtWidgets.QMenu(self.menubar)
+        self.menufile.setEnabled(True)
+        self.menufile.setGeometry(QtCore.QRect(2263, 206, 164, 126))
         self.menufile.setObjectName("menufile")
         self.menuedit = QtWidgets.QMenu(self.menubar)
         self.menuedit.setObjectName("menuedit")
@@ -139,6 +143,9 @@ class Ui_MainWindow(object):
         self.save.setText(_translate("MainWindow", "save"))
         self.save_as.setText(_translate("MainWindow", "save as"))
         self.setting.setText(_translate("MainWindow", "setting"))
+    
+    def show(graph):
+        self.photo.setPixmap(QtGui.QPixmap("../../../data/project_image(CS)/"+graph))
 
 
 if __name__ == "__main__":

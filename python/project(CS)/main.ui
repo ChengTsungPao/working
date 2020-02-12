@@ -170,16 +170,6 @@
      <string>??</string>
     </property>
    </widget>
-   <widget class="QGraphicsView" name="picture">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>90</y>
-      <width>491</width>
-      <height>361</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QRadioButton" name="radioButton">
     <property name="geometry">
      <rect>
@@ -243,6 +233,22 @@
     </property>
     <property name="text">
      <string>全部血球</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="photo">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>80</y>
+      <width>491</width>
+      <height>361</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../../../data/project_image(CS)/Height 091203.bmp</pixmap>
     </property>
    </widget>
   </widget>
