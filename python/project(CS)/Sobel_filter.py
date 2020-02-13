@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pylab as plt
 from PIL import Image
 import copy
-import find as ff
+from find import find, trace
 
 def Sobelfilter(path,filename,visible=True):
     img = cv2.imread(path+filename,0)
@@ -19,17 +19,17 @@ def Sobelfilter(path,filename,visible=True):
         cv2.imshow('detected circles',edges)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-    return edges
+    return img,edges
 
 rad = 0
 circles = 0
-def HighCircle(edges,Rrange,visible=True):
+def HighCircle(OriginImage,edges,Rrange,visible=True):
     global circles
     global rad
     img = edges
     cimg = cv2.cvtColor(edges,cv2.COLOR_GRAY2BGR)
     #img = cv2.medianBlur(edges,5)   
-    circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,80,param1=10,param2=15,minRadius=Rrange[0],maxRadius=Rrange[1])
+    circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,80,param1=10,param2=30,minRadius=Rrange[0],maxRadius=Rrange[1])
     #circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,1000,param1=10,param2=1,minRadius=Rrange[0],maxRadius=Rrange[1])
     circles = np.uint16(np.around(circles))
     center = []    
@@ -38,6 +38,14 @@ def HighCircle(edges,Rrange,visible=True):
         center.append([i[0],i[1]])
         cv2.circle(cimg,(i[0],i[1]),i[2],(0,255,0),2) # draw the outer circle
         cv2.circle(cimg,(i[0],i[1]),2,(0,0,255),3) # draw the center of the circle
+    print(center)
+    #gray=cv2.cvtColor(OriginImage,cv2.COLOR_BGR2GRAY)
+    g=cv2.inRange(OriginImage,90,110)
+    for i in range(len(center)):
+        if(i==0):
+            center[i] = find(g,center[i])
+            break
+
     if(visible):
         cv2.imshow('detected circles',cimg)
         cv2.waitKey(0)
@@ -52,6 +60,7 @@ def Radiusline(image,center,Pixellength,visible=True):    #需要改有問題
     row = center[1]
     col = center[0]
     x , y = 0 , 0
+    center_of_index = np.zeros(4,int)
     if(row > col):
         center_height = data[row][col]        
         start = [[row-col+x,0+x],[2*row-(row-col+x),0+x],[row,x],[x,col]]
@@ -59,25 +68,33 @@ def Radiusline(image,center,Pixellength,visible=True):    #需要改有問題
             try:
                 bright[0].append(data[row-col+x][0+x])
                 data[row-col+x][0+x] = 0
-                if(data[row][col]==0): data[row][col] = center_height
+                if(data[row][col]==0): 
+                    data[row][col] = center_height
+                    center_of_index[0] = x
             except:
                 pass
             try:
                 bright[1].append(data[2*row-(row-col+x)][0+x])
                 data[2*row-(row-col+x)][0+x] = 0
-                if(data[row][col]==0): data[row][col] = center_height
+                if(data[row][col]==0): 
+                    data[row][col] = center_height
+                    center_of_index[1] = x
             except:
                 pass
             try:
                 bright[2].append(data[row][x])
                 data[row][x] = 0
-                if(data[row][col]==0): data[row][col] = center_height
+                if(data[row][col]==0): 
+                    data[row][col] = center_height
+                    center_of_index[2] = x
             except:
                 pass
             try:
                 bright[3].append(data[x][col])
                 data[x][col] = 0
-                if(data[row][col]==0): data[row][col] = center_height
+                if(data[row][col]==0): 
+                    data[row][col] = center_height
+                    center_of_index[3] = x
             except:
                 pass            
             x += 1
@@ -92,25 +109,33 @@ def Radiusline(image,center,Pixellength,visible=True):    #需要改有問題
             try:           
                 bright[0].append(data[0+y][col-row+y])
                 data[0+y][col-row+y] = 0
-                if(data[row][col]==0): data[row][col] = center_height
+                if(data[row][col]==0): 
+                    data[row][col] = center_height
+                    center_of_index[0] = y
             except:
                 pass
             try: 
                 bright[1].append(data[2*row-y][col-row+y])
                 data[2*row-y][col-row+y] = 0
-                if(data[row][col]==0): data[row][col] = center_height
+                if(data[row][col]==0): 
+                    data[row][col] = center_height
+                    center_of_index[1] = y
             except:
                 pass
             try: 
                 bright[2].append(data[row][y])
                 data[row][y] = 0
-                if(data[row][col]==0): data[row][col] = center_height
+                if(data[row][col]==0): 
+                    data[row][col] = center_height
+                    center_of_index[2] = y
             except:
                 pass
             try: 
                 bright[3].append(data[y][col])
                 data[y][col] = 0
-                if(data[row][col]==0): data[row][col] = center_height
+                if(data[row][col]==0): 
+                    data[row][col] = center_height
+                    center_of_index[3] = y
             except:
                 pass
             y += 1
@@ -120,7 +145,7 @@ def Radiusline(image,center,Pixellength,visible=True):    #需要改有問題
     if(visible):
         plt.imshow(data)
         plt.show()
-    return data,bright
+    return data,bright,center_of_index
 
 def IndexVal(arr,s,Pixellength):   #需要改別偷懶
     para = 3
@@ -145,28 +170,25 @@ def IndexVal(arr,s,Pixellength):   #需要改別偷懶
         print("please input the correct mode")
         return 0
     return np.where(arr[index[0]:index[1]]==val)[0][0]+index[0],val 
+
 pos = []
-def Radiuscal(path,filename,center,bright,Pixellength,visible):
+def Radiuscal(bright,center,Pixellength,visible):
     init = 0
     InRadius , OutRadius = 0 , 0
     in_Radius = [[] for i in range(4)]
     out_Radius = [[] for i in range(4)]
-    for index in [3,3,3,3]:#range(len(bright)):
+    for index in range(len(bright)):
         r = np.linspace(0,Pixellength*len(bright[index]),len(bright[index]))
         min_center = IndexVal(bright[index],"min",Pixellength)
         max_right = IndexVal(bright[index],"max-right",Pixellength)
         max_left = IndexVal(bright[index],"max-left",Pixellength)
 
-
-        img = cv2.imread(path+filename)
-        gray = copy.copy(cv2.cvtColor(img,cv2.COLOR_BGR2GRAY))
-        bright[index] = gray[center[7][1],:]
         print(len(bright[index]))
 
-        tmp = ff.trace(gray,center[7])
-        min_center = tmp[1],bright[3][tmp[1]]
-        max_left = tmp[0],bright[3][tmp[0]]
-        max_right = tmp[2],bright[3][tmp[2]]
+        tmp = trace(bright[index],center[index])
+        min_center = tmp[1],bright[index][tmp[1]]
+        max_left = tmp[0],bright[index][tmp[0]]
+        max_right = tmp[2],bright[index][tmp[2]]
 
         in_height = np.mean([min_center[1],min_center[1],max_right[1],max_left[1]])
         out_height = np.mean([init,init,max_right[1],max_left[1]])
@@ -244,42 +266,42 @@ Rrange = [30 , 40]
 visible = True
 Pixellength = 50/image.size[0]
 print(image.size)
-edges = Sobelfilter(path,filename,visible)
-center = HighCircle(edges,Rrange,visible)
-data , bright = Radiusline(image,center[7],Pixellength,visible)
-InRadius , OutRadius = Radiuscal(path,filename,center,bright,Pixellength,False)
+OriginImage , edges = Sobelfilter(path,filename,visible)
+center = HighCircle(OriginImage,edges,Rrange,visible)
+data , bright , center_of_index = Radiusline(image,center[0],Pixellength,visible)
+InRadius , OutRadius = Radiuscal(bright,center_of_index,Pixellength,visible)
 print("---------------------------------------")
 print(" InRadius : "+str(InRadius))
 print("OutRadius : "+str(OutRadius))
 
 
-# def dot(x,y,k):
-#     data[x][y] = 0
-#     if k>=5: return
-#     dot(x+1,y,k+1)
-#     dot(x,y+1,k+1)
-#     dot(x,y-1,k+1)
-#     dot(x-1,y,k+1)
-#     dot(x+1,y+1,k+1)
-#     dot(x-1,y-1,k+1)
-#     dot(x-1,y+1,k+1)
-#     dot(x+1,y-1,k+1)
+def dot(x,y,k):
+    data[x][y] = 0
+    if k>=5: return
+    dot(x+1,y,k+1)
+    dot(x,y+1,k+1)
+    dot(x,y-1,k+1)
+    dot(x-1,y,k+1)
+    dot(x+1,y+1,k+1)
+    dot(x-1,y-1,k+1)
+    dot(x-1,y+1,k+1)
+    dot(x+1,y-1,k+1)
 
-# for i in range(4):
-#     dot(start[0][0]+pos[0][i],start[0][1]+pos[0][i],0)
-# for i in range(4):
-#     dot(start[1][0]-pos[1][i],start[1][1]+pos[1][i],0)
-# for i in range(4):
-#     dot(start[2][0],start[2][1]+pos[2][i],0)
-# for i in range(4):
-#     dot(start[3][0]+pos[3][i],start[3][1],0)
+for i in range(4):
+    dot(start[0][0]+pos[0][i],start[0][1]+pos[0][i],0)
+for i in range(4):
+    dot(start[1][0]-pos[1][i],start[1][1]+pos[1][i],0)
+for i in range(4):
+    dot(start[2][0],start[2][1]+pos[2][i],0)
+for i in range(4):
+    dot(start[3][0]+pos[3][i],start[3][1],0)
 
-# #plt.imshow(data)
-# #plt.show()
-# cv2.circle(data,rad[0],rad[1],rad[2],rad[3])
-# cv2.imshow('detected circles',data)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+#plt.imshow(data)
+#plt.show()
+cv2.circle(data,rad[0],rad[1],rad[2],rad[3])
+cv2.imshow('detected circles',data)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
 
 
 

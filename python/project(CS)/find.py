@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit as fit
 
-def find(oneBit,center):
+def find(g,c):#img center
     new=[0,0]
     new[0]=c[0]
     new[1]=c[1]
@@ -107,13 +107,12 @@ def find(oneBit,center):
     #print("R",R)
     return new
 
-def trace(gray,cen):
-    f=gray[cen[1]]
+def trace(yy,center):
     
-    xx=np.array([i/100000 for i in range(len(f))])
-    new = cen
-    plt.plot(xx,f)
-    plt.scatter(xx[new[0]],f[new[0]])
+    xx=np.array([i/100000 for i in range(len(yy))])
+    
+    #plt.plot(xx,yy)
+    #plt.scatter(xx[center],yy[center])
         
     
     def fun(x,a,b,c,d,e,f,g,h,ii):
@@ -123,36 +122,37 @@ def trace(gray,cen):
     base=2/65# 兩成半徑預估
     rate=0.1/65
     n=1
-    aa=fit(fun,xx[new[0]:new[0]+int(len(f)*n*(base+rate))],np.array(f[new[0]:new[0]+int(len(f)*n*(base+rate))]),p0=[0,0,0.01,0.1,0.1,0.01,0.1,0.1,0.1])[0]
+    aa=fit(fun,xx[center:center+int(len(yy)*n*(base+rate))],np.array(yy[center:center+int(len(yy)*n*(base+rate))]),p0=[0,0,0.01,0.1,0.1,0.01,0.1,0.1,0.1])[0]
     
-    while fun(xx[new[0]+int(len(f)*n*(base+rate))-1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])>fun(xx[new[0]+int(len(f)*n*(base+rate)-2)],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
+    while fun(xx[center+int(len(yy)*n*(base+rate))-1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])>fun(xx[center+int(len(yy)*n*(base+rate)-2)],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
         n+=1
-        aa=fit(fun,xx[new[0]:new[0]+int(len(f)*n*(base+rate))],np.array(f[new[0]:new[0]+int(len(f)*n*(base+rate))]),p0=[0,0,0.01,0.1,0.1,0.01,0.1,0.1,0.1])[0]
-        #plt.plot(xx[new[0]:new[0]+int(len(f)*n*(base+rate))],fun(xx[new[0]:new[0]+int(len(f)*n*(base+rate))],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))
+        aa=fit(fun,xx[center:center+int(len(yy)*n*(base+rate))],np.array(yy[center:center+int(len(yy)*n*(base+rate))]),p0=[0,0,0.01,0.1,0.1,0.01,0.1,0.1,0.1])[0]
+        #plt.plot(xx[center:center+int(len(yy)*n*(base+rate))],fun(xx[center:center+int(len(yy)*n*(base+rate))],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))
     
-    r=new[0]+int(len(f)*n*(base+rate))-1
+    r=center+int(len(yy)*n*(base+rate))-1
     while fun(xx[r],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])<fun(xx[r-1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
         r-=1
     
     n=1
-    aa=fit(fun,xx[new[0]-int(len(f)*n*(base+rate)):new[0]],np.array(f[new[0]-int(len(f)*n*(base+rate)):new[0]]),p0=[0,0,0.01,0.1,0.1,0.01,0.1,0.1,0.1])[0]
+    aa=fit(fun,xx[center-int(len(yy)*n*(base+rate)):center],np.array(yy[center-int(len(yy)*n*(base+rate)):center]),p0=[0,0,0.01,0.1,0.1,0.01,0.1,0.1,0.1])[0]
     
-    while fun(xx[new[0]-int(len(f)*n*(base+rate))],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])>fun(xx[new[0]-int(len(f)*n*(base+rate))+1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
+    while fun(xx[center-int(len(yy)*n*(base+rate))],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])>fun(xx[center-int(len(yy)*n*(base+rate))+1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
         n+=1
-        aa=fit(fun,xx[new[0]-int(len(f)*n*(base+rate)):new[0]],np.array(f[new[0]-int(len(f)*n*(base+rate)):new[0]]),p0=[0,0,0.01,0.1,0.1,0.01,0.1,0.1,0.1])[0]
-        #plt.plot(xx[new[0]-int(len(f)*n*(base+rate)):new[0]],fun(xx[new[0]-int(len(f)*n*(base+rate)):new[0]],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))
+        aa=fit(fun,xx[center-int(len(yy)*n*(base+rate)):center],np.array(yy[center-int(len(yy)*n*(base+rate)):center]),p0=[0,0,0.01,0.1,0.1,0.01,0.1,0.1,0.1])[0]
+        #plt.plot(xx[center-int(len(yy)*n*(base+rate)):center],fun(xx[center-int(len(yy)*n*(base+rate)):center],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))
         #plt.show()
         
-    l=new[0]-int(len(f)*n*(base+rate))
+    l=center-int(len(yy)*n*(base+rate))
     while fun(xx[l],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])<fun(xx[l+1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
         l+=1
     #plt.scatter(xx,f,color='r')
-    #plt.plot(xx[new[0]:new[0]+int(len(f)*n*(base+rate))],fun(xx[new[0]:new[0]+int(len(f)*n*(base+rate))],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))
-    plt.scatter(xx[l],f[l])
-    plt.scatter(xx[r],f[r])
-    plt.show()
+    #plt.plot(xx[center:center+int(len(yy)*n*(base+rate))],fun(xx[center:center+int(len(yy)*n*(base+rate))],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))
     
-    return l,cen[0],r
+    #plt.scatter(xx[l],yy[l])
+    #plt.scatter(xx[r],yy[r])
+    #plt.show()
+    
+    return l,center,r
 
 def Circle(imag,edges,Rrange,visible=True):
     
@@ -177,14 +177,15 @@ def Circle(imag,edges,Rrange,visible=True):
 
 # cen=Circle(img,edge,[30,40])
 
-# g=cv2.inRange(gray,90,110) #用這個參數
+# g=cv2.inRange(gray,90,110)
 # a=0
 # for c in cen:
 #     new=find(g,c)
 
 #     cv2.circle(img,(new[0],new[1]),2,(0,255,0),3)
-#     if(a==2):
-#         break;
+#     if(a==3):
+#         break
+    
 #     a+=1
 
 # '''
@@ -195,9 +196,10 @@ def Circle(imag,edges,Rrange,visible=True):
 # cv2.waitKey(0)
 # cv2.destroyAllWindows()
 # '''
-# l,c,r=trace(gray,new)
+# l,c,r=trace(gray[new[1]],new[0])
 
 # cv2.imshow('i',img)
 
 # cv2.waitKey(0)
 # cv2.destroyAllWindows()
+# print(l,c,r)
