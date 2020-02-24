@@ -3,213 +3,200 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit as fit
 
+
+#use to correct the center of the RBC
 def find(onebit,original_center):
-    new_center=[0,0]
-    new_center[0]=original_center[0]
-    new_center[1]=original_center[1]
+    
+    #declare new center=================
+    new_center=[]
+    for i in range(2):
+        new_center.append(original_center[i])
+    #===================================
+    dire=[1,-1]
+    
+    #correct horizontal position
     r_biggest=0
-    i=0
-    j=0
-    r_calc=0
+    r_temp=0
+    i=0 #perpendicular index
+    j=0 #horizonrtal index
     
-    while onebit[original_center[1]+i,original_center[0]+j]==0:
-        i+=1
-    r_calc+=i
-    i=0
-    while onebit[original_center[1]-i,original_center[0]+j]==0:
-        i+=1
-    r_calc+=i
-    
-    r_biggest=r_calc
-    
-    while r_calc>0:
+    for k in range(2):
+        while onebit[original_center[1]+i*dire[k],original_center[0]]==0:
+            i+=1
+        r_temp+=i
         i=0
-        r_calc=0
-        j-=1
+
+    r_biggest=r_temp
+    
+    for w in range(2):
+        while r_temp>0:
+            r_temp=0
+            j+=dire[w]
+            
+            for k in range(2):
+                while onebit[original_center[1]+i*dire[k],original_center[0]+j]==0:
+                    i+=1
+                r_temp+=i
+                i=0
+            
+            if r_temp>r_biggest:
+                new_center[0]=original_center[0]+j
+                r_biggest=r_temp
         
-        while onebit[original_center[1]+i,original_center[0]+j]==0:
-            i+=1
-        r_calc+=i
-        i=0
-        while onebit[original_center[1]-i,original_center[0]+j]==0:
-            i+=1
-        r_calc+=i
-        if r_calc>r_biggest:
-            new_center[0]=original_center[0]+j
-            r_biggest=r_calc
+        r_temp=r_biggest
     
-    
-    r_calc=r_biggest
-    j=0
-    while r_calc>0:
-        r_calc=0
-        j+=1
-        i=0
-        while onebit[original_center[1]+i,original_center[0]+j]==0:
-            i+=1
-        r_calc+=i
-        i=0
-        while onebit[original_center[1]-i,original_center[0]+j]==0:
-            i+=1
-        r_calc+=i
-        if r_calc>r_biggest:
-            new_center[0]=original_center[0]+j
-            r_biggest=r_calc
-    
-    #==========
+    #correct perpendicular position
     r_biggest=0
-    i=0
-    j=0
-    r_calc=0
+    r_temp=0
+    i=0 #horizonrtal index
+    j=0 #perpendicular index
     
-    while onebit[original_center[1]+j,original_center[0]+i]==0:
-        i+=1
-    r_calc+=i
-    i=0
-    while onebit[original_center[1]+j,original_center[0]-i]==0:
-        i+=1
-    r_calc+=i
-    
-    r_biggest=r_calc
-    
-    while r_calc>0:
-        i=0
-        r_calc=0
-        j-=1
-        while onebit[original_center[1]+j,original_center[0]+i]==0:
+    #correct horizontal position
+    for k in range(2):
+        while onebit[original_center[1],original_center[0]+i*dire[k]]==0:
             i+=1
-        r_calc+=i
+        r_temp+=i
         i=0
-        while onebit[original_center[1]+j,original_center[0]-i]==0:
-            i+=1
-        r_calc+=i
-        if r_calc>r_biggest:
-            new_center[1]=original_center[1]+j
-            r_biggest=r_calc
+
+    r_biggest=r_temp
     
-    j=0
-    r_calc=r_biggest
-    while r_calc>0:
-        i=0
-        r_calc=0
-        j+=1
-        while onebit[original_center[1]+j,original_center[0]+i]==0:
-            i+=1
-        r_calc+=i
-        i=0
-        while onebit[original_center[1]+j,original_center[0]-i]==0:
-            i+=1
-        r_calc+=i
-        if r_calc>r_biggest:
-            new_center[1]=original_center[1]+j
-            r_biggest=r_calc
+    for w in range(2):
+        while r_temp>0:
+            r_temp=0
+            j+=dire[w]
+            
+            for k in range(2):
+                while onebit[original_center[1]+j,original_center[0]+i*dire[k]]==0:
+                    i+=1
+                r_temp+=i
+                i=0
+            
+            if r_temp>r_biggest:
+                new_center[1]=original_center[1]+j
+                r_biggest=r_temp
+        
+        r_temp=r_biggest
     
-    #print("r_biggest",r_biggest)
     return new_center
 
-def trace(line_data,center):
+def take_line(gray,center):
+    ly=len(gray) #length of colum
+    lx=len(gray[0]) #length of row
     
-    xx=np.array([i/100000 for i in range(len(line_data))])
+    line=[]
+    centers=[int(center[0]),int(center[1])]
     
-    # plt.plot(xx,line_data)
-    # plt.scatter(xx[center],line_data[center])
+    #row line====================================
+    row=[]
+    for i in range(lx):
+        row.append(int(gray[center[1]][i]))
+    
+    #colum line====================================
+    colum=[]
+    for i in range(ly):
+        colum.append(int(gray[i][center[0]]))
+       
+    #slash line of positive slope====================================
+    slope_p=[]
+    temp_center=[]
+    if center[0]<center[1]:
+        c=center[0]
+    else:
+        c=center[1]
+    
+    centers.append(c)
+    for i in range(2):
+        temp_center.append(center[i]-c)
+
+    while temp_center[0]<lx-1 and temp_center[1]<ly-1:
+        slope_p.append(gray[temp_center[1]][temp_center[0]])
+        for i in range(2):
+            temp_center[i]+=1
+    
+    #slash line of negative slope====================================
+    slope_n=[]
         
+    for i in range(2):
+        temp_center[i]=center[i]
+    
+    count=0
+    while temp_center[0]>0 and temp_center[1]<ly-1:
+        temp_center[0]-=1
+        temp_center[1]+=1
+        count+=1
+    centers.append(count)
+    
+    while temp_center[0]<lx-1 and temp_center[1]>0:
+        slope_n.append(gray[temp_center[1]][temp_center[0]])
+        
+        temp_center[0]+=1
+        temp_center[1]-=1
+    
+    line.append(row)  
+    line.append(colum)
+    line.append(slope_p)  
+    line.append(slope_n)
+    
+    return line,centers
+
+def trace_recursive(xx,line_data,center,unit):
     
     def fun(x,a,b,c,d,e,f,g,h,i):
         
         return i*x**8+h*x**7+g*x**6+f*x**5+a*x**4+b*x**3+c*x**2+d*x**1+e
     
-    base=1.5/65# 兩成半徑預估
-    rate=0.3/65
-    n=1
-    aa=fit(fun,xx[center:center+int(len(line_data)*(base+rate*n))],np.array(line_data[center:center+int(len(line_data)*(base+rate*n))]))[0]
+    base=1.8/65# 一成五半徑預估
+    rate=unit/65
     
-    while fun(xx[center+int(len(line_data)*(base+n*rate))-1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])>fun(xx[center+int(len(line_data)*(base+n*rate)-2)],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
-        n+=1
-        aa=fit(fun,xx[center:center+int(len(line_data)*(base+n*rate))],np.array(line_data[center:center+int(len(line_data)*(base+n*rate))]))[0]
-        #plt.plot(xx[center:center+int(len(line_data)*(base+n*rate))],fun(xx[center:center+int(len(line_data)*(base+n*rate))],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))
-    
-    r=center+int(len(line_data)*(base+n*rate))-1
-    while fun(xx[r],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])<fun(xx[r-1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
-        r-=1
-    
-    n=1
-    aa=fit(fun,xx[center-int(len(line_data)*(base+n*rate)):center],np.array(line_data[center-int(len(line_data)*(base+n*rate)):center]))[0]
-    
-    while fun(xx[center-int(len(line_data)*(base+n*rate))],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])>fun(xx[center-int(len(line_data)*(base+n*rate))+1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
-        n+=1
-        aa=fit(fun,xx[center-int(len(line_data)*(base+n*rate)):center],np.array(line_data[center-int(len(line_data)*(base+n*rate)):center]))[0]
-        #plt.plot(xx[center-int(len(line_data)*(base+n*rate)):center],fun(xx[center-int(len(line_data)*(base+n*rate)):center],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))
-        #plt.show()
+    try:
+        n=1
+        aa=fit(fun,xx[center:center+int(len(line_data)*(base+rate*n))],np.array(line_data[center:center+int(len(line_data)*(base+rate*n))]))[0]
         
-    l=center-int(len(line_data)*(base+n*rate))
-    while fun(xx[l],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])<fun(xx[l+1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
-        l+=1
-    #plt.scatter(xx,f,color='r')
-    #plt.plot(xx[center:center+int(len(line_data)*(base+n*rate))],fun(xx[center:center+int(len(line_data)*(base+n*rate))],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))
-    # plt.scatter(xx[l],line_data[l])
-    # plt.scatter(xx[r],line_data[r])
-    # plt.show()
+        while fun(xx[center+int(len(line_data)*(base+n*rate))-1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])>fun(xx[center+int(len(line_data)*(base+n*rate)-2)],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
+            n+=1
+            aa=fit(fun,xx[center:center+int(len(line_data)*(base+n*rate))],np.array(line_data[center:center+int(len(line_data)*(base+n*rate))]))[0]
+            #plt.plot(xx[center:center+int(len(line_data)*(base+n*rate))],fun(xx[center:center+int(len(line_data)*(base+n*rate))],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))
+        
+        r=center+int(len(line_data)*(base+n*rate))-1
+        while fun(xx[r],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])<fun(xx[r-1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
+            r-=1
+        
+        n=1
+        aa=fit(fun,xx[center-int(len(line_data)*(base+n*rate)):center],np.array(line_data[center-int(len(line_data)*(base+n*rate)):center]))[0]
+        
+        while fun(xx[center-int(len(line_data)*(base+n*rate))],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])>fun(xx[center-int(len(line_data)*(base+n*rate))+1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
+            n+=1
+            aa=fit(fun,xx[center-int(len(line_data)*(base+n*rate)):center],np.array(line_data[center-int(len(line_data)*(base+n*rate)):center]))[0]
+            #plt.plot(xx[center-int(len(line_data)*(base+n*rate)):center],fun(xx[center-int(len(line_data)*(base+n*rate)):center],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))
+            #plt.show()
+            
+        l=center-int(len(line_data)*(base+n*rate))
+        while fun(xx[l],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])<fun(xx[l+1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
+            l+=1
+        #plt.scatter(xx,f,color='r')
+        #plt.plot(xx[center:center+int(len(line_data)*(base+n*rate))],fun(xx[center:center+int(len(line_data)*(base+n*rate))],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))
+        
+        return l,center,r
+        
+    except:
+        return trace_recursive(xx,line_data,center,unit*1.1)
+
+def trace(line_data,center,check=False):
+    
+    xx=np.array([i/100000 for i in range(len(line_data))])        
+    
+    l,center,r=trace_recursive(xx,line_data,center,0.2)
+    
+    if check:
+        plt.plot(xx,line_data)
+        plt.scatter(xx[center],line_data[center])
+        plt.scatter(xx[l],line_data[l])
+        plt.scatter(xx[r],line_data[r])
+        plt.show()
     
     return l,center,r
 
-def take_line(img,gray,center):
-    row=[gray[center[1]],center[0]]
-    colum=[[],center[1]]
-    slope_p=[[]]
-    slope_n=[[]]
-    for i in range(len(gray)):
-        colum[0].append(gray[i][center[0]])
-    #tty=50
-    temp_center=[]
-    for i in range(2):
-        temp_center.append(center[i])
-    
-    while temp_center[0]>0 and temp_center[1]>0:
-    #for j in range(tty):
-        for i in range(2):
-            temp_center[i]-=1
-    
-    #cv2.circle(img,(temp_center[0],temp_center[1]),2,(0,255,0),3)
-    times=0
-    while temp_center[0]<len(gray[0])-1 and temp_center[1]<len(gray)-1:
-    #for j in range(tty*2):
-        slope_p[0].append(gray[temp_center[1]][temp_center[0]])
-        if temp_center[0]==center[0]:
-            slope_p.append(times)
-        for i in range(2):
-            temp_center[i]+=1
-        times+=1
-        
-    cv2.circle(img,(temp_center[1],temp_center[0]),2,(0,255,0),3)
-    
-    temp_center=[]
-    for i in range(2):
-        temp_center.append(center[i])
-    
-    while temp_center[0]>0 and temp_center[1]<len(gray)-1:
-    #for j in range(10):
-        temp_center[0]-=1
-        temp_center[1]+=1
-    
-    #cv2.circle(img,(temp_center[0],temp_center[1]),2,(0,255,0),3)
-    times=0
-    while temp_center[0]<len(gray[0])-1 and temp_center[1]>0:
-    #for j in range(10):
-        slope_n[0].append(gray[temp_center[1]][temp_center[0]])
-        if temp_center[0]==center[0]:
-            slope_n.append(times)
-        temp_center[0]+=1
-        temp_center[1]-=1
-        
-        times+=1
-    #cv2.circle(img,(temp_center[0],temp_center[1]),2,(0,255,0),3)
-    
-    #plt.plot(slope_p[0])
-    #plt.show()
-    return row,colum,slope_p,slope_n
-
-def Circle(imag,edges,Rrange,visible=True):
+def Circle(imag,edges,Rrange,visible=False):
     
     circles = cv2.HoughCircles(edges,cv2.HOUGH_GRADIENT,1,80,param1=10,param2=30,minRadius=Rrange[0],maxRadius=Rrange[1])
     circles = np.uint16(np.around(circles))
@@ -262,6 +249,7 @@ if __name__=="__main__":
     
     cv2.circle(g,(c[0],c[1]),2,(255),3)
     cv2.circle(g,(new[0],new[1]),2,(0,255,0),3)
+    '''
     cv2.imshow('i',g)
     
     cv2.waitKey(0)
@@ -269,14 +257,5 @@ if __name__=="__main__":
     cv2.imshow('i',img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-    
-    
-    row,colum,slope,slope2=take_line(img,gray,new)
-    a=slope2[1]
-    print(a)
-    plt.plot(slope2[0])
-    plt.scatter(a,slope2[0][a],c="c")
-    plt.show()
-    l,c,r=trace(slope2[0],a)
-    print(l,c,r)
-    
+    '''
+

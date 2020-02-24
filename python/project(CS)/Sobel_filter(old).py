@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pylab as plt
 from PIL import Image
 import copy
-from find import find, trace
+from findold import find, trace
 index_of_circle = 0
 def Sobelfilter(image_imread,visible=True):
     

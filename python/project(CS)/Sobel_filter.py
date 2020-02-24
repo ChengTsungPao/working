@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pylab as plt
 from PIL import Image
 import copy
-from find import find, trace, take_line
+from findold import find, trace, take_line
 index_of_circle = 0
 def Sobelfilter(image_imread,visible=True):
     
@@ -66,7 +66,7 @@ def Radiuscal(bright,center,Pixellength,visible):
     in_Radius = [[] for i in range(4)]
     out_Radius = [[] for i in range(4)]
     for index in range(len(bright)):
-        r = np.linspace(0,Pixellength*(len(bright[index]),len(bright[index]))
+        r = np.linspace(0,Pixellength*len(bright[index]),len(bright[index]))
                 
         tmp = trace(bright[index],center[index])
         min_center = tmp[1],bright[index][tmp[1]]
