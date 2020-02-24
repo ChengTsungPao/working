@@ -132,7 +132,9 @@ def Radiuscal(bright,center,Pixellength,visible):
         plt.show()
     return InRadius , OutRadius
 
-#filename = "Height 091205.bmp"
+
+filename = "test11.bmp"
+path = "D:/program/vscode_workspace/private/data/project_image(CS)/unhealth/"
 filename = "test12.bmp"
 path = "D:/program/vscode_workspace/private/data/project_image(CS)/health/"
 image_PIL = Image.open(path+filename)
