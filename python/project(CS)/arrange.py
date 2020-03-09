@@ -34,17 +34,17 @@ def HighCircle(todraw,sobel,onebit,Rrange,visible=False):
             if(len(center)-1==index_of_circle):
                 cv2.circle(todraw,(i[0],i[1]),i[2],(0,0,255),2) # draw the outer circle
                 cv2.circle(todraw,(i[0],i[1]),2,(0,0,255),3) # draw the center of the circle
-    '''
+    
     if(visible):
         cv2.imshow('detected circles',todraw)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-    '''
+    
     for i in range(len(center)):
         if(i==index_of_circle):
-            print(center[i])
+            #print(center[i])
             center[i] = find(onebit,center[i])
-            print(center[i])
+            #print(center[i])
             cv2.circle(todraw,(center[i][0],center[i][1]),2,(0,255,0),3) # draw the center of the circle
             break
     
@@ -155,12 +155,13 @@ file="test12.bmp"
 rgb=cv2.imread(file)
 todraw=cv2.imread(file)
 gray=cv2.imread(file,0)
-onebit=cv2.inRange(gray,90,110)
+onebit=cv2.inRange(gray,90,130)
 sobel=Sobelfilter(gray)
-'''
-showCV("gray",gray)
-showCV("sobel",sobel)
-'''
+
+# showCV("gray",gray)
+# showCV("onebit",onebit)
+# showCV("sobel",sobel)
+
 #=========================================
 centers=HighCircle(todraw,sobel,onebit,[20 , 40])#,True)
 
@@ -193,7 +194,7 @@ showCV('o',rgb)
 Pixellength = 50/len(gray[0])
 
 inR,outR=Radiuscal(todraw,lines,centerI,Pixellength,True)
-print("in=",inR)
+print("\nin=",inR)
 print("out=",outR)
 
 #切出來================================

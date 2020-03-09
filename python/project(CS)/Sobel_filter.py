@@ -133,10 +133,10 @@ def Radiuscal(bright,center,Pixellength,visible):
     return InRadius , OutRadius
 
 
-filename = "test11.bmp"
-path = "D:/program/vscode_workspace/private/data/project_image(CS)/unhealth/"
-filename = "test12.bmp"
-path = "D:/program/vscode_workspace/private/data/project_image(CS)/health/"
+filename = "test11.bmp" # unhealth
+path = "D:/program/vscode_workspace/private/data/project_image(CS)/"
+filename = "test12.bmp" # health
+path = "D:/program/vscode_workspace/private/data/project_image(CS)/"
 image_PIL = Image.open(path+filename)
 image_imread = cv2.imread(path+filename)
 image_imread_gray = cv2.imread(path+filename,0)
