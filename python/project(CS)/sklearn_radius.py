@@ -14,14 +14,14 @@ import warnings
 warnings.filterwarnings('ignore')
 
 def get_data(path):
-    health = np.load("health.npz")["r"]
-    unhealth = np.load("unhealth.npz")["r"]
+    health = np.load(path+"health.npz")["r"]
+    unhealth = np.load(path+"unhealth.npz")["r"]
     X = np.array(health.tolist() + unhealth.tolist())
     Y = np.array([0. for _ in range(len(health))] + [1. for _ in range(len(unhealth))])
     return X, Y
 
 
-path = "D:/program/vscode_workspace/private/data/project_image(CS)/"
+path = "./erythrocyte/"
 X, Y = get_data(path)
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1, shuffle=True)
 print("number of data:",len(X))

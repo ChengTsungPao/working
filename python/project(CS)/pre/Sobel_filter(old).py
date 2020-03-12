@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pylab as plt
 from PIL import Image
 import copy
-from find import find, trace
-index_of_circle = 5
+from findold import find, trace
+index_of_circle = 0
 def Sobelfilter(image_imread,visible=True):
     
     laplacian = cv2.Laplacian(image_imread,cv2.CV_64F)
@@ -55,11 +55,11 @@ def HighCircle(image_imread,edges,Rrange,visible=True):
 
 start = []
 filename = "test12.bmp"
-path = "D:/program/vscode_workspace/private/data/project_image(CS)/health/"
+path = "D:/program/vscode_workspace/private/data/project_image(CS)/"
 def Radiusline(image_PIL,center,Pixellength,visible=True):    #需要改有問題
     global start
     L = image_PIL.convert("L")
-    #L = cv2.imread(path+filename,0)
+    L = cv2.imread(path+filename,0)
     data = copy.copy(np.array(L))
     bright = [[] for i in range(4)]
     row = center[1]
@@ -119,7 +119,7 @@ def Radiusline(image_PIL,center,Pixellength,visible=True):    #需要改有問�
             try:           
                 bright[0].append(data[0+y][col-row+y])
                 data[0+y][col-row+y] = 0
-                print(0+y,col-row+y)
+                #print(0+y,col-row+y)
                 if(data[row][col]==0): 
                     data[row][col] = center_height
                 if(row==y and col==col-row+y):
@@ -129,7 +129,7 @@ def Radiusline(image_PIL,center,Pixellength,visible=True):    #需要改有問�
             try: 
                 bright[1].append(data[2*row-y][col-row+y])
                 data[2*row-y][col-row+y] = 0
-                print(2*row-y,col-row+y)
+                #print(2*row-y,col-row+y)
                 if(data[row][col]==0): 
                     data[row][col] = center_height
                 if(row==2*row-y and col==col-row+y):
@@ -139,7 +139,7 @@ def Radiusline(image_PIL,center,Pixellength,visible=True):    #需要改有問�
             try: 
                 bright[2].append(data[row][y])
                 data[row][y] = 0
-                print(row,y)
+                #print(row,y)
                 if(data[row][col]==0): 
                     data[row][col] = center_height
                 if(col==y):
@@ -149,7 +149,7 @@ def Radiusline(image_PIL,center,Pixellength,visible=True):    #需要改有問�
             try: 
                 bright[3].append(data[y][col])
                 data[y][col] = 0
-                print(y,col)
+                #print(y,col)
                 if(data[row][col]==0): 
                     data[row][col] = center_height
                 if(row==y):
@@ -157,7 +157,7 @@ def Radiusline(image_PIL,center,Pixellength,visible=True):    #需要改有問�
             except:
                 pass
             y += 1
-            print("--------------------------")
+            #print("--------------------------")
         for i in range(y,len(data)):
             bright[2].append(data[row][i])
             data[row][i] = 0
@@ -165,30 +165,6 @@ def Radiusline(image_PIL,center,Pixellength,visible=True):    #需要改有問�
         plt.imshow(data)
         plt.show()
     return data,bright,center_of_index
-
-def IndexVal(arr,s,Pixellength):   #需要改別偷懶
-    para = 3
-    if(s=="min"):
-        index = [len(arr)//3,len(arr)*2//3]
-        val = np.min(arr[index[0]:index[1]])
-    elif(s=="max-left"):
-        index = [len(arr)//3,len(arr)*2//3]
-        val = np.min(arr[index[0]:index[1]])
-        tmp = np.where(arr[index[0]:index[1]]==val)[0][0]+index[0]
-
-        index = [tmp-int(para/Pixellength),tmp]
-        val = np.max(arr[index[0]:index[1]])
-    elif(s=="max-right"):
-        index = [len(arr)//3,len(arr)*2//3]
-        val = np.min(arr[index[0]:index[1]])
-        tmp = np.where(arr[index[0]:index[1]]==val)[0][0]+index[0]
-
-        index = [tmp,tmp+int(para/Pixellength)]
-        val = np.max(arr[index[0]:index[1]])
-    else:
-        print("please input the correct mode")
-        return 0
-    return np.where(arr[index[0]:index[1]]==val)[0][0]+index[0],val 
 
 pos = []
 def Radiuscal(bright,center,Pixellength,visible):
@@ -198,14 +174,8 @@ def Radiuscal(bright,center,Pixellength,visible):
     out_Radius = [[] for i in range(4)]
     for index in range(len(bright)):
         r = np.linspace(0,Pixellength*len(bright[index]),len(bright[index]))
-        # min_center = IndexVal(bright[index],"min",Pixellength)
-        # max_right = IndexVal(bright[index],"max-right",Pixellength)
-        # max_left = IndexVal(bright[index],"max-left",Pixellength)
-
-        print(len(bright[index]))
-        print(center,len(bright[index]))
-        for index in range(len(bright)):    
-            print(len(bright[index]))
+        # for index in range(len(bright)):    
+        #     print(len(bright[index]))
                 
         tmp = trace(bright[index],center[index])
         min_center = tmp[1],bright[index][tmp[1]]
@@ -232,7 +202,7 @@ def Radiuscal(bright,center,Pixellength,visible):
         # print(out_Radius)
         ans = [in_Radius[index][in_Radius[index].index(min_center[0])-1],in_Radius[index][in_Radius[index].index(min_center[0])+1]]
         for i in range(len(out_Radius[index])):
-            if(out_Radius[index][i]>ans[0]):
+            if(out_Radius[index][i]>=ans[0]):
                 ans.append(out_Radius[index][i-1])
                 break
         for j in range(i,len(out_Radius[index])):
@@ -248,7 +218,7 @@ def Radiuscal(bright,center,Pixellength,visible):
         
         pos.append(ans)
         h = Pixellength
-        InRadius , OutRadius = InRadius+c*(ans[3]-ans[2])*h/4 ,  OutRadius+c*(ans[1]-ans[0])*h/4 
+        InRadius , OutRadius = InRadius+c*(ans[1]-ans[0])*h/4 ,  OutRadius+c*(ans[3]-ans[2])*h/4 
         #if(c*(ans[3]-ans[2])*h>InRadius):
         #    InRadius = c*(ans[3]-ans[2])*h
         #if(c*(ans[1]-ans[0])*h>OutRadius):
@@ -267,8 +237,9 @@ def Radiuscal(bright,center,Pixellength,visible):
             plt.xlabel("width (\u03BCm)")
             plt.ylabel("brightness")
             #plt.plot([r[0],r[-1]],[init,init],color = "r")
-            plt.plot([r[max_left[0]],r[max_right[0]]],[in_height,in_height],label = "in")
-            plt.plot([r[0],r[-1]],[out_height,out_height],label = "out")
+            plt.plot([r[ans[0]],r[ans[1]]],[in_height,in_height],"-o",label = "in")
+            plt.plot([r[ans[2]],r[ans[3]]],[out_height,out_height],"-o",label = "out")
+            #print(len(r),len(bright[index]))
             plt.plot(r,bright[index])
             plt.legend()
     if(visible):
@@ -276,9 +247,11 @@ def Radiuscal(bright,center,Pixellength,visible):
         plt.show()
     return InRadius , OutRadius
 
-#filename = "Height 091205.bmp"
-filename = "test12.bmp"
-path = "D:/program/vscode_workspace/private/data/project_image(CS)/health/"
+
+filename = "test11.bmp" # unhealth
+path = "D:/program/vscode_workspace/private/data/project_image(CS)/"
+filename = "test12.bmp" # health
+path = "D:/program/vscode_workspace/private/data/project_image(CS)/"
 image_PIL = Image.open(path+filename)
 image_imread = cv2.imread(path+filename,0)
 
@@ -295,7 +268,7 @@ print(image_PIL.size)
 edges = Sobelfilter(image_imread,visible)
 center = HighCircle(image_imread,edges,Rrange,visible)
 data , bright , center_of_index = Radiusline(image_PIL,center[index_of_circle],Pixellength,visible)
-InRadius , OutRadius = Radiuscal(bright,center_of_index,Pixellength,False)
+InRadius , OutRadius = Radiuscal(bright,center_of_index,Pixellength,visible)
 print("---------------------------------------")
 print(" InRadius : "+str(InRadius))
 print("OutRadius : "+str(OutRadius))

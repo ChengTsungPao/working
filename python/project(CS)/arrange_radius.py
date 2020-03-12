@@ -22,13 +22,14 @@ while(flag):
 
 index = 0
 data = []
+path = "./erythrocyte/"
 
 for i, file in enumerate(filename):
     for index_of_circle in range(30):
         try:
-            rgb=cv2.imread(file)
-            todraw=cv2.imread(file)
-            gray=cv2.imread(file,0)
+            rgb=cv2.imread(path+file)
+            todraw=cv2.imread(path+file)
+            gray=cv2.imread(path+file,0)
             onebit=cv2.inRange(gray,90,130)
             sobel=Sobelfilter(gray)
 
@@ -46,8 +47,8 @@ for i, file in enumerate(filename):
         except:
             pass
 
-np.savez(target, r = np.array(data))
+np.savez(path+target, r = np.array(data))
 print(index)
-f = np.load(target+".npz")
+f = np.load(path+target+".npz")
 print(f.files)
 print(f[f.files[0]])

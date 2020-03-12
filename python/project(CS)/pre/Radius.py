@@ -6,7 +6,7 @@ import copy
 dx = -10
 lineweight = 10
 filename = "test1.bmp"
-path = "D:/program/vscode_workspace/private/data/project_image(CS)/"
+path = "D:/program/vscode_workspace/private/data/project_image(CS)/health/pre/"
 
 im = Image.open(path+filename)
 L = im.convert("L")

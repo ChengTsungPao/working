@@ -303,8 +303,8 @@ def adjust(image,Pixellength,center,which_index):
 
 
 #filename = "Height 091205.bmp"
-filename = "test3.bmp"
-path = "D:/program/vscode_workspace/private/data/project_image(CS)/health/"
+filename = "test2.bmp"
+path = "D:/program/vscode_workspace/private/data/project_image(CS)/health/pre/"
 image = Image.open(path+filename)
 
 #Rrange = [40 , 50]

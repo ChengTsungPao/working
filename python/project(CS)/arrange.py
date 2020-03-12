@@ -158,11 +158,12 @@ if __name__=="__main__":
     index_of_circle=0
 
     #all kinds of images we need======================
-    file="test11.bmp"
-    file="test12.bmp"
-    rgb=cv2.imread(file)
-    todraw=cv2.imread(file)
-    gray=cv2.imread(file,0)
+    path = "./erythrocyte/"
+    file="unhealth1.bmp"
+    file="health1.bmp"
+    rgb=cv2.imread(path+file)
+    todraw=cv2.imread(path+file)
+    gray=cv2.imread(path+file,0)
     onebit=cv2.inRange(gray,90,130)
     sobel=Sobelfilter(gray)
 
