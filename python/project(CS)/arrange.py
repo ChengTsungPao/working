@@ -3,8 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from find import find, trace, take_line
 from filters import Sobelfilter
-index_of_circle=11
-index_of_circle=0
+
 
 dirac=[[1,0],[0,1],[1,1],[1,-1]]
 
@@ -23,7 +22,7 @@ def get_rough_centers(image_Sobel,Rrange):
 
     return center
 
-def HighCircle(todraw,sobel,onebit,Rrange,visible=False):
+def HighCircle(todraw,sobel,onebit,index_of_circle,Rrange,visible=False):
     circles = cv2.HoughCircles(sobel,cv2.HOUGH_GRADIENT,1,80,param1=10,param2=30,minRadius=Rrange[0],maxRadius=Rrange[1])
     circles = np.uint16(np.around(circles))
     center = []    
@@ -55,12 +54,14 @@ def HighCircle(todraw,sobel,onebit,Rrange,visible=False):
     return center
 
 def Radiuscal(todraw,bright,center,Pixellength,visible=False):
+    all_Radius = []
+
     init = 0
     InRadius , OutRadius = 0 , 0
     in_Radius = [[] for i in range(4)]
     out_Radius = [[] for i in range(4)]
     for index in range(len(bright)):
-        start_offset=-int(centerI[index])
+        start_offset=-int(center[index])
         ending=len(bright[index])+start_offset
         cv2.line(todraw,(center[0]+start_offset*dirac[index][0],center[1]+start_offset*dirac[index][1]),(center[0]+ending*dirac[index][0],center[1]+ending*dirac[index][1]),(255,255,255),2)
         
@@ -111,6 +112,8 @@ def Radiuscal(todraw,bright,center,Pixellength,visible=False):
         r = c*r
 
         h = Pixellength
+        #all_Radius.append(c*(ans[1]-ans[0])*h)
+        all_Radius.append(c*(ans[3]-ans[2])*h)
         InRadius , OutRadius = InRadius+c*(ans[1]-ans[0])*h/4 ,  OutRadius+c*(ans[3]-ans[2])*h/4 
         #if(c*(ans[3]-ans[2])*h>InRadius):
         #    InRadius = c*(ans[3]-ans[2])*h
@@ -140,7 +143,7 @@ def Radiuscal(todraw,bright,center,Pixellength,visible=False):
         plt.tight_layout() 
         plt.show()
         showCV('hey',todraw)
-    return InRadius , OutRadius
+    return InRadius , OutRadius , all_Radius
 
 def draw_line(todraw,center,centerI,ls,rs,lines):
     for i in range(4):
@@ -148,76 +151,81 @@ def draw_line(todraw,center,centerI,ls,rs,lines):
         ending=len(lines[i])+start_offset
         cv2.line(todraw,(center[0]+start_offset*dirac[i][0],center[1]+start_offset*dirac[i][1]),(center[0]+ending*dirac[i][0],center[1]+ending*dirac[i][1]),(255,255,255),5)
     
- 
-#all kinds of images we need======================
-file="test11.bmp"
-file="test12.bmp"
-rgb=cv2.imread(file)
-todraw=cv2.imread(file)
-gray=cv2.imread(file,0)
-onebit=cv2.inRange(gray,90,130)
-sobel=Sobelfilter(gray)
 
-# showCV("gray",gray)
-# showCV("onebit",onebit)
-# showCV("sobel",sobel)
+if __name__=="__main__":
 
-#=========================================
-centers=HighCircle(todraw,sobel,onebit,[20 , 40])#,True)
+    #index_of_circle=11
+    index_of_circle=0
 
-center=centers[index_of_circle]
+    #all kinds of images we need======================
+    file="test11.bmp"
+    file="test12.bmp"
+    rgb=cv2.imread(file)
+    todraw=cv2.imread(file)
+    gray=cv2.imread(file,0)
+    onebit=cv2.inRange(gray,90,130)
+    sobel=Sobelfilter(gray)
 
-lines,centerI=take_line(gray,center)
-'''
-p=3
+    # showCV("gray",gray)
+    # showCV("onebit",onebit)
+    # showCV("sobel",sobel)
 
-plt.plot(lines[p])
-plt.scatter(centerI[p],lines[p][centerI[p]],c='r')
-plt.show()
+    #=========================================
+    centers=HighCircle(todraw,sobel,onebit,index_of_circle,[20 , 40])#,True)
 
-l,c,r=trace(lines[p],centerI[p],True)
-print(l,c)
+    center=centers[index_of_circle]
 
+    lines,centerI=take_line(gray,center)
+    '''
+    p=3
 
-rs=[]
-ls=[]
-ci=[]
-for i in range(4):
-    l,c,r=trace(lines[i],centerI[i])
-    rs.append(r)
-    ls.append(l)
+    plt.plot(lines[p])
+    plt.scatter(centerI[p],lines[p][centerI[p]],c='r')
+    plt.show()
 
-draw_line(rgb,center,centerI,ls,rs,lines)
-showCV('o',rgb)
-'''
-#l,c,r=trace(colum[0],colum[1],True)
-Pixellength = 50/len(gray[0])
-
-inR,outR=Radiuscal(todraw,lines,centerI,Pixellength,True)
-print("\nin=",inR)
-print("out=",outR)
-
-#切出來================================
-'''
-newcircle_graph=[]
-lent=int(1*(rs[0]-ls[0]))
-#cv2.circle(rgb,(center[0],center[1]),lent,(255,0,255),2) # 圈出來
-showCV("hey",rgb)
-
-for j in range(2*lent):
-    newcircle_graph.append([])
-    for i in range(2*lent):
-        newcircle_graph[j].append(rgb[center[1]-lent+j][center[0]-lent+i])
-newcircle_graph=np.array(newcircle_graph)
+    l,c,r=trace(lines[p],centerI[p],True)
+    print(l,c)
 
 
-gray=cv2.cvtColor(newcircle_graph,cv2.COLOR_BGR2GRAY)
-onebit=cv2.inRange(gray,90,110)
-sobel=Sobelfilter(gray)
-#print(newcircle_graph)
-showCV('hey',newcircle_graph)
-centers=HighCircle(newcircle_graph,sobel,onebit,[30 , 40],True)
-center=centers[index_of_circle]
-lines,centerI=take_line(gray,center)
-inR,outR=Radiuscal(newcircle_graph,lines,centerI,Pixellength,True)
-'''
+    rs=[]
+    ls=[]
+    ci=[]
+    for i in range(4):
+        l,c,r=trace(lines[i],centerI[i])
+        rs.append(r)
+        ls.append(l)
+
+    draw_line(rgb,center,centerI,ls,rs,lines)
+    showCV('o',rgb)
+    '''
+    #l,c,r=trace(colum[0],colum[1],True)
+    Pixellength = 50/len(gray[0])
+
+    inR,outR,allR=Radiuscal(todraw,lines,centerI,Pixellength,True)
+    print("\nin=",inR)
+    print("out=",outR)
+
+    #切出來================================
+    '''
+    newcircle_graph=[]
+    lent=int(1*(rs[0]-ls[0]))
+    #cv2.circle(rgb,(center[0],center[1]),lent,(255,0,255),2) # 圈出來
+    showCV("hey",rgb)
+
+    for j in range(2*lent):
+        newcircle_graph.append([])
+        for i in range(2*lent):
+            newcircle_graph[j].append(rgb[center[1]-lent+j][center[0]-lent+i])
+    newcircle_graph=np.array(newcircle_graph)
+
+
+    gray=cv2.cvtColor(newcircle_graph,cv2.COLOR_BGR2GRAY)
+    onebit=cv2.inRange(gray,90,110)
+    sobel=Sobelfilter(gray)
+    #print(newcircle_graph)
+    showCV('hey',newcircle_graph)
+    centers=HighCircle(newcircle_graph,sobel,onebit,[30 , 40],True)
+    center=centers[index_of_circle]
+    lines,centerI=take_line(gray,center)
+    inR,outR=Radiuscal(newcircle_graph,lines,centerI,Pixellength,True)
+    '''
