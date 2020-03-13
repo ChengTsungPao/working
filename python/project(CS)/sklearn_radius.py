@@ -36,7 +36,6 @@ print("predict:",Y_pred)
 print("LogisticRegression:\n%s" % (metrics.classification_report(Y_test, Y_pred)))
 print("X_test accuracy: "+str(metrics.accuracy_score(Y_test, Y_pred)))
 print("----------------------------------------")
-print(model.coef_)
 
 dx = 1
 plt.title("LogisticRegression predict:")

@@ -32,7 +32,7 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, shuffle
 print("number of data:",len(X))
 
 model = linear_model.LogisticRegression()
-#model = svm.SVC()
+#model = svm.SVC(probability=True)
 model.fit(X_train, Y_train)
 
 Y_pred = model.predict(X_test)
