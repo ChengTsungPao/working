@@ -8,12 +8,14 @@ while(flag):
     choose = int(input("health or unhealth (0 or 1) : "))
     if(choose==1):
         target = "unhealth"
-        filename=["unhealth1.bmp", "unhealth2.bmp", "unhealth3.bmp", "unhealth4.bmp"]
-        length = [50, 51.9, 55.6, 58.8]
+        #filename=["unhealth1.bmp", "unhealth2.bmp", "unhealth3.bmp", "unhealth4.bmp"]
+        filename=["unhealth5.bmp", "unhealth6.bmp", "unhealth7.bmp", "unhealth8.bmp"]
+        length = [50, 50, 50, 50]
         flag = False
     elif(choose==0):
         target = "health"
-        filename=["health1.bmp", "health2.bmp"]
+        #filename=["health1.bmp", "health2.bmp"]
+        filename=["health3.bmp", "health4.bmp"]
         length = [50, 50]
         flag = False
     else:
@@ -47,8 +49,19 @@ for i, file in enumerate(filename):
         except:
             pass
 
+
 np.savez(path+target, r = np.array(data))
 print(index)
 f = np.load(path+target+".npz")
 print(f.files)
 print(f[f.files[0]])
+
+
+# print(index)
+# np.savez(path+str(choose), r = np.array(data))
+# f1 = np.load(path+str(0)+".npz")
+# f2 = np.load(path+str(1)+".npz")
+# import matplotlib.pylab as plt
+# plt.scatter(f1["r"][:,0], f1["r"][:,1])
+# plt.scatter(f2["r"][:,0], f2["r"][:,1])
+# plt.show()

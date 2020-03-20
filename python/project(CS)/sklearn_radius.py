@@ -20,14 +20,13 @@ def get_data(path):
     Y = np.array([0. for _ in range(len(health))] + [1. for _ in range(len(unhealth))])
     return X, Y
 
-
 path = "./erythrocyte/"
 X, Y = get_data(path)
-X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.1, shuffle=True)
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, shuffle=True)
 print("number of data:",len(X))
 
 model = linear_model.LogisticRegression()
-#model = svm.SVC(probability=True)
+model = svm.SVC(probability=True)
 model.fit(X_train, Y_train)
 
 Y_pred = model.predict(X_test)
@@ -41,4 +40,5 @@ dx = 1
 plt.title("LogisticRegression predict:")
 print(model.predict(X))
 plt.scatter(range(len(X))[::dx],model.predict_proba(X)[::dx,0])
+plt.scatter(range(len(X))[::dx],model.predict(X)[::dx])
 plt.show()

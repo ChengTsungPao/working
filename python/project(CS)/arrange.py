@@ -113,9 +113,21 @@ def Radiuscal(todraw,bright,center,Pixellength,visible=False):
 
         h = Pixellength
         # all_Radius.append((ans[1]-ans[0])/(ans[3]-ans[2]))
-        all_Radius.append(c*(ans[1]-ans[0])*h)
-        all_Radius.append(c*(ans[3]-ans[2])*h)
+
+        # all_Radius.append(c*(ans[1]-ans[0])*h)
+        # all_Radius.append(c*(ans[3]-ans[2])*h)
+
+        all_Radius.append(c*abs(ans[0]-min_center[0])*h)
+        all_Radius.append(c*abs(ans[1]-min_center[0])*h)
+        all_Radius.append(c*abs(ans[2]-min_center[0])*h)
+        all_Radius.append(c*abs(ans[3]-min_center[0])*h)
+
         InRadius , OutRadius = InRadius+c*(ans[1]-ans[0])*h/4 ,  OutRadius+c*(ans[3]-ans[2])*h/4 
+
+        #all_Radius = [InRadius , OutRadius]
+
+
+
         #if(c*(ans[3]-ans[2])*h>InRadius):
         #    InRadius = c*(ans[3]-ans[2])*h
         #if(c*(ans[1]-ans[0])*h>OutRadius):
@@ -144,7 +156,7 @@ def Radiuscal(todraw,bright,center,Pixellength,visible=False):
         plt.tight_layout() 
         plt.show()
         showCV('hey',todraw)
-    return InRadius , OutRadius , sorted(all_Radius)
+    return InRadius , OutRadius , all_Radius
 
 def draw_line(todraw,center,centerI,ls,rs,lines):
     for i in range(4):
