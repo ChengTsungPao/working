@@ -117,9 +117,14 @@ def Radiuscal(todraw,bright,center,Pixellength,visible=False):
         # all_Radius.append(c*(ans[1]-ans[0])*h)
         # all_Radius.append(c*(ans[3]-ans[2])*h)
 
+        
+        
+
         all_Radius.append(c*abs(ans[0]-min_center[0])*h)
+        all_Radius.append(c*abs(max_right[0]-min_center[0])*h)
         all_Radius.append(c*abs(ans[1]-min_center[0])*h)
         all_Radius.append(c*abs(ans[2]-min_center[0])*h)
+        all_Radius.append(c*abs(max_left[0]-min_center[0])*h)
         all_Radius.append(c*abs(ans[3]-min_center[0])*h)
 
         InRadius , OutRadius = InRadius+c*(ans[1]-ans[0])*h/4 ,  OutRadius+c*(ans[3]-ans[2])*h/4 

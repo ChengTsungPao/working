@@ -5,10 +5,10 @@ from find import find, trace, take_line
 
 
 def showCV(title,image):
-    return
-    # cv2.imshow(title,image)
-    # cv2.waitKey()
-    # cv2.destroyAllWindows()
+    #return
+    cv2.imshow(title,image)
+    cv2.waitKey()
+    cv2.destroyAllWindows()
 
 def reset_graph(boolean_graph,m,n):
     for i in range(m):
@@ -446,13 +446,13 @@ if __name__=="__main__":
     Rrange=[10,40]
     thresh=50
     length = 50
-    length = 80
+    #length = 80
 
 
     #all kinds of images we need======================
     path="./erythrocyte/"
     file="bad1.bmp"
     file="health1.bmp"
-    file="unhealth11.bmp"
+    #file="unhealth11.bmp"
     r = radius(path, file, Rrange, thresh, length)
     print("index : ",len(r)//2)

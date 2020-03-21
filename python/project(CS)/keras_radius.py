@@ -19,7 +19,7 @@ X, Y = get_data(path)
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3, shuffle=True)
 
 model = Sequential([
-    Dense(10, input_dim=16),
+    Dense(10, input_dim=24),
     Activation('relu'),
     Dense(2),
     Activation('softmax'),

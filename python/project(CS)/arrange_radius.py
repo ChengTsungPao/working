@@ -11,6 +11,8 @@ while(flag):
         #filename=["unhealth1.bmp", "unhealth2.bmp", "unhealth3.bmp", "unhealth4.bmp"]
         filename=["unhealth5.bmp", "unhealth6.bmp", "unhealth7.bmp", "unhealth8.bmp"]
         length = [50, 50, 50, 50]
+        # filename=["unhealth9.bmp", "unhealth10.bmp", "unhealth11.bmp", "unhealth12.bmp"]
+        # length = [80, 80, 80, 80]
         flag = False
     elif(choose==0):
         target = "health"
