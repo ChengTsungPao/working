@@ -160,6 +160,7 @@ def Radiuscal(todraw,bright,center,Pixellength,visible=False):
     if(visible):
         plt.tight_layout() 
         plt.show()
+        plt.clf()
         showCV('hey',todraw)
     return InRadius , OutRadius , all_Radius
 
