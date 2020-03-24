@@ -9,3 +9,13 @@ def Sobelfilter(gray):
     y = cv2.convertScaleAbs(sobely)
     image_Sobel = cv2.addWeighted(x,0.5,y,0.5,0)
     return image_Sobel
+
+def Cannyedge(gray,visible=False):
+    lowThreshold = 10
+    max_lowThreshold = 10#40
+    edges = cv2.Canny(gray, lowThreshold, max_lowThreshold)
+    if(visible):
+        cv2.imshow('detected circles',edges)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+    return edges

@@ -143,9 +143,13 @@ def trace(line_data,center,check=False):
     
     xx=np.array([i/100000 for i in range(len(line_data))])        
     
-    def fun(x,a,b,c,d,e,f,g,h,i):
+    # def fun(x,a,b,c,d,e,f,g,h,i):
         
-        return i*x**8+h*x**7+g*x**6+f*x**5+a*x**4+b*x**3+c*x**2+d*x**1+e
+    #     return i*x**8+h*x**7+g*x**6+f*x**5+a*x**4+b*x**3+c*x**2+d*x**1+e
+
+    def fun(x,c,d,e):
+        
+        return c*x**2+d*x**1+e
     
     #32 c r 差
     
@@ -155,8 +159,9 @@ def trace(line_data,center,check=False):
     #fitting right hand========================================
     end=center+base+d+1
     aa=fit(fun,xx[center:end],np.array(line_data[center:end]))[0]
-    
-    while fun(xx[end-1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])>fun(xx[end-2],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
+
+    while fun(xx[end-1],aa[0],aa[1],aa[2])>fun(xx[end-2],aa[0],aa[1],aa[2]):
+    #while fun(xx[end-1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])>fun(xx[end-2],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
         end+=d
         aa=fit(fun,xx[center:end],np.array(line_data[center:end]))[0]
         #plt.plot(xx[center:center+int(len(line_data)*(base+n*rate))],fun(xx[center:center+int(len(line_data)*(base+n*rate))],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))
@@ -173,8 +178,9 @@ def trace(line_data,center,check=False):
     #fitting left hand===========================================
     start=center-(base+d)
     aa=fit(fun,xx[start:center+1],np.array(line_data[start:center+1]))[0]
-    
-    while fun(xx[start],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])>fun(xx[start+1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
+
+    while fun(xx[start],aa[0],aa[1],aa[2])>fun(xx[start+1],aa[0],aa[1],aa[2]):
+    #while fun(xx[start],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8])>fun(xx[start+1],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]):
         start-=d
         aa=fit(fun,xx[start:center+1],np.array(line_data[start:center+1]))[0]
         #plt.plot(xx[center-int(len(line_data)*(base+n*rate)):center],fun(xx[center-int(len(line_data)*(base+n*rate)):center],aa[0],aa[1],aa[2],aa[3],aa[4],aa[5],aa[6],aa[7],aa[8]))

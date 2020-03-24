@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from find import find, trace, take_line
-from filters import Sobelfilter
+from filters import Sobelfilter, Cannyedge
 
 
 dirac=[[1,0],[0,1],[1,1],[1,-1]]
@@ -23,7 +23,8 @@ def get_rough_centers(image_Sobel,Rrange):
     return center
 
 def HighCircle(todraw,sobel,onebit,index_of_circle,Rrange,visible=False):
-    circles = cv2.HoughCircles(sobel,cv2.HOUGH_GRADIENT,1,80,param1=10,param2=30,minRadius=Rrange[0],maxRadius=Rrange[1])
+    #circles = cv2.HoughCircles(sobel,cv2.HOUGH_GRADIENT,1,80,param1=10,param2=30,minRadius=Rrange[0],maxRadius=Rrange[1])
+    circles = cv2.HoughCircles(sobel,cv2.HOUGH_GRADIENT,1,1000,param1=10,param2=1,minRadius=Rrange[0],maxRadius=Rrange[1])
     circles = np.uint16(np.around(circles))
     center = []    
     for i in circles[0,:]:  
@@ -127,6 +128,19 @@ def Radiuscal(todraw,bright,center,Pixellength,visible=False):
         all_Radius.append(c*abs(max_left[0]-min_center[0])*h)
         all_Radius.append(c*abs(ans[3]-min_center[0])*h)
 
+
+        # all_Radius.append(abs(bright[index][ans[0]]-min_center[1]))
+        # all_Radius.append(abs(max_right[1]-min_center[1]))
+        # all_Radius.append(abs(bright[index][ans[1]]-min_center[1]))
+        # all_Radius.append(abs(bright[index][ans[2]]-min_center[1]))
+        # all_Radius.append(abs(max_left[1]-min_center[1]))
+        # all_Radius.append(abs(bright[index][ans[3]]-min_center[1]))
+
+
+        # all_Radius.append(min_center[1])
+        # all_Radius.append(max_right[1])        
+        # all_Radius.append(max_left[1])
+
         InRadius , OutRadius = InRadius+c*(ans[1]-ans[0])*h/4 ,  OutRadius+c*(ans[3]-ans[2])*h/4 
 
         #all_Radius = [InRadius , OutRadius]
@@ -180,18 +194,25 @@ if __name__=="__main__":
     path = "./erythrocyte/"
     file="unhealth1.bmp"
     file="health1.bmp"
+    path = "D:/program/vscode_workspace/private/data/project_image(CS)/health/"
+    file="1_1.bmp"
     rgb=cv2.imread(path+file)
     todraw=cv2.imread(path+file)
     gray=cv2.imread(path+file,0)
     onebit=cv2.inRange(gray,90,130)
     sobel=Sobelfilter(gray)
+    #sobel=Cannyedge(gray, True)
+    
+
+    Rrange = [20 , 40]
+    Rrange = [230 , 250]
 
     # showCV("gray",gray)
     # showCV("onebit",onebit)
     # showCV("sobel",sobel)
 
     #=========================================
-    centers=HighCircle(todraw,sobel,onebit,index_of_circle,[20 , 40])#,True)
+    centers=HighCircle(todraw,sobel,onebit,index_of_circle,Rrange)#,True)
 
     center=centers[index_of_circle]
 
@@ -219,7 +240,7 @@ if __name__=="__main__":
     showCV('o',rgb)
     '''
     #l,c,r=trace(colum[0],colum[1],True)
-    Pixellength = 50/len(gray[0])
+    Pixellength = 10/len(gray[0])
 
     inR,outR,allR=Radiuscal(todraw,lines,centerI,Pixellength,True)
     print("\nin=",inR)
