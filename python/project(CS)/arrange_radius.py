@@ -39,6 +39,7 @@ path = "./erythrocyte/"
 from glob import glob
 path = ""
 filename = glob("D:/program/vscode_workspace/private/data/project_image(CS)/{}/*.bmp".format(target))
+name = []
 for i, file in enumerate(filename):
     for index_of_circle in range(1):
         try:
@@ -62,10 +63,11 @@ for i, file in enumerate(filename):
             print(allR)
             data.append(allR)
             index += 1
+            name.append(file)
         except:
             pass
 
-np.savez("./erythrocyte/"+target+"_single.npz", r = np.array(data))
+np.savez("./erythrocyte/"+target+"_single.npz", r = np.array(data), filename = name)
 print(index)
 f = np.load("./erythrocyte/"+target+"_single.npz")
 print(f.files)
