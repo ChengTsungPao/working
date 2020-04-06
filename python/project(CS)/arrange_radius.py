@@ -39,11 +39,22 @@ path = "./erythrocyte/"
 from glob import glob
 path = ""
 filename = glob("D:/program/vscode_workspace/private/data/project_image(CS)/{}/*.bmp".format(target))
+#print(filename)
+if(target=="health"):
+    filename.remove("D:/program/vscode_workspace/private/data/project_image(CS)/health\\9_1.bmp")
+    filename.remove("D:/program/vscode_workspace/private/data/project_image(CS)/health\\16_1.bmp")
+    filename.remove("D:/program/vscode_workspace/private/data/project_image(CS)/health\\27_1.bmp")
+    filename.remove("D:/program/vscode_workspace/private/data/project_image(CS)/health\\37_1.bmp")
+    filename.remove("D:/program/vscode_workspace/private/data/project_image(CS)/health\\39_1.bmp")
+else:
+    filename.remove("D:/program/vscode_workspace/private/data/project_image(CS)/unhealth\\37_1.bmp")
+    filename.remove("D:/program/vscode_workspace/private/data/project_image(CS)/unhealth\\43_1.bmp")
 name = []
 for i, file in enumerate(filename):
     for index_of_circle in range(1):
         try:
-            file = "D:/program/vscode_workspace/private/data/project_image(CS)/{}/{}_1.bmp".format(target,str(i+1))
+            #file = "D:/program/vscode_workspace/private/data/project_image(CS)/{}/{}_1.bmp".format(target,str(i+1))
+            file = filename[i]
             print(path+file)
             rgb=cv2.imread(path+file)
             todraw=cv2.imread(path+file)

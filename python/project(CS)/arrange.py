@@ -194,8 +194,8 @@ if __name__=="__main__":
     path = "./erythrocyte/"
     file="unhealth1.bmp"
     file="health1.bmp"
-    path = "D:/program/vscode_workspace/private/data/project_image(CS)/health/"
-    file="1_1.bmp"
+    path = "D:/program/vscode_workspace/private/data/project_image(CS)/unhealth/"
+    file="43_1.bmp"
     rgb=cv2.imread(path+file)
     todraw=cv2.imread(path+file)
     gray=cv2.imread(path+file,0)

@@ -6,6 +6,7 @@ from glob import glob
 from sklearn import linear_model, metrics
 from sklearn.model_selection import train_test_split
 import warnings
+import time
 from prettytable import PrettyTable
 
 warnings.filterwarnings('ignore')
@@ -46,6 +47,8 @@ radius_train = np.array(radius_train)
 radius_test = np.array(radius_test)  
 radius_total = np.array(radius_total) 
 
+t = time.perf_counter()
+
 model = linear_model.LogisticRegression()
 model.fit(radius_train, Y_train)
 
@@ -56,6 +59,8 @@ print("----------------------------------------")
 
 radius_prob = model.predict_proba(radius_total)[:,1]
 radius_pred = model.predict(radius_total)
+
+radius_time = time.perf_counter() - t
 
 #########################################################################################
 
@@ -73,6 +78,8 @@ label_train = np.array(label_train)
 label_test = np.array(label_test)  
 label_total = np.array(label_total) 
 
+t = time.perf_counter()
+
 model = linear_model.LogisticRegression()
 model.fit(label_train, Y_train)
 
@@ -83,6 +90,8 @@ print("----------------------------------------")
 
 label_prob = model.predict_proba(label_total)[:,1]
 label_pred = model.predict(label_total)
+
+label_time = time.perf_counter() - t
 
 #########################################################################################
 
@@ -101,7 +110,8 @@ for i in range(len(radius_pred)):
 
     table.add_row([name[i], round(label_prob[i], 6), target_label_pred, round(radius_prob[i], 6), target_radius_pred])
 print(table)
-
+print("radius_time:",radius_time)
+print("label_time",label_time)
 
 plt.subplot(221)
 plt.title("radius probability")
