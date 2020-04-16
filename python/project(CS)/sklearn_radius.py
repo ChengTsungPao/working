@@ -14,8 +14,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 def get_data(path):
-    health = np.load(path+"health_single.npz")["r"]
-    unhealth = np.load(path+"unhealth_single.npz")["r"]
+    health = np.load(path+"health.npz")["r"]
+    unhealth = np.load(path+"unhealth.npz")["r"]
     X = np.array(health.tolist() + unhealth.tolist())
     Y = np.array([0. for _ in range(len(health))] + [1. for _ in range(len(unhealth))])
     return X, Y
