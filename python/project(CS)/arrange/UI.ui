@@ -78,7 +78,7 @@
    <widget class="QLabel" name="outside">
     <property name="geometry">
      <rect>
-      <x>570</x>
+      <x>565</x>
       <y>200</y>
       <width>81</width>
       <height>41</height>
@@ -99,14 +99,17 @@
      <rect>
       <x>520</x>
       <y>280</y>
-      <width>171</width>
+      <width>191</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Agency FB</family>
+      <family>Bahnschrift Condensed</family>
       <pointsize>18</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
      </font>
     </property>
     <property name="text">
@@ -118,7 +121,7 @@
      <rect>
       <x>653</x>
       <y>200</y>
-      <width>51</width>
+      <width>81</width>
       <height>41</height>
      </rect>
     </property>
@@ -137,7 +140,7 @@
      <rect>
       <x>654</x>
       <y>340</y>
-      <width>51</width>
+      <width>91</width>
       <height>41</height>
      </rect>
     </property>
@@ -156,7 +159,7 @@
      <rect>
       <x>653</x>
       <y>150</y>
-      <width>51</width>
+      <width>91</width>
       <height>41</height>
      </rect>
     </property>
@@ -193,7 +196,7 @@
     <property name="geometry">
      <rect>
       <x>323</x>
-      <y>350</y>
+      <y>347</y>
       <width>141</width>
       <height>41</height>
      </rect>
@@ -212,7 +215,7 @@
     <property name="geometry">
      <rect>
       <x>323</x>
-      <y>390</y>
+      <y>384</y>
       <width>151</width>
       <height>41</height>
      </rect>
@@ -238,8 +241,11 @@
     </property>
     <property name="font">
      <font>
-      <family>Agency FB</family>
+      <family>Bahnschrift Condensed</family>
       <pointsize>18</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
      </font>
     </property>
     <property name="text">
@@ -276,8 +282,11 @@
     </property>
     <property name="font">
      <font>
-      <family>Agency FB</family>
+      <family>Bahnschrift Condensed</family>
       <pointsize>16</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
      </font>
     </property>
     <property name="text">
@@ -295,8 +304,11 @@
     </property>
     <property name="font">
      <font>
-      <family>Agency FB</family>
+      <family>Bahnschrift Condensed</family>
       <pointsize>16</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
      </font>
     </property>
     <property name="text">
@@ -314,8 +326,11 @@
     </property>
     <property name="font">
      <font>
-      <family>Agency FB</family>
+      <family>Bahnschrift Condensed</family>
       <pointsize>18</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
      </font>
     </property>
     <property name="text">
@@ -327,7 +342,7 @@
      <rect>
       <x>80</x>
       <y>310</y>
-      <width>201</width>
+      <width>221</width>
       <height>41</height>
      </rect>
     </property>
@@ -390,8 +405,11 @@
     </property>
     <property name="font">
      <font>
-      <family>Agency FB</family>
+      <family>Bahnschrift Condensed</family>
       <pointsize>18</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
      </font>
     </property>
     <property name="text">
@@ -436,7 +454,7 @@
      <rect>
       <x>2242</x>
       <y>256</y>
-      <width>164</width>
+      <width>137</width>
       <height>126</height>
      </rect>
     </property>

@@ -57,7 +57,7 @@ def clear_white_edge(graph,white):
     return np.array([[graph[i][j] for j in range(white_line_wide,n)] for i in range(m)],np.uint8)
 
 def Radiuscal(todraw,bright,center,Pixellength,visible=False):
-    all_Radius = []
+    all_Radius = [[], []]
 
     init = 0
     InRadius , OutRadius = 0 , 0
@@ -114,6 +114,8 @@ def Radiuscal(todraw,bright,center,Pixellength,visible=False):
             c = 1
         r = c*r
         h = Pixellength
+        all_Radius[0].append(c*(ans[1]-ans[0])*h)
+        all_Radius[1].append(c*(ans[3]-ans[2])*h)
         InRadius , OutRadius = InRadius+c*(ans[1]-ans[0])*h/4 ,  OutRadius+c*(ans[3]-ans[2])*h/4
 
         if(visible):
@@ -139,9 +141,9 @@ def Radiuscal(todraw,bright,center,Pixellength,visible=False):
         plt.clf()
         showCV('hey',todraw)
 
-    return InRadius, OutRadius, todraw
+    return InRadius, OutRadius, todraw, all_Radius
 
-def Total_Radius(name, length, filter_mode, visible):
+def Total_Radius(name, length, filter_mode, checkbox, visible):
 #-#-#-#-#-#-#-#-#main------------------------------------------
     rgb=clear_white_edge(cv2.imread(name),(255,255,255))
     Ogray=clear_white_edge(cv2.imread(name,0),255)
@@ -207,6 +209,7 @@ def Total_Radius(name, length, filter_mode, visible):
     inRadius=[]
     outRadius=[]
     index = 1
+    Radius_data = {}
     for i in range(length):
         try:
             if(filter_mode == "bfsfilter"):
@@ -224,21 +227,45 @@ def Total_Radius(name, length, filter_mode, visible):
             else:
                 print("Please choose the correct filter !!!")
                 break
-        
-            xx = find(onebit, circle[0][:2])
+            if(checkbox["Center"]):
+                xx = find(onebit, circle[0][:2])
+            else:
+                xx = circle[0][:2]
             lines,centerI = take_line(gray, xx)
-            in_r,out_r,drawtmp= Radiuscal(copy(todraw), lines, centerI, Pixellength, visible)
+            in_r, out_r, drawtmp, all_Radius = Radiuscal(copy(todraw), lines, centerI, Pixellength, visible)
             inRadius.append(in_r)
             outRadius.append(out_r)
             cv2.imwrite(path + str(index) + ".png", drawtmp)
+            print(path + str(index) + ".png")
+            if(checkbox["Report"]):
+                f = open(path + "Report.txt", "a")
+                f.write(path + str(index) + ".png")
+                f.write("\n")
+                f.write("in_Radius : " + str(all_Radius[0]))
+                f.write(" average : " + str(in_r))
+                f.write("\n")
+                f.write("out_Radius : " + str(all_Radius[1]))
+                f.write(" average : " + str(out_r))
+                f.write("\n\n")
+                f.close()
+            Radius_data[path + str(index) + ".png"] = [in_r, out_r]
             index += 1
         except:
             plt.clf()
     #===================
-
-    print(inRadius)
-    print(outRadius)
-    return np.average(inRadius), np.average(outRadius)
+    if(checkbox["Report"]):
+        f = open(path + "Report.txt", "a")
+        f.write("Total averge : ")
+        f.write("\n")
+        f.write("in_Radius : " + str(np.average(inRadius)))
+        f.write("\n")
+        f.write("out_Radius : " + str(np.average(outRadius)))
+        f.write("\n")
+        f.close()
+        
+    # print(inRadius)
+    # print(outRadius)
+    return inRadius, outRadius, Radius_data
 
 if __name__ == "__main__":
     #all kinds of images we need======================
@@ -249,8 +276,8 @@ if __name__ == "__main__":
     filter_mode = "Sobelfilter"
     filter_mode = "Cannyedge"
     #filter_mode = "bfsfilter"
-
-    print(Total_Radius(name, 50, filter_mode, True))
+    checkbox = {"Center":True, "Report":True, "None":True}
+    print(Total_Radius(name, 50, filter_mode, checkbox, True))
 
 
 
