@@ -7,6 +7,8 @@ from find import find, trace, take_line
 from filters import Sobelfilter, bfsfilter, Cannyedge
 import pickle
 import os
+import warnings
+warnings.filterwarnings("ignore")
 
 #diraction step
 dirac=[[1,0],[0,1],[1,1],[1,-1]]

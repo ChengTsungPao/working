@@ -12,18 +12,34 @@ from radius import Total_Radius
 import numpy as np
 from scan import radius_update
 from threading import Thread
+import sys, os
+import warnings
+warnings.filterwarnings("ignore")
 
 def Analysis(name, length, ui):
+    ui.scanner = False
+    ui.inside_text.setText("running...")
+    ui.outside_text.setText("running...")   
+    ui.result_text.setText("running...")   
+    for i in range(len(length)):
+        if(length[i].isdigit() == False):
+            break
+        elif(i == len(length) - 1):
+            i += 1
+    unit = length[i:]
+    length = float(length[:i])   
     if(ui.Sobelfilter.isChecked()):
         filter_mode = "Sobelfilter"
     elif(ui.Cannyedge.isChecked()):
         filter_mode = "Cannyedge"
     else:
-        filter_mode = "bfsfilter"
+        filter_mode = "bfsfilter"  
     checkbox = {"Center":ui.Center.isChecked(), "Report":ui.Report.isChecked(), "None":ui.checkBox_3.isChecked()}
-    inRadius, outRadius = Total_Radius(name, length, filter_mode, checkbox, False)
-    ui.inside_text.setText(str(round(inRadius, 3)))
-    ui.outside_text.setText(str(round(outRadius, 3))) 
+    inRadius, outRadius, Radius_data = Total_Radius(name, length, filter_mode, checkbox, False)
+    ui.inside_text.setText(("%.3f " % round(np.average(inRadius), 3)) + str(unit))
+    ui.outside_text.setText(("%.3f " % round(np.average(outRadius), 3)) + str(unit)) 
+    ui.scanner = True
+    radius_update(Radius_data, name, unit, filter_mode, ui)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -42,48 +58,48 @@ class Ui_MainWindow(object):
         self.analysis.setGeometry(QtCore.QRect(50, 480, 111, 31))
         self.analysis.setObjectName("analysis")
         self.inside = QtWidgets.QLabel(self.centralwidget)
-        self.inside.setGeometry(QtCore.QRect(570, 150, 71, 41))
+        self.inside.setGeometry(QtCore.QRect(560, 150, 81, 41))
         font = QtGui.QFont()
-        font.setFamily("Agency FB")
-        font.setPointSize(18)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(20)
         self.inside.setFont(font)
         self.inside.setObjectName("inside")
         self.outside = QtWidgets.QLabel(self.centralwidget)
-        self.outside.setGeometry(QtCore.QRect(565, 200, 81, 41))
+        self.outside.setGeometry(QtCore.QRect(551, 200, 91, 41))
         font = QtGui.QFont()
-        font.setFamily("Agency FB")
-        font.setPointSize(18)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(20)
         self.outside.setFont(font)
         self.outside.setObjectName("outside")
         self.health = QtWidgets.QLabel(self.centralwidget)
-        self.health.setGeometry(QtCore.QRect(520, 280, 191, 41))
+        self.health.setGeometry(QtCore.QRect(520, 280, 211, 41))
         font = QtGui.QFont()
         font.setFamily("Bahnschrift Condensed")
-        font.setPointSize(18)
+        font.setPointSize(20)
         font.setBold(False)
         font.setItalic(False)
         font.setWeight(50)
         self.health.setFont(font)
         self.health.setObjectName("health")
         self.outside_text = QtWidgets.QLabel(self.centralwidget)
-        self.outside_text.setGeometry(QtCore.QRect(653, 200, 81, 41))
+        self.outside_text.setGeometry(QtCore.QRect(653, 205, 121, 41))
         font = QtGui.QFont()
-        font.setFamily("Agency FB")
-        font.setPointSize(18)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(20)
         self.outside_text.setFont(font)
         self.outside_text.setObjectName("outside_text")
         self.result_text = QtWidgets.QLabel(self.centralwidget)
-        self.result_text.setGeometry(QtCore.QRect(654, 340, 91, 41))
+        self.result_text.setGeometry(QtCore.QRect(654, 340, 111, 41))
         font = QtGui.QFont()
-        font.setFamily("Agency FB")
-        font.setPointSize(18)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(20)
         self.result_text.setFont(font)
         self.result_text.setObjectName("result_text")
         self.inside_text = QtWidgets.QLabel(self.centralwidget)
-        self.inside_text.setGeometry(QtCore.QRect(653, 150, 91, 41))
+        self.inside_text.setGeometry(QtCore.QRect(653, 153, 121, 41))
         font = QtGui.QFont()
-        font.setFamily("Agency FB")
-        font.setPointSize(18)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(20)
         self.inside_text.setFont(font)
         self.inside_text.setObjectName("inside_text")
         self.bfsfilter = QtWidgets.QRadioButton(self.centralwidget)
@@ -108,20 +124,20 @@ class Ui_MainWindow(object):
         self.Cannyedge.setFont(font)
         self.Cannyedge.setObjectName("Cannyedge")
         self.diameter = QtWidgets.QLabel(self.centralwidget)
-        self.diameter.setGeometry(QtCore.QRect(520, 100, 91, 41))
+        self.diameter.setGeometry(QtCore.QRect(520, 100, 101, 41))
         font = QtGui.QFont()
         font.setFamily("Bahnschrift Condensed")
-        font.setPointSize(18)
+        font.setPointSize(20)
         font.setBold(False)
         font.setItalic(False)
         font.setWeight(50)
         self.diameter.setFont(font)
         self.diameter.setObjectName("diameter")
         self.result = QtWidgets.QLabel(self.centralwidget)
-        self.result.setGeometry(QtCore.QRect(570, 340, 71, 41))
+        self.result.setGeometry(QtCore.QRect(560, 340, 81, 41))
         font = QtGui.QFont()
-        font.setFamily("Agency FB")
-        font.setPointSize(18)
+        font.setFamily("Bahnschrift Condensed")
+        font.setPointSize(20)
         self.result.setFont(font)
         self.result.setObjectName("result")
         self.name = QtWidgets.QLabel(self.centralwidget)
@@ -186,18 +202,32 @@ class Ui_MainWindow(object):
         self.function.setFont(font)
         self.function.setObjectName("function")
         self.path_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.path_lineEdit.setGeometry(QtCore.QRect(130, 110, 321, 31))
+        self.path_lineEdit.setGeometry(QtCore.QRect(130, 110, 221, 31))
         self.path_lineEdit.setObjectName("path_lineEdit")
         self.length_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.length_lineEdit.setGeometry(QtCore.QRect(130, 165, 321, 31))
+        self.length_lineEdit.setGeometry(QtCore.QRect(130, 165, 221, 31))
         self.length_lineEdit.setObjectName("length_lineEdit")
+        self.inside_2 = QtWidgets.QLabel(self.centralwidget)
+        self.inside_2.setGeometry(QtCore.QRect(371, 103, 111, 41))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(10)
+        self.inside_2.setFont(font)
+        self.inside_2.setObjectName("inside_2")
+        self.inside_3 = QtWidgets.QLabel(self.centralwidget)
+        self.inside_3.setGeometry(QtCore.QRect(371, 160, 111, 41))
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        font.setPointSize(10)
+        self.inside_3.setFont(font)
+        self.inside_3.setObjectName("inside_3")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 783, 25))
         self.menubar.setObjectName("menubar")
         self.menufile = QtWidgets.QMenu(self.menubar)
         self.menufile.setEnabled(True)
-        self.menufile.setGeometry(QtCore.QRect(2242, 256, 137, 126))
+        self.menufile.setGeometry(QtCore.QRect(2242, 256, 164, 126))
         self.menufile.setObjectName("menufile")
         self.menuedit = QtWidgets.QMenu(self.menubar)
         self.menuedit.setObjectName("menuedit")
@@ -247,19 +277,27 @@ class Ui_MainWindow(object):
         self.Report.setText(_translate("MainWindow", "Auto Save Report"))
         self.checkBox_3.setText(_translate("MainWindow", "?????"))
         self.function.setText(_translate("MainWindow", "function :"))
+        self.inside_2.setText(_translate("MainWindow", "ex : graph.bmp"))
+        self.inside_3.setText(_translate("MainWindow", "ex : 50um"))
         self.menufile.setTitle(_translate("MainWindow", "file"))
         self.menuedit.setTitle(_translate("MainWindow", "edit"))
         self.openfile.setText(_translate("MainWindow", "open file"))
         self.save.setText(_translate("MainWindow", "save"))
         self.save_as.setText(_translate("MainWindow", "save as"))
         self.setting.setText(_translate("MainWindow", "setting"))
-
-
+        
     def Analysis(self, name, length):
         self.scanner = False
         self.inside_text.setText("running...")
         self.outside_text.setText("running...")   
-        self.result_text.setText("running...")      
+        self.result_text.setText("running...")  
+        for i in range(len(length)):
+            if(length[i].isdigit() == False):
+                break
+            elif(i == len(length) - 1):
+                i += 1
+        unit = length[i:]
+        length = float(length[:i])   
         if(self.Sobelfilter.isChecked()):
             filter_mode = "Sobelfilter"
         elif(self.Cannyedge.isChecked()):
@@ -268,11 +306,10 @@ class Ui_MainWindow(object):
             filter_mode = "bfsfilter"  
         checkbox = {"Center":self.Center.isChecked(), "Report":self.Report.isChecked(), "None":self.checkBox_3.isChecked()}
         inRadius, outRadius, Radius_data = Total_Radius(name, length, filter_mode, checkbox, False)
-        self.inside_text.setText(str(round(np.average(inRadius), 3)))
-        self.outside_text.setText(str(round(np.average(outRadius), 3)))   
+        self.inside_text.setText(("%.3f " % round(np.average(inRadius), 3)) + str(unit))
+        self.outside_text.setText(("%.3f " % round(np.average(outRadius), 3)) + str(unit))   
         self.scanner = True
-        t = Thread(target=radius_update, args=(Radius_data, name, filter_mode, self,))
-        t.start()
+        radius_update(Radius_data, name, unit, filter_mode, self)
 
     def Clean(self):
         self.path_lineEdit.setText("")
@@ -280,11 +317,10 @@ class Ui_MainWindow(object):
 
     def Close(self):
         self.scanner = False
-        sys.exit(app.exec_())
+        sys.exit()
 
 
 if __name__ == "__main__":
-    import sys, os
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()

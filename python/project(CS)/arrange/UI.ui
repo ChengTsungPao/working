@@ -59,16 +59,16 @@
    <widget class="QLabel" name="inside">
     <property name="geometry">
      <rect>
-      <x>570</x>
+      <x>560</x>
       <y>150</y>
-      <width>71</width>
+      <width>81</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Agency FB</family>
-      <pointsize>18</pointsize>
+      <family>Bahnschrift Condensed</family>
+      <pointsize>20</pointsize>
      </font>
     </property>
     <property name="text">
@@ -78,16 +78,16 @@
    <widget class="QLabel" name="outside">
     <property name="geometry">
      <rect>
-      <x>565</x>
+      <x>551</x>
       <y>200</y>
-      <width>81</width>
+      <width>91</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Agency FB</family>
-      <pointsize>18</pointsize>
+      <family>Bahnschrift Condensed</family>
+      <pointsize>20</pointsize>
      </font>
     </property>
     <property name="text">
@@ -99,14 +99,14 @@
      <rect>
       <x>520</x>
       <y>280</y>
-      <width>191</width>
+      <width>211</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Bahnschrift Condensed</family>
-      <pointsize>18</pointsize>
+      <pointsize>20</pointsize>
       <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -120,15 +120,15 @@
     <property name="geometry">
      <rect>
       <x>653</x>
-      <y>200</y>
-      <width>81</width>
+      <y>205</y>
+      <width>121</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Agency FB</family>
-      <pointsize>18</pointsize>
+      <family>Bahnschrift Condensed</family>
+      <pointsize>20</pointsize>
      </font>
     </property>
     <property name="text">
@@ -140,14 +140,14 @@
      <rect>
       <x>654</x>
       <y>340</y>
-      <width>91</width>
+      <width>111</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Agency FB</family>
-      <pointsize>18</pointsize>
+      <family>Bahnschrift Condensed</family>
+      <pointsize>20</pointsize>
      </font>
     </property>
     <property name="text">
@@ -158,15 +158,15 @@
     <property name="geometry">
      <rect>
       <x>653</x>
-      <y>150</y>
-      <width>91</width>
+      <y>153</y>
+      <width>121</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Agency FB</family>
-      <pointsize>18</pointsize>
+      <family>Bahnschrift Condensed</family>
+      <pointsize>20</pointsize>
      </font>
     </property>
     <property name="text">
@@ -235,14 +235,14 @@
      <rect>
       <x>520</x>
       <y>100</y>
-      <width>91</width>
+      <width>101</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
       <family>Bahnschrift Condensed</family>
-      <pointsize>18</pointsize>
+      <pointsize>20</pointsize>
       <weight>50</weight>
       <italic>false</italic>
       <bold>false</bold>
@@ -255,16 +255,16 @@
    <widget class="QLabel" name="result">
     <property name="geometry">
      <rect>
-      <x>570</x>
+      <x>560</x>
       <y>340</y>
-      <width>71</width>
+      <width>81</width>
       <height>41</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>Agency FB</family>
-      <pointsize>18</pointsize>
+      <family>Bahnschrift Condensed</family>
+      <pointsize>20</pointsize>
      </font>
     </property>
     <property name="text">
@@ -421,7 +421,7 @@
      <rect>
       <x>130</x>
       <y>110</y>
-      <width>321</width>
+      <width>221</width>
       <height>31</height>
      </rect>
     </property>
@@ -431,9 +431,47 @@
      <rect>
       <x>130</x>
       <y>165</y>
-      <width>321</width>
+      <width>221</width>
       <height>31</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="inside_2">
+    <property name="geometry">
+     <rect>
+      <x>371</x>
+      <y>103</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>ex : graph.bmp</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="inside_3">
+    <property name="geometry">
+     <rect>
+      <x>371</x>
+      <y>160</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Arial</family>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>ex : 50um</string>
     </property>
    </widget>
   </widget>
@@ -454,7 +492,7 @@
      <rect>
       <x>2242</x>
       <y>256</y>
-      <width>137</width>
+      <width>164</width>
       <height>126</height>
      </rect>
     </property>

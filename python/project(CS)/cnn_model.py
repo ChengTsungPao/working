@@ -8,22 +8,24 @@ class CNN(nn.Module):
         self.conv1 = nn.Sequential(  
             nn.Conv2d(
                 in_channels=3,      
-                out_channels=16,    
+                out_channels=32,    
                 kernel_size=5,     
                 stride=1,          
                 padding=2,      
             ),      
             nn.ReLU(),    
             nn.MaxPool2d(kernel_size=2), 
-            nn.Dropout(0.3),
         )
         self.conv2 = nn.Sequential(  
-            nn.Conv2d(16, 32, 5, 1, 2),  
+            nn.Conv2d(32, 64, 5, 1, 2),  
             nn.ReLU(),  
             nn.MaxPool2d(2),
-            nn.Dropout(0.3),  
+            nn.Dropout(0.25),  
         )
-        self.layer = nn.Linear(516128, 512)  
+        self.layer = nn.Sequential( 
+            nn.Linear(1032256, 512),
+            nn.Dropout(0.5),
+        )
         self.out = nn.Linear(512, 2)
     def forward(self, x):
         x = self.conv1(x)
@@ -35,7 +37,7 @@ class CNN(nn.Module):
         return output
 
 cnn = CNN()
-cnn = cnn.cuda()  
+#cnn = cnn.cuda()  
 
 print(cnn)
-summary(cnn,(3, 511, 511), -1)
+summary(cnn, (3, 511, 511), device='cpu')

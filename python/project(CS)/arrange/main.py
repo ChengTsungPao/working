@@ -3,13 +3,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from UI import Ui_MainWindow, Analysis
 from multiprocessing import Process
 from threading import Thread
+import warnings
+warnings.filterwarnings("ignore")
 
 def Analysis_thread(ui):
-    t = Thread(target = ui.Analysis, args = (ui.path_lineEdit.text(), float(ui.length_lineEdit.text(),)))
+    t = Thread(target = ui.Analysis, args = (ui.path_lineEdit.text(), ui.length_lineEdit.text(),))
     t.start()
 
 def Analysis_process(ui):
-    p = Process(target = Analysis, args = (ui.path_lineEdit.text(), float(ui.length_lineEdit.text()), ui,))
+    p = Process(target = Analysis, args = (ui.path_lineEdit.text(), ui.length_lineEdit.text(), ui,))
     p.start()
 
 def main():
