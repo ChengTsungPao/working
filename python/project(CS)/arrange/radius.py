@@ -212,6 +212,7 @@ def Total_Radius(name, length, filter_mode, checkbox, visible):
     outRadius=[]
     index = 1
     Radius_data = {}
+    predict_data = {}
     for i in range(length):
         try:
             if(filter_mode == "bfsfilter"):
@@ -250,6 +251,7 @@ def Total_Radius(name, length, filter_mode, checkbox, visible):
                 f.write(" average : " + str(out_r))
                 f.write("\n\n")
                 f.close()
+            
             Radius_data[path + str(index) + ".png"] = [in_r, out_r]
             index += 1
         except:
