@@ -144,10 +144,13 @@ def trace(line_data,center,check=False):
     xx=np.array([i/100000 for i in range(len(line_data))])        
     
     # def fun(x,a,b,c,d,e,f,g,h,i):
+        
     #     return i*x**8+h*x**7+g*x**6+f*x**5+a*x**4+b*x**3+c*x**2+d*x**1+e
 
     def fun(x,c,d,e):
+        
         return c*x**2+d*x**1+e
+    
     #32 c r 差
     
     base=20
@@ -199,4 +202,69 @@ def trace(line_data,center,check=False):
         plt.scatter(xx[l],line_data[l])
         plt.scatter(xx[r],line_data[r])
         plt.show()
+    
     return l,center,r
+
+def Circle(imag,edges,Rrange,visible=False):
+    
+    circles = cv2.HoughCircles(edges,cv2.HOUGH_GRADIENT,1,80,param1=10,param2=30,minRadius=Rrange[0],maxRadius=Rrange[1])
+    circles = np.uint16(np.around(circles))
+    centers = []
+    for i in circles[0,:]:
+        
+        centers.append([i[0],i[1]])
+        if(visible):
+            cv2.circle(imag,(i[0],i[1]),i[2],(0,0,255),2) # draw the outer circle
+            cv2.circle(imag,(i[0],i[1]),2,(0,0,255),3) # draw the center of the circle
+    if(visible):
+        cv2.imshow('detected circles',img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+    return centers
+
+
+if __name__=="__main__":
+    img=cv2.imread('test12.bmp')
+    gray=cv2.imread('test12.bmp',0)
+    #gray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    img=gray
+    #edge=cv2.Canny(gray, 1, 1)#cv2.inRange(gray,90,110)#cv2.Canny(gray, 1, 1)
+    
+    laplacian = cv2.Laplacian(img,cv2.CV_64F)
+    sobelx = cv2.Sobel(img,cv2.CV_64F,1,0,ksize=3)
+    sobely = cv2.Sobel(img,cv2.CV_64F,0,1,ksize=3)
+    edges = np.uint8(np.absolute(sobely))
+    x = cv2.convertScaleAbs(sobelx)   
+    y = cv2.convertScaleAbs(sobely)
+    edge = cv2.addWeighted(x,0.5,y,0.5,0)
+    
+    img=cv2.imread("test12.bmp")
+    cen=Circle(img,edge,[30,40])
+    g=cv2.inRange(gray,90,110)
+    a=0
+    for c in cen:
+        if(a==0):
+            cv2.circle(img,(c[0],c[1]),2,(255,0,0),3) # draw the center of the circle
+            new=find(g,c)
+    
+            cv2.circle(img,(new[0],new[1]),2,(0,255,0),3)
+            
+            break
+        
+        
+        a+=1
+        
+    
+    
+    cv2.circle(g,(c[0],c[1]),2,(255),3)
+    cv2.circle(g,(new[0],new[1]),2,(0,255,0),3)
+    '''
+    cv2.imshow('i',g)
+    
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    cv2.imshow('i',img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    '''
+
