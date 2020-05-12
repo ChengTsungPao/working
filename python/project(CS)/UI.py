@@ -14,6 +14,7 @@ from scan import radius_update
 from threading import Thread
 from multiprocessing import Process
 import sys, os
+import time
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -270,8 +271,9 @@ class Ui_MainWindow(object):
     def Analysis(self, name, length):
         self.scanner = False
         self.inside_text.setText("running...")
-        self.outside_text.setText("running...")   
-        self.result_text.setText("running...")  
+        self.outside_text.setText("running...")  
+        self.result_text.setText("running...")
+        time.sleep(5)
         for i in range(len(length)):
             if(length[i].isdigit() == False):
                 break
