@@ -165,7 +165,6 @@ def Total_Radius(name, length, filter_mode, checkbox, visible):
 
     #############################################################
     data = set(glob(path + "*.pickle"))
-
     if(path + "onebit.pickle" not in data or path + "continents.pickle" not in data or path + "grays.pickle" not in data):
         onebit,continents,grays=bfsfilter(gray, checkbox["multiprocess"])
         p_w=open(path + "onebit.pickle",'wb')    #新建或開啟 pickle檔案為寫入模式，紀錄於p_w
