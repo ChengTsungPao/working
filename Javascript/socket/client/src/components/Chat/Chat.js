@@ -9,12 +9,13 @@ import Messages from '../Messages/Messages';
 
 let socket;
 
-const Chat = ({ location }) => {
+const Chat = ({ location }) => { // history.location
 	const [name, setName] = useState("");
     const [room, setRoom] = useState("");
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const ENDPOINT = "localhost:5000";
+	// console.log(location.search);
 
 	useEffect(() => {
 		const { name, room } = queryString.parse(location.search);
