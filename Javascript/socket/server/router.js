@@ -1,7 +1,7 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express'); // import Express Server API
+const router = express.Router(); // build Router
 
-router.get('/', (req, res) => {
+router.get('/', (req, res) => { // HTTP request and response
     res.send('server is up and running');
 });
 
