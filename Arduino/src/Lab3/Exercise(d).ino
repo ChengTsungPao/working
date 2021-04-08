@@ -1,4 +1,5 @@
-#include <Arduino.h>
+// SimpleMap.ino
+// 4105054025、鄭琮寶
 
 byte value;
 int number;
