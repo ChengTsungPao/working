@@ -1,4 +1,6 @@
-#include <Arduino.h>
+// DialDisplay.ino
+// Display POT position using 7-segment LED display.
+// 4105054025、鄭琮寶
 
 byte index;
 int timeCounter;
