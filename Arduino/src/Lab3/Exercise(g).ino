@@ -1,4 +1,6 @@
-#include <Arduino.h>
+// SimpleSubprogram.ino
+// Demonstrate how Subprogram work.
+// 4105054025、鄭琮寶
 
 void setup() {
   Serial.begin(9600);
