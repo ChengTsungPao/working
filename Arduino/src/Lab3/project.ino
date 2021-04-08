@@ -1,4 +1,4 @@
-#include <Arduino.h>
+// 4105054025、鄭琮寶
 
 # define MAX_RCTime 3500
 # define STOP_RCTime 2500
