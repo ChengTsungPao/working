@@ -1,13 +1,11 @@
 // 4105054025、鄭琮寶
 
-# define MAX_RCTime 3500
-# define STOP_RCTime 2500
-# define STOP_times 6
-# define speed 2
+# define STOP_times 20
+# define Delay_Time (50 * (STOP_times + 1))
 
-byte index = 0;
-byte times = STOP_times;
+byte times = STOP_times + 1;
 unsigned int time = 0; 
+unsigned int STOP_RCTime;
 int sensorPin = 12;
 
 const byte LEDs[6] = {
@@ -17,6 +15,9 @@ const byte LEDs[6] = {
 
 void setup() {
   // Serial.begin(9600);
+  
+  Get_Rc_Time();
+  STOP_RCTime = time * 1.5;
 
   DDRD = B11111111; // 將pin0-7接腳全設成輸出模式
   while(time < STOP_RCTime){ // 直到第一次遮住光敏電阻在運作
@@ -25,7 +26,7 @@ void setup() {
 }
 
 void loop() {
-  // Serial.println(time, DEC); // 測定 MAX_RCTime
+  // Serial.println(time, DEC);
 
   Get_Rc_Time();    // 得到RC時間
   Delay();          // 以RC時間當延遲時間
@@ -45,26 +46,22 @@ void Get_Rc_Time(){ // 之前程式相同，獲得RC-Time
 }
 
 void Delay(){ // 之前程式類似，控制delay
-  PORTD -= 8 * (times != STOP_times && times != 0); // 當手移開時，LED燈閃爍
-  delay((MAX_RCTime - time) / speed);
-  PORTD += 8 * (times != STOP_times && times != 0); // 當手移開時，LED燈閃爍
+  PORTD -= 8 * ((times != (STOP_times + 1)) && times != 1); // 當手移開時，LED燈閃爍
+  delay(Delay_Time / times);
+  PORTD += 8 * ((times != (STOP_times + 1)) && times != 1); // 當手移開時，LED燈閃爍
 }
 
 void Update_Display(){ // 之前程式類似，更新七段顯示器
 
   if(time < STOP_RCTime){ // 當手移開時，進入判斷
-    if(times == 0){ // 當手移開且已跳變"STOP_times"次時，不須再跳變，直接return
+    if(times == 1){ // 當手移開且已跳變"STOP_times"次時，不須再跳變，直接return
       return;
     }else{
       times--;
     }
   }else{
-    times = STOP_times;
+    times = STOP_times + 1;
   }
 
-  PORTD = LEDs[index];
-  index++;
-  if(index == 6){ 
-    index = 0;
-  }
+  PORTD = LEDs[random(6)];
 }
