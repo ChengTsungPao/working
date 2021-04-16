@@ -1,33 +1,48 @@
 import io from 'socket.io-client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Factory from '../Factory/Factory'
 
 const URL = "localhost:5000";
 
 let socket = io(URL);
+var getDataTemp = [];
 
 const Send = () => {
-    const [data, setData] = useState("嗨嗨我是Josh");
-    const [sendData, setSendData] = useState("");
+    const [data, setData] = useState([]);
+    const [getData, setGetData] = useState([]);
 
-    socket.on("sendToClient", (message) => {
-        console.log(`Client Get: ${message}`);
-        setData(message);
-        setSendData("");
+    useEffect(() => {
+        console.log("Client Send:");
+        console.log(data);
+        socket.emit("sendFromClient", data);
 
-    });
+    }, [data]);
 
-    const buttonHandler = () => {
-        if(sendData !== ""){
-            socket.emit("sendFromClient", sendData);
-        }
+    useEffect(() => {
+        getDataTemp = getData;
+    }, [getData]);
 
-    }
+    useEffect(() => {
+        window.addEventListener('keyup', function(event){
+            setData([event.key, getDataTemp.length, getDataTemp.length]);
+            // console.log("addEventListener");
+            // console.log(getDataTemp);
+        });
+
+        socket.on("sendToClient", (data) => {
+            console.log("Client Get:");
+            console.log(data)
+            setGetData(data);
+        });
+        
+    }, [])
 
     return (
-        <div>
-            <h1>{data}</h1>
-            <input onChange  = {(event => setSendData(event.target.value))}/>
-            <button onClick = {buttonHandler}>Send</button>
+        <div id = "send">
+            {data}
+            {getData.map((user, index) => {
+                return <Factory key = {index} component = {user[0]}/>
+            })}
         </div>
     )
 

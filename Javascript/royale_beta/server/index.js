@@ -14,17 +14,21 @@ const io = socketio(server, {
 
 const PORT = process.env.PORT || 5000
 
-var data = [];
+var database = [];
 
 io.on("connection", (socket) => {
     console.log("New connection from user !!!");
 
-    socket.on("sendFromClient", (message) => {
-        console.log(`Server Get: ${message}`);
-        data.push(message);
-
-        console.log(`Server Response: ${message}`);
-        socket.emit("sendToClient", message);
+    socket.on("sendFromClient", (data) => {
+        console.log("Server Get:");
+        console.log(data);
+        if(data.length >= 1){
+            database.push(data);
+        }
+        
+        console.log("Server Response:");
+        console.log(database);
+        socket.emit("sendToClient", database);
 
     });
 });
