@@ -20,7 +20,7 @@ io.on("connection", (socket) => {
     console.log("New connection from user !!!");
 
     socket.on("sendFromClient", (data) => {
-        // const room = data[1];
+        const room = data[1];
 
         console.log("Server Get:");
         console.log(data);
@@ -41,10 +41,10 @@ io.on("connection", (socket) => {
         
         console.log("Server Response:");
         console.log(database);
-        // socket.broadcast.to(room).emit("sendToClient", database);
-        // socket.join(room);
         socket.emit("sendToClient", database);
-
+        socket.broadcast.to(room).emit("sendToClient", database);
+        // socket.join(room);
+        
     });
 });
 

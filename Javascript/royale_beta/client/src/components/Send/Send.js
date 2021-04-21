@@ -24,8 +24,7 @@ const Send = ({ location }) => {
     useEffect(() => {
         window.addEventListener('keydown', function(event){
             if(Keyboard('keydown', event.key) && document.getElementById(name) != null){
-                Move(name, event.key, 5);
-                setData([name, room, "Move", GetPosition(name)[0], GetPosition(name)[1]]);
+                setData([name, room, "Move", GetPosition(name)[0] + Move(event.key, 5)[0], GetPosition(name)[1] + Move(event.key, 5)[1]]);
                 // console.log("addEventListener");
                 // console.log(getDataTemp);
             }

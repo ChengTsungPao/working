@@ -19,6 +19,7 @@ const Chat = ({ location }) => { // history.location
 
 	useEffect(() => {
 		const { name, room } = queryString.parse(location.search);
+		console.log(location.search);
 
 		socket = io(ENDPOINT);
 
