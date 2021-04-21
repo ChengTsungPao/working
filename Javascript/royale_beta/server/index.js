@@ -20,14 +20,29 @@ io.on("connection", (socket) => {
     console.log("New connection from user !!!");
 
     socket.on("sendFromClient", (data) => {
+        // const room = data[1];
+
         console.log("Server Get:");
         console.log(data);
         if(data.length >= 1){
-            database.push(data);
+            if(data[2] != "Move"){
+                database.push(data);
+            }else{
+                for(var i = 0; i < database.length; i++){
+                    if(database[i][0] == data[0] && database[i][1] == data[1]){
+                        database[i][3] = data[3];
+                        database[i][4] = data[4];
+                        break;
+                    }
+                }
+            }
+            
         }
         
         console.log("Server Response:");
         console.log(database);
+        // socket.broadcast.to(room).emit("sendToClient", database);
+        // socket.join(room);
         socket.emit("sendToClient", database);
 
     });
