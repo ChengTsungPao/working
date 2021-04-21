@@ -1,9 +1,10 @@
 import React from 'react'
 
 function User2(props) {
+    const [name, posx, posy] = [props.data[0], props.data[2], props.data[3]];
     return (
         <div>
-            <svg id = { props.data[0] } height="30" width="30" style = {{left: props.data[3] + 'px', top: props.data[4] + 'px', position:'absolute'}}>
+            <svg id = { name } height="30" width="30" style = {{left: posx + 'px', top: posy + 'px', position:'absolute'}}>
                 <circle cx="15" cy="15" r="12" stroke="black" fill="green" />
             </svg> 
         </div>

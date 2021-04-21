@@ -10,31 +10,25 @@ const URL = "localhost:5000";
 let socket = io(URL);
 
 const Send = ({ location }) => {
-    const [data, setData] = useState([]);
     const [getData, setGetData] = useState([]);
     const { name, room } = queryString.parse(location.search);
 
-    useEffect(() => {
+    const sendData = (data) => {
         console.log("Client Send:");
         console.log(data);
         socket.emit("sendFromClient", data);
-
-    }, [data]);
+    }
 
     useEffect(() => {
         window.addEventListener('keydown', function(event){
             if(Keyboard('keydown', event.key) && document.getElementById(name) != null){
-                setData([name, room, "Move", GetPosition(name)[0] + Move(event.key, 5)[0], GetPosition(name)[1] + Move(event.key, 5)[1]]);
-                // console.log("addEventListener");
-                // console.log(getDataTemp);
+                sendData([name, room, "Move", GetPosition(name)[0] + Move(event.key, 5)[0], GetPosition(name)[1] + Move(event.key, 5)[1]]);
             }
         });
 
         window.addEventListener('keyup', function(event){
             if(Keyboard('keyup', event.key)){
-                setData([name, room, event.key, Math.floor(Math.random() * 1000) + 50, Math.floor(Math.random() * 500)]);
-                // console.log("addEventListener");
-                // console.log(getDataTemp);
+                sendData([name, room, event.key, Math.floor(Math.random() * 1000) + 50, Math.floor(Math.random() * 500)]);
             }
         });
 
@@ -43,14 +37,16 @@ const Send = ({ location }) => {
             console.log(data)
             setGetData(data);
         });
+
+        sendData([name, room]);
         
+        // eslint-disable-next-line
     }, [])
 
     return (
         <div id = "send">
-            {data}
             {getData.map((data, index) => {
-                return <Factory key = {index} data = {data} component = {data[2]}/>
+                return <Factory key = {index} data = {data} component = {data[1]}/>
             })}
         </div>
     )

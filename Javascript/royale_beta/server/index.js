@@ -14,36 +14,39 @@ const io = socketio(server, {
 
 const PORT = process.env.PORT || 5000
 
-var database = [];
+var database = {};
 
 io.on("connection", (socket) => {
     console.log("New connection from user !!!");
 
     socket.on("sendFromClient", (data) => {
-        const room = data[1];
+        const [name, room, key, posx, posy] = data;
+
+        if(database[room] === undefined){
+            database[room] = []
+        }
 
         console.log("Server Get:");
         console.log(data);
-        if(data.length >= 1){
-            if(data[2] != "Move"){
-                database.push(data);
-            }else{
-                for(var i = 0; i < database.length; i++){
-                    if(database[i][0] == data[0] && database[i][1] == data[1]){
-                        database[i][3] = data[3];
-                        database[i][4] = data[4];
+        if(key != undefined){
+            if(key === "Move"){
+                for(var i = 0; i < database[room].length; i++){
+                    if(database[room][i][0] == name){
+                        database[room][i] = [name, database[room][i][1], posx, posy];
                         break;
                     }
                 }
+            }else{
+                database[room].push([name, key, posx, posy]);
             }
             
         }
         
         console.log("Server Response:");
-        console.log(database);
-        socket.emit("sendToClient", database);
-        socket.broadcast.to(room).emit("sendToClient", database);
-        // socket.join(room);
+        console.log(database[room]);
+        socket.emit("sendToClient", database[room]);
+        socket.broadcast.to(room).emit("sendToClient", database[room]);
+        socket.join(room);
         
     });
 });
