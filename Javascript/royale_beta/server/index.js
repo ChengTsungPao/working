@@ -20,26 +20,29 @@ io.on("connection", (socket) => {
     console.log("New connection from user !!!");
 
     socket.on("sendFromClient", (data) => {
-        const [name, room, key, posx, posy] = data;
+        const room = data[0][1];
+        for(var i = 0; i < data.length; i++){
+            const [name, room, key, posx, posy] = data[i];
 
-        if(database[room] === undefined){
-            database[room] = []
-        }
-
-        console.log("Server Get:");
-        console.log(data);
-        if(key != undefined){
-            if(key === "Move"){
-                for(var i = 0; i < database[room].length; i++){
-                    if(database[room][i][0] == name){
-                        database[room][i] = [name, database[room][i][1], posx, posy];
-                        break;
-                    }
-                }
-            }else{
-                database[room].push([name, key, posx, posy]);
+            if(database[room] === undefined){
+                database[room] = []
             }
-            
+    
+            console.log("Server Get:");
+            console.log(data);
+            if(key != undefined){
+                if(key === "Move"){
+                    for(var i = 0; i < database[room].length; i++){
+                        if(database[room][i][0] == name){
+                            database[room][i] = [name, database[room][i][1], posx, posy];
+                            break;
+                        }
+                    }
+                }else{
+                    database[room].push([name, key, posx, posy]);
+                }
+                
+            }
         }
         
         console.log("Server Response:");
