@@ -20,10 +20,4 @@ export function Move(key, speed) {
     
 }
 
-export function MoveCollision(posA, posB, speed) {
-    var vector = [posB[0] - posA[0], posB[1] - posA[1]]
-    return [speed * vector[0] / (vector[0] ** 2 + vector[1] ** 2) ** 0.5, speed * vector[1] / (vector[0] ** 2 + vector[1] ** 2) ** 0.5]
-
-}
-
 
