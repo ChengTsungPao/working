@@ -1,5 +1,3 @@
-#include <Arduino.h>
-
 // MusicWithMoreFeatures.ino
 // Play the beginning of For He's a Jolly Good Fellow.
 // 4105054025、鄭琮寶
