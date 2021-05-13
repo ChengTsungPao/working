@@ -33,7 +33,8 @@ io.on("connection", (socket) => {
             database[room] = []
         }
         
-        const collisionResult = collision.CollisionEvent(name, [posx, posy], database[room], 12)
+        const collisionResult = collision.CollisionCircleEvent(name, [posx, posy], database[room], 12)
+        collision.CollisionRectEvent(name, [posx, posy], database[room], 12)
         if(collisionResult.event){
             console.log("collision");
             const move = collision.MoveCollision([posx, posy], [database[room][collisionResult.index][2], database[room][collisionResult.index][3]], 5);

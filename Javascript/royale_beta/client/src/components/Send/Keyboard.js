@@ -1,4 +1,4 @@
-const keyup = {"z": true, "x": true}
+const keyup = {"z": true, "x": true, "w": true}
 const keydown = {"ArrowUp": true, "ArrowDown": true, "ArrowLeft": true, "ArrowRight": true}
 
 const Keyboard = (kind, key) => {
