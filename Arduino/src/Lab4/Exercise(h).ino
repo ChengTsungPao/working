@@ -1,6 +1,3 @@
-#include <Arduino.h>
-// #include "pitches.h"
-
 // MicroMusicWithRtttl.ino
 // Play Nokia RTTTL format ringtones using array.
 // 4105054025、鄭琮寶
