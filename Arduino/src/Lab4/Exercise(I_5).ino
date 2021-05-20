@@ -1,6 +1,3 @@
-#include <Arduino.h>
-// #include "pitches.h"
-
 // ColorChange.ino
 // 4105054025、鄭琮寶
 
