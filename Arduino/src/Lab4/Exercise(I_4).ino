@@ -1,6 +1,3 @@
-#include <Arduino.h>
-// #include "pitches.h"
-
 // ColorCycle.ino
 // 4105054025、鄭琮寶
 
