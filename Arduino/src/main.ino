@@ -15,8 +15,8 @@ const byte Green = 6;
 const byte Blue = 5;
 const int MaintainTime = 2000; // 維持時間
 const int TurnTime = 3000;     // 轉換時間
-byte light1[3]; // 定義陣列變數, 作為儲存顏色對應
-byte light2[3]; // 定義陣列變數, 作為儲存顏色對應
+byte light1[3]; // 定義陣列變數, 作為儲存目前顏色對應碼的變數
+byte light2[3]; // 定義陣列變數, 作為儲存漸變顏色對應碼的變數
 int counter;
 byte index;
 
