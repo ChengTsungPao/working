@@ -1,27 +1,22 @@
 #include <Arduino.h>
 // #include "pitches.h"
 
-// ColorCycle.ino
+// ColorChange.ino
 // 4105054025、鄭琮寶
 
 // 使用陣列定義顏色對應碼
-const byte array_red[3] = {255,0,0}; 
-const byte array_orange[3] = {255,165,0}; 
-const byte array_yellow[3] = {255,255,0};
+const byte array_black[3] = {0,0,0};
 const byte array_green[3] = {0,255,0};
-const byte array_blue[3] = {0,0,255}; 
 const byte array_indigo[3] = {75,0,130}; 
-const byte array_purple[3] = {128,0,128}; 
-const byte array_white[3] = {255,255,255};
 
 // 宣告變數
 const byte Red = 7;
 const byte Green = 6;
 const byte Blue = 5;
-const int TurnOnTime = 3000;   // 漸亮時間
-const int MaintainTime = 1000; // 維持時間
-const int TurnOffTime = 3000;  // 漸暗時間
-byte light[3]; // 定義陣列變數, 作為儲存顏色對應
+const int MaintainTime = 2000; // 維持時間
+const int TurnTime = 3000;     // 轉換時間
+byte light1[3]; // 定義陣列變數, 作為儲存顏色對應
+byte light2[3]; // 定義陣列變數, 作為儲存顏色對應
 int counter;
 byte index;
 
@@ -33,108 +28,71 @@ void setup() {
 }
 
 void loop() {
-	subred(); // 呼叫subred()副程式將動作顏色指定為亮紅色
-	active(); // 呼叫active()副程式開始動作
-	suborange(); // 指定亮橙色
-	active();
-	subyellow(); // 指定亮黃色
-	active();
-	subgreen(); // 指定亮綠色
-	active();
-	subblue(); // 指定亮藍色
-	active();
-	subindigo(); // 指定亮靛藍
-	active();
-	subpurple(); // 指定亮紫色
-	active(); 
-	subwhite(); // 指定亮白色 
-	active();
+	subgreen();
+	ChangeColor();
+	subindigo();
+	ChangeColor();
+	subblack();
+	ChangeColor();
 }
 
+// 設定讀取顏色對應碼的副程式,將指定顏色陣列值存到light陣列變數裡
 
-void subred(){ // 將light變數setup成指定的顏色的色碼
+void subblack(){ // 將light變數setup成指定的顏色的色碼
 	for(index=0;index<3;index++){
-		light[index]=array_red[index];
-	}
-}
-
-void suborange(){ // 將light變數setup成指定的顏色的色碼
-	for(index=0;index<3;index++){ 
-		light[index]=array_orange[index];
-	}
-}
-
-void subyellow(){ // 將light變數setup成指定的顏色的色碼
-	for(index=0;index<3;index++){ 
-		light[index]=array_yellow[index];
+		light1[index]=light2[index];
+		light2[index]=array_black[index];
 	}
 }
 
 void subgreen(){ // 將light變數setup成指定的顏色的色碼
 	for(index=0;index<3;index++){ 
-		light[index]=array_green[index];
-	}
-}
-
-void subblue(){ // 將light變數setup成指定的顏色的色碼
-	for(index=0;index<3;index++){ 
-		light[index]=array_blue[index];
+		light1[index]=light2[index];
+		light2[index]=array_green[index];
 	}
 }
 
 void subindigo(){ // 將light變數setup成指定的顏色的色碼
-	for(index=0; index<3;index++){ 
-		light[index]=array_indigo[index];
-	}
-}
-
-void subpurple(){ // 將light變數setup成指定的顏色的色碼
 	for(index=0;index<3;index++){ 
-		light[index]=array_purple[index];
+		light1[index]=light2[index];
+		light2[index]=array_indigo[index];
 	}
 }
 
-void subwhite(){ // 將light變數setup成指定的顏色的色碼
-	for(index=0;index<3;index++){
-		light[index]=array_white[index];
+void ChangeColor(){ // 副程式使led動作, 轉變顏色 
+	for(counter=1;counter<=(TurnTime/12);counter++){
+		// 為了避免因為duty為0%造成亮度轉變時產生的閃爍現象,因此若value=0時,則跳過不予呈現
+		if(map(counter,0,TurnTime/12,0,light2[0])!=0){ 
+			analogWrite(Red,map(counter,0,TurnTime/12,0,light2[0])); 
+			delay(2);
+		}
+		if(map(TurnTime/12-counter,0,TurnTime/12,0,light1[1])!=0){ 
+			analogWrite(Green,map(TurnTime/12-counter,0,TurnTime/12,0,light1[1]));
+			delay(2);
+		} 
+		if(map(counter,0,TurnTime/12,0,light2[2])!=0){ 
+			analogWrite(Blue,map(counter,0,TurnTime/12,0,light2[2]));
+			delay(2);
+		} 
+		if(map(TurnTime/12-counter,0,TurnTime/12,0,light1[0])!=0){ 
+			analogWrite(Red,map(TurnTime/12-counter,0,TurnTime/12,0,light1[0])); 
+			delay(2);
+		} 
+		if(map(counter,0,TurnTime/12,0,light2[1])!=0){ 
+			analogWrite(Green,map(counter,0,TurnTime/12,0,light2[1]));
+			delay(2); 
+		} 
+		if(map(TurnTime/12-counter,0,TurnTime/12,0,light1[2])!=0){ 
+			analogWrite(Blue,map(TurnTime/12-counter,0,TurnTime/12,0,light1[2])); 
+			delay(2);
+		}
 	}
-}
-
-void active(){  // 使led動作
-	TurnON();   // 漸漸變亮
-	Maintain(); // 維持最亮
-	TurnOFF();  // 漸漸變暗
-}
-
-void TurnON(){ // 執行由暗轉亮的過程 
-	for(counter=1;counter<=(TurnOnTime/6);counter++){ // 因為每個RGB亮2ms,故TurnOnTime要除以6,以下皆同 
-		analogWrite(Red,map(counter,0,TurnOnTime/6,0,light[0])); // 將原本counter變動的範圍(0-TurnOnTime/6)改對應至(0-light[0]),以下皆同 
+	for(counter=1;counter<=MaintainTime/6;counter++){ 
+		analogWrite(Red,light2[0]);
 		delay(2);
-		analogWrite(Green,map(counter,0,TurnOnTime/6,0,light[1]));
+		analogWrite(Green,light2[1]);
 		delay(2);
-		analogWrite(Blue,map(counter,0,TurnOnTime/6,0,light[2]));
-		delay(2);
-	}
-}
-
-void Maintain(){ // 維持最亮狀態
-	for(counter=1;counter<=MaintainTime/6;counter++){
-		analogWrite(Red, light[0]);
-		delay(2);
-		analogWrite(Green, light[1]);
-		delay(2);
-		analogWrite(Blue,light[2]);
-		delay(2);
-	}
-}
-
-void TurnOFF(){ // 執行由亮轉暗的過程 
-	for(counter=TurnOffTime/6;counter>=1;counter--){
-		analogWrite(Red,map(counter, 0,TurnOffTime/6,0,light[0])); 
-		delay(2);
-		analogWrite(Green,map(counter,0,TurnOffTime/6,0,light[1]));
-		delay(2);
-		analogWrite(Blue,map(counter, 0, TurnOffTime/6,0,light[2])); 
+		analogWrite(Blue,light2[2]);
 		delay(2);
 	}
 }
