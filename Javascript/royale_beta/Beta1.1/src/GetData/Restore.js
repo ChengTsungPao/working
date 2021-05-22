@@ -6,6 +6,7 @@ export var user = {
 }
 
 export var map = {
-    number: null,
-    kind: null
+    kind: null,
+    size: null,
+    data: null
 }

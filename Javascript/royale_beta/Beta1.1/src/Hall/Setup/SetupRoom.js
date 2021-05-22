@@ -1,4 +1,4 @@
-import { user } from '../GetData/Restore'
+import { user } from '../../GetData/Restore'
 // import io from 'socket.io-client';
 
 // const URL = "140.120.12.162:5000";
