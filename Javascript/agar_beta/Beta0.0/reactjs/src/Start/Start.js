@@ -25,8 +25,9 @@ function Start() {
         }, 1000 / 60)
 
         window.addEventListener('mousemove', MouseMoveHandler)
-        // window.addEventListener('touchmove', MouseMoveHandler)
+        window.addEventListener('touchmove', MouseMoveHandler)
     }, [])
+
 
     return (
         <div>
