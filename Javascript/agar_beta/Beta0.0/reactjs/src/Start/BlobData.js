@@ -1,11 +1,12 @@
-import { WIDTH, HEIGHT, RADIUS } from './Contants'
+import { WIDTH, HEIGHT, RADIUS } from './Config/Contants'
 import SendData from '../Data/SendData'
 import GetData from '../Data/GetData'
 import Vector from './Function/Vector'
 import BlobSplit from './Function/BlobSplit'
+import { mouse } from './Config/Variable'
 
 class BlobData {
-    constructor(_id, name, room, pos = [HEIGHT / 2, WIDTH / 2], vel = [0, 0], rad = RADIUS) {
+    constructor(_id, name, room, pos = [WIDTH / 2, HEIGHT / 2], vel = [0, 0], rad = RADIUS) {
         this._id = _id
         this.name = name
         this.room = room
@@ -48,9 +49,9 @@ class BlobData {
         this.newRad = data["rad"];
     }
 
-    #updatePosVel(mouseX, mouseY) {
-        this.newVel = this.cal.sub([mouseX, mouseY], [HEIGHT / 2, WIDTH / 2]);
-        this.newVel = this.cal.normalize(this.newVel, 0.1);
+    #updatePosVel() {
+        this.newVel = this.cal.sub([mouse.x, mouse.y], this.pos); // [WIDTH / 2, HEIGHT / 2]
+        this.newVel = this.cal.normalize(this.newVel, 3);
         this.newVel = this.cal.linear(this.vel, this.newVel, 0.1);
         this.newPos = this.cal.add(this.pos, this.newVel);
     }
@@ -64,15 +65,15 @@ class BlobData {
         }
     }
 
-    update(mouseX, mouseY) {
-        this.#updatePosVel(mouseX, mouseY);
+    update() {
+        this.#updatePosVel();
         this.#updateCollision();
         this.#sendData();
     }
 
     show(blobReducer) {
         this.#updataData();
-        console.log(GetData("gameData"))
+        console.log(this.pos)
         blobReducer.set({opr: "set", data: GetData("gameData")})
     }
 }

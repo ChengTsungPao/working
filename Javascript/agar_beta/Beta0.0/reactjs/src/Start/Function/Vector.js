@@ -1,40 +1,28 @@
 class Vector {
-    distance(pos1, pos2) {
-        let d = 0
-        for(var i = 0; i < pos1.length; i++){
-            d += (pos1[i] - pos2[i]) ** 2
-        }
-        return d ** 0.5
+
+    sub(vector1, vector2) {
+        return [vector1[0] - vector2[0], vector1[1] - vector2[1]]
     }
 
-    sub(pos1, pos2) {
-        let pos = []
-        for(var i = 0; i < pos1.length; i++){
-            pos.push(pos1[i] - pos2[i])
-        }
-        return pos
+    add(vector1, vector2) {
+        return [vector1[0] + vector2[0], vector1[1] + vector2[1]]
     }
 
-    add(pos1, pos2) {
-        let pos = []
-        for(var i = 0; i < pos1.length; i++){
-            pos.push(pos1[i] + pos2[i])
-        }
-        return pos
+    mul(constant, vector) {
+        return [constant * vector[0], constant * vector[1]]
     }
 
-    linear(vel1, vel2, ratio) {
-        let vel = []
-        for(var i = 0; i < vel1.length; i++){
-            vel.push(vel1[i] + ratio * (vel2[i] - vel1[i]))
-        }
-        return vel
+    distance(vector1, vector2) {
+        return ((vector1[0] - vector2[0]) ** 2 + (vector1[1] - vector2[1]) ** 2) ** 0.5
+    }
+
+    linear(vector1, vector2, ratio) {
+        return this.add(vector1, this.mul(ratio, this.sub(vector2, vector1)))
     }
 
     normalize(vector, newlength = 1) {
         let length = this.distance(vector, [0, 0]);
-        let newVector = [vector[0] * newlength / length, vector[1] * newlength / length]
-        return newVector
+        return this.mul(newlength / length, vector)
     }
 }
 
