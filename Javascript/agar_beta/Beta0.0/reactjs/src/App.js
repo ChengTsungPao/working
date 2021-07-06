@@ -1,23 +1,23 @@
-import logo from './logo.svg';
 import './App.css';
 
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+
+import Login from './Login/Login'
+import Start from './Start/Start'
+
+import { blobContext, blobInitial, blobReducer } from './index';
+
 function App() {
+  const [blob, setBlob] = useReducer(blobReducer, blobInitial);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <blobContext.Provider value={{ get: blob, set: setBlob }}>
+          <Router>
+            <Route path = "/" exact component = {Login} />
+            <Route path = "/Start" component = {Start}/>
+          </Router>
+      </blobContext.Provider>
     </div>
   );
 }

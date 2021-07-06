@@ -18,6 +18,7 @@ function draw() {
 
     translate(width / 2, height / 2);
     var newzoom = 64 / blob.r;
+    console.log(blob.r)
     zoom = lerp(zoom, newzoom, 0.1);
     scale(zoom);
     translate(-blob.pos.x, -blob.pos.y);
