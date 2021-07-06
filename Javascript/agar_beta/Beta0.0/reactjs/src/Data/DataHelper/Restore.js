@@ -5,9 +5,9 @@ export const URL = `${process.env.REACT_APP_SERVER_URL}:${process.env.REACT_APP_
 export let socket = io(URL);
 
 export var data = {
-    "_id": null,
-    "name": null,
-    "room": null,
+    "_id": "123",
+    "name": "123",
+    "room": "25",
     "gameData": []
 
 }

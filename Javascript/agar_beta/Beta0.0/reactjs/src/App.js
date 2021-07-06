@@ -5,7 +5,8 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Login from './Login/Login'
 import Start from './Start/Start'
 
-import { blobContext, blobInitial, blobReducer } from './index';
+import { useReducer } from 'react'
+import { blobContext, blobInitial, blobReducer } from './Core/index';
 
 function App() {
   const [blob, setBlob] = useReducer(blobReducer, blobInitial);

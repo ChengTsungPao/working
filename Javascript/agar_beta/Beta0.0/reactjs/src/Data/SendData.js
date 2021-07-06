@@ -5,11 +5,12 @@ const TEST = true;
 
 // 測試使用
 function PushData(newData){
-    var exist = false
+    var exist = true
     for(let i = 0; i < data["gameData"].length; i++){
-        if(data["gameData"][i]["name"] === newData["name"]){
-            data["gameData"][i]["pos"] = newData["name"]
+        if(data["gameData"][i]["_id"] === newData["_id"]){
+            data["gameData"][i]["pos"] = newData["pos"]
             data["gameData"][i]["vel"] = newData["vel"]
+            data["gameData"][i]["rad"] = newData["rad"]
             exist = false
         }
     }
@@ -21,10 +22,6 @@ function PushData(newData){
 
 
 function SendData(setData, data) {
-    data["_id"] = GetData("_id")
-    data["name"] = GetData("name")
-    data["room"] = GetData("room")
-
     if(TEST){
         PushData(data);
         return;

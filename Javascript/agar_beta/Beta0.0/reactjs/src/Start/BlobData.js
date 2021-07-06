@@ -2,9 +2,14 @@ import { WIDTH, HEIGHT, RADIUS } from './Contants'
 import SendData from '../Data/SendData'
 import GetData from '../Data/GetData'
 import Vector from './Function/Vector'
+import BlobSplit from './Function/BlobSplit'
 
-class Blob {
-    constructor(pos = [HEIGHT / 2, WIDTH / 2], vel = [0, 0], rad = RADIUS) {
+class BlobData {
+    constructor(_id, name, room, pos = [HEIGHT / 2, WIDTH / 2], vel = [0, 0], rad = RADIUS) {
+        this._id = _id
+        this.name = name
+        this.room = room
+
         this.pos = pos;
         this.vel = vel;
         this.rad = rad;
@@ -14,21 +19,25 @@ class Blob {
         this.newRad = rad;
 
         this.cal = new Vector();
+        this.split = new BlobSplit();
 
         this.#sendData();
     }
 
     #sendData() {
         var data = {
-            "pos": this.newPos,
-            "vel": this.newVel,
-            "rad": this.newRad
+             "_id": this._id,
+            "name": this.name,
+            "room": this.room,
+             "pos": this.newPos,
+             "vel": this.newVel,
+             "rad": this.newRad
         }
-        SendData(data);
+        SendData("socketName", data);
     }
 
     #updataData() {
-        let data = GetData("gameData")
+        let data = this.split.get(GetData("gameData"))["myBlob"];
 
         this.pos = data["pos"]
         this.vel = data["vel"]
@@ -41,15 +50,16 @@ class Blob {
 
     #updatePosVel(mouseX, mouseY) {
         this.newVel = this.cal.sub([mouseX, mouseY], [HEIGHT / 2, WIDTH / 2]);
-        this.newVel = this.cal.normalize(this.newVel, 3);
+        this.newVel = this.cal.normalize(this.newVel, 0.1);
         this.newVel = this.cal.linear(this.vel, this.newVel, 0.1);
         this.newPos = this.cal.add(this.pos, this.newVel);
     }
 
-    #updateCollision(otherBlob) {
+    #updateCollision() {
+        var otherBlob = this.split.get(GetData("gameData"))["otherBlob"];
         for(var i = 0; i < otherBlob.length; i++) {
             if(this.rad + otherBlob[i].rad < this.cal.distance(this.newPos, otherBlob[i].pos)){
-                this.newRad = sqrt((this.rad * this.rad + otherBlob[i].rad * otherBlob[i].rad) / 2);
+                this.newRad = ((this.rad * this.rad + otherBlob[i].rad * otherBlob[i].rad) / 2) ** 0.5;
             }
         }
     }
@@ -58,8 +68,13 @@ class Blob {
         this.#updatePosVel(mouseX, mouseY);
         this.#updateCollision();
         this.#sendData();
+    }
+
+    show(blobReducer) {
         this.#updataData();
+        console.log(GetData("gameData"))
+        blobReducer.set({opr: "set", data: GetData("gameData")})
     }
 }
 
-export default Blob
+export default BlobData
