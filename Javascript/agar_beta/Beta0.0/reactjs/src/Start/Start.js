@@ -13,7 +13,7 @@ function Start() {
         setMousePos([event.x, event.y]);
         mouse.x = event.x
         mouse.y = event.y
-    }  
+    } 
 
     /*==================================== Start Process ============================================*/
 
@@ -27,6 +27,10 @@ function Start() {
         window.addEventListener('mousemove', MouseMoveHandler)
         window.addEventListener('touchmove', MouseMoveHandler)
     }, [])
+
+    useEffect(() => {
+        console.log("123")
+    }, [blob.get])
 
 
     return (

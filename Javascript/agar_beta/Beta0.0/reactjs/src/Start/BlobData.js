@@ -69,11 +69,11 @@ class BlobData {
         this.#updatePosVel();
         this.#updateCollision();
         this.#sendData();
+        this.#updataData();
     }
 
     show(blobReducer) {
         this.#updataData();
-        console.log(this.pos)
         blobReducer.set({opr: "set", data: GetData("gameData")})
     }
 }
