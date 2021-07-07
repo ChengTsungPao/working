@@ -1,8 +1,7 @@
 import GetData from './GetData'
 import { data } from './DataHelper/Restore'
 import { DEAD } from '../Start/Config/Contants'
-
-const TEST = true;
+import { client_data_or_not } from '../Start/Config/Contants'
 
 // 測試使用
 function PushData(newData){
@@ -33,7 +32,7 @@ function PushData(newData){
 
 
 function SendData(setData, data) {
-    if(TEST){
+    if(client_data_or_not){
         PushData(data);
         return;
     }

@@ -1,10 +1,9 @@
 import GetData from './GetData'
 import { data } from './DataHelper/Restore'
-
-const TEST = true;
+import { client_data_or_not } from '../Start/Config/Contants'
 
 function UpdateData(getData) {
-    if(TEST){
+    if(client_data_or_not){
         return;
     }
 

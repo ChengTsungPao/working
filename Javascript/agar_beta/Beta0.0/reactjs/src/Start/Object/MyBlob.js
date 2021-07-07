@@ -1,6 +1,6 @@
-import { WIDTH, HEIGHT, RADIUS } from '../Config/Contants'
+import { WIDTH, HEIGHT, RADIUS, scale_or_not } from '../Config/Contants'
 import BlobData from './Blob/BlobData'
-import { viewShift } from '../Config/Variable'
+import { view } from '../Config/Variable'
 import Vector from '../Function/Vector'
 
 class MyBlob extends BlobData {
@@ -10,19 +10,28 @@ class MyBlob extends BlobData {
     }
 
     setViewShift() {
-        const shift = Vector.sub([WIDTH / 2, HEIGHT / 2], this.newPos)
-        viewShift.x = shift[0]
-        viewShift.y = shift[1]
+        view.shift = Vector.sub([WIDTH / 2, HEIGHT / 2], this.newPos)
+        // view.shift = Vector(view.shift, this.newVel) // 兩個方法皆可以
+    }
 
-        // const shift = this.newVel
-        // viewShift.x -= shift[0]
-        // viewShift.y -= shift[1]
+    setViewZoom() {
+        if(scale_or_not === false) {
+            return;
+        }
+
+        view.zoom = RADIUS / this.newRad
+        // view.zoom += (1 - view.zoom) * 0.5
+    }
+
+    viewTranslate() {
+        this.setViewShift();
+        this.setViewZoom();
     }
 
     update() {
         this.updatePosVel();
         this.updateCollision();
-        this.setViewShift();
+        this.viewTranslate();
     }
 
     show() {
