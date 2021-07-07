@@ -20,7 +20,7 @@ class MyBlob extends BlobData {
         }
 
         view.zoom = RADIUS / this.newRad
-        // view.zoom += (1 - view.zoom) * 0.5
+        // view.zoom += (1 - view.zoom) * 0.1
     }
 
     viewTranslate() {

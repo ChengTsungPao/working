@@ -6,19 +6,9 @@ import { scale_or_not } from '../../Config/Contants'
 
 function BlobComp(props) {
 
-    let ID, posx, posy, rad;
-    
-
-    switch (props.data["_id"]) { // 避免抖動，應該要可以拿掉才對(viewShift的方法有誤差)
-        case GetData("_id"):
-            [ID, posx, posy, rad] = [props.data._id, WIDTH / 2, HEIGHT / 2, RADIUS];
-            break;
-        default:
-            var [posTran, radTran] = [translatePos(props.data.pos), translateRad(props.data.rad)];
-            [ID, posx, posy, rad] = [props.data._id, posTran[0], posTran[1], radTran];
-            // [ID, posx, posy, rad] = [props.data._id, props.data.pos[0] + view.shift[0], props.data.pos[1] + view.shift[1], props.data.rad];
-            break;
-    }
+    var ID = props.data._id;
+    var [posx, posy] = ID === GetData("_id") ? [WIDTH / 2, HEIGHT / 2] : translatePos(props.data.pos)
+    var rad = translateRad(props.data.rad)
 
     if(scale_or_not === false) {
         rad = props.data.rad;
