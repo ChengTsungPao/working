@@ -11,16 +11,16 @@ class MyBlob extends BlobData {
 
     setViewShift() {
         view.shift = Vector.sub([WIDTH / 2, HEIGHT / 2], this.newPos)
-        // view.shift = Vector(view.shift, this.newVel) // 兩個方法皆可以
+        // view.shift = Vector.sub(view.shift, this.newVel) // 兩個方法皆可以
     }
 
     setViewZoom() {
         if(scale_or_not === false) {
             return;
         }
-
-        view.zoom = RADIUS / this.newRad
-        // view.zoom += (1 - view.zoom) * 0.1
+        
+        // view.zoom ~ RADIUS / this.newRad 內差法
+        view.zoom = view.zoom + (RADIUS / this.newRad - view.zoom) * 0.7
     }
 
     viewTranslate() {
