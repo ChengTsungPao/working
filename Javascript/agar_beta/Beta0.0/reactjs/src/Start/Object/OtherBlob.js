@@ -11,9 +11,6 @@ class OtherBlob extends BlobData {
     }
 
     show() {
-        // if(this.state === LIVE){
-        //     return;
-        // }
         this.sendData();
     }
 

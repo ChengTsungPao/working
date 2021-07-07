@@ -20,7 +20,7 @@ class BlobData {
         this.newVel = vel;
         this.newRad = rad;
 
-        this.sendData();
+        // this.sendData();
     }
 
     sendData() {
