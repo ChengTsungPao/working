@@ -1,4 +1,4 @@
-import { WIDTH, HEIGHT, RADIUS, LIVE } from '../Config/Contants'
+import { WIDTH, HEIGHT, RADIUS } from '../Config/Contants'
 import BlobData from './Blob/BlobData'
 
 class OtherBlob extends BlobData {

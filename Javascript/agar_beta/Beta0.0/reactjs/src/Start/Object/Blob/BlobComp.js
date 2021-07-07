@@ -1,5 +1,5 @@
 import React from 'react'
-import { WIDTH, HEIGHT, RADIUS } from '../../Config/Contants'
+import { WIDTH, HEIGHT } from '../../Config/Contants'
 import GetData from '../../../Data/GetData';
 import { translateRad, translatePos } from './BlobTranslate'
 import { scale_or_not } from '../../Config/Contants'

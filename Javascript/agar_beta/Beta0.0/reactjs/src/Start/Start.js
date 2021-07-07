@@ -23,6 +23,8 @@ function Start() {
 
         window.addEventListener('mousemove', MouseMoveHandler)
         window.addEventListener('touchmove', MouseMoveHandler)
+
+        // eslint-disable-next-line
     }, [])
 
     return (

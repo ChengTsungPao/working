@@ -1,4 +1,3 @@
-import GetData from '../../Data/GetData'
 
 function BlobSplit(_id, allBlob) {
     var myBlob = undefined;
