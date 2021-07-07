@@ -36,6 +36,19 @@ class BlobData {
         SendData("socketName", data);
     }
 
+    #removeData(_id) { // 若要刪除需要_id room state
+        var data = {
+              "_id": _id,
+             "name": null,
+             "room": this.room,
+              "pos": null,
+              "vel": null,
+              "rad": null,
+            "state": DEAD
+        }
+        SendData("socketName", data);
+    }
+
     updataData() {
         let data = BlobSplit(this._id, GetData("gameData"))["myBlob"];
 
@@ -61,9 +74,10 @@ class BlobData {
             if(this.rad + otherBlob[i].rad > Vector.distance(this.newPos, otherBlob[i].pos)){
                 if(this.rad > otherBlob[i].rad){
                     this.newRad = (this.rad * this.rad + otherBlob[i].rad * otherBlob[i].rad) ** 0.5;
-                } else {
-                    this.state = DEAD;
-                }
+                    this.#removeData(otherBlob[i]._id)
+                } // else {
+                //     this.state = DEAD;
+                // }
                 
             }
         }
