@@ -3,7 +3,7 @@ import SendData from '../../../Data/SendData'
 import GetData from '../../../Data/GetData'
 import Vector from '../../Function/Vector'
 import BlobSplit from '../../Function/BlobSplit'
-import { mouse } from '../../Config/Variable'
+import { mouse, viewShift } from '../../Config/Variable'
 
 class BlobData {
     constructor(_id, name, room, pos, vel, rad, state = LIVE) {
@@ -62,7 +62,7 @@ class BlobData {
     }
 
     updatePosVel() {
-        this.newVel = Vector.sub([mouse.x, mouse.y], this.pos);
+        this.newVel = Vector.sub([mouse.x - viewShift.x, mouse.y - viewShift.y], this.pos); // 滑鼠位置也需要更新
         this.newVel = Vector.normalize(this.newVel, 3);
         this.newVel = Vector.linear(this.vel, this.newVel, 0.1);
         this.newPos = Vector.add(this.pos, this.newVel);

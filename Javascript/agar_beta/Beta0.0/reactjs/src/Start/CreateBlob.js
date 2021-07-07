@@ -7,7 +7,7 @@ import { WIDTH, HEIGHT } from './Config/Contants'
 function CreateBlob() {
 
     var number = 100;
-    var index = 0
+    // var index = 0
 
     const myBlob = new MyBlob(GetData("_id"), GetData("name"), GetData("room"))
     
