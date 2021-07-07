@@ -1,4 +1,4 @@
-class Vector {
+class VectorFcn {
 
     sub(vector1, vector2) {
         return [vector1[0] - vector2[0], vector1[1] - vector2[1]]
@@ -25,5 +25,7 @@ class Vector {
         return this.mul(newlength / length, vector)
     }
 }
+
+const Vector = new VectorFcn();
 
 export default Vector

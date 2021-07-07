@@ -1,9 +1,9 @@
 import { blobContext } from '../Core/index';
 import { useEffect, useContext, useState } from 'react'
-import GetData from '../Data/GetData'
-import BlobComp from './BlobComp';
-import BlobData from './BlobData';
 import { mouse } from './Config/Variable'
+import BlobComp from './Object/Blob/BlobComp';
+import CreateBlob from './CreateBlob';
+import RenderBlob from './RenderBlob';
 
 function Start() {
     const blob = useContext(blobContext);
@@ -18,20 +18,12 @@ function Start() {
     /*==================================== Start Process ============================================*/
 
     useEffect(() => {
-        const first = new BlobData(GetData("_id"), GetData("name"), GetData("room"))
-        setInterval(() => {
-            first.update()
-            first.show(blob);
-        }, 1000 / 60)
+        RenderBlob(blob);
+        CreateBlob();
 
         window.addEventListener('mousemove', MouseMoveHandler)
         window.addEventListener('touchmove', MouseMoveHandler)
     }, [])
-
-    useEffect(() => {
-        console.log("123")
-    }, [blob.get])
-
 
     return (
         <div>
