@@ -2,7 +2,7 @@ import MyBlob from './Object/MyBlob';
 import OtherBlob from './Object/OtherBlob';
 import Guid from './Function/Guid'
 import GetData from '../Data/GetData'
-import { WIDTH, HEIGHT } from './Config/Contants'
+import { WIDTH, HEIGHT, DEAD } from './Config/Contants'
 
 function CreateBlob() {
 
@@ -18,7 +18,11 @@ function CreateBlob() {
         otherBlob[i].show();
     }
     
-    setInterval(() => {
+    const myBlobLive = setInterval(() => {
+        if(myBlob.state === DEAD){
+            clearInterval(myBlobLive);
+        }
+
         myBlob.update()
         myBlob.show()
 

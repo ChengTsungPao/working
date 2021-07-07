@@ -75,9 +75,9 @@ class BlobData {
                 if(this.rad > otherBlob[i].rad){
                     this.newRad = (this.rad * this.rad + otherBlob[i].rad * otherBlob[i].rad) ** 0.5;
                     this.#removeData(otherBlob[i]._id)
-                } // else {
-                //     this.state = DEAD;
-                // }
+                } else {
+                    this.state = DEAD;
+                }
                 
             }
         }
