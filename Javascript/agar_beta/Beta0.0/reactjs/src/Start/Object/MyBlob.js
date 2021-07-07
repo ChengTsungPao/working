@@ -37,6 +37,7 @@ class MyBlob extends BlobData {
     show() {
         this.sendData();
         this.updataData();
+        
         if(show_pos_vel_or_not){
             console.log(`Pos = ${this.pos}`)
             console.log(`Vel = ${this.vel}`)
