@@ -3,6 +3,9 @@ export const WIDTH = window.innerWidth;
 export const HEIGHT = window.innerHeight;
 export const RADIUS = 50;
 
+export const DATATICK = 1000 / 60;
+export const UITICK = 1000 / 60;
+
 export const LIVE = "LIVE";
 export const DEAD = "DEAD";
 

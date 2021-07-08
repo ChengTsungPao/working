@@ -2,7 +2,7 @@ import MyBlob from './Object/MyBlob';
 import OtherBlob from './Object/OtherBlob';
 import Guid from './Function/Guid'
 import GetData from '../Data/GetData'
-import { WIDTH, HEIGHT, DEAD, OTHERRADIUS, OTHERQUANTITY } from './Config/Contants'
+import { WIDTH, HEIGHT, DEAD, DATATICK, OTHERRADIUS, OTHERQUANTITY } from './Config/Contants'
 
 function CreateBlob() {
 
@@ -23,7 +23,7 @@ function CreateBlob() {
         myBlob.update()
         myBlob.show()
 
-    }, 1000 / 60)
+    }, DATATICK)
 }
 
 export default CreateBlob

@@ -78,7 +78,6 @@ class BlobData {
                 } else {
                     this.state = DEAD;
                 }
-                
             }
         }
     }
