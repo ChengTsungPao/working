@@ -9,6 +9,8 @@ export const UITICK = 1000 / 60;
 export const LIVE = "LIVE";
 export const DEAD = "DEAD";
 
+export const SOCKETNAME = "SOCKETNAME";
+
 /*==================================== 測試使用 ============================================*/
 
 export const OTHERRADIUS = 15;

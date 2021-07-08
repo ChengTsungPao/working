@@ -1,4 +1,4 @@
-import { LIVE, DEAD } from '../../Config/Contants'
+import { LIVE, DEAD, SOCKETNAME } from '../../Config/Contants'
 import SendData from '../../../Data/SendData'
 import GetData from '../../../Data/GetData'
 import Vector from '../../Function/Vector'
@@ -20,7 +20,7 @@ class BlobData {
         this.newVel = vel;
         this.newRad = rad;
 
-        // this.sendData();
+        // this.sendData(); // 初始化目前用不到
     }
 
     sendData() {
@@ -33,7 +33,7 @@ class BlobData {
               "rad": this.newRad,
             "state": this.state
         }
-        SendData("socketName", data);
+        SendData(SOCKETNAME, data);
     }
 
     #removeData(_id) { // 若要刪除需要_id room state
@@ -46,7 +46,7 @@ class BlobData {
               "rad": null,
             "state": DEAD
         }
-        SendData("socketName", data);
+        SendData(SOCKETNAME, data);
     }
 
     updataData() {
