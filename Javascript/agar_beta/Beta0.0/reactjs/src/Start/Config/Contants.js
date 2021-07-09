@@ -5,6 +5,7 @@ export const RADIUS = 50;
 
 export const DATATICK = 1000 / 60;
 export const UITICK = 1000 / 60;
+export const SCALETARGET = 0.01;
 
 export const LIVE = "LIVE";
 export const DEAD = "DEAD";

@@ -1,4 +1,4 @@
-import { WIDTH, HEIGHT, RADIUS, scale_or_not } from '../Config/Contants'
+import { WIDTH, HEIGHT, RADIUS, SCALETARGET, scale_or_not } from '../Config/Contants'
 import BlobData from './Blob/BlobData'
 import { view } from '../Config/Variable'
 import { show_pos_vel_or_not } from '../Config/Contants'
@@ -20,7 +20,7 @@ class MyBlob extends BlobData {
         }
         
         // view.zoom ~ RADIUS / this.newRad 內差法
-        view.zoom = view.zoom + (RADIUS / this.newRad - view.zoom) * 0.01
+        view.zoom = view.zoom + (RADIUS / this.newRad - view.zoom) * SCALETARGET
     }
 
     viewTranslate() {
