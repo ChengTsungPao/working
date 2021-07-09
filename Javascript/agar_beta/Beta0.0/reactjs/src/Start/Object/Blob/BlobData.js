@@ -62,7 +62,7 @@ class BlobData {
     }
 
     updatePosVel() {
-        this.newVel = Vector.sub([mouse.x - view.shift[0], mouse.y - view.shift[1]], this.pos); // 滑鼠位置也需要更新
+        this.newVel = Vector.sub(Vector.sub(mouse.pos, view.shift), this.pos); // 滑鼠位置也需要更新
         this.newVel = Vector.normalize(this.newVel, 3);
         this.newVel = Vector.linear(this.vel, this.newVel, 0.1);
         this.newPos = Vector.add(this.pos, this.newVel);

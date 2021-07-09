@@ -1,7 +1,6 @@
 
 export var mouse = {
-    x: 0,
-    y: 0
+    "pos": [0, 0]
 }
 
 export var view = {

@@ -1,6 +1,6 @@
 import { WIDTH, HEIGHT, RADIUS, SCALETARGET, scale_or_not } from '../Config/Contants'
 import BlobData from './Blob/BlobData'
-import { view } from '../Config/Variable'
+import { view, mouse } from '../Config/Variable'
 import { show_pos_vel_or_not } from '../Config/Contants'
 import Vector from '../Function/Vector'
 
@@ -26,6 +26,14 @@ class MyBlob extends BlobData {
     viewTranslate() {
         this.setViewShift();
         this.setViewZoom();
+    }
+
+    checkStopMyBlob() {
+        if (Vector.distance(Vector.sub(mouse.pos, view.shift), this.pos) < this.rad){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     update() {

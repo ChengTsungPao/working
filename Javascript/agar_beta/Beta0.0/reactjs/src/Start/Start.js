@@ -11,8 +11,7 @@ function Start() {
 
     const MouseMoveHandler = (event) => {
         setMousePos([event.x, event.y]);
-        mouse.x = event.x
-        mouse.y = event.y
+        mouse.pos = [event.x, event.y]
     } 
 
     /*==================================== Start Process ============================================*/

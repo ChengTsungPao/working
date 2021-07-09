@@ -20,6 +20,10 @@ function CreateBlob() {
             clearInterval(myBlobLive);
         }
 
+        if(myBlob.checkStopMyBlob()){
+            return;
+        }
+
         myBlob.update()
         myBlob.show()
 
