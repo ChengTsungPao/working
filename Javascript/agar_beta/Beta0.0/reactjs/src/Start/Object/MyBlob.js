@@ -20,7 +20,7 @@ class MyBlob extends BlobData {
         }
         
         // view.zoom ~ RADIUS / this.newRad 內差法
-        view.zoom = view.zoom + (RADIUS / this.newRad - view.zoom) * SCALETARGET
+        view.zoom = view.zoom + (RADIUS / this.rad - view.zoom) * SCALETARGET
     }
 
     viewTranslate() {
