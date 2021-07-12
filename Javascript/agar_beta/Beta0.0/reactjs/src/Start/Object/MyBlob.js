@@ -49,6 +49,7 @@ class MyBlob extends BlobData {
         if(show_pos_vel_or_not){
             console.log(`Pos = ${this.pos}`)
             console.log(`Vel = ${this.vel}`)
+            console.log(`Rad = ${this.rad}`)
         }
     }
 

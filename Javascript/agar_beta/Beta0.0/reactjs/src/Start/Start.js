@@ -6,7 +6,7 @@ import CreateBlob from './CreateBlob';
 import RenderBlob from './RenderBlob';
 
 function Start() {
-    const blob = useContext(blobContext);
+    const blob = useContext(blobContext); // 改名稱
     const [mousePos, setMousePos] = useState([0, 0]);
 
     const MouseMoveHandler = (event) => {

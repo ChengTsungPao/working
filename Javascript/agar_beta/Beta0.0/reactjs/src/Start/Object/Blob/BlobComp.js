@@ -7,7 +7,7 @@ import { scale_or_not } from '../../Config/Contants'
 function BlobComp(props) {
 
     var ID = props.data._id;
-    var [posx, posy] = ID === GetData("_id") ? [WIDTH / 2, HEIGHT / 2] : translatePos(props.data.pos)
+    var [posx, posy] = ID === GetData("_id") ? [WIDTH / 2, HEIGHT / 2] : translatePos(props.data.pos) // 應該要另外切開，不放在render UI // 在後端處理
     var rad = translateRad(props.data.rad)
 
     if(scale_or_not === false) {
