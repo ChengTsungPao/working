@@ -29,7 +29,7 @@ function Start() {
     return (
         <div>
             <h>{mousePos[0]} {mousePos[1]}</h>
-            {blob.get.map((data, index) => {
+            {Object.entries(blob.get).map((data, index) => {
                 return <BlobComp key={index} data={data} />
             })}
         </div>

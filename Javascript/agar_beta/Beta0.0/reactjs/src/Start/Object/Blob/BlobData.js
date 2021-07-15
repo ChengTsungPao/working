@@ -68,13 +68,30 @@ class BlobData {
         this.newPos = Vector.add(this.pos, this.newVel);
     }
 
+    // list version
+    // updateCollision() {
+    //     var otherBlob = BlobSplit(this._id, GetData("gameData"))["otherBlob"];
+    //     for(var i = 0; i < otherBlob.length; i++) {
+    //         if(this.rad + otherBlob[i].rad > Vector.distance(this.newPos, otherBlob[i].pos)){
+    //             if(this.rad > otherBlob[i].rad){
+    //                 this.newRad = (this.rad * this.rad + otherBlob[i].rad * otherBlob[i].rad) ** 0.5;
+    //                 this.#removeData(otherBlob[i]._id)
+    //             } else {
+    //                 this.state = DEAD;
+    //             }
+    //         }
+    //     }
+    // }
+
+    // dict version
     updateCollision() {
         var otherBlob = BlobSplit(this._id, GetData("gameData"))["otherBlob"];
-        for(var i = 0; i < otherBlob.length; i++) {
-            if(this.rad + otherBlob[i].rad > Vector.distance(this.newPos, otherBlob[i].pos)){
-                if(this.rad > otherBlob[i].rad){
-                    this.newRad = (this.rad * this.rad + otherBlob[i].rad * otherBlob[i].rad) ** 0.5;
-                    this.#removeData(otherBlob[i]._id)
+        var _id = Object.keys(otherBlob)
+        for(var i = 0; i < _id.length; i++) {
+            if(this.rad + otherBlob[_id[i]].rad > Vector.distance(this.newPos, otherBlob[_id[i]].pos)){
+                if(this.rad > otherBlob[_id[i]].rad){
+                    this.newRad = (this.rad * this.rad + otherBlob[_id[i]].rad * otherBlob[_id[i]].rad) ** 0.5;
+                    this.#removeData(_id[i])
                 } else {
                     this.state = DEAD;
                 }
