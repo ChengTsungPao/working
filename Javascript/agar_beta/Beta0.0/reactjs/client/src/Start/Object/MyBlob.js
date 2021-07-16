@@ -1,23 +1,12 @@
-import { WIDTH, HEIGHT, RADIUS, SCALETARGET, INITSOCKETNAME, scale_or_not } from '../Config/Contants'
+import { WIDTH, HEIGHT, RADIUS, SCALETARGET, scale_or_not } from '../Config/Contants'
 import BlobData from './Blob/BlobData'
 import { view, mouse } from '../Config/Variable'
 import { show_pos_vel_or_not } from '../Config/Contants'
 import Vector from '../Function/Vector'
-import SendData from '../../Data/SendData'
 
 class MyBlob extends BlobData {
     constructor(_id, name, room, pos = [WIDTH / 2, HEIGHT / 2], vel = [0, 0], rad = RADIUS) {
         super(_id, name, room, pos, vel, rad)
-        this.initData();
-    }
-
-    initData() {
-        var data = {
-            "_id": this._id,
-           "room": this.room,
-           "tick": 1000 / 60
-      }
-      SendData(INITSOCKETNAME, data);
     }
 
     setViewShift() {

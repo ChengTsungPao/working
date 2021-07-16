@@ -6,6 +6,7 @@ import BlobComp from './Object/Blob/BlobComp';
 import CreateBlob from './CreateBlob';
 import RenderBlob from './RenderBlob';
 import UpdateData from '../Data/UpdateData';
+import { SetupRoom } from '../Data/SetupData'
 
 function Start() {
     const blob = useContext(blobContext); // 改名稱
@@ -21,7 +22,7 @@ function Start() {
     useEffect(() => {
         UpdateData(UPDATEDATASOCKETNAME);
         RenderBlob(blob);
-        CreateBlob();
+        SetupRoom(CreateBlob);
 
         window.addEventListener('mousemove', MouseMoveHandler)
         window.addEventListener('touchmove', MouseMoveHandler)

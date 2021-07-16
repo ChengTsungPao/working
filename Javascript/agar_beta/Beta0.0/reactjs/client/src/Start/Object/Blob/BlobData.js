@@ -1,4 +1,4 @@
-import { LIVE, DEAD, SOCKETNAME } from '../../Config/Contants'
+import { LIVE, DEAD, SETBLOBSOCKETNAME } from '../../Config/Contants'
 import SendData from '../../../Data/SendData'
 import GetData from '../../../Data/GetData'
 import Vector from '../../Function/Vector'
@@ -7,9 +7,9 @@ import { mouse, view } from '../../Config/Variable'
 
 class BlobData {
     constructor(_id, name, room, pos, vel, rad, state = LIVE) {
-        this._id = _id
-        this.name = name
-        this.room = room
+        this._id = _id;
+        this.name = name;
+        this.room = room;
         this.state = state;
 
         this.pos = pos;
@@ -24,6 +24,10 @@ class BlobData {
     }
 
     sendData() {
+        if(this.newRad === 0 || isNaN(this.newRad)){ // Big Problem !!!
+            return;
+        }
+
         var data = {
               "_id": this._id,
              "name": this.name,
@@ -33,7 +37,7 @@ class BlobData {
               "rad": this.newRad,
             "state": this.state
         }
-        SendData(SOCKETNAME, data);
+        SendData(SETBLOBSOCKETNAME, data);
     }
 
     #removeData(_id) { // 若要刪除需要_id room state
@@ -46,13 +50,17 @@ class BlobData {
               "rad": null,
             "state": DEAD
         }
-        SendData(SOCKETNAME, data);
+        SendData(SETBLOBSOCKETNAME, data);
     }
 
     updataData() {
         let data = BlobSplit(this._id, GetData("gameData"))["myBlob"];
 
         if (data === undefined) {
+            return;
+        }
+
+        if(data["rad"] === 0 || isNaN(data["rad"])){ // Big Problem !!!
             return;
         }
 
