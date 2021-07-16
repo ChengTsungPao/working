@@ -10,7 +10,8 @@ export const SCALETARGET = 0.01;
 export const LIVE = "LIVE";
 export const DEAD = "DEAD";
 
-export const SOCKETNAME = "SOCKETNAME";
+export const SOCKETNAME = "setBlob";
+export const INITSOCKETNAME = "SetRoom";
 
 /*==================================== 測試使用 ============================================*/
 
