@@ -52,6 +52,10 @@ class BlobData {
     updataData() {
         let data = BlobSplit(this._id, GetData("gameData"))["myBlob"];
 
+        if (data === undefined) {
+            return;
+        }
+
         this.pos = data["pos"]
         this.vel = data["vel"]
         this.rad = data["rad"]
