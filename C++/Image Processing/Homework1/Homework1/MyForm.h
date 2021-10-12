@@ -618,6 +618,7 @@ namespace Homework1 {
 		if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
 			originImage = gcnew Bitmap(openFileDialog1->FileName);
 			setPictureBox(pictureBox_before_image, originImage);
+			setPictureBox(pictureBox_after_image, nullptr);
 		}
 	}
 
@@ -629,9 +630,17 @@ namespace Homework1 {
 		pictureBox->Image = image;
 	}
 
+	private: bool isExist(Bitmap^ image) {
+		return image != nullptr;
+	}
+
 	/* ==================================== Filter Method Button ==================================== */
 
 	private: System::Void button_rgb_extraction_handler(System::Object^  sender, System::EventArgs^  e) {
+
+		if (isExist(originImage) == false) {
+			return;
+		}
 
 		char kind;
 
@@ -653,6 +662,10 @@ namespace Homework1 {
 
 	private: System::Void button_smooth_filter_handler(System::Object^  sender, System::EventArgs^  e) {
 
+		if (isExist(originImage) == false) {
+			return;
+		}
+
 		char kind;
 
 		if (radioButton_mean->Checked) {
@@ -668,9 +681,19 @@ namespace Homework1 {
 	}
 
 	private: System::Void button_histogram_equalization_handler(System::Object^  sender, System::EventArgs^  e) {
+
+		if (isExist(originImage) == false) {
+			return;
+		}
+
 	}
 
 	private: System::Void button_defined_thresholding_handler(System::Object^  sender, System::EventArgs^  e) {
+
+		if (isExist(originImage) == false) {
+			return;
+		}
+
 		int threshold = trackBar_defined_thresholding->Value;
 
 		transferImage = define_thresholding(originImage, threshold);
@@ -678,6 +701,10 @@ namespace Homework1 {
 	}
 
 	private: System::Void button_sobel_edge_detection_handler(System::Object^  sender, System::EventArgs^  e) {
+
+		if (isExist(originImage) == false) {
+			return;
+		}
 
 		char kind;
 
@@ -696,6 +723,11 @@ namespace Homework1 {
 	}
 
 	private: System::Void button_sobel_threshold_combined_handler(System::Object^  sender, System::EventArgs^  e) {
+
+		if (isExist(originImage) == false) {
+			return;
+		}
+
 		int threshold = trackBar_defined_thresholding->Value;
 
 		transferImage = sobel_threshold_Combine(originImage, threshold);
@@ -703,11 +735,21 @@ namespace Homework1 {
 	}
 
 	private: System::Void button_connected_component_handler(System::Object^  sender, System::EventArgs^  e) {
+
+		if (isExist(originImage) == false) {
+			return;
+		}
+
 		transferImage = connected_component(originImage);
 		setPictureBox(pictureBox_after_image, transferImage);
 	}
 
 	private: System::Void button_image_registration_handler(System::Object^  sender, System::EventArgs^  e) {
+
+		if (isExist(originImage) == false) {
+			return;
+		}
+
 	}
 
 };
