@@ -51,7 +51,8 @@ namespace Homework1 {
 	private: System::Windows::Forms::PictureBox^  pictureBox_before_image;
 	private: System::Windows::Forms::PictureBox^  pictureBox_after_image;
 	private: System::Windows::Forms::Button^  button_undo;
-	private: System::Windows::Forms::OpenFileDialog^  openFileDialog1;
+	private: System::Windows::Forms::OpenFileDialog^  openImageWindow;
+
 	private: System::Windows::Forms::DataVisualization::Charting::Chart^  chart_before_histogram;
 	private: System::Windows::Forms::DataVisualization::Charting::Chart^  chart_after_histogram;
 	private: System::Windows::Forms::Button^  button_smooth_filter;
@@ -99,18 +100,18 @@ namespace Homework1 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^  legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^  series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea2 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^  legend2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^  series2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea5 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^  legend5 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^  series5 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea6 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^  legend6 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^  series6 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
 			this->button_load = (gcnew System::Windows::Forms::Button());
 			this->button_rgb_extraction = (gcnew System::Windows::Forms::Button());
 			this->pictureBox_before_image = (gcnew System::Windows::Forms::PictureBox());
 			this->pictureBox_after_image = (gcnew System::Windows::Forms::PictureBox());
 			this->button_undo = (gcnew System::Windows::Forms::Button());
-			this->openFileDialog1 = (gcnew System::Windows::Forms::OpenFileDialog());
+			this->openImageWindow = (gcnew System::Windows::Forms::OpenFileDialog());
 			this->chart_before_histogram = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
 			this->chart_after_histogram = (gcnew System::Windows::Forms::DataVisualization::Charting::Chart());
 			this->button_smooth_filter = (gcnew System::Windows::Forms::Button());
@@ -206,37 +207,37 @@ namespace Homework1 {
 			this->button_undo->UseVisualStyleBackColor = true;
 			this->button_undo->Click += gcnew System::EventHandler(this, &MyForm::button_undo_handler);
 			// 
-			// openFileDialog1
+			// openImageWindow
 			// 
-			this->openFileDialog1->FileName = L"openFileDialog1";
+			this->openImageWindow->FileName = L"openImageWindow";
 			// 
 			// chart_before_histogram
 			// 
-			chartArea1->Name = L"ChartArea1";
-			this->chart_before_histogram->ChartAreas->Add(chartArea1);
-			legend1->Name = L"Legend1";
-			this->chart_before_histogram->Legends->Add(legend1);
+			chartArea5->Name = L"ChartArea1";
+			this->chart_before_histogram->ChartAreas->Add(chartArea5);
+			legend5->Name = L"Legend1";
+			this->chart_before_histogram->Legends->Add(legend5);
 			this->chart_before_histogram->Location = System::Drawing::Point(25, 534);
 			this->chart_before_histogram->Name = L"chart_before_histogram";
-			series1->ChartArea = L"ChartArea1";
-			series1->Legend = L"Legend1";
-			series1->Name = L"Series1";
-			this->chart_before_histogram->Series->Add(series1);
+			series5->ChartArea = L"ChartArea1";
+			series5->Legend = L"Legend1";
+			series5->Name = L"Series1";
+			this->chart_before_histogram->Series->Add(series5);
 			this->chart_before_histogram->Size = System::Drawing::Size(600, 422);
 			this->chart_before_histogram->TabIndex = 5;
 			// 
 			// chart_after_histogram
 			// 
-			chartArea2->Name = L"ChartArea1";
-			this->chart_after_histogram->ChartAreas->Add(chartArea2);
-			legend2->Name = L"Legend1";
-			this->chart_after_histogram->Legends->Add(legend2);
+			chartArea6->Name = L"ChartArea1";
+			this->chart_after_histogram->ChartAreas->Add(chartArea6);
+			legend6->Name = L"Legend1";
+			this->chart_after_histogram->Legends->Add(legend6);
 			this->chart_after_histogram->Location = System::Drawing::Point(657, 534);
 			this->chart_after_histogram->Name = L"chart_after_histogram";
-			series2->ChartArea = L"ChartArea1";
-			series2->Legend = L"Legend1";
-			series2->Name = L"Series1";
-			this->chart_after_histogram->Series->Add(series2);
+			series6->ChartArea = L"ChartArea1";
+			series6->Legend = L"Legend1";
+			series6->Name = L"Series1";
+			this->chart_after_histogram->Series->Add(series6);
 			this->chart_after_histogram->Size = System::Drawing::Size(600, 422);
 			this->chart_after_histogram->TabIndex = 6;
 			// 
@@ -615,8 +616,8 @@ namespace Homework1 {
 	}
 
 	private: System::Void button_load_handler(System::Object^  sender, System::EventArgs^  e) {
-		if (openFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
-			originImage = gcnew Bitmap(openFileDialog1->FileName);
+		if (openImageWindow->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+			originImage = gcnew Bitmap(openImageWindow->FileName);
 			setPictureBox(pictureBox_before_image, originImage);
 			setPictureBox(pictureBox_after_image, nullptr);
 		}
