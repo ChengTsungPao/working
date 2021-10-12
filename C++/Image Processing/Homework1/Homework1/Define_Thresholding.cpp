@@ -3,8 +3,7 @@ using namespace System::Windows::Forms;
 using namespace System::Drawing;
 
 
-Bitmap^ define_thresholding(Bitmap^ originImage) {
-	int threshold = 100;
+Bitmap^ define_thresholding(Bitmap^ originImage, int threshold) {
 
 	Bitmap^ image = gcnew Bitmap(originImage->Width, originImage->Height);
 

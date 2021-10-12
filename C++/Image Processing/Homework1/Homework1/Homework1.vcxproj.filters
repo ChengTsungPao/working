@@ -21,9 +21,6 @@
     <ClCompile Include="RGB_Extraction_Transformation.cpp">
       <Filter>原始程式檔</Filter>
     </ClCompile>
-    <ClCompile Include="ReadFile.cpp">
-      <Filter>原始程式檔</Filter>
-    </ClCompile>
     <ClCompile Include="Function.cpp">
       <Filter>原始程式檔</Filter>
     </ClCompile>
@@ -47,9 +44,6 @@
     <ClInclude Include="MyForm.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
-    <ClInclude Include="ReadFile.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
     <ClInclude Include="Function.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
@@ -66,9 +60,6 @@
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="Sobel_Threshold_Combine.h">
-      <Filter>標頭檔</Filter>
-    </ClInclude>
-    <ClInclude Include="Dirent.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="Connected_Component.h">

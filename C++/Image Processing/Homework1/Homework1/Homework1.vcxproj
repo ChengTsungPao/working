@@ -140,7 +140,6 @@
     <ClCompile Include="Connected_Component.cpp" />
     <ClCompile Include="Function.cpp" />
     <ClCompile Include="MyForm.cpp" />
-    <ClCompile Include="ReadFile.cpp" />
     <ClCompile Include="RGB_Extraction_Transformation.cpp" />
     <ClCompile Include="Smooth_Filter.cpp" />
     <ClCompile Include="Define_Thresholding.cpp" />
@@ -148,12 +147,10 @@
     <ClCompile Include="Sobel_Threshold_Combine.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Dirent.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="Define_Thresholding.h" />
     <ClInclude Include="Connected_Component.h" />
     <ClInclude Include="RGB_Extraction_Transformation.h" />
-    <ClInclude Include="ReadFile.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>

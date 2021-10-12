@@ -8,10 +8,10 @@ using namespace System::Drawing;
 Bitmap^ combine_image(Bitmap^ originImage, Bitmap^ transferImage);
 
 
-Bitmap^ sobel_threshold_Combine(Bitmap^ originImage) {
+Bitmap^ sobel_threshold_Combine(Bitmap^ originImage, int threshold) {
 
 	Bitmap^ sobelImage = sobel_edge_dection(originImage, 'c');
-	Bitmap^ thresholdImage = define_thresholding(sobelImage);
+	Bitmap^ thresholdImage = define_thresholding(sobelImage, threshold);
 
 	return combine_image(originImage, thresholdImage);
 }
