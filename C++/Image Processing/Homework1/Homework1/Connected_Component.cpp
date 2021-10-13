@@ -9,8 +9,8 @@ using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::Drawing;
 
-vector<vector<vector<int>>> get_connected_component(Bitmap^ originImage);
-vector<vector<vector<int>>> colorMap(vector<vector<int>> transferImage, vector<vector<int>> color_table);
+Bitmap^ get_connected_component(Bitmap^ originImage);
+Bitmap^ colorMap(vector<vector<int>> transferImage, vector<vector<int>> color_table);
 vector<vector<int>> markMap(Bitmap^ originImage);
 vector<vector<int>> get_color_table(int count_region);
 
@@ -19,10 +19,10 @@ int dfs(int x, int y, vector<vector<int>> &originImageVector);
 int count_region;
 
 Bitmap^ connected_component(Bitmap^ originImage) {
-	return bitmapVectorTransfer(get_connected_component(originImage));
+	return get_connected_component(originImage);
 }
 
-vector<vector<vector<int>>> get_connected_component(Bitmap^ originImage) {
+Bitmap^ get_connected_component(Bitmap^ originImage) {
 
 	count_region = 0;
 
@@ -38,8 +38,7 @@ vector<vector<vector<int>>> get_connected_component(Bitmap^ originImage) {
 		}
 	}
 
-	vector<vector<int>> color_table = get_color_table(count_region);
-	return colorMap(markImage, color_table);
+	return colorMap(markImage, get_color_table(count_region));
 }
 
 int dfs(int x, int y, vector<vector<int>> &originImageVector) {
@@ -78,26 +77,26 @@ vector<vector<int>> markMap(Bitmap^ originImage) {
 	return originImageVector;
 }
 
-vector<vector<vector<int>>> colorMap(vector<vector<int>> transferImage, vector<vector<int>> color_table) {
+Bitmap^ colorMap(vector<vector<int>> transferImage, vector<vector<int>> color_table) {
 
-	vector<vector<vector<int>>> image;
+	Bitmap^ image = gcnew Bitmap(transferImage.size(), transferImage[0].size());
 
 	int size = color_table.size();
 
-	for (int x = 0; x < transferImage.size(); x++) {
-		vector<vector<int>> arr;
-		for (int y = 0; y < transferImage[0].size(); y++) {
+	for (int x = 0; x < image->Width; x++) {
+		for (int y = 0; y < image->Height; y++) {
 			int target = transferImage[x][y];
 			if (target >= 0) {
 				int intR = color_table[target % size][0];
 				int intG = color_table[target % size][1];
 				int intB = color_table[target % size][2];
-				arr.push_back({ intR, intG, intB });
-			} else {
-				arr.push_back({ 255, 255, 255 });
+				image->SetPixel(x, y, Color::FromArgb(intR, intG, intB));
 			}
+			else {
+				image->SetPixel(x, y, Color::FromArgb(255, 255, 255));
+			}
+
 		}
-		image.push_back(arr);
 	}
 
 	return image;
