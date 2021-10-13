@@ -68,6 +68,12 @@
     <ClInclude Include="Connected_Component.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="Variable.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Histogram_Equalization.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MyForm.resx">

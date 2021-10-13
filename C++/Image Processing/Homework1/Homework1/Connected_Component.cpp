@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include "Function.h"
+#include "Variable.h"
 
 using namespace std;
 using namespace System;

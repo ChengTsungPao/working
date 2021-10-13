@@ -8,7 +8,7 @@ using namespace System::Drawing;
 Bitmap^ combine_image(Bitmap^ originImage, Bitmap^ transferImage);
 
 
-Bitmap^ sobel_threshold_Combine(Bitmap^ originImage, int threshold) {
+Bitmap^ sobel_threshold_combine(Bitmap^ originImage, int threshold) {
 
 	Bitmap^ sobelImage = sobel_edge_dection(originImage, 'c');
 	Bitmap^ thresholdImage = define_thresholding(sobelImage, threshold);

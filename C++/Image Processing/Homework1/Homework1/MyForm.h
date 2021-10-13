@@ -1,7 +1,9 @@
 #include "Function.h"
+#include "Variable.h"
 #include "Smooth_Filter.h"
 #include "Connected_Component.h"
 #include "Define_Thresholding.h"
+#include "Histogram_Equalization.h"
 #include "Sobel_Edge_Detection.h"
 #include "Sobel_Threshold_Combine.h"
 #include "RGB_Extraction_Transformation.h"
@@ -9,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
 namespace Homework1 {
 
@@ -19,6 +22,7 @@ namespace Homework1 {
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace System::Windows::Forms::DataVisualization::Charting;
 
 	/// <summary>
 	/// MyForm 的摘要
@@ -100,12 +104,12 @@ namespace Homework1 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea5 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^  legend5 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^  series5 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea6 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^  legend6 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^  series6 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^  legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^  series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea2 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^  legend2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^  series2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
 			this->button_load = (gcnew System::Windows::Forms::Button());
 			this->button_rgb_extraction = (gcnew System::Windows::Forms::Button());
 			this->pictureBox_before_image = (gcnew System::Windows::Forms::PictureBox());
@@ -213,31 +217,33 @@ namespace Homework1 {
 			// 
 			// chart_before_histogram
 			// 
-			chartArea5->Name = L"ChartArea1";
-			this->chart_before_histogram->ChartAreas->Add(chartArea5);
-			legend5->Name = L"Legend1";
-			this->chart_before_histogram->Legends->Add(legend5);
+			chartArea1->Name = L"ChartArea1";
+			this->chart_before_histogram->ChartAreas->Add(chartArea1);
+			legend1->Name = L"Legend1";
+			this->chart_before_histogram->Legends->Add(legend1);
 			this->chart_before_histogram->Location = System::Drawing::Point(25, 534);
 			this->chart_before_histogram->Name = L"chart_before_histogram";
-			series5->ChartArea = L"ChartArea1";
-			series5->Legend = L"Legend1";
-			series5->Name = L"Series1";
-			this->chart_before_histogram->Series->Add(series5);
+			series1->ChartArea = L"ChartArea1";
+			series1->IsVisibleInLegend = false;
+			series1->Legend = L"Legend1";
+			series1->Name = L"histogram";
+			this->chart_before_histogram->Series->Add(series1);
 			this->chart_before_histogram->Size = System::Drawing::Size(600, 422);
 			this->chart_before_histogram->TabIndex = 5;
 			// 
 			// chart_after_histogram
 			// 
-			chartArea6->Name = L"ChartArea1";
-			this->chart_after_histogram->ChartAreas->Add(chartArea6);
-			legend6->Name = L"Legend1";
-			this->chart_after_histogram->Legends->Add(legend6);
+			chartArea2->Name = L"ChartArea1";
+			this->chart_after_histogram->ChartAreas->Add(chartArea2);
+			legend2->Name = L"Legend1";
+			this->chart_after_histogram->Legends->Add(legend2);
 			this->chart_after_histogram->Location = System::Drawing::Point(657, 534);
 			this->chart_after_histogram->Name = L"chart_after_histogram";
-			series6->ChartArea = L"ChartArea1";
-			series6->Legend = L"Legend1";
-			series6->Name = L"Series1";
-			this->chart_after_histogram->Series->Add(series6);
+			series2->ChartArea = L"ChartArea1";
+			series2->IsVisibleInLegend = false;
+			series2->Legend = L"Legend1";
+			series2->Name = L"histogram";
+			this->chart_after_histogram->Series->Add(series2);
 			this->chart_after_histogram->Size = System::Drawing::Size(600, 422);
 			this->chart_after_histogram->TabIndex = 6;
 			// 
@@ -608,6 +614,7 @@ namespace Homework1 {
 #pragma endregion
 	private: Bitmap^ originImage;
 	private: Bitmap^ transferImage;
+			 
 
 	/* ==================================== Functional Button ==================================== */
 
@@ -629,6 +636,19 @@ namespace Homework1 {
 
 	private: void setPictureBox(PictureBox^ %pictureBox, Bitmap^ image) {
 		pictureBox->Image = image;
+	}
+
+	private: void setLabel(Label^ %label, String^ str) {
+		label->Text = str;
+	}
+
+	private: void setChart(Chart^ %chart, map<int, int> imageCollection) {
+		String^ key = "histogram";
+		for (int intGray = 0; intGray < 256; intGray++) {
+			if (imageCollection.find(intGray) != imageCollection.end()) {
+				chart->Series[key]->Points->AddXY(intGray, imageCollection[intGray]);
+			}
+		}
 	}
 
 	private: bool isExist(Bitmap^ image) {
@@ -687,6 +707,10 @@ namespace Homework1 {
 			return;
 		}
 
+		transferImage = histogram_equalization(originImage);
+		setPictureBox(pictureBox_after_image, transferImage);
+		setChart(chart_before_histogram, originImageCollection);
+		setChart(chart_after_histogram, transferImageCollection);
 	}
 
 	private: System::Void button_defined_thresholding_handler(System::Object^  sender, System::EventArgs^  e) {
@@ -731,7 +755,7 @@ namespace Homework1 {
 
 		int threshold = trackBar_defined_thresholding->Value;
 
-		transferImage = sobel_threshold_Combine(originImage, threshold);
+		transferImage = sobel_threshold_combine(originImage, threshold);
 		setPictureBox(pictureBox_after_image, transferImage);
 	}
 
@@ -742,6 +766,7 @@ namespace Homework1 {
 		}
 
 		transferImage = connected_component(originImage);
+		setLabel(label_connected_component, "Number of Connected Component = " + count_region);
 		setPictureBox(pictureBox_after_image, transferImage);
 	}
 

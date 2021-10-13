@@ -151,6 +151,7 @@
     <ClInclude Include="Function.h" />
     <ClInclude Include="Define_Thresholding.h" />
     <ClInclude Include="Connected_Component.h" />
+    <ClInclude Include="Histogram_Equalization.h" />
     <ClInclude Include="RGB_Extraction_Transformation.h" />
     <ClInclude Include="MyForm.h">
       <FileType>CppForm</FileType>
@@ -158,6 +159,7 @@
     <ClInclude Include="Smooth_Filter.h" />
     <ClInclude Include="Sobel_Edge_Detection.h" />
     <ClInclude Include="Sobel_Threshold_Combine.h" />
+    <ClInclude Include="Variable.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MyForm.resx">
