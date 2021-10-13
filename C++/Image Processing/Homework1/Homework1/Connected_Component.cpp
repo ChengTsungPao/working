@@ -2,45 +2,44 @@
 #include <vector>
 #include <algorithm>
 
+#include "Function.h"
+
 using namespace std;
 using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::Drawing;
 
-Bitmap^ get_connected_component(Bitmap^ originImage);
-int dfs(int x, int y, vector<vector<int>> &originImageVector);
-
-// Not just transfer between vector and bitmap
-Bitmap^ vector_to_bitmap(vector<vector<int>> originImageVector, vector<vector<int>> color_table);
-vector<vector<int>> bitmap_to_vector(Bitmap^ originImage);
-vector<int> copy_vector(vector<int> origin);
-
+vector<vector<vector<int>>> get_connected_component(Bitmap^ originImage);
+vector<vector<vector<int>>> colorMap(vector<vector<int>> transferImage, vector<vector<int>> color_table);
+vector<vector<int>> markMap(Bitmap^ originImage);
 vector<vector<int>> get_color_table(int count_region);
 
+int dfs(int x, int y, vector<vector<int>> &originImageVector);
 
 int count_region;
 
 Bitmap^ connected_component(Bitmap^ originImage) {
-	return get_connected_component(originImage);
+	return bitmapVectorTransfer(get_connected_component(originImage));
 }
 
-Bitmap^ get_connected_component(Bitmap^ originImage) {
+vector<vector<vector<int>>> get_connected_component(Bitmap^ originImage) {
+
 	count_region = 0;
 
-	vector<vector<int>> originImageVector = bitmap_to_vector(originImage);
+	vector<vector<int>> markImage = markMap(originImage);
 
 	Bitmap^ image = gcnew Bitmap(originImage->Width, originImage->Height);
 	for (int y = 0; y < originImage->Height; y++) {
 		for (int x = 0; x < originImage->Width; x++) {
-			if (originImageVector[x][y] < -1) {
-				dfs(x, y, originImageVector);
+			if (markImage[x][y] < -1) {
+				dfs(x, y, markImage);
 				count_region += 1;
 			} 
 		}
 	}
 
 	vector<vector<int>> color_table = get_color_table(count_region);
-	return vector_to_bitmap(originImageVector, color_table);
+	return colorMap(markImage, color_table);
 }
 
 int dfs(int x, int y, vector<vector<int>> &originImageVector) {
@@ -62,7 +61,7 @@ int dfs(int x, int y, vector<vector<int>> &originImageVector) {
 	return 1;
 }
 
-vector<vector<int>> bitmap_to_vector(Bitmap^ originImage) {
+vector<vector<int>> markMap(Bitmap^ originImage) {
 	vector<vector<int>> originImageVector;
 	int intGray = 0;
 
@@ -73,44 +72,35 @@ vector<vector<int>> bitmap_to_vector(Bitmap^ originImage) {
 			intGray = intGray > 0 ? -1 : -2; // -1 => background, -2 => foreground
 			arr.push_back(intGray);
 		}
-		originImageVector.push_back(copy_vector(arr));
+		originImageVector.push_back(arr);
 	}
 
 	return originImageVector;
 }
 
-Bitmap^ vector_to_bitmap(vector<vector<int>> originImageVector, vector<vector<int>> color_table) {
+vector<vector<vector<int>>> colorMap(vector<vector<int>> transferImage, vector<vector<int>> color_table) {
 
-	Bitmap^ originImage = gcnew Bitmap(originImageVector.size(), originImageVector[0].size());
+	vector<vector<vector<int>>> image;
 
 	int size = color_table.size();
 
-	for (int x = 0; x < originImage->Width; x++) {
-		for (int y = 0; y < originImage->Height; y++) {
-			int target = originImageVector[x][y];
+	for (int x = 0; x < transferImage.size(); x++) {
+		vector<vector<int>> arr;
+		for (int y = 0; y < transferImage[0].size(); y++) {
+			int target = transferImage[x][y];
 			if (target >= 0) {
 				int intR = color_table[target % size][0];
 				int intG = color_table[target % size][1];
 				int intB = color_table[target % size][2];
-				originImage->SetPixel(x, y, Color::FromArgb(intR, intG, intB));
+				arr.push_back({ intR, intG, intB });
 			} else {
-				originImage->SetPixel(x, y, Color::FromArgb(255, 255, 255));
+				arr.push_back({ 255, 255, 255 });
 			}
-			
 		}
+		image.push_back(arr);
 	}
 
-	return originImage;
-}
-
-vector<int> copy_vector(vector<int> origin) {
-	vector<int> copyVector;
-
-	for (int i = 0; i < (int)(origin.size()); i++) {
-		copyVector.push_back(origin[i]);
-	}
-
-	return copyVector;
+	return image;
 }
 
 vector<vector<int>> get_color_table(int count_region) {

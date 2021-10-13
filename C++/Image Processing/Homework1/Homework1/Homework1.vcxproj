@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClCompile Include="Connected_Component.cpp" />
     <ClCompile Include="Function.cpp" />
+    <ClCompile Include="Histogram_Equalization.cpp" />
     <ClCompile Include="MyForm.cpp" />
     <ClCompile Include="RGB_Extraction_Transformation.cpp" />
     <ClCompile Include="Smooth_Filter.cpp" />

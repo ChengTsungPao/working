@@ -21,7 +21,7 @@ namespace Homework1 {
 	using namespace System::Drawing;
 
 	/// <summary>
-	/// MyForm ªººK­n
+	/// MyForm ï¿½ï¿½ï¿½Kï¿½n
 	/// </summary>
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
@@ -30,13 +30,13 @@ namespace Homework1 {
 		{
 			InitializeComponent();
 			//
-			//TODO:  ¦b¦¹¥[¤J«Øºc¨ç¦¡µ{¦¡½X
+			//TODO:  ï¿½bï¿½ï¿½ï¿½[ï¿½Jï¿½Øºcï¿½ç¦¡ï¿½{ï¿½ï¿½ï¿½X
 			//
 		}
 
 	protected:
 		/// <summary>
-		/// ²M°£¥ô¦ó¨Ï¥Î¤¤ªº¸ê·½¡C
+		/// ï¿½Mï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¥Î¤ï¿½ï¿½ï¿½ï¿½ê·½ï¿½C
 		/// </summary>
 		~MyForm()
 		{
@@ -89,14 +89,14 @@ namespace Homework1 {
 
 	private:
 		/// <summary>
-		/// ³]­p¤u¨ã©Ò»ÝªºÅÜ¼Æ¡C
+		/// ï¿½]ï¿½pï¿½uï¿½ï¿½Ò»Ýªï¿½ï¿½Ü¼Æ¡C
 		/// </summary>
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
-		/// ¦¹¬°³]­p¤u¨ã¤ä´©©Ò»Ýªº¤èªk - ½Ð¤Å¨Ï¥Îµ{¦¡½X½s¿è¾¹­×§ï
-		/// ³o­Ó¤èªkªº¤º®e¡C
+		/// ï¿½ï¿½ï¿½ï¿½ï¿½]ï¿½pï¿½uï¿½ï¿½ä´©ï¿½Ò»Ýªï¿½ï¿½ï¿½k - ï¿½Ð¤Å¨Ï¥Îµ{ï¿½ï¿½ï¿½Xï¿½sï¿½è¾¹ï¿½×§ï¿½
+		/// ï¿½oï¿½Ó¤ï¿½kï¿½ï¿½ï¿½ï¿½ï¿½eï¿½C
 		/// </summary>
 		void InitializeComponent(void)
 		{
