@@ -13,8 +13,8 @@ Bitmap^ get_connected_component(Bitmap^ originImage);
 Bitmap^ colorMap(vector<vector<int>> transferImage, vector<vector<int>> color_table);
 vector<vector<int>> markMap(Bitmap^ originImage);
 vector<vector<int>> get_color_table(int count_region);
-
 int dfs(int x, int y, vector<vector<int>> &originImageVector);
+
 
 int count_region;
 
