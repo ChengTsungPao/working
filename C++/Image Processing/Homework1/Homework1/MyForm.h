@@ -21,7 +21,7 @@ namespace Homework1 {
 	using namespace System::Drawing;
 
 	/// <summary>
-	/// MyForm ���K�n
+	/// MyForm 的摘要
 	/// </summary>
 	public ref class MyForm : public System::Windows::Forms::Form
 	{
@@ -30,13 +30,13 @@ namespace Homework1 {
 		{
 			InitializeComponent();
 			//
-			//TODO:  �b���[�J�غc�禡�{���X
+			//TODO:  在此加入建構函式程式碼
 			//
 		}
 
 	protected:
 		/// <summary>
-		/// �M������ϥΤ����귽�C
+		/// 清除任何使用中的資源。
 		/// </summary>
 		~MyForm()
 		{
@@ -89,14 +89,14 @@ namespace Homework1 {
 
 	private:
 		/// <summary>
-		/// �]�p�u��һݪ��ܼơC
+		/// 設計工具所需的變數。
 		/// </summary>
 		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
-		/// �����]�p�u��䴩�һݪ���k - �ФŨϥε{���X�s�边�ק�
-		/// �o�Ӥ�k�����e�C
+		/// 此為設計工具支援所需的方法 - 請勿使用程式碼編輯器修改
+		/// 這個方法的內容。
 		/// </summary>
 		void InitializeComponent(void)
 		{
