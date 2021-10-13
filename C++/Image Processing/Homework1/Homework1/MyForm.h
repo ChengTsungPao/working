@@ -56,7 +56,6 @@ namespace Homework1 {
 	private: System::Windows::Forms::PictureBox^  pictureBox_after_image;
 	private: System::Windows::Forms::Button^  button_undo;
 	private: System::Windows::Forms::OpenFileDialog^  openImageWindow;
-
 	private: System::Windows::Forms::DataVisualization::Charting::Chart^  chart_before_histogram;
 	private: System::Windows::Forms::DataVisualization::Charting::Chart^  chart_after_histogram;
 	private: System::Windows::Forms::Button^  button_smooth_filter;
@@ -614,12 +613,12 @@ namespace Homework1 {
 #pragma endregion
 	private: Bitmap^ originImage;
 	private: Bitmap^ transferImage;
-			 
+
+	//System::array<System::Drawing::Bitmap^>^ adf = gcnew System::array< System::Drawing::Bitmap^>(100);
 
 	/* ==================================== Functional Button ==================================== */
 
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
-
 	}
 
 	private: System::Void button_load_handler(System::Object^  sender, System::EventArgs^  e) {
