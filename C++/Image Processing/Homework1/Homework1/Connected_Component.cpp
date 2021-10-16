@@ -69,6 +69,9 @@ vector<vector<int>> markMap(Bitmap^ originImage) {
 		vector<int> arr;
 		for (int y = 0; y < originImage->Height; y++) {
 			intGray = originImage->GetPixel(x, y).R;
+			//if (intGray != 0 && intGray != 255) {
+			//	cout << intGray << endl;
+			//}
 			intGray = intGray > 0 ? -1 : -2; // -1 => background, -2 => foreground
 			arr.push_back(intGray);
 		}
