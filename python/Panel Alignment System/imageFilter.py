@@ -52,8 +52,8 @@ def findContour(path, filename, light, imageType = "L"):
     plotResult(path, filename, angle)
 
     # index = 288
-    index = int(input("index = "))
-    drawImage(path, filename, draw, data[index])
+    # index = int(input("index = "))
+    # drawImage(path, filename, draw, data[index])
 
 def readImage(path, filename):
     return cv2.imread(path + filename)
@@ -139,7 +139,7 @@ def plotResult(path, filename, result):
     plt.ylabel("degree")
     plt.plot(list(range(len(result) - 1)), np.abs(result[:-1] - result[1:]))
     plt.savefig(path + filename.split(".png")[0] + "_angle.png", dpi = 300)
-    plt.show()
+    # plt.show()
 
 
 def drawImage(path, filename, draw, point):
