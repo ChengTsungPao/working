@@ -26,7 +26,7 @@ def findContour(path, filename, light, imageType = "L"):
     originImage = readImage(path, filename)
     image = copy.deepcopy(originImage)
 
-    image = cropImage(image)
+    image = cropImage(image, imageType)
     shape = np.shape(image)
 
     image = cv2.resize(image, (shape[1] // 2, shape[0] // 2), interpolation=cv2.INTER_AREA)
@@ -58,8 +58,8 @@ def findContour(path, filename, light, imageType = "L"):
 def readImage(path, filename):
     return cv2.imread(path + filename)
 
-def cropImage(image):
-    x = 0
+def cropImage(image, imageType):
+    x = 0 if imageType == "L" else 200
     y = 0
 
     w = 1080
@@ -98,14 +98,15 @@ def getGradient(image, contour, imageType):
         data.sort(key = lambda x: math.atan(abs(shape[0] - x[1]) / abs(shape[1] - x[0])))
     else:
         data.sort(key = lambda x: math.atan(abs(0 - x[1]) / abs(shape[1] - x[0])))
-    
+
     Gradient = []
     for pos in data:
         y, x = pos[0], pos[1]
         pixel = image[x - 1:x + 1 + 1:, y - 1:y + 1 + 1:]
-        Gx = np.sum(pixel * Sx)
-        Gy = np.sum(pixel * Sy)
-        Gradient.append((restrictRange(Gx), restrictRange(Gy)))
+        if np.shape(pixel) == (3, 3):
+            Gx = np.sum(pixel * Sx)
+            Gy = np.sum(pixel * Sy)
+            Gradient.append((restrictRange(Gx), restrictRange(Gy)))
 
     return Gradient, data
 
@@ -137,13 +138,13 @@ def plotResult(path, filename, result):
     plt.xlabel("index of point")
     plt.ylabel("degree")
     plt.plot(list(range(len(result) - 1)), np.abs(result[:-1] - result[1:]))
-    plt.savefig(path + filename.split(".png")[0] + "_angle.png", dpi = 300)
+    # plt.savefig(path + filename.split(".png")[0] + "_angle.png", dpi = 300)
     plt.show()
 
 
 def drawImage(path, filename, draw, point):
     cv2.line(draw, (point[0], point[1]), (point[0], point[1]), (255, 0, 0), 5)
-    # cv2.imshow("result", draw)
-    cv2.imwrite(path + filename.split(".png")[0] + "_result.png", draw)
+    cv2.imshow("result", draw)
+    # cv2.imwrite(path + filename.split(".png")[0] + "_result.png", draw)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
