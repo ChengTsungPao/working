@@ -127,24 +127,24 @@ def getAngleMag(Gradient):
 
 def plotResult(path, filename, result):
     
-    plt.subplot(211)
-    plt.title("result")
-    plt.xlabel("index of point")
-    plt.ylabel("degree")
-    plt.plot(list(range(len(result))), result)
+    # plt.subplot(211)
+    # plt.title("angle")
+    # plt.xlabel("index of point")
+    # plt.ylabel("degree")
+    # plt.plot(list(range(len(result))), result)
     
-    plt.subplot(212)
-    plt.title("dev result")
+    # plt.subplot(212)
+    plt.title("dev angle")
     plt.xlabel("index of point")
     plt.ylabel("degree")
     plt.plot(list(range(len(result) - 1)), np.abs(result[:-1] - result[1:]))
-    # plt.savefig(path + filename.split(".png")[0] + "_angle.png", dpi = 300)
+    plt.savefig(path + filename.split(".png")[0] + "_angle.png", dpi = 300)
     plt.show()
 
 
 def drawImage(path, filename, draw, point):
     cv2.line(draw, (point[0], point[1]), (point[0], point[1]), (255, 0, 0), 5)
     cv2.imshow("result", draw)
-    # cv2.imwrite(path + filename.split(".png")[0] + "_result.png", draw)
+    cv2.imwrite(path + filename.split(".png")[0] + "_result.png", draw)
     cv2.waitKey(0)
     cv2.destroyAllWindows()

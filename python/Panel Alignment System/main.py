@@ -13,14 +13,14 @@ if __name__ == "__main__":
     #         if filename.split(".png")[0][-1] == "L":
     #             findContour(path, filename, light, filename.split(".png")[0][-1])
     
-    index = 6
+    index = 10
 
-    light = 150
-    degree = 1
-    imageType = "R"
+    light = 100
+    degree = 2.5
+    imageType = "L"
 
     path = "./Test Image_20210913/M3mm_Deg{}_Bri{}/".format(str(degree), str(light))
-    filename = "cal_{}_{}.png".format(str(index), str(imageType))
+    filename = "cal_{}_{}.png".format(str(index), imageType)
     
 
     findContour(path, filename, light, imageType)
