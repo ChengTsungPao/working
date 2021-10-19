@@ -56,16 +56,11 @@ def findContour(path, filename, light, imageType = "L"):
     Gradient, data = getGradient(originImage, contour, imageType)
     mag, angle = getAngleMag(Gradient)
 
-<<<<<<< HEAD
 
     plt.plot(list(range(len(Gradient))), Gradient, "-o")
     plt.show()
 
     plotResult(path, filename, angle)
-=======
-    plotAngle(path, filename, angle)
-    plotMag(path, filename, mag)
->>>>>>> 3d6ab995f36200c8fa0c9cd3115ac375bb6d6bf4
 
     # index = 548
     # index = int(input("index = "))
@@ -168,45 +163,15 @@ def plotAngle(path, filename, angle):
     plt.title("angle")
     plt.xlabel("index of point")
     plt.ylabel("degree")
-<<<<<<< HEAD
     plt.plot(list(range(len(result))), result)
-=======
-    plt.plot(list(range(len(angle))), angle)
->>>>>>> 3d6ab995f36200c8fa0c9cd3115ac375bb6d6bf4
     
     plt.subplot(212)
     plt.title("dev angle")
     plt.xlabel("index of point")
     plt.ylabel("degree")
-<<<<<<< HEAD
     plt.plot(list(range(len(result) - 1)), np.abs(result[:-1] - result[1:]))
     # plt.savefig(path + filename.split(".png")[0] + "_angle.png", dpi = 300)
     plt.show()
-=======
-    plt.plot(list(range(len(angle) - 1)), np.abs(angle[:-1] - angle[1:]))
-    # plt.scatter(list(range(len(angle) - 1)), np.abs(angle[:-1] - angle[1:]), s=1)
-    plt.savefig(path + filename.split(".png")[0] + "_angle.png", dpi = 300)
-    # plt.show()
-    plt.clf()
-
-def plotMag(path, filename, mag):
-    
-    plt.subplot(211)
-    plt.title("magnitude")
-    plt.xlabel("index of point")
-    plt.ylabel("magnitude")
-    plt.plot(list(range(len(mag))), mag)
-    
-    plt.subplot(212)
-    plt.title("dev magnitude")
-    plt.xlabel("index of point")
-    plt.ylabel("magnitude")
-    plt.plot(list(range(len(mag) - 1)), np.abs(mag[:-1] - mag[1:]))
-    # plt.scatter(list(range(len(mag) - 1)), np.abs(mag[:-1] - mag[1:]), s=1)
-    plt.savefig(path + filename.split(".png")[0] + "_mag.png", dpi = 300)
-    # plt.show()
-    plt.clf()
->>>>>>> 3d6ab995f36200c8fa0c9cd3115ac375bb6d6bf4
 
 
 def drawImage(path, filename, draw, point):
