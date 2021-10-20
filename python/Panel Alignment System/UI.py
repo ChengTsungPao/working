@@ -75,6 +75,7 @@ class Ui_MainWindow(object):
             self.path = path
             self.image = cv2.imread(self.path)
             self.originImageLabel.setPixmap(QPixmap(self.path))
+            self.originImageLabel.setScaledContents(True)
             self.originImageLabel.setAlignment(Qt.AlignCenter)
 
     def calculate(self):
@@ -115,7 +116,7 @@ class Ui_MainWindow(object):
         self.plotMagnitudeLabel.setAlignment(Qt.AlignCenter)
         self.plotAngleLabel.setPixmap(QPixmap(path + "Angle.png"))
         self.plotAngleLabel.setAlignment(Qt.AlignCenter)
-        
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
