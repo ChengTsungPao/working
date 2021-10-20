@@ -2,15 +2,8 @@ import cv2
 import numpy as np
 from glob import glob
 
-def corner_detection(image):
-    detect_image = cv2.findChessboardCorners(image, (11, 8), cv2.CALIB_CB_ADAPTIVE_THRESH)
-    print(detect_image)
-    # cv2.imshow("detect_image", detect_image)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
 
-
-def calibrate(path, visiable = True):
+def corner_detection(path, visiable = True):
     '''
     read the calibration image and do the camera calibration
     and output the result to a pickle file.

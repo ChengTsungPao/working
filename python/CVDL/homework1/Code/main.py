@@ -1,4 +1,4 @@
-from Corner_Detection import corner_detection, calibrate
+from Corner_Detection import corner_detection
 import cv2
 import numpy as np
 
@@ -7,20 +7,21 @@ if __name__ == "__main__":
     problem = 1
     index = 1
 
-    path = "D://program//private//working//python//CVDL//homework1//Dataset_CvDl_Hw1//Q{}_Image//".format(problem)
+    path = "..//Dataset_CvDl_Hw1//Q{}_Image//".format(problem)
     filename = "{}.bmp".format(index)
 
     image = cv2.imread(path + filename)
     # corner_detection(image)
 
-    intrinsicMatrix, translations, rotations = calibrate(path, False)
+    intrinsicMatrix, translations, rotations = corner_detection(path, True)
     print("#########################################################")
-    print("intrinsicMatrix = ")
+    print("intrinsic matrix = ")
     print(intrinsicMatrix)
 
     print(rotations)
 
     print("#########################################################")
+    print("extrinsic matrix = ")
     extrinsicMatrix = [] 
     for i in range(len(translations)):
         extrinsicMatrix.append(np.concatenate((rotations[i], translations[i]), axis = 1))
