@@ -5,18 +5,22 @@ import matplotlib.pylab as plt
 import os
 import cv2
 
+from PyQt5 import QtCore, QtGui, QtWidgets
+from UI import Ui_MainWindow
+import sys, os
+
 if __name__ == "__main__":
-    # paths = glob("./Test Image_20210913/M3mm*")
-    # paths = ["./Test Image_20210913\\M3mm_Deg2.5_Bri150"]
-    # for path in paths:
-    #     light = int(path.split("Bri")[-1])
-    #     path += "//"
-    #     files = os.listdir(path)
-    #     for filename in files:
-    #         if filename.split(".png")[0][-1] == "L":
-    #             imageProcessing(image, light, imageType, False)
-    #             findContour(path, filename, light, filename.split(".png")[0][-1])
     
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    ui.loadButton.clicked.connect(ui.loadImage)
+    ui.calculateButton.clicked.connect(ui.calculate)
+    sys.exit(app.exec_())
+
+    '''
     index = 5
 
     light = 100
@@ -45,4 +49,15 @@ if __name__ == "__main__":
     plt.subplot(224)
     plotResult("Angle", "index of point", "degree", angle)
     plt.show()
-    
+    '''
+
+    # paths = glob("./Test Image_20210913/M3mm*")
+    # paths = ["./Test Image_20210913\\M3mm_Deg2.5_Bri150"]
+    # for path in paths:
+    #     light = int(path.split("Bri")[-1])
+    #     path += "//"
+    #     files = os.listdir(path)
+    #     for filename in files:
+    #         if filename.split(".png")[0][-1] == "L":
+    #             image = cv2.imread(path + filename)
+    #             imageProcessing(image, light, imageType)
