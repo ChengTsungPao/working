@@ -13,7 +13,7 @@ if __name__ == "__main__":
     #         if filename.split(".png")[0][-1] == "L":
     #             findContour(path, filename, light, filename.split(".png")[0][-1])
     
-    index = 10
+    index = 5
 
     light = 100
     degree = 2.5
