@@ -1,4 +1,5 @@
 from Corner_Detection import corner_detection
+from Stereo_Disparity_Map import stereo_disparity_map
 import cv2
 import numpy as np
 
@@ -28,12 +29,14 @@ if __name__ == "__main__":
     # extrinsicMatrix = np.array(extrinsicMatrix)
     # print(extrinsicMatrix)
 
-    corner_detection_fcn = corner_detection()
-    corner_detection_fcn.find_corners(path, True)
-    corner_detection_fcn.find_intrinsic()
-    corner_detection_fcn.find_extrinsic(1)
-    corner_detection_fcn.find_distortion()
-    corner_detection_fcn.show(path)
+    # corner_detection_fcn = corner_detection()
+    # corner_detection_fcn.find_corners(path, True)
+    # corner_detection_fcn.find_intrinsic()
+    # corner_detection_fcn.find_extrinsic(1)
+    # corner_detection_fcn.find_distortion()
+    # corner_detection_fcn.show(path)
 
 
-
+    path = "..//Dataset_CvDl_Hw1//Q{}_Image//".format(problem)
+    stereo_disparity_map_fcn = stereo_disparity_map()
+    stereo_disparity_map_fcn.stereo_disparity_map(path)
