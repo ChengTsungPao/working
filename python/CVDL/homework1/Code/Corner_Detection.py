@@ -54,7 +54,7 @@ class corner_detection():
                     cv2.drawChessboardCorners(img, (nx,ny), corners, ret)
 
                     shape = np.shape(img)
-                    image = cv2.resize(img, (shape[1] // 2, shape[0] // 2), interpolation=cv2.INTER_AREA)
+                    image = cv2.resize(img, (shape[1] // 3, shape[0] // 3), interpolation=cv2.INTER_AREA)
 
                     write_name = 'corners_found'+str(idx + 1)+'.jpg'
                     cv2.imwrite(path + write_name, image)
@@ -96,22 +96,23 @@ class corner_detection():
         print("distortion matrix = ")
         print(self.distortion)
 
-    def show(self):
+    def show(self, path):
         if self.isCal == False:
             return
 
         for idx, image in enumerate(self.images):
             h, w = image.shape[:2]
             newCameraMatrix, (x, y, w, h) = cv2.getOptimalNewCameraMatrix(self.intrinsic, self.distortion, (h, w), 1, (h, w))
-            dst = cv2.undistort(image, self.intrinsic, self.distortion, None, newCameraMatrix)
-            cv2.imwrite('calibresult.png', dst)
-            break
-            # mapx, mapy = cv2.initUndistortRectifyMap(self.intrinsic, self.distortion, self.rotations[idx], newCameraMatrix, (h, w), cv2.CV_32FC1)
-
-            # mapx, mapy = cv2.initUndistortRectifyMap(self.intrinsic, dist, None, newCameraMatrix, (w, h), 5)
-            # dst = cv2.remap(image, mapx, mapy, cv2.INTER_LINEAR)
-            # cv2.imwrite('calibresult.png', dst)
-
-            # print(dst)
+            undistortImage = cv2.undistort(image, self.intrinsic, self.distortion, None, newCameraMatrix)
+            
+            showResult = np.concatenate((image, undistortImage), axis=1)
+            shape = np.shape(showResult)
+            showResult = cv2.resize(showResult, (shape[1] // 3, shape[0] // 3), interpolation=cv2.INTER_AREA)
+            
+            cv2.imwrite(path + 'undistortImage{}.png'.format(idx + 1), undistortImage)
+            cv2.imshow('distortImage & undistortImage', showResult)
+            cv2.waitKey(500)
+            # cv2.waitKey(0)
+            # cv2.destroyAllWindows()
 
 
