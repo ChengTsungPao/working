@@ -36,7 +36,8 @@ if __name__ == "__main__":
     # corner_detection_fcn.find_distortion()
     # corner_detection_fcn.show(path)
 
-
+    problem = 3
     path = "..//Dataset_CvDl_Hw1//Q{}_Image//".format(problem)
     stereo_disparity_map_fcn = stereo_disparity_map()
     stereo_disparity_map_fcn.stereo_disparity_map(path)
+    print(123)
