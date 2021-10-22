@@ -13,7 +13,7 @@ if __name__ == "__main__":
     image = cv2.imread(path + filename)
     # corner_detection(image)
 
-    intrinsicMatrix, translations, rotations = corner_detection(path, True)
+    intrinsicMatrix, translations, rotations = corner_detection(path, False)
     print("#########################################################")
     print("intrinsic matrix = ")
     print(intrinsicMatrix)
