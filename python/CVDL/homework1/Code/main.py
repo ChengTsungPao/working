@@ -32,6 +32,7 @@ if __name__ == "__main__":
     corner_detection_fcn.find_corners(path, True)
     corner_detection_fcn.find_intrinsic()
     corner_detection_fcn.find_extrinsic(1)
+    corner_detection_fcn.find_distortion()
     corner_detection_fcn.show()
 
 

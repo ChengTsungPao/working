@@ -1,8 +1,13 @@
 import cv2
 import numpy as np
 from glob import glob
+import copy
 
 class corner_detection():
+
+    def __init__(self):
+        self.isCal = False
+        self.images = []
 
     def find_corners(self, path, visiable):
         '''
@@ -21,6 +26,7 @@ class corner_detection():
         # Arrays to store object points and image points from all the images.
         objpoints = [] # 3d points in real world space
         imgpoints = [] # 2d pionts in image plane.
+        self.images = []
 
         # Make a list of calibration images
         
@@ -30,6 +36,8 @@ class corner_detection():
         # Step through the list and search for chessboard corners
         for idx, fname in enumerate(images):
             img = cv2.imread(fname)
+            self.images.append(copy.deepcopy(img))
+
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
             # Find the chessboard corners
@@ -59,14 +67,21 @@ class corner_detection():
         img_size = (img.shape[1],img.shape[0])
 
         # Do camera calibration given object points and image points
-        _, self.intrinsic, self.distortation, self.rotations, self.translations = cv2.calibrateCamera(objpoints, imgpoints, img_size, None, None)
-    
+        _, self.intrinsic, self.distortion, self.rotations, self.translations = cv2.calibrateCamera(objpoints, imgpoints, img_size, None, None)
+
+        self.isCal = True    
 
     def find_intrinsic(self):
+        if self.isCal == False:
+            return
+
         print("intrinsic matrix = ")
         print(self.intrinsic)
 
     def find_extrinsic(self, index):
+        if self.isCal == False:
+            return
+
         rotation, _ = cv2.Rodrigues(self.rotations[index])
         translation = self.translations[index]
         extrinsic = np.concatenate((rotation, translation), axis = 1)
@@ -74,7 +89,29 @@ class corner_detection():
         print("extrinsic matrix = ")
         print(extrinsic)
 
+    def find_distortion(self):
+        if self.isCal == False:
+            return
+
+        print("distortion matrix = ")
+        print(self.distortion)
+
     def show(self):
-        pass
+        if self.isCal == False:
+            return
+
+        for idx, image in enumerate(self.images):
+            h, w = image.shape[:2]
+            newCameraMatrix, (x, y, w, h) = cv2.getOptimalNewCameraMatrix(self.intrinsic, self.distortion, (h, w), 1, (h, w))
+            dst = cv2.undistort(image, self.intrinsic, self.distortion, None, newCameraMatrix)
+            cv2.imwrite('calibresult.png', dst)
+            break
+            # mapx, mapy = cv2.initUndistortRectifyMap(self.intrinsic, self.distortion, self.rotations[idx], newCameraMatrix, (h, w), cv2.CV_32FC1)
+
+            # mapx, mapy = cv2.initUndistortRectifyMap(self.intrinsic, dist, None, newCameraMatrix, (w, h), 5)
+            # dst = cv2.remap(image, mapx, mapy, cv2.INTER_LINEAR)
+            # cv2.imwrite('calibresult.png', dst)
+
+            # print(dst)
 
 
