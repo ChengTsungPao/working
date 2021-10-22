@@ -10,23 +10,29 @@ if __name__ == "__main__":
     path = "..//Dataset_CvDl_Hw1//Q{}_Image//".format(problem)
     filename = "{}.bmp".format(index)
 
-    image = cv2.imread(path + filename)
-    # corner_detection(image)
+    # image = cv2.imread(path + filename)
+    # # corner_detection(image)
 
-    intrinsicMatrix, translations, rotations = corner_detection(path, False)
-    print("#########################################################")
-    print("intrinsic matrix = ")
-    print(intrinsicMatrix)
+    # intrinsicMatrix, translations, rotations = corner_detection(path, True)
+    # print("#########################################################")
+    # print("intrinsic matrix = ")
+    # print(intrinsicMatrix)
 
-    print(rotations)
+    # print("#########################################################")
+    # print("extrinsic matrix = ")
+    # extrinsicMatrix = [] 
+    # for i in range(len(translations)):
+    #     rotationMatrix, _ = cv2.Rodrigues(rotations[i])
+    #     translationMatrix = translations[i]
+    #     extrinsicMatrix.append(np.concatenate((rotationMatrix, translationMatrix), axis = 1))
+    # extrinsicMatrix = np.array(extrinsicMatrix)
+    # print(extrinsicMatrix)
 
-    print("#########################################################")
-    print("extrinsic matrix = ")
-    extrinsicMatrix = [] 
-    for i in range(len(translations)):
-        extrinsicMatrix.append(np.concatenate((rotations[i], translations[i]), axis = 1))
-        print(extrinsicMatrix[-1])
-    extrinsicMatrix = np.array(extrinsicMatrix)
+    corner_detection_fcn = corner_detection()
+    corner_detection_fcn.find_corners(path, True)
+    corner_detection_fcn.find_intrinsic()
+    corner_detection_fcn.find_extrinsic(1)
+    corner_detection_fcn.show()
 
 
 
