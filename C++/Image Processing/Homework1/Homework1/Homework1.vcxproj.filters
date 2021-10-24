@@ -77,6 +77,9 @@
     <ClInclude Include="Histogram_Equalization.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
+    <ClInclude Include="Image_Registration.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MyForm.resx">

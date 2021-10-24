@@ -1,6 +1,7 @@
 #include "Function.h"
 #include "Variable.h"
 #include "Smooth_Filter.h"
+#include "Image_Registration.h"
 #include "Connected_Component.h"
 #include "Define_Thresholding.h"
 #include "Histogram_Equalization.h"
@@ -8,9 +9,11 @@
 #include "Sobel_Threshold_Combine.h"
 #include "RGB_Extraction_Transformation.h"
 
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cmath>
 #include <map>
 
 namespace Homework1 {
@@ -162,9 +165,10 @@ namespace Homework1 {
 			// 
 			// button_load
 			// 
-			this->button_load->Location = System::Drawing::Point(1295, 904);
+			this->button_load->Location = System::Drawing::Point(971, 723);
+			this->button_load->Margin = System::Windows::Forms::Padding(2);
 			this->button_load->Name = L"button_load";
-			this->button_load->Size = System::Drawing::Size(197, 52);
+			this->button_load->Size = System::Drawing::Size(148, 42);
 			this->button_load->TabIndex = 0;
 			this->button_load->Text = L"Load";
 			this->button_load->UseVisualStyleBackColor = true;
@@ -172,9 +176,10 @@ namespace Homework1 {
 			// 
 			// button_rgb_extraction
 			// 
-			this->button_rgb_extraction->Location = System::Drawing::Point(1295, 58);
+			this->button_rgb_extraction->Location = System::Drawing::Point(971, 46);
+			this->button_rgb_extraction->Margin = System::Windows::Forms::Padding(2);
 			this->button_rgb_extraction->Name = L"button_rgb_extraction";
-			this->button_rgb_extraction->Size = System::Drawing::Size(399, 43);
+			this->button_rgb_extraction->Size = System::Drawing::Size(299, 34);
 			this->button_rgb_extraction->TabIndex = 1;
 			this->button_rgb_extraction->Text = L"RGB Extraction";
 			this->button_rgb_extraction->UseVisualStyleBackColor = true;
@@ -183,28 +188,33 @@ namespace Homework1 {
 			// pictureBox_before_image
 			// 
 			this->pictureBox_before_image->BackColor = System::Drawing::SystemColors::ControlLightLight;
-			this->pictureBox_before_image->Location = System::Drawing::Point(25, 58);
+			this->pictureBox_before_image->Location = System::Drawing::Point(19, 46);
+			this->pictureBox_before_image->Margin = System::Windows::Forms::Padding(2);
 			this->pictureBox_before_image->Name = L"pictureBox_before_image";
-			this->pictureBox_before_image->Size = System::Drawing::Size(600, 422);
+			this->pictureBox_before_image->Size = System::Drawing::Size(450, 338);
 			this->pictureBox_before_image->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
 			this->pictureBox_before_image->TabIndex = 2;
 			this->pictureBox_before_image->TabStop = false;
+			this->pictureBox_before_image->Click += gcnew System::EventHandler(this, &MyForm::pictureBox_before_image_Click);
 			// 
 			// pictureBox_after_image
 			// 
 			this->pictureBox_after_image->BackColor = System::Drawing::SystemColors::ControlLightLight;
-			this->pictureBox_after_image->Location = System::Drawing::Point(657, 58);
+			this->pictureBox_after_image->Location = System::Drawing::Point(493, 46);
+			this->pictureBox_after_image->Margin = System::Windows::Forms::Padding(2);
 			this->pictureBox_after_image->Name = L"pictureBox_after_image";
-			this->pictureBox_after_image->Size = System::Drawing::Size(600, 422);
+			this->pictureBox_after_image->Size = System::Drawing::Size(450, 338);
 			this->pictureBox_after_image->SizeMode = System::Windows::Forms::PictureBoxSizeMode::Zoom;
 			this->pictureBox_after_image->TabIndex = 3;
 			this->pictureBox_after_image->TabStop = false;
+			this->pictureBox_after_image->Click += gcnew System::EventHandler(this, &MyForm::pictureBox_after_image_Click);
 			// 
 			// button_undo
 			// 
-			this->button_undo->Location = System::Drawing::Point(1497, 904);
+			this->button_undo->Location = System::Drawing::Point(1123, 723);
+			this->button_undo->Margin = System::Windows::Forms::Padding(2);
 			this->button_undo->Name = L"button_undo";
-			this->button_undo->Size = System::Drawing::Size(197, 52);
+			this->button_undo->Size = System::Drawing::Size(148, 42);
 			this->button_undo->TabIndex = 4;
 			this->button_undo->Text = L"Undo";
 			this->button_undo->UseVisualStyleBackColor = true;
@@ -213,6 +223,7 @@ namespace Homework1 {
 			// openImageWindow
 			// 
 			this->openImageWindow->FileName = L"openImageWindow";
+			this->openImageWindow->Multiselect = true;
 			// 
 			// chart_before_histogram
 			// 
@@ -220,14 +231,15 @@ namespace Homework1 {
 			this->chart_before_histogram->ChartAreas->Add(chartArea1);
 			legend1->Name = L"Legend1";
 			this->chart_before_histogram->Legends->Add(legend1);
-			this->chart_before_histogram->Location = System::Drawing::Point(25, 534);
+			this->chart_before_histogram->Location = System::Drawing::Point(19, 427);
+			this->chart_before_histogram->Margin = System::Windows::Forms::Padding(2);
 			this->chart_before_histogram->Name = L"chart_before_histogram";
 			series1->ChartArea = L"ChartArea1";
 			series1->IsVisibleInLegend = false;
 			series1->Legend = L"Legend1";
 			series1->Name = L"histogram";
 			this->chart_before_histogram->Series->Add(series1);
-			this->chart_before_histogram->Size = System::Drawing::Size(600, 422);
+			this->chart_before_histogram->Size = System::Drawing::Size(450, 338);
 			this->chart_before_histogram->TabIndex = 5;
 			// 
 			// chart_after_histogram
@@ -236,21 +248,23 @@ namespace Homework1 {
 			this->chart_after_histogram->ChartAreas->Add(chartArea2);
 			legend2->Name = L"Legend1";
 			this->chart_after_histogram->Legends->Add(legend2);
-			this->chart_after_histogram->Location = System::Drawing::Point(657, 534);
+			this->chart_after_histogram->Location = System::Drawing::Point(493, 427);
+			this->chart_after_histogram->Margin = System::Windows::Forms::Padding(2);
 			this->chart_after_histogram->Name = L"chart_after_histogram";
 			series2->ChartArea = L"ChartArea1";
 			series2->IsVisibleInLegend = false;
 			series2->Legend = L"Legend1";
 			series2->Name = L"histogram";
 			this->chart_after_histogram->Series->Add(series2);
-			this->chart_after_histogram->Size = System::Drawing::Size(600, 422);
+			this->chart_after_histogram->Size = System::Drawing::Size(450, 338);
 			this->chart_after_histogram->TabIndex = 6;
 			// 
 			// button_smooth_filter
 			// 
-			this->button_smooth_filter->Location = System::Drawing::Point(1295, 205);
+			this->button_smooth_filter->Location = System::Drawing::Point(971, 164);
+			this->button_smooth_filter->Margin = System::Windows::Forms::Padding(2);
 			this->button_smooth_filter->Name = L"button_smooth_filter";
-			this->button_smooth_filter->Size = System::Drawing::Size(399, 43);
+			this->button_smooth_filter->Size = System::Drawing::Size(299, 34);
 			this->button_smooth_filter->TabIndex = 10;
 			this->button_smooth_filter->Text = L"Smooth filter";
 			this->button_smooth_filter->UseVisualStyleBackColor = true;
@@ -258,9 +272,10 @@ namespace Homework1 {
 			// 
 			// button_histogram_equalization
 			// 
-			this->button_histogram_equalization->Location = System::Drawing::Point(1295, 323);
+			this->button_histogram_equalization->Location = System::Drawing::Point(971, 258);
+			this->button_histogram_equalization->Margin = System::Windows::Forms::Padding(2);
 			this->button_histogram_equalization->Name = L"button_histogram_equalization";
-			this->button_histogram_equalization->Size = System::Drawing::Size(399, 43);
+			this->button_histogram_equalization->Size = System::Drawing::Size(299, 34);
 			this->button_histogram_equalization->TabIndex = 14;
 			this->button_histogram_equalization->Text = L"Histogram Equalization";
 			this->button_histogram_equalization->UseVisualStyleBackColor = true;
@@ -268,9 +283,10 @@ namespace Homework1 {
 			// 
 			// button_defined_thresholding
 			// 
-			this->button_defined_thresholding->Location = System::Drawing::Point(1295, 381);
+			this->button_defined_thresholding->Location = System::Drawing::Point(971, 305);
+			this->button_defined_thresholding->Margin = System::Windows::Forms::Padding(2);
 			this->button_defined_thresholding->Name = L"button_defined_thresholding";
-			this->button_defined_thresholding->Size = System::Drawing::Size(399, 43);
+			this->button_defined_thresholding->Size = System::Drawing::Size(299, 34);
 			this->button_defined_thresholding->TabIndex = 15;
 			this->button_defined_thresholding->Text = L"Defined Thresholding";
 			this->button_defined_thresholding->UseVisualStyleBackColor = true;
@@ -278,9 +294,10 @@ namespace Homework1 {
 			// 
 			// button_sobel_edge_detection
 			// 
-			this->button_sobel_edge_detection->Location = System::Drawing::Point(1295, 491);
+			this->button_sobel_edge_detection->Location = System::Drawing::Point(971, 393);
+			this->button_sobel_edge_detection->Margin = System::Windows::Forms::Padding(2);
 			this->button_sobel_edge_detection->Name = L"button_sobel_edge_detection";
-			this->button_sobel_edge_detection->Size = System::Drawing::Size(399, 43);
+			this->button_sobel_edge_detection->Size = System::Drawing::Size(299, 34);
 			this->button_sobel_edge_detection->TabIndex = 16;
 			this->button_sobel_edge_detection->Text = L"Sobel Edge Detection";
 			this->button_sobel_edge_detection->UseVisualStyleBackColor = true;
@@ -288,9 +305,10 @@ namespace Homework1 {
 			// 
 			// button_sobel_threshold_combined
 			// 
-			this->button_sobel_threshold_combined->Location = System::Drawing::Point(1295, 606);
+			this->button_sobel_threshold_combined->Location = System::Drawing::Point(971, 485);
+			this->button_sobel_threshold_combined->Margin = System::Windows::Forms::Padding(2);
 			this->button_sobel_threshold_combined->Name = L"button_sobel_threshold_combined";
-			this->button_sobel_threshold_combined->Size = System::Drawing::Size(399, 43);
+			this->button_sobel_threshold_combined->Size = System::Drawing::Size(299, 34);
 			this->button_sobel_threshold_combined->TabIndex = 20;
 			this->button_sobel_threshold_combined->Text = L"Sobel Threshold Combined";
 			this->button_sobel_threshold_combined->UseVisualStyleBackColor = true;
@@ -298,9 +316,10 @@ namespace Homework1 {
 			// 
 			// button_connected_component
 			// 
-			this->button_connected_component->Location = System::Drawing::Point(1295, 666);
+			this->button_connected_component->Location = System::Drawing::Point(971, 533);
+			this->button_connected_component->Margin = System::Windows::Forms::Padding(2);
 			this->button_connected_component->Name = L"button_connected_component";
-			this->button_connected_component->Size = System::Drawing::Size(399, 43);
+			this->button_connected_component->Size = System::Drawing::Size(299, 34);
 			this->button_connected_component->TabIndex = 21;
 			this->button_connected_component->Text = L"Connected Component";
 			this->button_connected_component->UseVisualStyleBackColor = true;
@@ -308,9 +327,10 @@ namespace Homework1 {
 			// 
 			// button_image_registration
 			// 
-			this->button_image_registration->Location = System::Drawing::Point(1295, 784);
+			this->button_image_registration->Location = System::Drawing::Point(971, 627);
+			this->button_image_registration->Margin = System::Windows::Forms::Padding(2);
 			this->button_image_registration->Name = L"button_image_registration";
-			this->button_image_registration->Size = System::Drawing::Size(399, 43);
+			this->button_image_registration->Size = System::Drawing::Size(299, 34);
 			this->button_image_registration->TabIndex = 22;
 			this->button_image_registration->Text = L"Image Registration";
 			this->button_image_registration->UseVisualStyleBackColor = true;
@@ -319,72 +339,80 @@ namespace Homework1 {
 			// label_scaling
 			// 
 			this->label_scaling->AutoSize = true;
-			this->label_scaling->Location = System::Drawing::Point(6, 29);
+			this->label_scaling->Location = System::Drawing::Point(4, 23);
+			this->label_scaling->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label_scaling->Name = L"label_scaling";
-			this->label_scaling->Size = System::Drawing::Size(71, 15);
+			this->label_scaling->Size = System::Drawing::Size(56, 12);
 			this->label_scaling->TabIndex = 23;
 			this->label_scaling->Text = L"Scaling = \?";
 			// 
 			// label_theta
 			// 
 			this->label_theta->AutoSize = true;
-			this->label_theta->Location = System::Drawing::Point(127, 29);
+			this->label_theta->Location = System::Drawing::Point(95, 23);
+			this->label_theta->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label_theta->Name = L"label_theta";
-			this->label_theta->Size = System::Drawing::Size(61, 15);
+			this->label_theta->Size = System::Drawing::Size(48, 12);
 			this->label_theta->TabIndex = 24;
 			this->label_theta->Text = L"Theta = \?";
 			// 
 			// label_difference
 			// 
 			this->label_difference->AutoSize = true;
-			this->label_difference->Location = System::Drawing::Point(240, 29);
+			this->label_difference->Location = System::Drawing::Point(180, 23);
+			this->label_difference->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label_difference->Name = L"label_difference";
-			this->label_difference->Size = System::Drawing::Size(89, 15);
+			this->label_difference->Size = System::Drawing::Size(71, 12);
 			this->label_difference->TabIndex = 25;
 			this->label_difference->Text = L"Difference = \?";
 			// 
 			// label_before_image
 			// 
 			this->label_before_image->AutoSize = true;
-			this->label_before_image->Location = System::Drawing::Point(260, 31);
+			this->label_before_image->Location = System::Drawing::Point(195, 25);
+			this->label_before_image->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label_before_image->Name = L"label_before_image";
-			this->label_before_image->Size = System::Drawing::Size(84, 15);
+			this->label_before_image->Size = System::Drawing::Size(69, 12);
 			this->label_before_image->TabIndex = 26;
 			this->label_before_image->Text = L"Before Image";
 			// 
 			// label_after_image
 			// 
 			this->label_after_image->AutoSize = true;
-			this->label_after_image->Location = System::Drawing::Point(921, 31);
+			this->label_after_image->Location = System::Drawing::Point(691, 25);
+			this->label_after_image->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label_after_image->Name = L"label_after_image";
-			this->label_after_image->Size = System::Drawing::Size(76, 15);
+			this->label_after_image->Size = System::Drawing::Size(61, 12);
 			this->label_after_image->TabIndex = 27;
 			this->label_after_image->Text = L"After Image";
 			// 
 			// label_before_histogram
 			// 
 			this->label_before_histogram->AutoSize = true;
-			this->label_before_histogram->Location = System::Drawing::Point(247, 505);
+			this->label_before_histogram->Location = System::Drawing::Point(185, 404);
+			this->label_before_histogram->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label_before_histogram->Name = L"label_before_histogram";
-			this->label_before_histogram->Size = System::Drawing::Size(108, 15);
+			this->label_before_histogram->Size = System::Drawing::Size(88, 12);
 			this->label_before_histogram->TabIndex = 28;
 			this->label_before_histogram->Text = L"Before Histogram";
 			// 
 			// label_after_histogram
 			// 
 			this->label_after_histogram->AutoSize = true;
-			this->label_after_histogram->Location = System::Drawing::Point(907, 505);
+			this->label_after_histogram->Location = System::Drawing::Point(680, 404);
+			this->label_after_histogram->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label_after_histogram->Name = L"label_after_histogram";
-			this->label_after_histogram->Size = System::Drawing::Size(100, 15);
+			this->label_after_histogram->Size = System::Drawing::Size(80, 12);
 			this->label_after_histogram->TabIndex = 29;
 			this->label_after_histogram->Text = L"After Histogram";
 			// 
 			// radioButton_r_channel
 			// 
 			this->radioButton_r_channel->AutoSize = true;
-			this->radioButton_r_channel->Location = System::Drawing::Point(10, 24);
+			this->radioButton_r_channel->Location = System::Drawing::Point(8, 19);
+			this->radioButton_r_channel->Margin = System::Windows::Forms::Padding(2);
 			this->radioButton_r_channel->Name = L"radioButton_r_channel";
-			this->radioButton_r_channel->Size = System::Drawing::Size(87, 19);
+			this->radioButton_r_channel->Size = System::Drawing::Size(73, 16);
 			this->radioButton_r_channel->TabIndex = 30;
 			this->radioButton_r_channel->TabStop = true;
 			this->radioButton_r_channel->Text = L"R Channel";
@@ -393,9 +421,10 @@ namespace Homework1 {
 			// radioButton_g_channel
 			// 
 			this->radioButton_g_channel->AutoSize = true;
-			this->radioButton_g_channel->Location = System::Drawing::Point(135, 24);
+			this->radioButton_g_channel->Location = System::Drawing::Point(101, 19);
+			this->radioButton_g_channel->Margin = System::Windows::Forms::Padding(2);
 			this->radioButton_g_channel->Name = L"radioButton_g_channel";
-			this->radioButton_g_channel->Size = System::Drawing::Size(88, 19);
+			this->radioButton_g_channel->Size = System::Drawing::Size(73, 16);
 			this->radioButton_g_channel->TabIndex = 31;
 			this->radioButton_g_channel->TabStop = true;
 			this->radioButton_g_channel->Text = L"G Channel";
@@ -407,18 +436,21 @@ namespace Homework1 {
 			this->groupBox_rgb_extraction->Controls->Add(this->radioButton_grayscale);
 			this->groupBox_rgb_extraction->Controls->Add(this->radioButton_g_channel);
 			this->groupBox_rgb_extraction->Controls->Add(this->radioButton_b_channel);
-			this->groupBox_rgb_extraction->Location = System::Drawing::Point(1295, 103);
+			this->groupBox_rgb_extraction->Location = System::Drawing::Point(971, 82);
+			this->groupBox_rgb_extraction->Margin = System::Windows::Forms::Padding(2);
 			this->groupBox_rgb_extraction->Name = L"groupBox_rgb_extraction";
-			this->groupBox_rgb_extraction->Size = System::Drawing::Size(399, 91);
+			this->groupBox_rgb_extraction->Padding = System::Windows::Forms::Padding(2);
+			this->groupBox_rgb_extraction->Size = System::Drawing::Size(299, 73);
 			this->groupBox_rgb_extraction->TabIndex = 32;
 			this->groupBox_rgb_extraction->TabStop = false;
 			// 
 			// radioButton_grayscale
 			// 
 			this->radioButton_grayscale->AutoSize = true;
-			this->radioButton_grayscale->Location = System::Drawing::Point(135, 49);
+			this->radioButton_grayscale->Location = System::Drawing::Point(101, 39);
+			this->radioButton_grayscale->Margin = System::Windows::Forms::Padding(2);
 			this->radioButton_grayscale->Name = L"radioButton_grayscale";
-			this->radioButton_grayscale->Size = System::Drawing::Size(83, 19);
+			this->radioButton_grayscale->Size = System::Drawing::Size(68, 16);
 			this->radioButton_grayscale->TabIndex = 34;
 			this->radioButton_grayscale->TabStop = true;
 			this->radioButton_grayscale->Text = L"Grayscale";
@@ -427,9 +459,10 @@ namespace Homework1 {
 			// radioButton_b_channel
 			// 
 			this->radioButton_b_channel->AutoSize = true;
-			this->radioButton_b_channel->Location = System::Drawing::Point(10, 49);
+			this->radioButton_b_channel->Location = System::Drawing::Point(8, 39);
+			this->radioButton_b_channel->Margin = System::Windows::Forms::Padding(2);
 			this->radioButton_b_channel->Name = L"radioButton_b_channel";
-			this->radioButton_b_channel->Size = System::Drawing::Size(87, 19);
+			this->radioButton_b_channel->Size = System::Drawing::Size(73, 16);
 			this->radioButton_b_channel->TabIndex = 33;
 			this->radioButton_b_channel->TabStop = true;
 			this->radioButton_b_channel->Text = L"B Channel";
@@ -439,18 +472,21 @@ namespace Homework1 {
 			// 
 			this->groupBox_smooth_filter->Controls->Add(this->radioButton_mean);
 			this->groupBox_smooth_filter->Controls->Add(this->radioButton_median);
-			this->groupBox_smooth_filter->Location = System::Drawing::Point(1295, 250);
+			this->groupBox_smooth_filter->Location = System::Drawing::Point(971, 200);
+			this->groupBox_smooth_filter->Margin = System::Windows::Forms::Padding(2);
 			this->groupBox_smooth_filter->Name = L"groupBox_smooth_filter";
-			this->groupBox_smooth_filter->Size = System::Drawing::Size(399, 59);
+			this->groupBox_smooth_filter->Padding = System::Windows::Forms::Padding(2);
+			this->groupBox_smooth_filter->Size = System::Drawing::Size(299, 47);
 			this->groupBox_smooth_filter->TabIndex = 35;
 			this->groupBox_smooth_filter->TabStop = false;
 			// 
 			// radioButton_mean
 			// 
 			this->radioButton_mean->AutoSize = true;
-			this->radioButton_mean->Location = System::Drawing::Point(10, 24);
+			this->radioButton_mean->Location = System::Drawing::Point(8, 19);
+			this->radioButton_mean->Margin = System::Windows::Forms::Padding(2);
 			this->radioButton_mean->Name = L"radioButton_mean";
-			this->radioButton_mean->Size = System::Drawing::Size(60, 19);
+			this->radioButton_mean->Size = System::Drawing::Size(49, 16);
 			this->radioButton_mean->TabIndex = 30;
 			this->radioButton_mean->TabStop = true;
 			this->radioButton_mean->Text = L"Mean";
@@ -459,9 +495,10 @@ namespace Homework1 {
 			// radioButton_median
 			// 
 			this->radioButton_median->AutoSize = true;
-			this->radioButton_median->Location = System::Drawing::Point(135, 24);
+			this->radioButton_median->Location = System::Drawing::Point(101, 19);
+			this->radioButton_median->Margin = System::Windows::Forms::Padding(2);
 			this->radioButton_median->Name = L"radioButton_median";
-			this->radioButton_median->Size = System::Drawing::Size(71, 19);
+			this->radioButton_median->Size = System::Drawing::Size(58, 16);
 			this->radioButton_median->TabIndex = 30;
 			this->radioButton_median->TabStop = true;
 			this->radioButton_median->Text = L"Median";
@@ -470,9 +507,10 @@ namespace Homework1 {
 			// radioButton_vertical
 			// 
 			this->radioButton_vertical->AutoSize = true;
-			this->radioButton_vertical->Location = System::Drawing::Point(10, 24);
+			this->radioButton_vertical->Location = System::Drawing::Point(8, 19);
+			this->radioButton_vertical->Margin = System::Windows::Forms::Padding(2);
 			this->radioButton_vertical->Name = L"radioButton_vertical";
-			this->radioButton_vertical->Size = System::Drawing::Size(73, 19);
+			this->radioButton_vertical->Size = System::Drawing::Size(59, 16);
 			this->radioButton_vertical->TabIndex = 34;
 			this->radioButton_vertical->TabStop = true;
 			this->radioButton_vertical->Text = L"Vertical";
@@ -483,18 +521,21 @@ namespace Homework1 {
 			this->groupBox_sobel_edge_detection->Controls->Add(this->radioButton_combined);
 			this->groupBox_sobel_edge_detection->Controls->Add(this->radioButton_horizontal);
 			this->groupBox_sobel_edge_detection->Controls->Add(this->radioButton_vertical);
-			this->groupBox_sobel_edge_detection->Location = System::Drawing::Point(1295, 536);
+			this->groupBox_sobel_edge_detection->Location = System::Drawing::Point(971, 429);
+			this->groupBox_sobel_edge_detection->Margin = System::Windows::Forms::Padding(2);
 			this->groupBox_sobel_edge_detection->Name = L"groupBox_sobel_edge_detection";
-			this->groupBox_sobel_edge_detection->Size = System::Drawing::Size(399, 59);
+			this->groupBox_sobel_edge_detection->Padding = System::Windows::Forms::Padding(2);
+			this->groupBox_sobel_edge_detection->Size = System::Drawing::Size(299, 47);
 			this->groupBox_sobel_edge_detection->TabIndex = 36;
 			this->groupBox_sobel_edge_detection->TabStop = false;
 			// 
 			// radioButton_combined
 			// 
 			this->radioButton_combined->AutoSize = true;
-			this->radioButton_combined->Location = System::Drawing::Point(246, 24);
+			this->radioButton_combined->Location = System::Drawing::Point(184, 19);
+			this->radioButton_combined->Margin = System::Windows::Forms::Padding(2);
 			this->radioButton_combined->Name = L"radioButton_combined";
-			this->radioButton_combined->Size = System::Drawing::Size(86, 19);
+			this->radioButton_combined->Size = System::Drawing::Size(72, 16);
 			this->radioButton_combined->TabIndex = 35;
 			this->radioButton_combined->TabStop = true;
 			this->radioButton_combined->Text = L"Combined";
@@ -503,9 +544,10 @@ namespace Homework1 {
 			// radioButton_horizontal
 			// 
 			this->radioButton_horizontal->AutoSize = true;
-			this->radioButton_horizontal->Location = System::Drawing::Point(128, 24);
+			this->radioButton_horizontal->Location = System::Drawing::Point(96, 19);
+			this->radioButton_horizontal->Margin = System::Windows::Forms::Padding(2);
 			this->radioButton_horizontal->Name = L"radioButton_horizontal";
-			this->radioButton_horizontal->Size = System::Drawing::Size(88, 19);
+			this->radioButton_horizontal->Size = System::Drawing::Size(72, 16);
 			this->radioButton_horizontal->TabIndex = 34;
 			this->radioButton_horizontal->TabStop = true;
 			this->radioButton_horizontal->Text = L"Horizontal";
@@ -513,19 +555,21 @@ namespace Homework1 {
 			// 
 			// trackBar_defined_thresholding
 			// 
-			this->trackBar_defined_thresholding->Location = System::Drawing::Point(1295, 435);
+			this->trackBar_defined_thresholding->Location = System::Drawing::Point(971, 348);
+			this->trackBar_defined_thresholding->Margin = System::Windows::Forms::Padding(2);
 			this->trackBar_defined_thresholding->Maximum = 255;
 			this->trackBar_defined_thresholding->Name = L"trackBar_defined_thresholding";
-			this->trackBar_defined_thresholding->Size = System::Drawing::Size(399, 56);
+			this->trackBar_defined_thresholding->Size = System::Drawing::Size(299, 45);
 			this->trackBar_defined_thresholding->TabIndex = 38;
 			this->trackBar_defined_thresholding->Value = 200;
 			// 
 			// label_control
 			// 
 			this->label_control->AutoSize = true;
-			this->label_control->Location = System::Drawing::Point(1463, 31);
+			this->label_control->Location = System::Drawing::Point(1097, 25);
+			this->label_control->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label_control->Name = L"label_control";
-			this->label_control->Size = System::Drawing::Size(50, 15);
+			this->label_control->Size = System::Drawing::Size(41, 12);
 			this->label_control->TabIndex = 39;
 			this->label_control->Text = L"Control";
 			// 
@@ -534,35 +578,40 @@ namespace Homework1 {
 			this->groupBox_image_registration->Controls->Add(this->label_scaling);
 			this->groupBox_image_registration->Controls->Add(this->label_theta);
 			this->groupBox_image_registration->Controls->Add(this->label_difference);
-			this->groupBox_image_registration->Location = System::Drawing::Point(1295, 833);
+			this->groupBox_image_registration->Location = System::Drawing::Point(971, 666);
+			this->groupBox_image_registration->Margin = System::Windows::Forms::Padding(2);
 			this->groupBox_image_registration->Name = L"groupBox_image_registration";
-			this->groupBox_image_registration->Size = System::Drawing::Size(399, 59);
+			this->groupBox_image_registration->Padding = System::Windows::Forms::Padding(2);
+			this->groupBox_image_registration->Size = System::Drawing::Size(299, 47);
 			this->groupBox_image_registration->TabIndex = 40;
 			this->groupBox_image_registration->TabStop = false;
 			// 
 			// groupBox_connected_component
 			// 
 			this->groupBox_connected_component->Controls->Add(this->label_connected_component);
-			this->groupBox_connected_component->Location = System::Drawing::Point(1295, 712);
+			this->groupBox_connected_component->Location = System::Drawing::Point(971, 570);
+			this->groupBox_connected_component->Margin = System::Windows::Forms::Padding(2);
 			this->groupBox_connected_component->Name = L"groupBox_connected_component";
-			this->groupBox_connected_component->Size = System::Drawing::Size(399, 59);
+			this->groupBox_connected_component->Padding = System::Windows::Forms::Padding(2);
+			this->groupBox_connected_component->Size = System::Drawing::Size(299, 47);
 			this->groupBox_connected_component->TabIndex = 41;
 			this->groupBox_connected_component->TabStop = false;
 			// 
 			// label_connected_component
 			// 
 			this->label_connected_component->AutoSize = true;
-			this->label_connected_component->Location = System::Drawing::Point(7, 24);
+			this->label_connected_component->Location = System::Drawing::Point(5, 19);
+			this->label_connected_component->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label_connected_component->Name = L"label_connected_component";
-			this->label_connected_component->Size = System::Drawing::Size(223, 15);
+			this->label_connected_component->Size = System::Drawing::Size(184, 12);
 			this->label_connected_component->TabIndex = 23;
 			this->label_connected_component->Text = L"Number of Connected Component = \?";
 			// 
 			// MyForm
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(8, 15);
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(1727, 981);
+			this->ClientSize = System::Drawing::Size(1295, 785);
 			this->Controls->Add(this->groupBox_connected_component);
 			this->Controls->Add(this->groupBox_image_registration);
 			this->Controls->Add(this->label_control);
@@ -588,6 +637,7 @@ namespace Homework1 {
 			this->Controls->Add(this->pictureBox_before_image);
 			this->Controls->Add(this->button_rgb_extraction);
 			this->Controls->Add(this->button_load);
+			this->Margin = System::Windows::Forms::Padding(2);
 			this->Name = L"MyForm";
 			this->Text = L"MyForm";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
@@ -613,6 +663,11 @@ namespace Homework1 {
 #pragma endregion
 	private: Bitmap^ originImage;
 	private: Bitmap^ transferImage;
+	private: int* originPos = new int[4];
+	private: int* transferPos = new int[4];
+	private: int countOriginPoints;
+	private: int countTransferPoints;
+			 
 
 	//System::array<System::Drawing::Bitmap^>^ adf = gcnew System::array< System::Drawing::Bitmap^>(100);
 
@@ -622,10 +677,34 @@ namespace Homework1 {
 	}
 
 	private: System::Void button_load_handler(System::Object^  sender, System::EventArgs^  e) {
+
+		originPos = new int[4];
+		transferPos = new int[4];
+		countOriginPoints = 0;
+		countTransferPoints = 0;
+
+		int countFiles = 0;
+		string files[2];
+
 		if (openImageWindow->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
-			originImage = gcnew Bitmap(openImageWindow->FileName);
-			setPictureBox(pictureBox_before_image, originImage);
-			setPictureBox(pictureBox_after_image, nullptr);
+
+			for each(String^ file in openImageWindow->FileNames) {
+				files[countFiles] = stringTransfer(file);
+				countFiles += 1;
+			}
+
+			if (countFiles == 2) {
+				originImage = gcnew Bitmap(stringTransfer(files[1]));
+				transferImage = gcnew Bitmap(stringTransfer(files[0]));
+				setPictureBox(pictureBox_before_image, originImage);
+				setPictureBox(pictureBox_after_image, transferImage);
+			} else {
+				originImage = gcnew Bitmap(stringTransfer(files[0]));
+				setPictureBox(pictureBox_before_image, originImage);
+				setPictureBox(pictureBox_after_image, nullptr);
+			}
+			
+
 		}
 	}
 
@@ -771,10 +850,53 @@ namespace Homework1 {
 
 	private: System::Void button_image_registration_handler(System::Object^  sender, System::EventArgs^  e) {
 
-		if (isExist(originImage) == false) {
+		if (isExist(originImage) == false || isExist(transferImage) == false) {
 			return;
 		}
 
+		if (countOriginPoints != 4 || countTransferPoints != 4) {
+			return;
+		}
+
+		double originScale = min((double)(originImage->Width) / (double)(pictureBox_before_image->Width), (double)(originImage->Height) / (double)(pictureBox_before_image->Height));
+		double transferScale = min((double)(transferImage->Width) / (double)(pictureBox_after_image->Width), (double)(transferImage->Height) / (double)(pictureBox_after_image->Height));
+
+		cout << originScale << " " << transferScale << endl;
+		transferImage = image_registration(originImage, transferImage, originPos, transferPos, originScale, transferScale);
+		setPictureBox(pictureBox_after_image, transferImage);
+		setLabel(label_scaling, "Scaling = " + round(10 * scale) / 10);
+		setLabel(label_theta, "Theta = " + round(10 * angle * 180 / 3.14159) / 10);
+		setLabel(label_difference, "Difference = " + round(10 * difference) / 10);
+	}
+
+	private: System::Void pictureBox_before_image_Click(System::Object^  sender, System::EventArgs^  e) {
+		if (countOriginPoints == 4) {
+			originPos = new int[4];
+			countOriginPoints = 0;
+		}
+
+		Graphics^ before_image_graph = Graphics::FromImage(pictureBox_before_image->Image);
+		Point LocalMousePosition = pictureBox_before_image->PointToClient(Cursor->Position);
+		before_image_graph->FillEllipse(Brushes::Red, LocalMousePosition.X, LocalMousePosition.Y, 15, 15);
+		cout << LocalMousePosition.X << " " << LocalMousePosition.Y  << endl;
+
+		originPos[countOriginPoints++] = LocalMousePosition.X;
+		originPos[countOriginPoints++] = LocalMousePosition.Y;
+	}
+
+	private: System::Void pictureBox_after_image_Click(System::Object^  sender, System::EventArgs^  e) {
+		if (countTransferPoints == 4) {
+			originPos = new int[4];
+			countTransferPoints = 0;
+		}
+
+		Graphics^ after_image_graph = Graphics::FromImage(pictureBox_after_image->Image);
+		Point LocalMousePosition = pictureBox_after_image->PointToClient(Cursor->Position);
+		after_image_graph->FillEllipse(Brushes::Red, LocalMousePosition.X, LocalMousePosition.Y, 15, 15);
+		cout << LocalMousePosition.X << " " << LocalMousePosition.Y << endl;
+
+		transferPos[countTransferPoints++] = LocalMousePosition.X;
+		transferPos[countTransferPoints++] = LocalMousePosition.Y;
 	}
 
 };
