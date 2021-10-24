@@ -24,7 +24,7 @@ class scale_invariant_feature_transform():
         self.image1 = cv2.imread(self.path + 'Shark1.jpg', 0)
         self.image2 = cv2.imread(self.path + 'Shark2.jpg', 0)
 
-        orb = cv2.ORB_create()
+        orb = cv2.ORB_create(200)
 
         self.keypoint1, self.des1 = orb.detectAndCompute(self.image1, None)
         self.keypoint2, self.des2 = orb.detectAndCompute(self.image2, None)

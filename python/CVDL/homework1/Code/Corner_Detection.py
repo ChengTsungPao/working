@@ -16,12 +16,6 @@ class corner_detection():
 
 
     def find_corners(self, visiable):
-        '''
-        read the calibration image and do the camera calibration
-        and output the result to a pickle file.
-        if drawconer is True, will draw the corner on the chessboard file and save it to another folder.
-        '''
-        # !!! IMPORTANT, set the nx, ny according the calibration chessboard pictures.
         nx = 11
         ny = 8
 
@@ -33,35 +27,22 @@ class corner_detection():
         objpoints = [] # 3d points in real world space
         imgpoints = [] # 2d pionts in image plane.
         images = []
-
-        # Make a list of calibration images
         
         paths = glob(self.path + '*.bmp')
-        # print("Reading the calibration file...")
-
-        # Step through the list and search for chessboard corners
         for idx, fname in enumerate(paths):
             img = cv2.imread(fname)
             images.append(copy.deepcopy(img))
-
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-            # Find the chessboard corners
-            # print("Searching corners on ", fname, "...")
             ret, corners = cv2.findChessboardCorners(gray, (nx,ny), None)
 
-            # If found, add object points, image points
             if ret == True:
                 objpoints.append(objp)
                 imgpoints.append(corners)
 
                 if visiable:
-
                     cv2.drawChessboardCorners(img, (nx,ny), corners, ret)
-
                     shape = np.shape(img)
                     image = cv2.resize(img, (shape[1] // 3, shape[0] // 3), interpolation=cv2.INTER_AREA)
-
                     # write_name = 'corners_found'+str(idx + 1)+'.jpg'
                     # cv2.imwrite(self.path + write_name, image)
                     cv2.imshow('img', image)
@@ -69,11 +50,7 @@ class corner_detection():
 
         cv2.destroyAllWindows()
 
-        # Get image size
-        img_size = (img.shape[1],img.shape[0])
-
-        # Do camera calibration given object points and image points
-        _, self.intrinsic, self.distortion, self.rotations, self.translations = cv2.calibrateCamera(objpoints, imgpoints, img_size, None, None)
+        _, self.intrinsic, self.distortion, self.rotations, self.translations = cv2.calibrateCamera(objpoints, imgpoints, (img.shape[1],img.shape[0]), None, None)
         self.images = images
         self.isCal = True    
 
