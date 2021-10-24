@@ -1,40 +1,90 @@
 import cv2
+import copy
 import numpy as np
+import matplotlib.pylab as plt
 
 class stereo_disparity_map():
 
-    def stereo_disparity_map(self, path):
-        # for i in np.arange(5, 12, 2):
-        # Load the left and right images in gray scale
-        imgLeft = cv2.imread(path + 'imL.png', 0)
-        imgRight = cv2.imread(path + 'imR.png', 0)
+    def __init__(self, path):
+        self.imgLeft = []
+        self.imgRight = []
+        self.disparity = []
+        self.originDisparity = []
+        self.path = path
 
-        # Initialize the stereo block matching object 
+        self.scale = 3
+
+    def setPath(self, path):
+        self.path = path 
+
+    def setDisparitySale(self, image):
+        return np.array(image / self.scale, int)
+
+    def setImageSize(self, image):
+        shape = np.shape(image)
+        return cv2.resize(image, (shape[1] // self.scale, shape[0] // self.scale), interpolation=cv2.INTER_AREA)
+
+    def disparity_calculate(self):
+        imgLeft = cv2.imread(self.path + 'imL.png')
+        imgRight = cv2.imread(self.path + 'imR.png')
+
+        imgLeftGray = cv2.cvtColor(imgLeft, cv2.COLOR_BGR2GRAY)
+        imgRightGray = cv2.cvtColor(imgRight, cv2.COLOR_BGR2GRAY)
+
         stereo = cv2.StereoBM_create(numDisparities=256, blockSize=25)
-        # stereo = cv2.StereoBM(1, 16, 15)
-        # stereo = cv2.createStereoBM(numDisparities=16, blockSize=15)
+        disparity = stereo.compute(imgLeftGray, imgRightGray) / 16
+        disparity = self.setImageSize(disparity)
 
-        # Compute the disparity image
-        disparity = stereo.compute(imgLeft, imgRight)
+        ################################## showDisparity ##################################
 
-        # # Normalize the image for representation
-        min = disparity.min()
-        max = disparity.max()
-        # print(min, max)
-        # disparity = 255 * (disparity - min) / (max - min)
-        disparity = cv2.normalize(disparity, disparity, 255, 0, cv2.NORM_MINMAX)
+        showDisparity = cv2.normalize(disparity, None, 0, 255, cv2.NORM_MINMAX)
 
-        # focal = 4019.284
-        # baseline = 342.789
-        # depth = (baseline * focal) / (disparity)
+        # plt.imshow(showDisparity, cmap = "gray")
+        # plt.colorbar()
+        # plt.axis('off')
+        # plt.show()
 
-        # Display the result
-        showImage = np.hstack((imgLeft, imgRight, disparity))
-        showImage = disparity
-        shape = np.shape(showImage)
-        showImage = cv2.resize(showImage, (shape[1] // 3, shape[0] // 3), interpolation=cv2.INTER_AREA)
+        # cv2.imshow('showDisparity', showDisparity)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+        
+        plt.imsave(self.path + "disparity.png", showDisparity, cmap = "gray")
+
+        ################################### cache Image ###################################
+
+        self.imgLeft = self.setImageSize(imgLeft)
+        self.imgRight = self.setImageSize(imgRight)
+        self.disparity = self.setDisparitySale(disparity)
+        self.showDisparity = cv2.imread(self.path + 'disparity.png', 0)
 
 
-        cv2.imshow('disparittet', showImage)
+    def stereo_disparity_map(self):
+        if self.disparity == []:
+            self.disparity_calculate()
+
+        cv2.imshow('showDisparity', self.showDisparity)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    def mouseEventHanlder(self, event, x, y, flags, params):
+        if event == 1:
+            imgLeft = copy.deepcopy(self.imgLeft)
+            imgRight = copy.deepcopy(self.imgRight)
+
+            cv2.line(imgLeft, (x, y), (x, y), (0, 0, 255), 10)
+            cv2.imshow('imgLeft', imgLeft)
+
+            cv2.line(imgRight, (x - self.disparity[y][x], y), (x - self.disparity[y][x], y), (0, 255, 0), 10)
+            cv2.imshow('imgRight', imgRight)
+
+    def check_disparity_value(self):
+        if self.disparity == []:
+            self.disparity_calculate()
+
+        cv2.imshow('imgLeft', self.imgLeft)
+        cv2.imshow('imgRight', self.imgRight)
+
+        cv2.setMouseCallback("imgLeft", self.mouseEventHanlder)
+
         cv2.waitKey(0)
         cv2.destroyAllWindows()
