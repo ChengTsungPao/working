@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     problem = 2
     path = "..//Dataset_CvDl_Hw1//Q{}_Image//".format(problem)
-    word = "K"
+    word = "OPENCV"
     augmented_reality_fcn = augmented_reality(path)
     augmented_reality_fcn.draw_board(word)
     augmented_reality_fcn.draw_vertical(word)
