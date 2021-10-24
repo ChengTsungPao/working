@@ -14,15 +14,19 @@ class stereo_disparity_map():
 
         self.scale = 3
 
+
     def setPath(self, path):
         self.path = path 
+
 
     def setDisparitySale(self, image):
         return np.array(image / self.scale, int)
 
+
     def setImageSize(self, image):
         shape = np.shape(image)
         return cv2.resize(image, (shape[1] // self.scale, shape[0] // self.scale), interpolation=cv2.INTER_AREA)
+
 
     def disparity_calculate(self):
         imgLeft = cv2.imread(self.path + 'imL.png')
@@ -66,6 +70,7 @@ class stereo_disparity_map():
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+
     def mouseEventHanlder(self, event, x, y, flags, params):
         if event == 1:
             imgLeft = copy.deepcopy(self.imgLeft)
@@ -76,6 +81,7 @@ class stereo_disparity_map():
 
             cv2.line(imgRight, (x - self.disparity[y][x], y), (x - self.disparity[y][x], y), (0, 255, 0), 10)
             cv2.imshow('imgRight', imgRight)
+
 
     def check_disparity_value(self):
         if self.disparity == []:

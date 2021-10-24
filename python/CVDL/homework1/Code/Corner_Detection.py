@@ -10,8 +10,10 @@ class corner_detection():
         self.images = []
         self.path = path
 
+
     def setPath(self, path):
         self.path = path
+
 
     def find_corners(self, visiable):
         '''
@@ -75,16 +77,18 @@ class corner_detection():
         self.images = images
         self.isCal = True    
 
+
     def find_intrinsic(self):
         if self.isCal == False:
-            return
+            self.find_corners(False)
 
         print("intrinsic matrix = ")
         print(self.intrinsic)
 
+
     def find_extrinsic(self, index):
         if self.isCal == False:
-            return
+            self.find_corners(False)
 
         rotation, _ = cv2.Rodrigues(self.rotations[index])
         translation = self.translations[index]
@@ -93,16 +97,18 @@ class corner_detection():
         print("extrinsic matrix = ")
         print(extrinsic)
 
+
     def find_distortion(self):
         if self.isCal == False:
-            return
+            self.find_corners(False)
 
         print("distortion matrix = ")
         print(self.distortion)
 
+
     def show(self):
         if self.isCal == False:
-            return
+            self.find_corners(False)
 
         for idx, image in enumerate(self.images):
             h, w = image.shape[:2]
