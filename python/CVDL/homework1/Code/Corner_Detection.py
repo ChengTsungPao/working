@@ -6,9 +6,15 @@ import copy
 class corner_detection():
 
     def __init__(self, path):
-        self.isCal = False
         self.images = []
+        self.intrinsic = None
+        self.extrinsic = None
+        self.distortion = None
+        self.rotations = None
+        self.translations = None
         self.path = path
+
+        self.isCal = False
 
 
     def setPath(self, path):
@@ -69,10 +75,10 @@ class corner_detection():
 
         rotation, _ = cv2.Rodrigues(self.rotations[index])
         translation = self.translations[index]
-        extrinsic = np.concatenate((rotation, translation), axis = 1)
+        self.extrinsic = np.concatenate((rotation, translation), axis = 1)
 
         print("extrinsic matrix = ")
-        print(extrinsic)
+        print(self.extrinsic)
 
 
     def find_distortion(self):

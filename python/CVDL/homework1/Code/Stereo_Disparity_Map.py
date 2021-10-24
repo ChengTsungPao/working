@@ -13,6 +13,7 @@ class stereo_disparity_map():
         self.path = path
 
         self.scale = 3
+        self.isCal = False
 
 
     def setPath(self, path):
@@ -61,9 +62,11 @@ class stereo_disparity_map():
         self.disparity = self.setDisparitySale(disparity)
         self.showDisparity = cv2.imread(self.path + 'disparity.png', 0)
 
+        self.isCal = True
+
 
     def stereo_disparity_map(self):
-        if self.disparity == []:
+        if self.isCal == False:
             self.disparity_calculate()
 
         cv2.imshow('showDisparity', self.showDisparity)
@@ -84,7 +87,7 @@ class stereo_disparity_map():
 
 
     def check_disparity_value(self):
-        if self.disparity == []:
+        if self.isCal == False:
             self.disparity_calculate()
 
         cv2.imshow('imgLeft', self.imgLeft)
