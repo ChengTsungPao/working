@@ -21,8 +21,8 @@ class scale_invariant_feature_transform():
         self.path = path
 
     def keypoints_calculate(self):
-        self.image1 = cv2.imread(self.path + 'Shark2.jpg', 0)
-        self.image2 = cv2.imread(self.path + 'Shark1.jpg', 0)
+        self.image1 = cv2.imread(self.path + 'Shark1.jpg', 0)
+        self.image2 = cv2.imread(self.path + 'Shark2.jpg', 0)
 
         orb = cv2.ORB_create()
 
@@ -39,8 +39,8 @@ class scale_invariant_feature_transform():
         image1 = cv2.drawKeypoints(self.image1, self.keypoint1, None)
         image2 = cv2.drawKeypoints(self.image2, self.keypoint2, None)
 
-        cv2.imshow("find_keypoints (Shark2.jpg)", image1)
-        cv2.imshow("find_keypoints (Shark1.jpg)", image2)
+        cv2.imshow("find_keypoints (Shark1.jpg)", image1)
+        cv2.imshow("find_keypoints (Shark2.jpg)", image2)
 
         cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -56,7 +56,7 @@ class scale_invariant_feature_transform():
         matches = sorted(matches, key=lambda x: x.distance)
 
         draw_params = dict(matchColor=(0, 255, 0), singlePointColor=(255, 0, 0), flags = 0)
-        result = cv2.drawMatches(self.image1, self.keypoint1, self.image2, self.keypoint2, matches[:200], None, **draw_params)
+        result = cv2.drawMatches(self.image2, self.keypoint2, self.image1, self.keypoint1, matches[:200], None, **draw_params)
 
         cv2.imshow("matched_keypoints", result)
         cv2.waitKey(0)
