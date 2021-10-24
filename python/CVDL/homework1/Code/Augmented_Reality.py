@@ -5,7 +5,6 @@ import cv2
 
 class augmented_reality(corner_detection):
     def __init__(self, path):
-
         super().__init__(path)
         self.find_intrinsic(False)
 
@@ -15,6 +14,7 @@ class augmented_reality(corner_detection):
         point2D = np.dot(self.cameraMatrix, point3D)
         point2D = point2D[:2] / point2D[2]
         return (int(point2D[0][0]), int(point2D[1][0]))
+
 
     def character_shift(self, position, chIndex):
         if chIndex == 1 or chIndex == 2 or chIndex == 3:
@@ -30,6 +30,7 @@ class augmented_reality(corner_detection):
             position[0] += 1
 
         return position
+
 
     def draw(self, word, fs):
         paths = glob(self.path + '*.bmp')  
