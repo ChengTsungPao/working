@@ -14,14 +14,18 @@ class corner_detection():
         self.translations = None
         self.path = path
 
+        self.scale = 3
         self.isCal = False
 
 
     def setPath(self, path):
         self.path = path
 
+    def setImageSize(self, image):
+        shape = np.shape(image)
+        return cv2.resize(image, (shape[1] // self.scale, shape[0] // self.scale), interpolation=cv2.INTER_AREA)
 
-    def find_corners(self, visiable):
+    def find_corners(self, visiable = True):
         nx = 11
         ny = 8
 
@@ -47,8 +51,7 @@ class corner_detection():
 
                 if visiable:
                     cv2.drawChessboardCorners(img, (nx,ny), corners, ret)
-                    shape = np.shape(img)
-                    image = cv2.resize(img, (shape[1] // 3, shape[0] // 3), interpolation=cv2.INTER_AREA)
+                    image = self.setImageSize(img)
                     # write_name = 'corners_found'+str(idx + 1)+'.jpg'
                     # cv2.imwrite(self.path + write_name, image)
                     cv2.imshow('img', image)
@@ -61,15 +64,16 @@ class corner_detection():
         self.isCal = True    
 
 
-    def find_intrinsic(self):
+    def find_intrinsic(self, visiable = True):
         if self.isCal == False:
             self.find_corners(False)
 
-        print("intrinsic matrix = ")
-        print(self.intrinsic)
+        if visiable:
+            print("intrinsic matrix = ")
+            print(self.intrinsic)
 
 
-    def find_extrinsic(self, index):
+    def find_extrinsic(self, index, visiable = True):
         if self.isCal == False:
             self.find_corners(False)
 
@@ -77,8 +81,9 @@ class corner_detection():
         translation = self.translations[index]
         self.extrinsic = np.concatenate((rotation, translation), axis = 1)
 
-        print("extrinsic matrix = ")
-        print(self.extrinsic)
+        if visiable:
+            print("extrinsic matrix = ")
+            print(self.extrinsic)
 
 
     def find_distortion(self):
@@ -99,8 +104,7 @@ class corner_detection():
             undistortImage = cv2.undistort(image, self.intrinsic, self.distortion, None, newCameraMatrix)
             
             showResult = np.concatenate((image, undistortImage), axis=1)
-            shape = np.shape(showResult)
-            showResult = cv2.resize(showResult, (shape[1] // 3, shape[0] // 3), interpolation=cv2.INTER_AREA)
+            showResult = self.setImageSize(showResult)
             
             # cv2.imwrite(self.path + 'undistortImage{}.png'.format(idx + 1), undistortImage)
             cv2.imshow('distortImage & undistortImage', showResult)
