@@ -55,7 +55,7 @@ class corner_detection():
                     # write_name = 'corners_found'+str(idx + 1)+'.jpg'
                     # cv2.imwrite(self.path + write_name, image)
                     cv2.imshow('img', image)
-                    cv2.waitKey(500)
+                    cv2.waitKey(50)
 
         cv2.destroyAllWindows()
 
