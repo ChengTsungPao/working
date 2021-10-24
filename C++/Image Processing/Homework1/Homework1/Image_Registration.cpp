@@ -21,7 +21,8 @@ double difference;
 
 // originImage -> slanted
 Bitmap^ image_registration(Bitmap^ originImage, Bitmap^ transferImage, int originPos[4], int transferPos[4], double originScale, double transferScale) {
-
+	cout << originPos[0] << " " << originPos[1] << " " << originPos[2] << " " << originPos[3] << " " << endl;
+	cout << transferPos[0] << " " << transferPos[1] << " " << transferPos[2] << " " << transferPos[3] << " " << endl;
 	int originVector[2] = { originPos[1] - originPos[0], originPos[3] - originPos[2] };
 	int tranferVector[2] = { transferPos[1] - transferPos[0], transferPos[3] - transferPos[2] };
 	angle = rotate_angle(originVector, tranferVector);
@@ -64,14 +65,8 @@ Bitmap^ rotate_scale_image(Bitmap^ originImage, Bitmap^ transferImage) {
 				intGray = 0;
 			}
 
-			if (originPosX >= 0 && originPosX < transferWidth && originPosY >= 0 && originPosY < transferHeight) {
-				difference += abs((transferImage->GetPixel(originPosX, originPosY).R) - intGray);
-			}
-			else {
-				difference += abs(0 - intGray);
-			}
-
 			image->SetPixel(x, y, Color::FromArgb(intGray, intGray, intGray));
+			difference += abs((transferImage->GetPixel(x, y).R) - intGray);
 
 		}
 	}
