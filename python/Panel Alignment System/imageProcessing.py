@@ -42,7 +42,7 @@ def imageProcessing(image, light, imageType = "L"):
     magnitude, angle = getAngleMagnitude(Gradient)
 
 
-    return {"image": (sobelImage, threshold[1], drawContour), "result": (Gradient, magnitude, angle, contour)}
+    return {"image": (sobelImage, threshold[1], drawContour, cropResizeImage), "result": (Gradient, magnitude, angle, contour)}
 
 
 def cropImage(image, imageType):

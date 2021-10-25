@@ -1,11 +1,12 @@
 import matplotlib.pylab as plt
 import cv2
 
-def plotResult(title, xlabel, ylabel, result):
+def plotResult(title, xlabel, ylabel, label, result):
     plt.title(title)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.plot(range(len(result)), result)
+    plt.plot(range(len(result)), result, label = label)
+    plt.legend()
 
 def drawImage(draw, title, point = []):
     if point != []:

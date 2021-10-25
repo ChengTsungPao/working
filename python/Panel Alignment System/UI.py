@@ -84,6 +84,7 @@ class Ui_MainWindow(object):
         from PyQt5.QtGui import QPixmap
         from PyQt5.QtCore import Qt
         import matplotlib.pylab as plt
+        import numpy as np
         import cv2
 
         try:
@@ -96,26 +97,51 @@ class Ui_MainWindow(object):
         # print(light, imageType)
 
         data = imageProcessing(image, light, imageType)
-        sobelImage, threshold, drawContour = data["image"]
+        sobelImage, threshold, drawContour, cropResizeImage = data["image"]
         Gradient, magnitude, angle, contour = data["result"]
         # drawImage(sobelImage, "sobelfilter")
         # drawImage(threshold, "threshold")
         # drawImage(drawContour, "contour")
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
+        for index in range(len(Gradient)):
+            Gradient[index] += (int(index),)
+        candidate = np.array(sorted(Gradient, key = lambda x: abs(x[0] - x[1]))[:5])
+        candidate = np.array(candidate, int)
 
         path = self.path.split("cal_")[-2]
-        plotResult("magnitude", "index of point", "degree", magnitude)
+        Gradient = np.array(Gradient)
+        plotResult("Gradient", "index of point", "Gradient", "Gx", Gradient[:, 0])
+        plotResult("Gradient", "index of point", "Gradient", "Gy", Gradient[:, 1])
+        plt.savefig(path + "Gradient.png")
+        plt.clf()
+
+        plotResult("magnitude", "index of point", "magnitude", "magnitude", magnitude)
         plt.savefig(path + "magnitude.png")
         plt.clf()
-        plotResult("Angle", "index of point", "degree", angle)
+
+        plotResult("Angle", "index of point", "degree", "Angle", angle)
+        plt.plot(candidate[:, 2], angle[candidate[:, 2]], label = "candidate")
         plt.savefig(path + "Angle.png")
         plt.clf()
 
-        self.plotMagnitudeLabel.setPixmap(QPixmap(path + "magnitude.png"))
+        self.plotMagnitudeLabel.setPixmap(QPixmap(path + "Gradient.png"))
         self.plotMagnitudeLabel.setAlignment(Qt.AlignCenter)
         self.plotAngleLabel.setPixmap(QPixmap(path + "Angle.png"))
         self.plotAngleLabel.setAlignment(Qt.AlignCenter)
+
+        path = self.path.split(".png")[0] + "_result.png"
+        point = contour[candidate[0][2]]
+        cv2.line(cropResizeImage, (point[0], point[1]), (point[0], point[1]), (0, 0, 255), 5)
+        for index in range(1, len(candidate)):
+            point = contour[candidate[index][2]]
+            cv2.line(cropResizeImage, (point[0], point[1]), (point[0], point[1]), (255, 0, 0), 5)            
+        cv2.imwrite(path, cropResizeImage)
+        self.image = cv2.imread(path)
+        self.resultImageLabel.setPixmap(QPixmap(path))
+        self.resultImageLabel.setScaledContents(True)
+        self.resultImageLabel.setAlignment(Qt.AlignCenter)
+
 
 if __name__ == "__main__":
     import sys
