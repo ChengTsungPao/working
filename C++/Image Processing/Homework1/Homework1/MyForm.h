@@ -678,10 +678,7 @@ namespace Homework1 {
 
 	private: System::Void button_load_handler(System::Object^  sender, System::EventArgs^  e) {
 
-		originPos = new int[4];
-		transferPos = new int[4];
-		countOriginPoints = 0;
-		countTransferPoints = 0;
+		resetPictureBoxPoint();
 
 		int countFiles = 0;
 		string files[2];
@@ -727,6 +724,13 @@ namespace Homework1 {
 				chart->Series[key]->Points->AddXY(intGray, imageCollection[intGray]);
 			}
 		}
+	}
+
+	private: void resetPictureBoxPoint() {
+		originPos = new int[4];
+		transferPos = new int[4];
+		countOriginPoints = 0;
+		countTransferPoints = 0;
 	}
 
 	private: bool isExist(Bitmap^ image) {
@@ -877,7 +881,8 @@ namespace Homework1 {
 
 		Graphics^ before_image_graph = Graphics::FromImage(pictureBox_before_image->Image);
 		Point LocalMousePosition = pictureBox_before_image->PointToClient(Cursor->Position);
-		before_image_graph->FillEllipse(Brushes::Red, LocalMousePosition.X, LocalMousePosition.Y, 15, 15);
+		before_image_graph->FillEllipse(Brushes::Red, LocalMousePosition.X - 7, LocalMousePosition.Y - 7, 15, 15);
+		setPictureBox(pictureBox_before_image, originImage);
 		cout << LocalMousePosition.X << " " << LocalMousePosition.Y  << endl;
 
 		originPos[countOriginPoints++] = LocalMousePosition.X;
@@ -886,13 +891,14 @@ namespace Homework1 {
 
 	private: System::Void pictureBox_after_image_Click(System::Object^  sender, System::EventArgs^  e) {
 		if (countTransferPoints == 4) {
-			originPos = new int[4];
+			transferPos = new int[4];
 			countTransferPoints = 0;
 		}
 
 		Graphics^ after_image_graph = Graphics::FromImage(pictureBox_after_image->Image);
 		Point LocalMousePosition = pictureBox_after_image->PointToClient(Cursor->Position);
-		after_image_graph->FillEllipse(Brushes::Red, LocalMousePosition.X, LocalMousePosition.Y, 15, 15);
+		after_image_graph->FillEllipse(Brushes::Red, LocalMousePosition.X - 7, LocalMousePosition.Y - 7, 15, 15);
+		setPictureBox(pictureBox_after_image, transferImage);
 		cout << LocalMousePosition.X << " " << LocalMousePosition.Y << endl;
 
 		transferPos[countTransferPoints++] = LocalMousePosition.X;
