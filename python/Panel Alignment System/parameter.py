@@ -1,7 +1,7 @@
 
-def getParameter(light):
+def getParameter(light, imageType):
     
-    table = {
+    tableL = {
         "light": "Binary",
             30 :  35 ,
             50 :  80 ,
@@ -11,4 +11,17 @@ def getParameter(light):
            255 : 245
     }
 
-    return table[light] 
+    tableR = {
+        "light": "Binary",
+            30 :  27 ,
+            50 :  40 ,
+           100 : 102 ,
+           150 : 147 ,
+           200 : 192 ,
+           255 : 245
+    }
+
+    if imageType == "L":
+        return tableL[light]
+    else:
+        return tableR[light] 

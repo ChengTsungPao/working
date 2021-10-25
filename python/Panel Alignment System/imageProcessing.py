@@ -26,7 +26,7 @@ def imageProcessing(image, light, imageType = "L"):
 
 
     ############################## threshold and Sobelfilter ##############################
-    threshold = cv2.threshold(image, getParameter(light), 255, cv2.THRESH_BINARY)
+    threshold = cv2.threshold(image, getParameter(light, imageType), 255, cv2.THRESH_BINARY)
     sobelImage = Sobelfilter(threshold[1])
 
 
@@ -34,12 +34,15 @@ def imageProcessing(image, light, imageType = "L"):
     # canny = cv2.Canny(threshold[1], 70, 130)
     contours, hierarchy = cv2.findContours(sobelImage, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     contour = contours[-1]
-    drawContour = cv2.drawContours(image, contour, -1, (0, 0, 255), 1)
+    drawContour = cv2.drawContours(image, contour, -1, (0, 255, 255), 1)
 
 
     ############################ calulate magnitude and angle ############################## 
     Gradient, contour = getGradient(cropResizeImage, contour, imageType)
     magnitude, angle = getAngleMagnitude(Gradient)
+
+    # for i in range(len(contour)):
+    #     print("Index:{}, x:{}, y:{}, angle:{}".format(i, contour[i][0], contour[i][1], angle[i]))
 
 
     return {"image": (sobelImage, threshold[1], drawContour, cropResizeImage), "result": (Gradient, magnitude, angle, contour)}
@@ -50,7 +53,7 @@ def cropImage(image, imageType):
     y = 0
 
     w = 1080
-    h = 830
+    h = 660
 
     return image[y : y + h , x : x + w]
 

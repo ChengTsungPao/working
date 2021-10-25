@@ -11,11 +11,11 @@ def getAngleMagnitude(Gradient):
     angle = []
     for Gx, Gy in Gradient:
         mag.append((Gx ** 2 + Gy ** 2) ** 0.5)
-        # val = math.atan(Gy / Gx) * 180 / np.pi
-        # if val < 0 and abs(val) > 45:
-        #     val += 180
-        # angle.append(val)
-        angle.append(np.angle(complex(Gx, Gy), deg=True))
+        val = np.angle(complex(Gx, Gy), deg=True)
+        if val < 0:
+            val += 360
+        angle.append(val)
+        # angle.append(np.angle(complex(Gx, Gy), deg=True))
 
     return np.array(mag), np.array(angle)
 
