@@ -59,7 +59,12 @@ class corner_detection():
 
         cv2.destroyAllWindows()
 
-        _, self.intrinsic, self.distortion, self.rotations, self.translations = cv2.calibrateCamera(objpoints, imgpoints, (img.shape[1],img.shape[0]), None, None)
+        ret = cv2.calibrateCamera(objpoints, imgpoints, (img.shape[1],img.shape[0]), None, None)
+        
+        self.intrinsic = ret[1]
+        self.distortion = ret[2]
+        self.rotations = ret[3]
+        self.translations = ret[4]
         self.images = images
         self.isCal = True    
 
