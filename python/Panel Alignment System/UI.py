@@ -97,13 +97,13 @@ class Ui_MainWindow(object):
         # print(light, imageType)
 
         data = imageProcessing(image, light, imageType)
-        sobelImage, threshold, drawContour, cropResizeImage = data["image"]
+        canny, drawContour, cropResizeImage = data["image"]
         Gradient, magnitude, angle, contour = data["result"]
-        drawImage(sobelImage, "sobelfilter")
-        drawImage(threshold, "threshold")
-        drawImage(drawContour, "contour")
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # drawImage(canny, "canny")
+        # drawImage(threshold, "threshold")
+        # drawImage(drawContour, "contour")
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
         for index in range(len(Gradient)):
             Gradient[index] += (int(index),)

@@ -5,17 +5,20 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-def getAngleMagnitude(Gradient):
+def getAngleMagnitude(Gradient, imageType):
     
     mag = []
     angle = []
     for Gx, Gy in Gradient:
         mag.append((Gx ** 2 + Gy ** 2) ** 0.5)
-        val = np.angle(complex(Gx, Gy), deg=True)
-        if val < 0:
-            val += 360
-        angle.append(val)
-        # angle.append(np.angle(complex(Gx, Gy), deg=True))
+        if imageType == "L":
+            angle.append(np.angle(complex(Gx, Gy), deg=True))
+        else:
+            val = np.angle(complex(Gx, Gy), deg=True)
+            if val < 0:
+                val += 360
+            angle.append(val)
+        
 
     return np.array(mag), np.array(angle)
 
