@@ -33,6 +33,7 @@ namespace Homework1 {
 	// [[originImage0, transferImage0], [originImage1, transferImage1], [originImage2, transferImage2] ... ]
 	// size of image => (width, height, channel)
 	vector<vector <vector<vector<vector<int>>> >> imageCache;
+	vector<vector< map<int, int>> > chartCache;
 
 	/// <summary>
 	/// MyForm 的摘要
@@ -689,7 +690,8 @@ namespace Homework1 {
 
 		if (openImageWindow->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
 
-			saveImage();
+			saveResult();
+			removeAllChart();
 			resetPictureBoxPoint();
 
 			for each(String^ file in openImageWindow->FileNames) {
@@ -700,14 +702,14 @@ namespace Homework1 {
 			if (countFiles == 2) {
 				originImage = gcnew Bitmap(stringTransfer(files[1]));
 				transferImage = gcnew Bitmap(stringTransfer(files[0]));
-				setPictureBox(pictureBox_before_image, originImage);
-				setPictureBox(pictureBox_after_image, transferImage);
 			} else {
 				originImage = gcnew Bitmap(stringTransfer(files[0]));
-				setPictureBox(pictureBox_before_image, originImage);
-				setPictureBox(pictureBox_after_image, nullptr);
+				transferImage = nullptr;
+
 			}
-			
+
+			setPictureBox(pictureBox_before_image, originImage);
+			setPictureBox(pictureBox_after_image, transferImage);
 
 		}
 	}
@@ -719,7 +721,10 @@ namespace Homework1 {
 		}
 
 		vector <vector<vector<vector<int>>> > previousImage = imageCache.back();
+		vector < map<int, int> > previousChart = chartCache.back();
+
 		imageCache.pop_back();
+		chartCache.pop_back();
 
 		if (previousImage.size() == 0) {
 			originImage = nullptr;
@@ -734,12 +739,19 @@ namespace Homework1 {
 			transferImage = bitmapVectorTransfer(previousImage.back());
 		}
 
+		originImageCollection = previousChart.front();
+		transferImageCollection = previousChart.back();
+
 		setPictureBox(pictureBox_before_image, originImage);
 		setPictureBox(pictureBox_after_image, transferImage);
+
+		setChart(chart_before_histogram, originImageCollection);
+		setChart(chart_after_histogram, transferImageCollection);
 	}
 
-	private: void saveImage() {
-		vector <vector<vector<vector<int>>> > currentImage;
+	private: void saveResult() {
+		vector< vector<vector<vector<int>>> > currentImage;
+		vector < map<int, int> > currentChart;
 
 		if (isExist(originImage)) {
 			currentImage.push_back(bitmapVectorTransfer(originImage));
@@ -749,7 +761,12 @@ namespace Homework1 {
 			currentImage.push_back(bitmapVectorTransfer(transferImage));
 		}
 
+		currentChart.push_back(originImageCollection);
+		currentChart.push_back(transferImageCollection);
+
 		imageCache.push_back(currentImage);
+		chartCache.push_back(currentChart);
+
 	}
 
 	private: void setPictureBox(PictureBox^ %pictureBox, Bitmap^ image) {
@@ -762,18 +779,26 @@ namespace Homework1 {
 
 	private: void setChart(Chart^ %chart, map<int, int> imageCollection) {
 		String^ key = "histogram";
+		bool isEmpty = true;
 		for (int intGray = 0; intGray < 256; intGray++) {
 			if (imageCollection.find(intGray) != imageCollection.end()) {
 				chart->Series[key]->Points->AddXY(intGray, imageCollection[intGray]);
+				isEmpty = false;
 			}
+		}
+		if (isEmpty) {
+			removeAllChart();
 		}
 	}
 
-	//private: void removeAllChart() {
-	//	String^ key = "histogram";
-	//	chart_before_histogram->Series[key]->SetDefault;
-	//	chart_after_histogram->Series[key]->SetDefault;
-	//}
+	private: void removeAllChart() {
+		String^ key = "histogram";
+		map<int, int> empty;
+		originImageCollection = empty;
+		transferImageCollection = empty;
+		chart_before_histogram->Series[key]->Points->Clear();
+		chart_after_histogram->Series[key]->Points->Clear();
+	}
 
 	private: void resetPictureBoxPoint() {
 		originPos = new int[4];
@@ -807,8 +832,8 @@ namespace Homework1 {
 			return;
 		}
 
-		saveImage();
-		//removeAllChart();
+		saveResult();
+		removeAllChart();
 
 		char kind;
 
@@ -834,7 +859,8 @@ namespace Homework1 {
 			return;
 		}
 
-		saveImage();
+		saveResult();
+		removeAllChart();
 
 		char kind;
 
@@ -856,7 +882,8 @@ namespace Homework1 {
 			return;
 		}
 
-		saveImage();
+		saveResult();
+		removeAllChart();
 
 		transferImage = histogram_equalization(originImage);
 		setPictureBox(pictureBox_after_image, transferImage);
@@ -870,7 +897,8 @@ namespace Homework1 {
 			return;
 		}
 
-		saveImage();
+		saveResult();
+		removeAllChart();
 
 		int threshold = trackBar_defined_thresholding->Value;
 
@@ -884,7 +912,8 @@ namespace Homework1 {
 			return;
 		}
 
-		saveImage();
+		saveResult();
+		removeAllChart();
 
 		char kind;
 
@@ -908,7 +937,8 @@ namespace Homework1 {
 			return;
 		}
 
-		saveImage();
+		saveResult();
+		removeAllChart();
 
 		int threshold = trackBar_defined_thresholding->Value;
 
@@ -922,7 +952,8 @@ namespace Homework1 {
 			return;
 		}
 
-		saveImage();
+		saveResult();
+		removeAllChart();
 
 		transferImage = connected_component(originImage);
 		setLabel(label_connected_component, "Number of Connected Component = " + count_region);
@@ -939,7 +970,8 @@ namespace Homework1 {
 			return;
 		}
 
-		saveImage();
+		saveResult();
+		removeAllChart();
 
 		transferImage = image_registration(originImage, transferImage, originPos, transferPos);
 		setPictureBox(pictureBox_after_image, transferImage);
