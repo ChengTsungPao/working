@@ -15,9 +15,9 @@ def imageProcessing(image, light, imageType = "L"):
 
 
     ######################### Filter (medianBlur or GaussianBlur) #########################
-    image = cv2.medianBlur(image, 3)
+    # image = cv2.medianBlur(image, 3)
     # image = cv2.bilateralFilter(image, 5, 75, 75)
-    # image = cv2.GaussianBlur(image, (5, 5), 0)
+    image = cv2.GaussianBlur(image, (3, 3), 0)
 
 
     #################################### contrastImage #################################### 
