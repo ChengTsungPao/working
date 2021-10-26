@@ -13,8 +13,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <tuple>
 #include <cmath>
 #include <map>
+
+
 
 namespace Homework1 {
 
@@ -26,6 +29,10 @@ namespace Homework1 {
 	using namespace System::Data;
 	using namespace System::Drawing;
 	using namespace System::Windows::Forms::DataVisualization::Charting;
+
+	// [[originImage0, transferImage0], [originImage1, transferImage1], [originImage2, transferImage2] ... ]
+	// size of image => (width, height, channel)
+	vector<vector <vector<vector<vector<int>>> >> imageCache;
 
 	/// <summary>
 	/// MyForm 的摘要
@@ -106,12 +113,12 @@ namespace Homework1 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^  legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^  series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea2 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^  legend2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^  series2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea3 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^  legend3 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^  series3 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea4 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^  legend4 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^  series4 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
 			this->button_load = (gcnew System::Windows::Forms::Button());
 			this->button_rgb_extraction = (gcnew System::Windows::Forms::Button());
 			this->pictureBox_before_image = (gcnew System::Windows::Forms::PictureBox());
@@ -227,35 +234,35 @@ namespace Homework1 {
 			// 
 			// chart_before_histogram
 			// 
-			chartArea1->Name = L"ChartArea1";
-			this->chart_before_histogram->ChartAreas->Add(chartArea1);
-			legend1->Name = L"Legend1";
-			this->chart_before_histogram->Legends->Add(legend1);
+			chartArea3->Name = L"ChartArea1";
+			this->chart_before_histogram->ChartAreas->Add(chartArea3);
+			legend3->Name = L"Legend1";
+			this->chart_before_histogram->Legends->Add(legend3);
 			this->chart_before_histogram->Location = System::Drawing::Point(19, 427);
 			this->chart_before_histogram->Margin = System::Windows::Forms::Padding(2);
 			this->chart_before_histogram->Name = L"chart_before_histogram";
-			series1->ChartArea = L"ChartArea1";
-			series1->IsVisibleInLegend = false;
-			series1->Legend = L"Legend1";
-			series1->Name = L"histogram";
-			this->chart_before_histogram->Series->Add(series1);
+			series3->ChartArea = L"ChartArea1";
+			series3->IsVisibleInLegend = false;
+			series3->Legend = L"Legend1";
+			series3->Name = L"histogram";
+			this->chart_before_histogram->Series->Add(series3);
 			this->chart_before_histogram->Size = System::Drawing::Size(450, 338);
 			this->chart_before_histogram->TabIndex = 5;
 			// 
 			// chart_after_histogram
 			// 
-			chartArea2->Name = L"ChartArea1";
-			this->chart_after_histogram->ChartAreas->Add(chartArea2);
-			legend2->Name = L"Legend1";
-			this->chart_after_histogram->Legends->Add(legend2);
+			chartArea4->Name = L"ChartArea1";
+			this->chart_after_histogram->ChartAreas->Add(chartArea4);
+			legend4->Name = L"Legend1";
+			this->chart_after_histogram->Legends->Add(legend4);
 			this->chart_after_histogram->Location = System::Drawing::Point(493, 427);
 			this->chart_after_histogram->Margin = System::Windows::Forms::Padding(2);
 			this->chart_after_histogram->Name = L"chart_after_histogram";
-			series2->ChartArea = L"ChartArea1";
-			series2->IsVisibleInLegend = false;
-			series2->Legend = L"Legend1";
-			series2->Name = L"histogram";
-			this->chart_after_histogram->Series->Add(series2);
+			series4->ChartArea = L"ChartArea1";
+			series4->IsVisibleInLegend = false;
+			series4->Legend = L"Legend1";
+			series4->Name = L"histogram";
+			this->chart_after_histogram->Series->Add(series4);
 			this->chart_after_histogram->Size = System::Drawing::Size(450, 338);
 			this->chart_after_histogram->TabIndex = 6;
 			// 
@@ -349,17 +356,17 @@ namespace Homework1 {
 			// label_theta
 			// 
 			this->label_theta->AutoSize = true;
-			this->label_theta->Location = System::Drawing::Point(95, 23);
+			this->label_theta->Location = System::Drawing::Point(84, 23);
 			this->label_theta->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label_theta->Name = L"label_theta";
-			this->label_theta->Size = System::Drawing::Size(48, 12);
+			this->label_theta->Size = System::Drawing::Size(72, 12);
 			this->label_theta->TabIndex = 24;
-			this->label_theta->Text = L"Theta = \?";
+			this->label_theta->Text = L"        Theta = \?";
 			// 
 			// label_difference
 			// 
 			this->label_difference->AutoSize = true;
-			this->label_difference->Location = System::Drawing::Point(180, 23);
+			this->label_difference->Location = System::Drawing::Point(201, 23);
 			this->label_difference->Margin = System::Windows::Forms::Padding(2, 0, 2, 0);
 			this->label_difference->Name = L"label_difference";
 			this->label_difference->Size = System::Drawing::Size(71, 12);
@@ -667,23 +674,23 @@ namespace Homework1 {
 	private: int* transferPos = new int[4];
 	private: int countOriginPoints;
 	private: int countTransferPoints;
-			 
-
-	//System::array<System::Drawing::Bitmap^>^ adf = gcnew System::array< System::Drawing::Bitmap^>(100);
 
 	/* ==================================== Functional Button ==================================== */
 
 	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
+		originImage = nullptr;
+		transferImage = nullptr;
 	}
 
 	private: System::Void button_load_handler(System::Object^  sender, System::EventArgs^  e) {
-
-		resetPictureBoxPoint();
 
 		int countFiles = 0;
 		string files[2];
 
 		if (openImageWindow->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+
+			saveImage();
+			resetPictureBoxPoint();
 
 			for each(String^ file in openImageWindow->FileNames) {
 				files[countFiles] = stringTransfer(file);
@@ -707,6 +714,42 @@ namespace Homework1 {
 
 	private: System::Void button_undo_handler(System::Object^  sender, System::EventArgs^  e) {
 
+		if (imageCache.size() <= 0) {
+			return;
+		}
+
+		vector <vector<vector<vector<int>>> > previousImage = imageCache.back();
+		imageCache.pop_back();
+
+		if (previousImage.size() == 0) {
+			originImage = nullptr;
+			transferImage = nullptr;
+
+		} else if (previousImage.size() == 1) {
+			originImage = bitmapVectorTransfer(previousImage.front());
+			transferImage = nullptr;
+
+		} else {
+			originImage = bitmapVectorTransfer(previousImage.front());
+			transferImage = bitmapVectorTransfer(previousImage.back());
+		}
+
+		setPictureBox(pictureBox_before_image, originImage);
+		setPictureBox(pictureBox_after_image, transferImage);
+	}
+
+	private: void saveImage() {
+		vector <vector<vector<vector<int>>> > currentImage;
+
+		if (isExist(originImage)) {
+			currentImage.push_back(bitmapVectorTransfer(originImage));
+		}
+
+		if (isExist(transferImage)) {
+			currentImage.push_back(bitmapVectorTransfer(transferImage));
+		}
+
+		imageCache.push_back(currentImage);
 	}
 
 	private: void setPictureBox(PictureBox^ %pictureBox, Bitmap^ image) {
@@ -726,11 +769,30 @@ namespace Homework1 {
 		}
 	}
 
+	//private: void removeAllChart() {
+	//	String^ key = "histogram";
+	//	chart_before_histogram->Series[key]->SetDefault;
+	//	chart_after_histogram->Series[key]->SetDefault;
+	//}
+
 	private: void resetPictureBoxPoint() {
 		originPos = new int[4];
 		transferPos = new int[4];
 		countOriginPoints = 0;
 		countTransferPoints = 0;
+	}
+
+	private: vector<int> zoomPointTranslate(int pos[2], Bitmap^ image, PictureBox^ pictureBox) {
+		vector<int> translatePos;
+		double scale = max((double)(image->Width) / (double)(pictureBox->Width), (double)(image->Height) / (double)(pictureBox->Height));
+		double translate[2] = { 
+			abs(pictureBox->Width * scale - image->Width) / 2,
+			abs(pictureBox->Height * scale - image->Height) / 2
+		};
+		translatePos.push_back((int)(scale * pos[0] - translate[0]));
+		translatePos.push_back((int)(scale * pos[1] - translate[1]));
+
+		return translatePos;
 	}
 
 	private: bool isExist(Bitmap^ image) {
@@ -744,6 +806,9 @@ namespace Homework1 {
 		if (isExist(originImage) == false) {
 			return;
 		}
+
+		saveImage();
+		//removeAllChart();
 
 		char kind;
 
@@ -769,6 +834,8 @@ namespace Homework1 {
 			return;
 		}
 
+		saveImage();
+
 		char kind;
 
 		if (radioButton_mean->Checked) {
@@ -789,6 +856,8 @@ namespace Homework1 {
 			return;
 		}
 
+		saveImage();
+
 		transferImage = histogram_equalization(originImage);
 		setPictureBox(pictureBox_after_image, transferImage);
 		setChart(chart_before_histogram, originImageCollection);
@@ -801,6 +870,8 @@ namespace Homework1 {
 			return;
 		}
 
+		saveImage();
+
 		int threshold = trackBar_defined_thresholding->Value;
 
 		transferImage = define_thresholding(originImage, threshold);
@@ -812,6 +883,8 @@ namespace Homework1 {
 		if (isExist(originImage) == false) {
 			return;
 		}
+
+		saveImage();
 
 		char kind;
 
@@ -835,6 +908,8 @@ namespace Homework1 {
 			return;
 		}
 
+		saveImage();
+
 		int threshold = trackBar_defined_thresholding->Value;
 
 		transferImage = sobel_threshold_combine(originImage, threshold);
@@ -846,6 +921,8 @@ namespace Homework1 {
 		if (isExist(originImage) == false) {
 			return;
 		}
+
+		saveImage();
 
 		transferImage = connected_component(originImage);
 		setLabel(label_connected_component, "Number of Connected Component = " + count_region);
@@ -862,14 +939,12 @@ namespace Homework1 {
 			return;
 		}
 
-		double originScale = min((double)(originImage->Width) / (double)(pictureBox_before_image->Width), (double)(originImage->Height) / (double)(pictureBox_before_image->Height));
-		double transferScale = min((double)(transferImage->Width) / (double)(pictureBox_after_image->Width), (double)(transferImage->Height) / (double)(pictureBox_after_image->Height));
+		saveImage();
 
-		cout << originScale << " " << transferScale << endl;
-		transferImage = image_registration(originImage, transferImage, originPos, transferPos, originScale, transferScale);
+		transferImage = image_registration(originImage, transferImage, originPos, transferPos);
 		setPictureBox(pictureBox_after_image, transferImage);
 		setLabel(label_scaling, "Scaling = " + round(10 * scale) / 10);
-		setLabel(label_theta, "Theta = " + round(10 * angle * 180 / 3.14159) / 10);
+		setLabel(label_theta, "Theta = " + round(10 * angle * 180 / 3.14159) / 10 + " (degree)");
 		setLabel(label_difference, "Difference = " + round(10 * difference) / 10);
 	}
 
@@ -881,12 +956,22 @@ namespace Homework1 {
 
 		Graphics^ before_image_graph = Graphics::FromImage(pictureBox_before_image->Image);
 		Point LocalMousePosition = pictureBox_before_image->PointToClient(Cursor->Position);
-		before_image_graph->FillEllipse(Brushes::Red, LocalMousePosition.X - 7, LocalMousePosition.Y - 7, 15, 15);
-		setPictureBox(pictureBox_before_image, originImage);
-		cout << LocalMousePosition.X << " " << LocalMousePosition.Y  << endl;
+		int position[2] = { LocalMousePosition.X , LocalMousePosition.Y };
+		vector<int> translatePos = zoomPointTranslate(position, originImage, pictureBox_before_image);
+		translatePos[0] -= 8;
+		translatePos[1] -= 8;
 
-		originPos[countOriginPoints++] = LocalMousePosition.X;
-		originPos[countOriginPoints++] = LocalMousePosition.Y;
+		if (translatePos[0] < 0 || translatePos[1] < 0) {
+			return;
+		}
+
+		before_image_graph->FillEllipse(Brushes::Red, translatePos[0], translatePos[1], 16, 16);
+
+		setPictureBox(pictureBox_before_image, originImage);
+		// cout << translatePos[0] << ":" << translatePos[1] << endl;
+
+		originPos[countOriginPoints++] = translatePos[0];
+		originPos[countOriginPoints++] = translatePos[1];
 	}
 
 	private: System::Void pictureBox_after_image_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -897,12 +982,22 @@ namespace Homework1 {
 
 		Graphics^ after_image_graph = Graphics::FromImage(pictureBox_after_image->Image);
 		Point LocalMousePosition = pictureBox_after_image->PointToClient(Cursor->Position);
-		after_image_graph->FillEllipse(Brushes::Red, LocalMousePosition.X - 7, LocalMousePosition.Y - 7, 15, 15);
-		setPictureBox(pictureBox_after_image, transferImage);
-		cout << LocalMousePosition.X << " " << LocalMousePosition.Y << endl;
+		int position[2] = { LocalMousePosition.X , LocalMousePosition.Y };
+		vector<int> translatePos = zoomPointTranslate(position, transferImage, pictureBox_after_image);
+		translatePos[0] -= 8;
+		translatePos[1] -= 8;
 
-		transferPos[countTransferPoints++] = LocalMousePosition.X;
-		transferPos[countTransferPoints++] = LocalMousePosition.Y;
+		if (translatePos[0] < 0 || translatePos[1] < 0) {
+			return;
+		}
+
+		after_image_graph->FillEllipse(Brushes::Red, translatePos[0], translatePos[1], 16, 16);
+
+		setPictureBox(pictureBox_after_image, transferImage);
+		// cout << translatePos[0] << ":" << translatePos[1] << endl;
+
+		transferPos[countTransferPoints++] = translatePos[0];
+		transferPos[countTransferPoints++] = translatePos[1];
 	}
 
 };

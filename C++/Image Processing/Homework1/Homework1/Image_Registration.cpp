@@ -11,7 +11,7 @@ using namespace System::Drawing;
 
 Bitmap^ rotate_scale_image(Bitmap^ originImage, Bitmap^ transferImage);
 double rotate_angle(int originVector[2], int tranferVector[2]);
-double scale_value(int originVector[2], int tranferVector[2], double originScale, double transferScale);
+double scale_value(int originVector[2], int tranferVector[2]);
 double vector_length(int _vector[2]);
 
 
@@ -20,13 +20,12 @@ double scale;
 double difference;
 
 // originImage -> slanted
-Bitmap^ image_registration(Bitmap^ originImage, Bitmap^ transferImage, int originPos[4], int transferPos[4], double originScale, double transferScale) {
-	cout << originPos[0] << " " << originPos[1] << " " << originPos[2] << " " << originPos[3] << " " << endl;
-	cout << transferPos[0] << " " << transferPos[1] << " " << transferPos[2] << " " << transferPos[3] << " " << endl;
+Bitmap^ image_registration(Bitmap^ originImage, Bitmap^ transferImage, int originPos[4], int transferPos[4]) {
+
 	int originVector[2] = { originPos[2] - originPos[0], originPos[3] - originPos[1] };
 	int tranferVector[2] = { transferPos[2] - transferPos[0], transferPos[3] - transferPos[1] };
 	angle = rotate_angle(originVector, tranferVector);
-	scale = scale_value(originVector, tranferVector, originScale, transferScale);
+	scale = scale_value(originVector, tranferVector);
 	difference = 0;
 
 	return rotate_scale_image(originImage, transferImage);
@@ -58,6 +57,8 @@ Bitmap^ rotate_scale_image(Bitmap^ originImage, Bitmap^ transferImage) {
 			originPosX = (int)((rotation_matrix[1][0] * (y - transferHeight / 2) + rotation_matrix[1][1] * (x - transferWidth / 2)) / scale +  originWidth / 2);
 			originPosY = (int)((rotation_matrix[0][0] * (y - transferHeight / 2) + rotation_matrix[0][1] * (x - transferWidth / 2)) / scale + originHeight / 2);
 
+			originPosX = (int)((rotation_matrix[0][0] * (x - transferWidth / 2) + rotation_matrix[0][1] * (y - transferHeight / 2)) / scale +  originWidth / 2);
+			originPosY = (int)((rotation_matrix[1][0] * (x - transferWidth / 2) + rotation_matrix[1][1] * (y - transferHeight / 2)) / scale + originHeight / 2);
 
 			if (originPosX >= 0 && originPosX < originWidth && originPosY >= 0 && originPosY < originHeight) {
 				intGray = originImage->GetPixel(originPosX, originPosY).R;
@@ -77,11 +78,11 @@ Bitmap^ rotate_scale_image(Bitmap^ originImage, Bitmap^ transferImage) {
 
 
 double rotate_angle(int originVector[2], int tranferVector[2]) {
-	return atan2(tranferVector[0], tranferVector[1]) - atan2(originVector[0], originVector[1]);
+	return atan2(tranferVector[1], tranferVector[0]) - atan2(originVector[1], originVector[0]);
 }
 
-double scale_value(int originVector[2], int tranferVector[2], double originScale, double transferScale) {
-	return (vector_length(tranferVector) / transferScale) / (vector_length(originVector) / originScale);
+double scale_value(int originVector[2], int tranferVector[2]) {
+	return (vector_length(tranferVector)) / (vector_length(originVector));
 }
 
 double vector_length(int _vector[2]) {
