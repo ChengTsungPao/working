@@ -86,7 +86,7 @@ Bitmap^ gray_channel(Bitmap^ originImage)
 		for (int x = 0; x < image->Width; x++) {
 			Color RGB = originImage->GetPixel(x, y);
 
-			int avg = (RGB.R + RGB.G + RGB.B) / 3;
+			int avg = (int)(RGB.R * 0.299 + RGB.G * 0.587 + RGB.B * 0.114);
 			int invR = Convert::ToInt32(avg);
 			int invG = Convert::ToInt32(avg);
 			int invB = Convert::ToInt32(avg);

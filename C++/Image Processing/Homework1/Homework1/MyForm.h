@@ -981,6 +981,11 @@ namespace Homework1 {
 	}
 
 	private: System::Void pictureBox_before_image_Click(System::Object^  sender, System::EventArgs^  e) {
+
+		if (isExist(originImage) == false || isExist(transferImage) == false) {
+			return;
+		}
+
 		if (countOriginPoints == 4) {
 			originPos = new int[4];
 			countOriginPoints = 0;
@@ -1010,6 +1015,11 @@ namespace Homework1 {
 	}
 
 	private: System::Void pictureBox_after_image_Click(System::Object^  sender, System::EventArgs^  e) {
+
+		if (isExist(originImage) == false || isExist(transferImage) == false) {
+			return;
+		}
+
 		if (countTransferPoints == 4) {
 			transferPos = new int[4];
 			countTransferPoints = 0;

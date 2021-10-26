@@ -108,7 +108,8 @@ Bitmap^ colorMap(vector<vector<int>> transferImage, vector<vector<int>> color_ta
 
 vector<vector<int>> get_color_table(int count_region) {
 	vector<vector<int>> table;
-	int delta = 200 / count_region / 3;
+	int parts = (int)(count_region / 6) + 1;
+	int delta = (int)(250 / parts);
 	
 	table.push_back({ 255,   0,   0 });
 	table.push_back({   0, 255,   0 });
@@ -116,6 +117,21 @@ vector<vector<int>> get_color_table(int count_region) {
 	table.push_back({ 255, 255,   0 });
 	table.push_back({   0, 255, 255 });
 	table.push_back({ 255,   0, 255 });
+
+	for (int i = 0; i < 6; i++) {
+		for (int j = 0; j < parts; j++) {
+			vector<int> color;
+			for (int k = 0; k < 3; k++) {
+				if (table[i][k] == 255) {
+					color.push_back(table[i][k] - delta * j);
+				} else {
+					color.push_back(table[i][k]);
+				}
+
+			}
+			table.push_back(color);
+		}
+	}
 
 	return table;
 }
