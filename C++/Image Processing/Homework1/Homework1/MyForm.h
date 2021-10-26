@@ -986,6 +986,9 @@ namespace Homework1 {
 			countOriginPoints = 0;
 		}
 
+		// Not already to support (countOriginPoints should reset)
+		// saveResult();
+
 		Graphics^ before_image_graph = Graphics::FromImage(pictureBox_before_image->Image);
 		Point LocalMousePosition = pictureBox_before_image->PointToClient(Cursor->Position);
 		int position[2] = { LocalMousePosition.X , LocalMousePosition.Y };
@@ -1011,6 +1014,9 @@ namespace Homework1 {
 			transferPos = new int[4];
 			countTransferPoints = 0;
 		}
+
+		// Not already to support (countTransferPoints should reset)
+		// saveResult();
 
 		Graphics^ after_image_graph = Graphics::FromImage(pictureBox_after_image->Image);
 		Point LocalMousePosition = pictureBox_after_image->PointToClient(Cursor->Position);
