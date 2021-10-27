@@ -1,13 +1,14 @@
 import pickle
 import torch
 import torch.nn as nn
-from torchsummary import summary
+# from torchsummary import summary
 import torchvision
 import torchvision.transforms as transforms
 import matplotlib.pylab as plt
 import numpy as np
 from torchvision.models import vgg16
 from VGG16_Model import VGG16
+import os
 
 class cifar10_classifier():
 
@@ -27,7 +28,7 @@ class cifar10_classifier():
 
 
     def plot_Cifa10_images(self):
-
+        return
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
         trainset = torchvision.datasets.CIFAR10(root = './data', train = True, download = True, transform = transform)
         train_dataloader = torch.utils.data.DataLoader(trainset, batch_size = 1, shuffle = False, num_workers = 2)
@@ -51,21 +52,20 @@ class cifar10_classifier():
         plt.show()
 
     def train_data(self):
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")       
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")    
 
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-        epoch = 2
-        batch_size = 10
-        learning_rate = 0.001
+        epoch = 20
+        batch_size = 512
+        learning_rate = 0.0001
 
         trainset = torchvision.datasets.CIFAR10(root = './data', train = True, download = True, transform = transform)
         train_dataloader = torch.utils.data.DataLoader(trainset, batch_size = batch_size, shuffle = True, num_workers = 2)
-        number_of_data = len(train_dataloader)
-        number_of_batch = number_of_data // batch_size
+        number_of_batch = len(train_dataloader)
 
-        testset = torchvision.datasets.CIFAR10(root = './data', train = False, download = True, transform = transform)
-        test_dataloader = torch.utils.data.DataLoader(testset, batch_size = batch_size, shuffle = False, num_workers = 2)
+        # testset = torchvision.datasets.CIFAR10(root = './data', train = False, download = True, transform = transform)
+        # test_dataloader = torch.utils.data.DataLoader(testset, batch_size = batch_size, shuffle = False, num_workers = 2)
         
         model = VGG16().to(device)
 
@@ -78,6 +78,7 @@ class cifar10_classifier():
 
             total_batch_loss = 0
             correct_predict = 0
+            count = 0
 
             for images, targets in train_dataloader:
 
@@ -88,13 +89,16 @@ class cifar10_classifier():
                 optimizer.step()
 
                 _, predict = torch.max(nn.functional.softmax(output, dim = 1), 1)
-                correct_predict += (predict == targets).sum()
+                # correct_predict += (predict.data.cpu() == targets).sum()
                 total_batch_loss += loss.data.cpu().numpy() / number_of_batch
-                print("loss = {}".format(loss))
+                # print("loss = {}".format(loss))
+
+                print("\r", "Training: %.4f" % ((count / number_of_batch) * 100.), "%", " (loss = {}, epoch: {})".format(loss, step), end=" ")
+                count += 1
 
             epoch_loss += [total_batch_loss]
             epoch_accuracy += [correct_predict]
-            print("\r", "Training: %.4f" % ((step / epoch) * 100.), "%", "loss = {}, accuracy = {} (epoch: {})".format(epoch_loss[-1], epoch_accuracy[-1], step), end=" ")
+            # print("\r", "Training: %.4f" % ((step / epoch) * 100.), "%", " (loss = {}, accuracy = {}, epoch: {})".format(epoch_loss[-1], epoch_accuracy[-1], step), end=" ")
 
         if not os.path.exists("./model/"):
             os.makedirs("./model/")
@@ -102,8 +106,8 @@ class cifar10_classifier():
 
         if not os.path.exists("./predict/"):
             os.makedirs("./predict/")
-        np.savez("./model/loss.npz", data = epoch_loss)
-        np.savez("./model/accuracy.npz", data = epoch_accuracy)
+        np.savez("./predict/loss.npz", data = epoch_loss)
+        np.savez("./predict/accuracy.npz", data = epoch_accuracy)
 
         
             
