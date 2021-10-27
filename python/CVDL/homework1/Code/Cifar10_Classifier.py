@@ -28,7 +28,7 @@ class cifar10_classifier():
 
 
     def plot_Cifa10_images(self):
-        return
+
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
         trainset = torchvision.datasets.CIFAR10(root = './dataset', train = True, download = True, transform = transform)
         train_dataloader = torch.utils.data.DataLoader(trainset, batch_size = 1, shuffle = False, num_workers = 2)
@@ -62,6 +62,7 @@ class cifar10_classifier():
 
         trainset = torchvision.datasets.CIFAR10(root = './dataset', train = True, download = True, transform = transform)
         train_dataloader = torch.utils.data.DataLoader(trainset, batch_size = batch_size, shuffle = True, num_workers = 2)
+        number_of_data = len(trainset)
         number_of_batch = len(train_dataloader)
 
         # testset = torchvision.datasets.CIFAR10(root = './dataset', train = False, download = True, transform = transform)
@@ -89,15 +90,15 @@ class cifar10_classifier():
                 optimizer.step()
 
                 _, predict = torch.max(nn.functional.softmax(output, dim = 1), 1)
-                # correct_predict += (predict.data.cpu() == targets).sum()
-                total_batch_loss += loss.data.cpu().numpy() / number_of_batch
+                correct_predict += (predict.data.cpu() == targets).sum()
+                total_batch_loss += loss.data.cpu().numpy()
                 # print("loss = {}".format(loss))
 
                 print("\r", "Training: %.4f" % ((count / number_of_batch) * 100.), "%", " (loss = {}, epoch: {})".format(loss, step), end=" ")
                 count += 1
 
-            epoch_loss += [total_batch_loss]
-            epoch_accuracy += [correct_predict]
+            epoch_loss += [total_batch_loss / number_of_batch]
+            epoch_accuracy += [correct_predict / number_of_data]
             # print("\r", "Training: %.4f" % ((step / epoch) * 100.), "%", " (loss = {}, accuracy = {}, epoch: {})".format(epoch_loss[-1], epoch_accuracy[-1], step), end=" ")
 
         if not os.path.exists("./model/"):
@@ -108,6 +109,17 @@ class cifar10_classifier():
             os.makedirs("./predict/")
         np.savez("./predict/loss.npz", data = epoch_loss)
         np.savez("./predict/accuracy.npz", data = epoch_accuracy)
+
+
+    def plot_result(self, kind = "loss"):
+
+        data = np.load("./predict/{}.npz".format(kind))
+        plt.title(kind)
+        plt.xlabel("epoch")
+        plt.ylabel(kind)
+        plt.plot(list(range(1, len(data["data"]) + 1)), data["data"], "-o")
+        plt.show()
+
 
         
             
