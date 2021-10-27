@@ -5,18 +5,13 @@ import matplotlib.pylab as plt
 class scale_invariant_feature_transform():
 
     def __init__(self, path):
-        self.path = path
-
-        self.image1 = None
-        self.image2 = None
-
-        self.keypoint1 = None
-        self.keypoint2 = None
-        self.des1 = None
-        self.des2 = None
-
-        self.goodMatch = None
+        
+        self.keypointsImage1 = None 
+        self.keypointsImage2 = None
         self.matchResult = None
+        self.combineImage = None
+        
+        self.path = path
 
         self.isCal = False
 
@@ -26,33 +21,42 @@ class scale_invariant_feature_transform():
 
 
     def keypoints_calculate(self):
-        self.image1 = cv2.imread(self.path + 'Shark2.jpg', 0)
-        self.image2 = cv2.imread(self.path + 'Shark1.jpg', 0)
+        image1 = cv2.imread(self.path + 'Shark2.jpg', 0)
+        image2 = cv2.imread(self.path + 'Shark1.jpg', 0)
 
         ########################## find keypoint ##########################
 
         sift = cv2.xfeatures2d.SIFT_create()
 
-        self.keypoint1, self.des1 = sift.detectAndCompute(self.image1, None)
-        self.keypoint2, self.des2 = sift.detectAndCompute(self.image2, None)
+        keypoint1, des1 = sift.detectAndCompute(image1, None)
+        keypoint2, des2 = sift.detectAndCompute(image2, None)
 
-        self.keypoint1, self.des1 = zip(*sorted(zip(self.keypoint1, self.des1), key = lambda x: x[0].size, reverse = True)[:200])
-        self.keypoint2, self.des2 = zip(*sorted(zip(self.keypoint2, self.des2), key = lambda x: x[0].size, reverse = True)[:200])
+        keypoint1, des1 = zip(*sorted(zip(keypoint1, des1), key = lambda x: x[0].size, reverse = True)[:200])
+        keypoint2, des2 = zip(*sorted(zip(keypoint2, des2), key = lambda x: x[0].size, reverse = True)[:200])
 
-        self.keypoint1, self.des1 = np.array(self.keypoint1), np.array(self.des1)
-        self.keypoint2, self.des2 = np.array(self.keypoint2), np.array(self.des2)
+        keypoint1, des1 = np.array(keypoint1), np.array(des1)
+        keypoint2, des2 = np.array(keypoint2), np.array(des2)
 
         ########################## find keypoint ##########################
 
         flann = cv2.FlannBasedMatcher(dict(algorithm = 1, trees = 5), dict(checks = 50))
 
-        self.matches = flann.knnMatch(self.des1, self.des2, k = 2)
-        self.goodMatch = [m for m, n in self.matches if m.distance < 0.7 * n.distance]
-        self.goodMatch = np.expand_dims(self.goodMatch, 1)
+        matches = flann.knnMatch(des1, des2, k = 2)
+        goodMatch = [m for m, n in matches if m.distance < 0.7 * n.distance]
 
-        self.image1 = cv2.drawKeypoints(self.image1, self.keypoint1, None)
-        self.image2 = cv2.drawKeypoints(self.image2, self.keypoint2, None)
-        self.matchResult = cv2.drawMatchesKnn(self.image1, self.keypoint1, self.image2, self.keypoint2, self.goodMatch, None)
+        ########################## combine Image ##########################
+
+        source_points = np.float32([keypoint1[m.queryIdx].pt for m in goodMatch]).reshape(-1, 1, 2)
+        destination_points = np.float32([keypoint2[m.trainIdx].pt for m in goodMatch]).reshape(-1, 1, 2)
+        M, mask = cv2.findHomography(source_points, destination_points, cv2.RANSAC, 5.0)
+        combineImage = cv2.warpPerspective(image1, M, (image1.shape[1] + 200, image1.shape[0]))
+
+        ########################### cache Image ###########################
+
+        self.keypointsImage1 = cv2.drawKeypoints(image1, keypoint1, None)
+        self.keypointsImage2 = cv2.drawKeypoints(image2, keypoint2, None)
+        self.matchResult = cv2.drawMatchesKnn(self.keypointsImage1, keypoint1, self.keypointsImage2, keypoint2, np.expand_dims(goodMatch, 1), None)
+        self.combineImage = combineImage
 
         self.isCal = True
 
@@ -61,8 +65,8 @@ class scale_invariant_feature_transform():
         if self.isCal == False:
             self.keypoints_calculate()
 
-        cv2.imshow("find_keypoints (Shark2.jpg)", self.image1)
-        cv2.imshow("find_keypoints (Shark1.jpg)", self.image2)
+        cv2.imshow("find_keypoints (Shark2.jpg)", self.keypointsImage1)
+        cv2.imshow("find_keypoints (Shark1.jpg)", self.keypointsImage2)
 
         cv2.waitKey(0)
         cv2.destroyAllWindows()
@@ -75,4 +79,14 @@ class scale_invariant_feature_transform():
         cv2.imshow("matched_keypoints", self.matchResult)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+
+    def matched_images(self):
+        if self.isCal == False:
+            self.keypoints_calculate()
+
+        cv2.imshow("matched_images", self.combineImage)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
 

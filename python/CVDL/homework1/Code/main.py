@@ -33,6 +33,7 @@ if __name__ == "__main__":
     scale_invariant_feature_transform_fcn = scale_invariant_feature_transform(path)
     scale_invariant_feature_transform_fcn.find_keypoints()
     scale_invariant_feature_transform_fcn.matched_keypoints()
+    scale_invariant_feature_transform_fcn.matched_images()
 
     # problem = 5
     # cifar10_classifier_fcn = cifar10_classifier()
