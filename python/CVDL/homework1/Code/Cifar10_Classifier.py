@@ -92,7 +92,6 @@ class cifar10_classifier():
                 _, predict = torch.max(nn.functional.softmax(output, dim = 1), 1)
                 correct_predict += (predict.data.cpu() == targets).sum()
                 total_batch_loss += loss.data.cpu().numpy()
-                # print("loss = {}".format(loss))
 
                 print("\r", "Training: %.4f" % ((count / number_of_batch) * 100.), "%", " (loss = {}, epoch: {})".format(loss, step), end=" ")
                 count += 1
