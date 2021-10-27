@@ -30,7 +30,7 @@ class cifar10_classifier():
     def plot_Cifa10_images(self):
         return
         transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-        trainset = torchvision.datasets.CIFAR10(root = './data', train = True, download = True, transform = transform)
+        trainset = torchvision.datasets.CIFAR10(root = './dataset', train = True, download = True, transform = transform)
         train_dataloader = torch.utils.data.DataLoader(trainset, batch_size = 1, shuffle = False, num_workers = 2)
 
         count = 0
@@ -60,11 +60,11 @@ class cifar10_classifier():
         batch_size = 512
         learning_rate = 0.0001
 
-        trainset = torchvision.datasets.CIFAR10(root = './data', train = True, download = True, transform = transform)
+        trainset = torchvision.datasets.CIFAR10(root = './dataset', train = True, download = True, transform = transform)
         train_dataloader = torch.utils.data.DataLoader(trainset, batch_size = batch_size, shuffle = True, num_workers = 2)
         number_of_batch = len(train_dataloader)
 
-        # testset = torchvision.datasets.CIFAR10(root = './data', train = False, download = True, transform = transform)
+        # testset = torchvision.datasets.CIFAR10(root = './dataset', train = False, download = True, transform = transform)
         # test_dataloader = torch.utils.data.DataLoader(testset, batch_size = batch_size, shuffle = False, num_workers = 2)
         
         model = VGG16().to(device)
