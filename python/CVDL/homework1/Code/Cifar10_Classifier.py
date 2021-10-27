@@ -1,18 +1,26 @@
-import pickle
 import torch
 import torch.nn as nn
-# from torchsummary import summary
 import torchvision
 import torchvision.transforms as transforms
-import matplotlib.pylab as plt
-import numpy as np
+from torchsummary import summary
 from torchvision.models import vgg16
 from VGG16_Model import VGG16
+
 import os
+import numpy as np
+import matplotlib.pylab as plt
 
 class cifar10_classifier():
 
     def __init__(self):
+
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")  
+        self.model = VGG16().to(self.device)
+
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+        self.trainset = torchvision.datasets.CIFAR10(root = './dataset', train = True, download = True, transform = transform)
+        self.testset = torchvision.datasets.CIFAR10(root = './dataset', train = False, download = True, transform = transform)
+
         self.targetTable = {
              0: "airplane",
              1: "automobile",
@@ -28,50 +36,34 @@ class cifar10_classifier():
 
 
     def plot_Cifa10_images(self):
+        
+        plt.figure(figsize = (8, 6), dpi = 100)
 
-        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
-        trainset = torchvision.datasets.CIFAR10(root = './dataset', train = True, download = True, transform = transform)
-        train_dataloader = torch.utils.data.DataLoader(trainset, batch_size = 1, shuffle = False, num_workers = 2)
+        for index in range(9):
+            image, target = self.trainset[index]
+            image = (image.data.numpy().transpose((1, 2, 0)) + 1) / 2
 
-        count = 0
-        for step, (images, targets) in enumerate(train_dataloader):
+            plt.subplot(331 + index)
+            plt.title(self.targetTable[int(target)])
+            plt.axis('off')
+            plt.imshow(image)
 
-            for image, target in zip(images, targets):
-                image = image.numpy().transpose((1, 2, 0))
-
-                plt.subplot(331 + count)
-                plt.title(self.targetTable[int(target)])
-                plt.imshow(image)
-
-                count += 1
-                
-                if count == 9: break
-
-            if count == 9: break
-
+        plt.tight_layout()
         plt.show()
 
-    def train_data(self):
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")    
 
-        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    def train_data(self):  
 
         epoch = 20
         batch_size = 512
         learning_rate = 0.0001
 
-        trainset = torchvision.datasets.CIFAR10(root = './dataset', train = True, download = True, transform = transform)
-        train_dataloader = torch.utils.data.DataLoader(trainset, batch_size = batch_size, shuffle = True, num_workers = 2)
-        number_of_data = len(trainset)
+        train_dataloader = torch.utils.data.DataLoader(self.trainset, batch_size = batch_size, shuffle = True, num_workers = 2)
+        number_of_data = len(self.trainset)
         number_of_batch = len(train_dataloader)
 
-        # testset = torchvision.datasets.CIFAR10(root = './dataset', train = False, download = True, transform = transform)
-        # test_dataloader = torch.utils.data.DataLoader(testset, batch_size = batch_size, shuffle = False, num_workers = 2)
-        
-        model = VGG16().to(device)
-
-        optimizer = torch.optim.Adam(model.parameters(), lr = learning_rate)  
-        loss_func = nn.CrossEntropyLoss().to(device)
+        optimizer = torch.optim.Adam(self.model.parameters(), lr = learning_rate)  
+        loss_func = nn.CrossEntropyLoss().to(self.device)
 
         epoch_loss = []
         epoch_accuracy = []
@@ -83,9 +75,9 @@ class cifar10_classifier():
 
             for images, targets in train_dataloader:
 
-                output = model(images.float().to(device))
+                output = self.model(images.float().to(self.device))
                 optimizer.zero_grad()
-                loss = loss_func(output, targets.long().to(device))
+                loss = loss_func(output, targets.long().to(self.device))
                 loss.backward()
                 optimizer.step()
 
@@ -102,7 +94,7 @@ class cifar10_classifier():
 
         if not os.path.exists("./model/"):
             os.makedirs("./model/")
-        torch.save(model, "./model/model.pkl")
+        torch.save(self.model, "./model/model.pkl")
 
         if not os.path.exists("./predict/"):
             os.makedirs("./predict/")
@@ -110,23 +102,44 @@ class cifar10_classifier():
         np.savez("./predict/accuracy.npz", data = epoch_accuracy)
 
 
-    def plot_result(self, kind = "loss"):
+    def test_data(self, index = 0):
+        return
+        model = torch.load("./model/model.pkl")
+        shape = np.shape(self.testset[0][0])
 
-        data = np.load("./predict/{}.npz".format(kind))
-        plt.title(kind)
+        correct_predict = 0
+        for image, target in self.testset:
+            image = torch.tensor(image.data.numpy().reshape(1, shape[0], shape[1], shape[2]))
+            target = torch.tensor(target.data.numpy().reshape(1, 1))
+            output = model(image.float().to(self.device))
+            _, predict = torch.max(nn.functional.softmax(output, dim = 1), 1)
+            correct_predict += (predict.data.cpu() == target).sum()
+
+        accuracy = correct_predict / len(self.testset)
+
+        return accuracy
+
+
+    def plot_result(self):
+
+        loss = np.load("./predict/{}.npz".format("loss"))
+        accuracy = np.load("./predict/{}.npz".format("accuracy"))
+
+        plt.figure(figsize = (16, 6), dpi = 80)
+
+        plt.subplot(121)
+        plt.title("loss")
         plt.xlabel("epoch")
-        plt.ylabel(kind)
-        plt.plot(list(range(1, len(data["data"]) + 1)), data["data"], "-o")
-        plt.xticks(list(range(1, len(data["data"]) + 1, 2)))
+        plt.ylabel("loss")
+        plt.plot(list(range(1, len(loss["data"]) + 1)), loss["data"], "-o")
+        plt.xticks(list(range(1, len(loss["data"]) + 1, 2)))
+
+        plt.subplot(122)
+        plt.title("accuracy")
+        plt.xlabel("epoch")
+        plt.ylabel("accuracy")
+        plt.plot(list(range(1, len(accuracy["data"]) + 1)), accuracy["data"], "-o")
+        plt.xticks(list(range(1, len(accuracy["data"]) + 1, 2)))
+
+        plt.tight_layout()
         plt.show()
-
-
-        
-            
-
-            
-
-        
-
-
-    

@@ -35,10 +35,9 @@ if __name__ == "__main__":
     # scale_invariant_feature_transform_fcn.matched_keypoints()
 
     problem = 5
-    path = "..//Dataset_CvDl_Hw1//"
-    filename = "cifar-10-python.tar.gz"
     cifar10_classifier_fcn = cifar10_classifier()
     # cifar10_classifier_fcn.plot_Cifa10_images()
     # cifar10_classifier_fcn.train_data()
-    cifar10_classifier_fcn.plot_result()
+    cifar10_classifier_fcn.test_data()
+    # cifar10_classifier_fcn.plot_result()
 
