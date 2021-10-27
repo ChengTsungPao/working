@@ -39,6 +39,6 @@ if __name__ == "__main__":
     filename = "cifar-10-python.tar.gz"
     cifar10_classifier_fcn = cifar10_classifier()
     # cifar10_classifier_fcn.plot_Cifa10_images()
-    cifar10_classifier_fcn.train_data()
+    # cifar10_classifier_fcn.train_data()
     cifar10_classifier_fcn.plot_result()
 

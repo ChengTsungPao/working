@@ -117,6 +117,7 @@ class cifar10_classifier():
         plt.xlabel("epoch")
         plt.ylabel(kind)
         plt.plot(list(range(1, len(data["data"]) + 1)), data["data"], "-o")
+        plt.xticks(list(range(1, len(data["data"]) + 1, 2)))
         plt.show()
 
 
