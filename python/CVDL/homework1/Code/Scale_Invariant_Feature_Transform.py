@@ -47,8 +47,6 @@ class scale_invariant_feature_transform():
         flann = cv2.FlannBasedMatcher(dict(algorithm = 1, trees = 5), dict(checks = 50))
 
         self.matches = flann.knnMatch(self.des1, self.des2, k = 2)
-        self.goodMatch = filter(lambda x: x[0].distance < 0.7 * x[1].distance, self.matches)
-
         self.goodMatch = [m for m, n in self.matches if m.distance < 0.7 * n.distance]
         self.goodMatch = np.expand_dims(self.goodMatch, 1)
 
