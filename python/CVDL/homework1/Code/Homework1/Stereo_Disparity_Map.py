@@ -70,8 +70,8 @@ class stereo_disparity_map():
             self.disparity_calculate()
 
         cv2.imshow('showDisparity', self.showDisparity)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
 
     def mouseEventHanlder(self, event, x, y, flags, params):
