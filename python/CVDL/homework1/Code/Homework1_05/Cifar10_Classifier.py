@@ -68,7 +68,7 @@ class cifar10_classifier():
         summary(self.model, (3, 32, 32))
 
 
-    def show_hyperparameters(self):
+    def show_hyperParameters(self):
 
         print("Batch Size {}\n".format(self.batch_size))
         print(self.optimizer)
@@ -120,17 +120,27 @@ class cifar10_classifier():
         np.savez("./predict/accuracy.npz", data = epoch_accuracy)
 
 
-    def test_data(self, index = 0):
+    def test_data(self, index):
+
+        if index == "":
+            index = "1"
+
+        if index.isdigit() == False:
+            return
+
+        index = int(index) - 1
+        if not 0 <= index < len(self.testset):
+            return
 
         if not os.path.exists("./model/"):
             self.train_data()
-
+        
         model = torch.load("./model/model.pkl", map_location=torch.device(self.device))
-        shape = np.shape(self.testset[0][0])
+        shape = np.shape(self.testset[index][0])
         
         image, target = self.testset[index]
         inputImage = torch.tensor(image.data.numpy().reshape(1, shape[0], shape[1], shape[2]))
-        output = model(inputImage.float().to(self.device))
+        output = model(inputImage.to(self.device))
         output = nn.functional.softmax(output, dim = 1)
         output = output.data.cpu().numpy()
 
