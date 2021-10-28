@@ -4,23 +4,15 @@ from Stereo_Disparity_Map import stereo_disparity_map
 from Scale_Invariant_Feature_Transform import scale_invariant_feature_transform
 from Cifar10_Classifier import cifar10_classifier
 
+import sys
+from PyQt5 import QtWidgets
+from UI import UI
+
 if __name__ == "__main__":
 
-    # problem = 1
-    # path = "..//Dataset_CvDl_Hw1//Q{}_Image//".format(problem)
-    # corner_detection_fcn = corner_detection(path)
-    # corner_detection_fcn.find_corners()
-    # corner_detection_fcn.find_intrinsic()
-    # corner_detection_fcn.find_extrinsic(1)
-    # corner_detection_fcn.find_distortion()
-    # corner_detection_fcn.show()
-
-    # problem = 2
-    # path = "..//Dataset_CvDl_Hw1//Q{}_Image//".format(problem)
-    # word = "OPENCV"
-    # augmented_reality_fcn = augmented_reality(path)
-    # augmented_reality_fcn.draw_board(word)
-    # augmented_reality_fcn.draw_vertical(word)
+    app = QtWidgets.QApplication(sys.argv)
+    ui = UI()
+    sys.exit(app.exec_())
 
     # problem = 3
     # path = "..//Dataset_CvDl_Hw1//Q{}_Image//".format(problem)

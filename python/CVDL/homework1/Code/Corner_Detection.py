@@ -79,8 +79,15 @@ class corner_detection():
 
 
     def find_extrinsic(self, index, visiable = True):
+        if index.isdigit() == False:
+            return
+
         if self.isCal == False:
             self.find_corners(False)
+
+        index = int(index) - 1
+        if not 0 <= index < len(self.translations):
+            return
 
         rotation, _ = cv2.Rodrigues(self.rotations[index])
         translation = self.translations[index]
@@ -115,7 +122,6 @@ class corner_detection():
             cv2.imshow('distortImage & undistortImage', showResult)
             cv2.waitKey(500)
 
-            # cv2.waitKey(0)
-            # cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
 
 
