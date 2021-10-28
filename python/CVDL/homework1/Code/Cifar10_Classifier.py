@@ -125,7 +125,7 @@ class cifar10_classifier():
         if not os.path.exists("./model/"):
             self.train_data()
 
-        model = torch.load("./model/model.pkl")
+        model = torch.load("./model/model.pkl", map_location=torch.device(self.device))
         shape = np.shape(self.testset[0][0])
         
         image, target = self.testset[index]

@@ -2,7 +2,7 @@ from Corner_Detection import corner_detection
 from Augmented_Reality import augmented_reality
 from Stereo_Disparity_Map import stereo_disparity_map
 from Scale_Invariant_Feature_Transform import scale_invariant_feature_transform
-# from Cifar10_Classifier import cifar10_classifier
+from Cifar10_Classifier import cifar10_classifier
 
 if __name__ == "__main__":
 
