@@ -49,7 +49,8 @@ class scale_invariant_feature_transform():
         source_points = np.float32([keypoint1[m.queryIdx].pt for m in goodMatch]).reshape(-1, 1, 2)
         destination_points = np.float32([keypoint2[m.trainIdx].pt for m in goodMatch]).reshape(-1, 1, 2)
         M, mask = cv2.findHomography(source_points, destination_points, cv2.RANSAC, 5.0)
-        combineImage = cv2.warpPerspective(image1, M, (image1.shape[1] + 200, image1.shape[0]))
+        combineImage = cv2.warpPerspective(image1, M, (image1.shape[1] + image2.shape[1], image1.shape[0]))
+        combineImage[:image2.shape[0], :image2.shape[1]] = image2
 
         ########################### cache Image ###########################
 
