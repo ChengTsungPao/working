@@ -77,6 +77,9 @@ class corner_detection():
 
 
     def find_extrinsic(self, index, visiable = True):
+        if index == "":
+            index = "1"
+
         if index.isdigit() == False:
             return
 
