@@ -820,6 +820,28 @@ namespace Homework1 {
 		return translatePos;
 	}
 
+	private: void swapImage() {
+		saveResult();
+
+		Bitmap^ tempImage;
+		tempImage = originImage;
+		originImage = transferImage;
+		transferImage = tempImage;
+
+		int* tempPos = new int[4];
+		tempPos = originPos;
+		originPos = transferPos;
+		transferPos = tempPos;
+
+		int countTempPoints;
+		countTempPoints = countOriginPoints;
+		countOriginPoints = countTransferPoints;
+		countTransferPoints = countTempPoints;
+
+		setPictureBox(pictureBox_before_image, originImage);
+		setPictureBox(pictureBox_after_image, transferImage);
+	}
+
 	private: bool isExist(Bitmap^ image) {
 		return image != nullptr;
 	}
@@ -986,6 +1008,12 @@ namespace Homework1 {
 			return;
 		}
 
+		MouseEventArgs ^event = (MouseEventArgs^)e;
+		if (event->Button == System::Windows::Forms::MouseButtons::Right) {
+			swapImage();
+			return;
+		}
+
 		if (countOriginPoints == 4) {
 			originPos = new int[4];
 			countOriginPoints = 0;
@@ -1017,6 +1045,12 @@ namespace Homework1 {
 	private: System::Void pictureBox_after_image_Click(System::Object^  sender, System::EventArgs^  e) {
 
 		if (isExist(originImage) == false || isExist(transferImage) == false) {
+			return;
+		}
+
+		MouseEventArgs ^event = (MouseEventArgs^) e;
+		if (event->Button == System::Windows::Forms::MouseButtons::Right) {
+			swapImage();
 			return;
 		}
 
