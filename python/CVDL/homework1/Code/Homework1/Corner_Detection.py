@@ -29,37 +29,35 @@ class corner_detection():
         nx = 11
         ny = 8
 
-        # prepare object points, like (0,0,0), (1,0,0), (2,0,0), ...(6,5,0)
-        objp = np.zeros((nx*ny,3), np.float32)
-        objp[:,:2] = np.mgrid[0:nx, 0:ny].T.reshape(-1,2)
-
-        # Arrays to store object points and image points from all the images.
-        objpoints = [] # 3d points in real world space
-        imgpoints = [] # 2d pionts in image plane.
         images = []
+        point3D = []
+        point2D = []
         
+        points = np.zeros((nx * ny, 3), np.float32)
+        points[ :, : 2] = np.mgrid[0 : nx, 0 : ny].T.reshape(-1,2)
+
         paths = glob(self.path + '*.bmp')
-        for idx, fname in enumerate(paths):
-            img = cv2.imread(fname)
-            images.append(copy.deepcopy(img))
-            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            ret, corners = cv2.findChessboardCorners(gray, (nx,ny), None)
+        for index, fname in enumerate(paths):
+            image = cv2.imread(fname)
+            images.append(copy.deepcopy(image))
+
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            ret, corners = cv2.findChessboardCorners(gray, (nx, ny), None)
 
             if ret == True:
-                objpoints.append(objp)
-                imgpoints.append(corners)
+                point3D.append(points)
+                point2D.append(corners)
 
                 if visiable:
-                    cv2.drawChessboardCorners(img, (nx,ny), corners, ret)
-                    image = self.setImageSize(img)
-                    # write_name = 'corners_found'+str(idx + 1)+'.jpg'
-                    # cv2.imwrite(self.path + write_name, image)
-                    cv2.imshow('img', image)
+                    cv2.drawChessboardCorners(image, (nx, ny), corners, ret)
+                    showImage = self.setImageSize(image)
+                    # cv2.imwrite(self.path + "corners_found{}.jpg".format(index + 1), showImage)
+                    cv2.imshow("corners_found", showImage)
                     cv2.waitKey(500)
 
         cv2.destroyAllWindows()
 
-        ret = cv2.calibrateCamera(objpoints, imgpoints, (img.shape[1],img.shape[0]), None, None)
+        ret = cv2.calibrateCamera(point3D, point2D, (image.shape[1],image.shape[0]), None, None)
         
         self.intrinsic = ret[1]
         self.distortion = ret[2]
@@ -110,7 +108,7 @@ class corner_detection():
         if self.isCal == False:
             self.find_corners(False)
 
-        for idx, image in enumerate(self.images):
+        for index, image in enumerate(self.images):
             h, w = image.shape[:2]
             newCameraMatrix, (x, y, w, h) = cv2.getOptimalNewCameraMatrix(self.intrinsic, self.distortion, (h, w), 1, (h, w))
             undistortImage = cv2.undistort(image, self.intrinsic, self.distortion, None, newCameraMatrix)
@@ -118,8 +116,8 @@ class corner_detection():
             showResult = np.concatenate((image, undistortImage), axis=1)
             showResult = self.setImageSize(showResult)
             
-            # cv2.imwrite(self.path + 'undistortImage{}.png'.format(idx + 1), undistortImage)
-            cv2.imshow('distortImage & undistortImage', showResult)
+            # cv2.imwrite(self.path + "undistortImage{}.png".format(index + 1), undistortImage)
+            cv2.imshow("distortImage & undistortImage", showResult)
             cv2.waitKey(500)
 
         cv2.destroyAllWindows()

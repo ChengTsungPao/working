@@ -42,7 +42,7 @@ class augmented_reality(corner_detection):
                     start, end = tuple(points[0]), tuple(points[1])
                     cv2.line(image, start, end, (0, 0, 255), 10)
 
-            cv2.imshow('image', self.setImageSize(image))
+            cv2.imshow('augmented_reality_image', self.setImageSize(image))
             cv2.waitKey(500)
 
         cv2.destroyAllWindows()
@@ -53,7 +53,7 @@ class augmented_reality(corner_detection):
             return
 
         fs = cv2.FileStorage(self.path + "Q2_lib//" + "alphabet_lib_onboard.txt", cv2.FILE_STORAGE_READ)
-        self.draw(word, fs)
+        self.draw(word.upper(), fs)
         
 
     def draw_vertical(self, word):
@@ -61,4 +61,4 @@ class augmented_reality(corner_detection):
             return
 
         fs = cv2.FileStorage(self.path + "Q2_lib//" + "alphabet_lib_vertical.txt", cv2.FILE_STORAGE_READ)                
-        self.draw(word, fs)
+        self.draw(word.upper(), fs)

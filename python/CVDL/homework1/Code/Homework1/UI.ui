@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>932</width>
-    <height>420</height>
+    <height>404</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -106,18 +106,21 @@
      <widget class="QLineEdit" name="Calibration_InputBox">
       <property name="geometry">
        <rect>
-        <x>90</x>
+        <x>87</x>
         <y>30</y>
         <width>71</width>
         <height>21</height>
        </rect>
       </property>
+      <property name="inputMethodHints">
+       <set>Qt::ImhNone</set>
+      </property>
      </widget>
      <widget class="QLabel" name="label">
       <property name="geometry">
        <rect>
-        <x>8</x>
-        <y>30</y>
+        <x>20</x>
+        <y>31</y>
         <width>91</width>
         <height>16</height>
        </rect>
@@ -170,10 +173,21 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>60</y>
+       <y>61</y>
        <width>171</width>
-       <height>31</height>
+       <height>28</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="inputMethodHints">
+      <set>Qt::ImhNone</set>
+     </property>
+     <property name="maxLength">
+      <number>6</number>
      </property>
     </widget>
    </widget>
@@ -262,7 +276,7 @@
      <x>0</x>
      <y>0</y>
      <width>932</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

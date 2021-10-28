@@ -10,7 +10,6 @@ class scale_invariant_feature_transform():
         self.keypointsImage2 = None
         self.matchResult = None
         self.combineImage = None
-        
         self.path = path
 
         self.isCal = False
@@ -89,5 +88,3 @@ class scale_invariant_feature_transform():
         cv2.imshow("matched_images", self.combineImage)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-
-

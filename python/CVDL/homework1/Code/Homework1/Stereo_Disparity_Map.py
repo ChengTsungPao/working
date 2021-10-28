@@ -39,28 +39,12 @@ class stereo_disparity_map():
         stereo = cv2.StereoBM_create(numDisparities=256, blockSize=25)
         disparity = stereo.compute(imgLeftGray, imgRightGray) / 16
         disparity = self.setImageSize(disparity)
-
-        ################################## showDisparity ##################################
-
-        showDisparity = cv2.normalize(disparity, None, 0, 255, cv2.NORM_MINMAX)
-
-        # plt.imshow(showDisparity, cmap = "gray")
-        # plt.colorbar()
-        # plt.axis('off')
-        # plt.show()
-
-        # cv2.imshow('showDisparity', showDisparity)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-        
-        plt.imsave(self.path + "disparity.png", showDisparity, cmap = "gray")
-
-        ################################### cache Image ###################################
+        disparity = cv2.normalize(disparity, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
 
         self.imgLeft = self.setImageSize(imgLeft)
         self.imgRight = self.setImageSize(imgRight)
         self.disparity = self.setDisparitySale(disparity)
-        self.showDisparity = cv2.imread(self.path + 'disparity.png', 0)
+        self.showDisparity = disparity
 
         self.isCal = True
 
@@ -69,7 +53,7 @@ class stereo_disparity_map():
         if self.isCal == False:
             self.disparity_calculate()
 
-        cv2.imshow('showDisparity', self.showDisparity)
+        cv2.imshow('disparity', self.showDisparity)
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
 
