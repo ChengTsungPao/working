@@ -11,6 +11,9 @@ class UI(QtWidgets.QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
         uic.loadUi('UI.ui', self)
+
+        # Image and Library Path
+        self.path = ".//Dataset_CvDl_Hw1//Q{}_Image//"
         
         # problem 1 UI connect
         self.corner_detection_fcn = None
@@ -39,24 +42,16 @@ class UI(QtWidgets.QMainWindow):
 
     # setup function
     def setup_camera_calibration(self):
-        problem = 1
-        path = ".//Dataset_CvDl_Hw1//Q{}_Image//".format(problem)
-        self.corner_detection_fcn = corner_detection_fcn = corner_detection(path)
+        self.corner_detection_fcn = corner_detection_fcn = corner_detection(self.path.format(1))
 
     def setup_augmented_reality(self):
-        problem = 2
-        path = ".//Dataset_CvDl_Hw1//Q{}_Image//".format(problem)
-        self.augmented_reality_fcn = augmented_reality(path)
+        self.augmented_reality_fcn = augmented_reality(self.path.format(2))
 
     def setup_stereo_disparity_map(self):
-        problem = 3
-        path = ".//Dataset_CvDl_Hw1//Q{}_Image//".format(problem)
-        self.stereo_disparity_map_fcn = stereo_disparity_map(path)
+        self.stereo_disparity_map_fcn = stereo_disparity_map(self.path.format(3))
 
     def setup_scale_invariant_feature_transform(self):
-        problem = 4
-        path = ".//Dataset_CvDl_Hw1//Q{}_Image//".format(problem)
-        self.scale_invariant_feature_transform_fcn = scale_invariant_feature_transform(path)
+        self.scale_invariant_feature_transform_fcn = scale_invariant_feature_transform(self.path.format(4))
 
     # problem 1
     def find_corners(self):
