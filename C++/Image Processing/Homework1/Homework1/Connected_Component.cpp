@@ -1,6 +1,9 @@
 #include <iostream> 
 #include <vector>
 #include <algorithm>
+#include <queue>
+#include <tuple>
+#include <set>
 
 #include "Function.h"
 #include "Variable.h"
@@ -14,8 +17,8 @@ Bitmap^ get_connected_component(Bitmap^ originImage);
 Bitmap^ colorMap(vector<vector<int>> transferImage, vector<vector<int>> color_table);
 vector<vector<int>> markMap(Bitmap^ originImage);
 vector<vector<int>> get_color_table(int count_region);
-int dfs(int x, int y, vector<vector<int>> &originImageVector);
-
+void dfs(int x, int y, vector<vector<int>> &originImageVector);
+void bfs(int x, int y, vector<vector<int>> &originImageVector);
 
 int count_region;
 
@@ -33,7 +36,8 @@ Bitmap^ get_connected_component(Bitmap^ originImage) {
 	for (int y = 0; y < originImage->Height; y++) {
 		for (int x = 0; x < originImage->Width; x++) {
 			if (markImage[x][y] < -1) {
-				dfs(x, y, markImage);
+				// dfs(x, y, markImage); // Recursion Times Limit
+				bfs(x, y, markImage);
 				count_region += 1;
 			} 
 		}
@@ -42,10 +46,10 @@ Bitmap^ get_connected_component(Bitmap^ originImage) {
 	return colorMap(markImage, get_color_table(count_region));
 }
 
-int dfs(int x, int y, vector<vector<int>> &originImageVector) {
+void dfs(int x, int y, vector<vector<int>> &originImageVector) {
 
 	if (x >= (int)(originImageVector.size()) || x < 0 || y >= (int)(originImageVector[0].size()) || y < 0 || originImageVector[x][y] == -1 || originImageVector[x][y] == count_region) {
-		return 0;
+		return;
 	}
 	originImageVector[x][y] = count_region;
 
@@ -57,8 +61,48 @@ int dfs(int x, int y, vector<vector<int>> &originImageVector) {
 	dfs(x - 1, y - 1, originImageVector);
 	dfs(x - 1, y + 0, originImageVector);
 	dfs(x + 0, y - 1, originImageVector);
+}
 
-	return 1;
+void bfs(int x, int y, vector<vector<int>> &originImageVector) {
+
+	queue<tuple<int, int>> que;
+	tuple<int, int> pos;
+	set<tuple<int, int>> isVisited;
+
+	que.push(make_tuple(x, y));
+
+	while (que.size() > 0) {
+		pos = que.front();
+		que.pop();
+		x = get<0>(pos);
+		y = get<1>(pos);
+
+		if (x >= (int)(originImageVector.size()) || x < 0 || y >= (int)(originImageVector[0].size()) || y < 0 || (isVisited.count(pos) && originImageVector[x][y] != -2) || originImageVector[x][y] == -1) {
+			continue;
+		}
+
+		originImageVector[x][y] = count_region;
+
+		que.push(make_tuple(x + 1, y + 0));
+		que.push(make_tuple(x + 0, y + 1));
+		que.push(make_tuple(x + 1, y + 1));
+		que.push(make_tuple(x + 1, y - 1));
+		que.push(make_tuple(x - 1, y + 1));
+		que.push(make_tuple(x - 1, y - 1));
+		que.push(make_tuple(x - 1, y + 0));
+		que.push(make_tuple(x + 0, y - 1));
+
+		isVisited.insert(make_tuple(x + 1, y + 0));
+		isVisited.insert(make_tuple(x + 0, y + 1));
+		isVisited.insert(make_tuple(x + 1, y + 1));
+		isVisited.insert(make_tuple(x + 1, y - 1));
+		isVisited.insert(make_tuple(x - 1, y + 1));
+		isVisited.insert(make_tuple(x - 1, y - 1));
+		isVisited.insert(make_tuple(x - 1, y + 0));
+		isVisited.insert(make_tuple(x + 0, y - 1));
+
+	}
+
 }
 
 vector<vector<int>> markMap(Bitmap^ originImage) {
