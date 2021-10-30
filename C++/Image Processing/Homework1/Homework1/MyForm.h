@@ -114,12 +114,12 @@ namespace Homework1 {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea3 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^  legend3 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^  series3 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
-			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea4 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
-			System::Windows::Forms::DataVisualization::Charting::Legend^  legend4 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
-			System::Windows::Forms::DataVisualization::Charting::Series^  series4 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea1 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^  legend1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^  series1 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			System::Windows::Forms::DataVisualization::Charting::ChartArea^  chartArea2 = (gcnew System::Windows::Forms::DataVisualization::Charting::ChartArea());
+			System::Windows::Forms::DataVisualization::Charting::Legend^  legend2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Legend());
+			System::Windows::Forms::DataVisualization::Charting::Series^  series2 = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
 			this->button_load = (gcnew System::Windows::Forms::Button());
 			this->button_rgb_extraction = (gcnew System::Windows::Forms::Button());
 			this->pictureBox_before_image = (gcnew System::Windows::Forms::PictureBox());
@@ -235,35 +235,35 @@ namespace Homework1 {
 			// 
 			// chart_before_histogram
 			// 
-			chartArea3->Name = L"ChartArea1";
-			this->chart_before_histogram->ChartAreas->Add(chartArea3);
-			legend3->Name = L"Legend1";
-			this->chart_before_histogram->Legends->Add(legend3);
+			chartArea1->Name = L"ChartArea1";
+			this->chart_before_histogram->ChartAreas->Add(chartArea1);
+			legend1->Name = L"Legend1";
+			this->chart_before_histogram->Legends->Add(legend1);
 			this->chart_before_histogram->Location = System::Drawing::Point(19, 427);
 			this->chart_before_histogram->Margin = System::Windows::Forms::Padding(2);
 			this->chart_before_histogram->Name = L"chart_before_histogram";
-			series3->ChartArea = L"ChartArea1";
-			series3->IsVisibleInLegend = false;
-			series3->Legend = L"Legend1";
-			series3->Name = L"histogram";
-			this->chart_before_histogram->Series->Add(series3);
+			series1->ChartArea = L"ChartArea1";
+			series1->IsVisibleInLegend = false;
+			series1->Legend = L"Legend1";
+			series1->Name = L"histogram";
+			this->chart_before_histogram->Series->Add(series1);
 			this->chart_before_histogram->Size = System::Drawing::Size(450, 338);
 			this->chart_before_histogram->TabIndex = 5;
 			// 
 			// chart_after_histogram
 			// 
-			chartArea4->Name = L"ChartArea1";
-			this->chart_after_histogram->ChartAreas->Add(chartArea4);
-			legend4->Name = L"Legend1";
-			this->chart_after_histogram->Legends->Add(legend4);
+			chartArea2->Name = L"ChartArea1";
+			this->chart_after_histogram->ChartAreas->Add(chartArea2);
+			legend2->Name = L"Legend1";
+			this->chart_after_histogram->Legends->Add(legend2);
 			this->chart_after_histogram->Location = System::Drawing::Point(493, 427);
 			this->chart_after_histogram->Margin = System::Windows::Forms::Padding(2);
 			this->chart_after_histogram->Name = L"chart_after_histogram";
-			series4->ChartArea = L"ChartArea1";
-			series4->IsVisibleInLegend = false;
-			series4->Legend = L"Legend1";
-			series4->Name = L"histogram";
-			this->chart_after_histogram->Series->Add(series4);
+			series2->ChartArea = L"ChartArea1";
+			series2->IsVisibleInLegend = false;
+			series2->Legend = L"Legend1";
+			series2->Name = L"histogram";
+			this->chart_after_histogram->Series->Add(series2);
 			this->chart_after_histogram->Size = System::Drawing::Size(450, 338);
 			this->chart_after_histogram->TabIndex = 6;
 			// 
@@ -647,7 +647,7 @@ namespace Homework1 {
 			this->Controls->Add(this->button_load);
 			this->Margin = System::Windows::Forms::Padding(2);
 			this->Name = L"MyForm";
-			this->Text = L"MyForm";
+			this->Text = L"Image Processing System";
 			this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox_before_image))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox_after_image))->EndInit();
