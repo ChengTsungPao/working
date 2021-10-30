@@ -74,6 +74,7 @@ void bfs(int x, int y, vector<vector<int>> &originImageVector) {
 	while (que.size() > 0) {
 		pos = que.front();
 		que.pop();
+
 		x = get<0>(pos);
 		y = get<1>(pos);
 
