@@ -167,6 +167,7 @@ class cifar10_classifier():
         accuracy = np.load("./predict/{}.npz".format("accuracy"))
 
         plt.figure(figsize = (16, 6), dpi = 80)
+        plt.interactive(True)
 
         plt.subplot(121)
         plt.title("loss")
