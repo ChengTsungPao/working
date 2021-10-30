@@ -67,20 +67,11 @@ class VGG16(nn.Module):
 
         self.classifier = nn.Sequential(
             nn.Linear(512, 4096),
-            nn.ReLU(True),
-            nn.Dropout(p=0.65),
+            nn.ReLU(),
             nn.Linear(4096, 4096),
-            nn.ReLU(True),
-            nn.Dropout(p=0.65),
+            nn.ReLU(),
             nn.Linear(4096, num_classes),
         )
-
-        # for m in self.modules():
-        #     if isinstance(m, torch.nn.Conv2d) or isinstance(m, torch.nn.Linear):
-        #         nn.init.kaiming_uniform_(m.weight, mode='fan_in', nonlinearity='leaky_relu')
-        #         if m.bias is not None:
-        #             m.bias.detach().zero_()
-
 
     def forward(self, x):
 
@@ -92,6 +83,7 @@ class VGG16(nn.Module):
         x = x.view(x.size(0), -1)
         output = self.classifier(x)
         # output = nn.functional.softmax(output , dim=1)
+
         return output
 
 

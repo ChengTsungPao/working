@@ -15,7 +15,7 @@ class cifar10_classifier():
     def __init__(self):
 
         # dataset
-        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+        transform = transforms.Compose([transforms.ToTensor()])
         self.trainset = torchvision.datasets.CIFAR10(root = './dataset', train = True, download = True, transform = transform)
         self.testset = torchvision.datasets.CIFAR10(root = './dataset', train = False, download = True, transform = transform)
 
@@ -49,10 +49,11 @@ class cifar10_classifier():
     def plot_Cifa10_images(self):
         
         plt.figure(figsize = (8, 6), dpi = 100)
+        plt.interactive(True)
 
         for index in range(9):
             image, target = self.trainset[index]
-            image = (image.data.numpy().transpose((1, 2, 0)) + 1) / 2
+            image = image.data.numpy().transpose((1, 2, 0))
 
             plt.subplot(331 + index)
             plt.title(self.targetTable[int(target)])
@@ -76,11 +77,10 @@ class cifar10_classifier():
 
     def train_data(self):  
 
-        train_dataloader = torch.utils.data.DataLoader(self.trainset, batch_size = self.batch_size, shuffle = True, num_workers = 2)
+        train_dataloader = torch.utils.data.DataLoader(self.trainset, batch_size = self.batch_size, shuffle = True)
         number_of_data = len(self.trainset)
         number_of_batch = len(train_dataloader)
 
-        optimizer = self.optimizer
         loss_func = nn.CrossEntropyLoss().to(self.device)
 
         epoch_loss = []
@@ -94,10 +94,10 @@ class cifar10_classifier():
             for images, targets in train_dataloader:
 
                 output = self.model(images.float().to(self.device))
-                optimizer.zero_grad()
+                self.optimizer.zero_grad()
                 loss = loss_func(output, targets.long().to(self.device))
                 loss.backward()
-                optimizer.step()
+                self.optimizer.step()
 
                 _, predict = torch.max(nn.functional.softmax(output, dim = 1), 1)
                 correct_predict += (predict.data.cpu() == targets).sum()
@@ -137,19 +137,18 @@ class cifar10_classifier():
         
         model = torch.load("./model/model.pkl", map_location=torch.device(self.device))
         shape = np.shape(self.testset[index][0])
-        
+
         image, target = self.testset[index]
-        inputImage = torch.tensor(image.data.numpy().reshape(1, shape[0], shape[1], shape[2]))
-        output = model(inputImage.to(self.device))
+        output = model(torch.tensor(image.data.numpy().reshape(1, shape[0], shape[1], shape[2])).float().to(self.device))
         output = nn.functional.softmax(output, dim = 1)
         output = output.data.cpu().numpy()
 
         plt.figure(figsize = (16, 6), dpi = 80)
+        plt.interactive(True)
 
         plt.subplot(121)
-        image = (image.data.numpy().transpose((1, 2, 0)) + 1) / 2
         plt.axis('off')
-        plt.imshow(image)
+        plt.imshow(image.data.numpy().transpose((1, 2, 0)))
 
         plt.subplot(122)
         plt.title("kind of probability")
