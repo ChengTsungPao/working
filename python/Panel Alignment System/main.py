@@ -57,11 +57,11 @@ if __name__ == "__main__":
     #             plt.savefig(file_.split(".png")[0] + "_Angle.png")
     #             plt.clf()
 
-    #             angle_dev = angle[1:] - angle[:-1]
-    #             plotResult("Angle_dev", "index of point", "degree", "Angle_dev", angle_dev)
-    #             plt.plot(candidate[:, 2], angle_dev[candidate[:, 2]], "o", label = "candidate")
-    #             plt.savefig(file_.split(".png")[0] + "_Angle_dev.png")
-    #             plt.clf()
+    #             # angle_dev = angle[1:] - angle[:-1]
+    #             # plotResult("Angle_dev", "index of point", "degree", "Angle_dev", angle_dev)
+    #             # plt.plot(candidate[:, 2], angle_dev[candidate[:, 2]], "o", label = "candidate")
+    #             # plt.savefig(file_.split(".png")[0] + "_Angle_dev.png")
+    #             # plt.clf()
 
     #             point = contour[candidate[0][2]]
 

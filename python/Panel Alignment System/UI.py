@@ -69,36 +69,36 @@ class UI(QtWidgets.QMainWindow):
         candidate = np.array(candidate, int)
         angle = np.array(angle)
 
-        path = self.path.split("cal_")[-2]
+        path = self.path.split(".png")[0] 
 
         Gradient = np.array(Gradient)
         plotResult("Gradient", "index of point", "Gradient", "Gx", np.abs(Gradient[:, 0]))
         plotResult("Gradient", "index of point", "Gradient", "Gy", np.abs(Gradient[:, 1]))
-        plt.savefig(path + "Gradient.png")
+        plt.savefig(path + "_Gradient.png")
         plt.clf()
 
         plotResult("magnitude", "index of point", "magnitude", "magnitude", magnitude)
-        plt.savefig(path + "magnitude.png")
+        plt.savefig(path + "_magnitude.png")
         plt.clf()
 
         plotResult("Angle", "index of point", "degree", "Angle", angle)
         plt.plot(candidate[:, 2], angle[candidate[:, 2]], "o", label = "candidate")
-        plt.savefig(path + "Angle.png")
+        plt.savefig(path + "_Angle.png")
         plt.clf()
 
-        angle_dev = angle[1:] - angle[:-1]
-        plotResult("Angle_dev", "index of point", "degree", "Angle_dev", angle_dev)
-        plt.plot(candidate[:, 2], angle_dev[candidate[:, 2]], "o", label = "candidate")
-        plt.savefig(path + "Angle_dev.png")
-        plt.clf()
+        # angle_dev = angle[1:] - angle[:-1]
+        # plotResult("Angle_dev", "index of point", "degree", "Angle_dev", angle_dev)
+        # plt.plot(candidate[:, 2], angle_dev[candidate[:, 2]], "o", label = "candidate")
+        # plt.savefig(path + "_Angle_dev.png")
+        # plt.clf()
 
-        self.resultImageLabel.setPixmap(QPixmap(path + "Gradient.png"))
+        self.resultImageLabel.setPixmap(QPixmap(path + "_Gradient.png"))
         self.resultImageLabel.setScaledContents(True)
         self.resultImageLabel.setAlignment(Qt.AlignCenter)
 
-        self.plotMagnitudeLabel.setPixmap(QPixmap(path + "magnitude.png"))
+        self.plotMagnitudeLabel.setPixmap(QPixmap(path + "_magnitude.png"))
         self.plotMagnitudeLabel.setAlignment(Qt.AlignCenter)
-        self.plotAngleLabel.setPixmap(QPixmap(path + "Angle.png"))
+        self.plotAngleLabel.setPixmap(QPixmap(path + "_Angle.png"))
         self.plotAngleLabel.setAlignment(Qt.AlignCenter)
 
         path = self.path.split(".png")[0] + "_result.png"
