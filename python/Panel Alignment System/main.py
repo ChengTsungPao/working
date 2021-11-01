@@ -1,63 +1,74 @@
-from imageProcessing import imageProcessing
-from plot import plotResult, drawImage
-from glob import glob
-import matplotlib.pylab as plt
-import os
-import cv2
-
-from PyQt5 import QtCore, QtGui, QtWidgets
-from UI import Ui_MainWindow
-import sys, os
+import sys
+from PyQt5 import QtWidgets
+from UI import UI
 
 if __name__ == "__main__":
-    
+
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    ui.loadButton.clicked.connect(ui.loadImage)
-    ui.calculateButton.clicked.connect(ui.calculate)
+    ui = UI()
     sys.exit(app.exec_())
 
-    '''
-    index = 5
-
-    light = 100
-    degree = 2.5
-    imageType = "L"
-
-    path = "./Test Image_20210913/M3mm_Deg{}_Bri{}/".format(str(degree), str(light))
-    filename = "cal_{}_{}.png".format(str(index), imageType)
-
-
-    image = cv2.imread(path + filename)
-    data = imageProcessing(image, light, imageType)
-    sobelImage, threshold, drawContour = data["image"]
-    Gradient, magnitude, angle, contour = data["result"]
-    drawImage(sobelImage, "sobelfilter")
-    drawImage(threshold, "threshold")
-    drawImage(drawContour, "contour")
-    drawImage(drawContour, "result", contour[425])
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-    plt.subplot(221)
-    plotResult("Gradient", "index of point", "G", Gradient)
-    plt.subplot(223)
-    plotResult("magnitude", "index of point", "degree", magnitude)
-    plt.subplot(224)
-    plotResult("Angle", "index of point", "degree", angle)
-    plt.show()
-    '''
+    # from imageProcessing import imageProcessing
+    # from plot import plotResult, drawImage
+    # from glob import glob
+    # import matplotlib.pylab as plt
+    # import numpy as np
+    # import os
+    # import cv2
 
     # paths = glob("./Test Image_20210913/M3mm*")
-    # paths = ["./Test Image_20210913\\M3mm_Deg2.5_Bri150"]
+    # # paths = ["./Test Image_20210913\\M3mm_Deg2.5_Bri150"]
     # for path in paths:
     #     light = int(path.split("Bri")[-1])
     #     path += "//"
     #     files = os.listdir(path)
-    #     for filename in files:
-    #         if filename.split(".png")[0][-1] == "L":
-    #             image = cv2.imread(path + filename)
-    #             imageProcessing(image, light, imageType)
+    #     files = glob(path + "cal_*_L.png") + glob(path + "cal_*_R.png")
+    #     for file_ in files:
+
+    #         try:
+
+    #             imageType = file_.split(".png")[0][-1]
+    #             image = cv2.imread(file_)
+    #             data = imageProcessing(image, light, imageType)
+    #             canny, drawContour, cropResizeImage = data["image"]
+    #             Gradient, magnitude, angle, contour = data["result"]
+    #             cv2.imwrite(file_.split(".png")[0] + "_canny.png", canny)
+
+
+    #             for index in range(len(Gradient)):
+    #                 Gradient[index] += (int(index),)
+    #             candidate = np.array(sorted(Gradient, key = lambda x: abs(abs(x[0]) - abs(x[1])))[:1])
+    #             candidate = np.array(candidate, int)
+    #             angle = np.array(angle)
+
+
+    #             Gradient = np.array(Gradient)
+    #             plotResult("Gradient", "index of point", "Gradient", "Gx", np.abs(Gradient[:, 0]))
+    #             plotResult("Gradient", "index of point", "Gradient", "Gy", np.abs(Gradient[:, 1]))
+    #             plt.savefig(file_.split(".png")[0] + "_Gradient.png")
+    #             plt.clf()
+
+    #             plotResult("magnitude", "index of point", "magnitude", "magnitude", magnitude)
+    #             plt.savefig(file_.split(".png")[0] + "_magnitude.png")
+    #             plt.clf()
+
+    #             plotResult("Angle", "index of point", "degree", "Angle", angle)
+    #             plt.plot(candidate[:, 2], angle[candidate[:, 2]], "o", label = "candidate")
+    #             plt.savefig(file_.split(".png")[0] + "_Angle.png")
+    #             plt.clf()
+
+    #             angle_dev = angle[1:] - angle[:-1]
+    #             plotResult("Angle_dev", "index of point", "degree", "Angle_dev", angle_dev)
+    #             plt.plot(candidate[:, 2], angle_dev[candidate[:, 2]], "o", label = "candidate")
+    #             plt.savefig(file_.split(".png")[0] + "_Angle_dev.png")
+    #             plt.clf()
+
+    #             point = contour[candidate[0][2]]
+
+    #             rad = 5
+    #             cv2.line(drawContour, (point[0] - rad , point[1] - rad), (point[0] + rad, point[1] + rad), (255, 0, 0), 2)
+    #             cv2.line(drawContour, (point[0] - rad , point[1] + rad), (point[0] + rad, point[1] - rad), (255, 0, 0), 2)
+    #             cv2.imwrite(file_.split(".png")[0] + "_result.png", drawContour)
+
+    #         except:
+    #             print(file_)

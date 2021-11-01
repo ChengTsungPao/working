@@ -44,6 +44,7 @@ def imageProcessing(image, light, imageType = "L"):
     # for i in range(len(contour)):
     #     print("Index:{}, x:{}, y:{}, angle:{}".format(i, contour[i][0], contour[i][1], angle[i]))
 
+    # drawContour = Gradient = magnitude = angle = contour = None
 
     # return {"image": (sobelImage, threshold[1], drawContour, cropResizeImage), "result": (Gradient, magnitude, angle, contour)}
     return {"image": (canny, drawContour, cropResizeImage), "result": (Gradient, magnitude, angle, contour)}
