@@ -50,8 +50,9 @@ class imageProcessing():
         self.resetImage()
         self.cropImageResize()
             
-        imageTemp = cv2.GaussianBlur(self.cropResizeImage, (3, 3), 0)
-        self.canny = cv2.Canny(imageTemp, 70, 130)
+        imageTemp = cv2.medianBlur(self.cropResizeImage, 5)
+        imageTemp = cv2.GaussianBlur(imageTemp, (3, 3), 0)
+        self.canny = cv2.Canny(imageTemp, 80, 130)
 
     
     def houghLinesP(self):
@@ -75,6 +76,7 @@ class imageProcessing():
             self.cannyFilter()
         
         self.contours, hierarchy = cv2.findContours(self.canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        self.contours.sort(key = len)
         self.index = self.index - 1 if abs(self.index - 1) <= len(self.contours) else -1
         self.contour = self.contours[self.index]
         self.drawContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.copy(self.contour), -1, (0, 255, 255), 3)

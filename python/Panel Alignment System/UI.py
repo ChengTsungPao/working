@@ -9,7 +9,7 @@ from PyQt5.QtCore import Qt
 
 import matplotlib.pylab as plt
 import numpy as np
-import cv2
+import cv2, os
 
 class UI(QtWidgets.QMainWindow):
 
@@ -41,6 +41,9 @@ class UI(QtWidgets.QMainWindow):
             self.image = cv2.imread(self.path)
             self.imageType = self.path.split("/")[-1].split(".png")[-2][-1]
 
+            self.pathFolder = self.mergeFolder(self.path.split("/")[:-1])
+            self.filename = self.path.split("/")[-1].split(".png")[0]
+
             self.image_processing_fcn.setImage(self.image, self.imageType)
 
             self.originImageLabel.setPixmap(QPixmap(self.path))
@@ -55,11 +58,11 @@ class UI(QtWidgets.QMainWindow):
         self.image_processing_fcn.cropImageResize()
         self.image_processing_fcn.cannyFilter()
 
-        path = self.path.split(".png")[0] + "_canny.png"
-        cv2.imwrite(path, self.image_processing_fcn.canny)
+        self.createFile(self.pathFolder + "canny/")
+        cv2.imwrite(self.pathFolder + "canny/" + self.filename + "_canny.png", self.image_processing_fcn.canny)        
 
-        self.image = cv2.imread(path)
-        self.originImageLabel.setPixmap(QPixmap(path))
+        self.image = cv2.imread(self.pathFolder + "canny/" + self.filename + "_canny.png")
+        self.originImageLabel.setPixmap(QPixmap(self.pathFolder + "canny/" + self.filename + "_canny.png"))
         self.originImageLabel.setScaledContents(True)
         self.originImageLabel.setAlignment(Qt.AlignCenter)
 
@@ -77,11 +80,11 @@ class UI(QtWidgets.QMainWindow):
         
         self.image_processing_fcn.findContour()
 
-        path = self.path.split(".png")[0] + "_contour.png"
-        cv2.imwrite(path, self.image_processing_fcn.drawContour)
+        self.createFile(self.pathFolder + "contour/")
+        cv2.imwrite(self.pathFolder + "contour/" + self.filename + "_contour.png", self.image_processing_fcn.drawContour)
 
-        self.image = cv2.imread(path)
-        self.originImageLabel.setPixmap(QPixmap(path))
+        self.image = cv2.imread(self.pathFolder + "contour/" + self.filename + "_contour.png")
+        self.originImageLabel.setPixmap(QPixmap(self.pathFolder + "contour/" + self.filename + "_contour.png"))
         self.originImageLabel.setScaledContents(True)
         self.originImageLabel.setAlignment(Qt.AlignCenter)
 
@@ -100,41 +103,57 @@ class UI(QtWidgets.QMainWindow):
         candidate = np.array(sorted(Gradient, key = lambda x: abs(abs(x[0]) - abs(x[1])))[:1], int)
         angle = np.array(angle)
 
-        path = self.path.split(".png")[0] 
-        
+        self.createFile(self.pathFolder + "Gradient/")
+        self.createFile(self.pathFolder + "magnitude/")
+        self.createFile(self.pathFolder + "Angle/")
+        self.createFile(self.pathFolder + "result/")
+
         Gradient = np.array(Gradient)
         plotResult("Gradient", "index of point", "Gradient", "Gx", np.abs(Gradient[:, 0]))
         plotResult("Gradient", "index of point", "Gradient", "Gy", np.abs(Gradient[:, 1]))
-        plt.savefig(path + "_Gradient.png")
+        plt.savefig(self.pathFolder + "Gradient/" + self.filename + "_Gradient.png")
         plt.clf()
 
         plotResult("magnitude", "index of point", "magnitude", "magnitude", magnitude)
-        plt.savefig(path + "_magnitude.png")
+        plt.savefig(self.pathFolder + "magnitude/" + self.filename + "_magnitude.png")
         plt.clf()
 
         plotResult("Angle", "index of point", "degree", "Angle", angle)
         plt.plot(candidate[:, 2], angle[candidate[:, 2]], "o", label = "candidate")
-        plt.savefig(path + "_Angle.png")
+        plt.savefig(self.pathFolder + "Angle/" + self.filename + "_Angle.png")
         plt.clf()
 
         rad = 8
         point = orderContour[candidate[0][2]]
         cv2.line(drawContour, (point[0] - rad , point[1] - rad), (point[0] + rad, point[1] + rad), (255, 0, 0), 5)
         cv2.line(drawContour, (point[0] - rad , point[1] + rad), (point[0] + rad, point[1] - rad), (255, 0, 0), 5)
-        cv2.imwrite(path + "_result.png", drawContour)
+        cv2.imwrite(self.pathFolder + "result/" + self.filename + "_result.png", drawContour)
 
-        self.originImageLabel.setPixmap(QPixmap(path + "_result.png"))
+        self.originImageLabel.setPixmap(QPixmap(self.pathFolder + "result/" + self.filename + "_result.png"))
         self.originImageLabel.setScaledContents(True)
         self.originImageLabel.setAlignment(Qt.AlignCenter)  
 
-        self.resultImageLabel.setPixmap(QPixmap(path + "_Gradient.png"))
+        self.resultImageLabel.setPixmap(QPixmap(self.pathFolder + "Gradient/" + self.filename + "_Gradient.png"))
         self.resultImageLabel.setScaledContents(True)
         self.resultImageLabel.setAlignment(Qt.AlignCenter)
 
-        self.plotMagnitudeLabel.setPixmap(QPixmap(path + "_magnitude.png"))
+        self.plotMagnitudeLabel.setPixmap(QPixmap(self.pathFolder + "magnitude/" + self.filename + "_magnitude.png"))
         self.plotMagnitudeLabel.setScaledContents(True)
         self.plotMagnitudeLabel.setAlignment(Qt.AlignCenter)
 
-        self.plotAngleLabel.setPixmap(QPixmap(path + "_Angle.png"))
+        self.plotAngleLabel.setPixmap(QPixmap(self.pathFolder + "Angle/" + self.filename + "_Angle.png"))
         self.plotAngleLabel.setScaledContents(True)
         self.plotAngleLabel.setAlignment(Qt.AlignCenter)  
+
+
+    def createFile(self, path):
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+
+    def mergeFolder(self, folders):
+        path = ""
+        for folder in folders:
+            path += folder + "/"
+
+        return path
