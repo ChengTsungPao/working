@@ -43,6 +43,7 @@ class imageProcessing():
         imageTemp = self.image[y : y + h , x : x + w]
         shape = np.shape(imageTemp)
         self.cropResizeImage = cv2.resize(imageTemp, (shape[1] // 2, shape[0] // 2), interpolation=cv2.INTER_AREA)
+        self.cropResizeImage = imageTemp
 
 
     def cannyFilter(self):
@@ -67,7 +68,7 @@ class imageProcessing():
         if self.contour == []:
             self.findContour()
 
-        self.Gradient, self.contour = getGradient(self.cropResizeImage, self.contour, self.imageType)
+        self.Gradient, self.orderContour = getGradient(self.cropResizeImage, self.contour, self.imageType)
         self.magnitude, self.angle = getAngleMagnitude(self.Gradient, self.imageType)
 
 
