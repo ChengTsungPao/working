@@ -88,20 +88,14 @@ class UI(QtWidgets.QMainWindow):
         if self.image == []:
             return
 
-        self.image_processing_fcn.cropImageResize()
-        self.image_processing_fcn.cannyFilter()
-        self.image_processing_fcn.findContour()
         self.image_processing_fcn.calculateData()
 
         canny, drawContour, cropResizeImage = self.image_processing_fcn.canny, self.image_processing_fcn.drawContour, self.image_processing_fcn.cropResizeImage
         Gradient, magnitude, angle, contour = self.image_processing_fcn.Gradient, self.image_processing_fcn.magnitude, self.image_processing_fcn.angle, self.image_processing_fcn.contour
 
 
-
-        for index in range(len(Gradient)):
-            Gradient[index] += (int(index),)
-        candidate = np.array(sorted(Gradient, key = lambda x: abs(abs(x[0]) - abs(x[1])))[:1])
-        candidate = np.array(candidate, int)
+        Gradient = [Gradient[index] + (int(index),) for index in range(len(Gradient))]
+        candidate = np.array(sorted(Gradient, key = lambda x: abs(abs(x[0]) - abs(x[1])))[:1], int)
         angle = np.array(angle)
 
         path = self.path.split(".png")[0] 
