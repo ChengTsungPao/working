@@ -2,78 +2,82 @@ import cv2
 import copy
 import numpy as np
 from calculate import getAngleMagnitude, getGradient
-from parameter import getParameter
+
+class imageProcessing():
+
+    def __init__(self):
+        self.image = []
+        self.imageType = ""
+        self.resetImage()
 
 
-def imageProcessing(image, light, imageType = "L"):
+    def resetImage(self):
+        self.cropResizeImage = []
+        self.canny = []
+        self.contour = []
+        self.contours = []
+        self.drawContour = []
 
-    ################################# cropImage and resize #################################
-    image = cropImage(image, imageType)
-    shape = np.shape(image)
-    image = cv2.resize(image, (shape[1] // 2, shape[0] // 2), interpolation=cv2.INTER_AREA)
-    cropResizeImage = copy.deepcopy(image)
-
-
-    ######################### Filter (medianBlur or GaussianBlur) #########################
-    # image = cv2.medianBlur(image, 3)
-    # image = cv2.bilateralFilter(image, 5, 75, 75)
-    image = cv2.GaussianBlur(image, (3, 3), 0)
+        self.Gradient = []
+        self.magnitude = []
+        self.angle = []
 
 
-    #################################### contrastImage #################################### 
-    # contrastImage
-    # image = contrastImage(image)
+    def setImage(self, image, imageType):
+        self.image = image
+        self.imageType = imageType
+        self.resetImage()
 
 
-    ############################## threshold and Sobelfilter ##############################
-    # threshold = cv2.threshold(image, getParameter(light, imageType), 255, cv2.THRESH_BINARY)
-    # sobelImage = Sobelfilter(image)
+    def cropImageResize(self):
+        if self.image == []:
+            return
+
+        x = 0 if self.imageType == "L" else 200
+        y = 0
+
+        w = 1080
+        h = 660
+
+        imageTemp = self.image[y : y + h , x : x + w]
+        shape = np.shape(imageTemp)
+        self.cropResizeImage = cv2.resize(imageTemp, (shape[1] // 2, shape[0] // 2), interpolation=cv2.INTER_AREA)
 
 
-    ###################################### contours ####################################### 
-    canny = cv2.Canny(image, 70, 130)
-    contours, hierarchy = cv2.findContours(canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    contour = contours[-1]
-    drawContour = cv2.drawContours(image, contour, -1, (0, 255, 255), 1)
+    def cannyFilter(self):
+        if self.cropResizeImage == []:
+            self.cropImageResize()
+
+        imageTemp = cv2.GaussianBlur(self.cropResizeImage, (3, 3), 0)
+        self.canny = cv2.Canny(imageTemp, 70, 130)
 
 
-    ############################ calulate magnitude and angle ############################## 
-    Gradient, contour = getGradient(cropResizeImage, contour, imageType)
-    magnitude, angle = getAngleMagnitude(Gradient, imageType)
-
-    # for i in range(len(contour)):
-    #     print("Index:{}, x:{}, y:{}, angle:{}".format(i, contour[i][0], contour[i][1], angle[i]))
-
-    # drawContour = Gradient = magnitude = angle = contour = None
-
-    # return {"image": (sobelImage, threshold[1], drawContour, cropResizeImage), "result": (Gradient, magnitude, angle, contour)}
-    return {"image": (canny, drawContour, cropResizeImage), "result": (Gradient, magnitude, angle, contour)}
+    def findContour(self, index = -1):
+        if self.canny == []:
+            self.cannyFilter()
+        
+        self.contours, hierarchy = cv2.findContours(self.canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        self.contour = self.contours[index]
+        self.drawContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), self.contour, -1, (0, 255, 255), 1)
 
 
-def cropImage(image, imageType):
-    x = 0 if imageType == "L" else 200
-    y = 0
+    def calculateData(self):
+        if self.contour == []:
+            self.findContour()
 
-    w = 1080
-    h = 660
-
-    return image[y : y + h , x : x + w]
+        self.Gradient, self.contour = getGradient(self.cropResizeImage, self.contour, self.imageType)
+        self.magnitude, self.angle = getAngleMagnitude(self.Gradient, self.imageType)
 
 
-def contrastImage(image):
-    return image + (image - 125) * 1.5
+    # remove maybe not use
+    def sobelfilter(self):
 
+        gray = cv2.cvtColor(self.cropResizeImage, cv2.COLOR_BGR2GRAY)
 
-def Sobelfilter(image):
+        sobelx = cv2.Sobel(gray,cv2.CV_64F,1,0,ksize=3)
+        sobely = cv2.Sobel(gray,cv2.CV_64F,0,1,ksize=3)
 
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        x = cv2.convertScaleAbs(sobelx)   
+        y = cv2.convertScaleAbs(sobely)
 
-    sobelx = cv2.Sobel(gray,cv2.CV_64F,1,0,ksize=3)
-    sobely = cv2.Sobel(gray,cv2.CV_64F,0,1,ksize=3)
-
-    x = cv2.convertScaleAbs(sobelx)   
-    y = cv2.convertScaleAbs(sobely)
-
-    image_Sobel = cv2.addWeighted(x,0.5,y,0.5,0)
-
-    return image_Sobel
+        self.sobelImage = cv2.addWeighted(x,0.5,y,0.5,0)

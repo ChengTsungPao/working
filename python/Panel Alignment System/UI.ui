@@ -104,7 +104,7 @@
      <string>Calculate</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="calculateButton_2">
+   <widget class="QPushButton" name="findContoursButton">
     <property name="geometry">
      <rect>
       <x>1390</x>
@@ -114,10 +114,10 @@
      </rect>
     </property>
     <property name="text">
-     <string>Calculate</string>
+     <string>Find Contours</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="calculateButton_3">
+   <widget class="QPushButton" name="cannyButton">
     <property name="geometry">
      <rect>
       <x>1390</x>
@@ -127,7 +127,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Calculate</string>
+     <string>Canny Detection</string>
     </property>
    </widget>
   </widget>
@@ -137,7 +137,7 @@
      <x>0</x>
      <y>0</y>
      <width>1592</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
