@@ -56,9 +56,9 @@ class imageProcessing():
     
     def houghLinesP(self):
         pass
-        # minLineLength = 100
+        # minLineLength = 5
         # maxLineGap = 10
-        # lines = cv2.HoughLinesP(self.canny, 1, np.pi / 180, 1, minLineLength, maxLineGap)
+        # lines = cv2.HoughLinesP(self.canny, 1, np.pi, 1, minLineLength, maxLineGap)
         # image = copy.deepcopy(self.cropResizeImage)
 
         # for line in lines:
