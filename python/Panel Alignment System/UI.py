@@ -46,6 +46,7 @@ class UI(QtWidgets.QMainWindow):
             self.originImageLabel.setScaledContents(True)
             self.originImageLabel.setAlignment(Qt.AlignCenter)
 
+
     def cannyEdge(self):
         if self.image == []:
             return
@@ -61,6 +62,7 @@ class UI(QtWidgets.QMainWindow):
         self.originImageLabel.setScaledContents(True)
         self.originImageLabel.setAlignment(Qt.AlignCenter)
 
+
     def findContours(self):
         if self.image == []:
             return
@@ -74,6 +76,7 @@ class UI(QtWidgets.QMainWindow):
         self.originImageLabel.setPixmap(QPixmap(path))
         self.originImageLabel.setScaledContents(True)
         self.originImageLabel.setAlignment(Qt.AlignCenter)
+
 
     def calculate(self):
         if self.image == []:
@@ -106,10 +109,10 @@ class UI(QtWidgets.QMainWindow):
         plt.savefig(path + "_Angle.png")
         plt.clf()
 
-        rad = 5
+        rad = 8
         point = orderContour[candidate[0][2]]
-        cv2.line(drawContour, (point[0] - rad , point[1] - rad), (point[0] + rad, point[1] + rad), (255, 0, 0), 2)
-        cv2.line(drawContour, (point[0] - rad , point[1] + rad), (point[0] + rad, point[1] - rad), (255, 0, 0), 2)
+        cv2.line(drawContour, (point[0] - rad , point[1] - rad), (point[0] + rad, point[1] + rad), (255, 0, 0), 5)
+        cv2.line(drawContour, (point[0] - rad , point[1] + rad), (point[0] + rad, point[1] - rad), (255, 0, 0), 5)
         cv2.imwrite(path + "_result.png", drawContour)
 
         self.originImageLabel.setPixmap(QPixmap(path + "_result.png"))

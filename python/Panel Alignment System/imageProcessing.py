@@ -42,7 +42,7 @@ class imageProcessing():
 
         imageTemp = self.image[y : y + h , x : x + w]
         shape = np.shape(imageTemp)
-        self.cropResizeImage = cv2.resize(imageTemp, (shape[1] // 2, shape[0] // 2), interpolation=cv2.INTER_AREA)
+        # self.cropResizeImage = cv2.resize(imageTemp, (shape[1] // 2, shape[0] // 2), interpolation=cv2.INTER_AREA)
         self.cropResizeImage = imageTemp
 
 
@@ -61,7 +61,7 @@ class imageProcessing():
         self.contours, hierarchy = cv2.findContours(self.canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         self.index = self.index - 1 if abs(self.index - 1) <= len(self.contours) else -1
         self.contour = self.contours[self.index]
-        self.drawContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.copy(self.contour), -1, (0, 255, 255), 1)
+        self.drawContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.copy(self.contour), -1, (0, 255, 255), 3)
 
 
     def calculateData(self):
