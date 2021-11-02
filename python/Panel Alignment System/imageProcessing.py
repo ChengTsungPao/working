@@ -53,6 +53,22 @@ class imageProcessing():
         imageTemp = cv2.GaussianBlur(self.cropResizeImage, (3, 3), 0)
         self.canny = cv2.Canny(imageTemp, 70, 130)
 
+    
+    def houghLinesP(self):
+        pass
+        # minLineLength = 100
+        # maxLineGap = 10
+        # lines = cv2.HoughLinesP(self.canny, 1, np.pi / 180, 1, minLineLength, maxLineGap)
+        # image = copy.deepcopy(self.cropResizeImage)
+
+        # for line in lines:
+        #     for x1, y1, x2, y2 in line:
+        #         cv2.line(image, (x1, y1), (x2, y2), (0, 255, 0), 3)
+
+        # cv2.imshow("houghLinesP", image)
+        # cv2.waitKey()
+        # cv2.destroyAllWindows()
+
 
     def findContour(self):
         if self.canny == []:

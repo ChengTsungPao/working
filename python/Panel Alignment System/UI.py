@@ -23,6 +23,7 @@ class UI(QtWidgets.QMainWindow):
 
         self.cannyButton.clicked.connect(self.cannyEdge)
         self.findContoursButton.clicked.connect(self.findContours)
+        self.houghLinesPButton.clicked.connect(self.houghLinesP)
         self.loadButton.clicked.connect(self.loadImage)
         self.calculateButton.clicked.connect(self.calculate)
         self.show()
@@ -61,6 +62,13 @@ class UI(QtWidgets.QMainWindow):
         self.originImageLabel.setPixmap(QPixmap(path))
         self.originImageLabel.setScaledContents(True)
         self.originImageLabel.setAlignment(Qt.AlignCenter)
+
+
+    def houghLinesP(self):
+        if self.image == []:
+            return
+
+        self.image_processing_fcn.houghLinesP()
 
 
     def findContours(self):
