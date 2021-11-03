@@ -140,22 +140,22 @@ class cifar10_classifier():
         model = torch.load("./model/model.pkl", map_location=torch.device(self.device))
         shape = np.shape(self.testset[index][0])
 
-        image, target = self.testset[index]
-        output = model(torch.tensor(image.data.numpy().reshape(1, shape[0], shape[1], shape[2])).float().to(self.device))
-        output = nn.functional.softmax(output, dim = 1)
-        output = output.data.cpu().numpy()
+        self.image, self.target = self.testset[index]
+        self.output = model(torch.tensor(self.image.data.numpy().reshape(1, shape[0], shape[1], shape[2])).float().to(self.device))
+        self.output = self.softmax(self.output)
+        
 
         plt.figure(figsize = (16, 6), dpi = 80)
         plt.interactive(True)
 
-        image = (image + 1) / 2
+        self.image = (self.image + 1) / 2
         plt.subplot(121)
         plt.axis('off')
-        plt.imshow(image.data.numpy().transpose((1, 2, 0)))
+        plt.imshow(self.image.data.numpy().transpose((1, 2, 0)))
 
         plt.subplot(122)
         plt.title("kind of probability")
-        plt.bar(self.targetTable.values(), output[0])
+        plt.bar(self.targetTable.values(), self.output)
         plt.ylabel("probability")
         plt.tight_layout()
         plt.show()
@@ -188,3 +188,9 @@ class cifar10_classifier():
 
         plt.tight_layout()
         plt.show()
+
+    def softmax(self, output):
+        output = nn.functional.softmax(self.output)
+        output = output.data.cpu().numpy()
+        output = output[0]
+        return output
