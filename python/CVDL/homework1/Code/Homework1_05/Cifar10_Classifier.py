@@ -15,7 +15,7 @@ class cifar10_classifier():
     def __init__(self):
 
         # dataset
-        transform = transforms.Compose([transforms.ToTensor()])
+        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
         self.trainset = torchvision.datasets.CIFAR10(root = './dataset', train = True, download = True, transform = transform)
         self.testset = torchvision.datasets.CIFAR10(root = './dataset', train = False, download = True, transform = transform)
 
@@ -26,8 +26,9 @@ class cifar10_classifier():
         # parameter
         self.epoch = 20
         self.batch_size = 512
-        self.learning_rate = 0.0001
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr = self.learning_rate)
+        self.learning_rate = 0.001
+        self.momentum = 0.9
+        self.optimizer = torch.optim.SGD(self.model.parameters(), lr = self.learning_rate, momentum = self.momentum)
         
         # target or kind
         self.targetTable = {
@@ -54,6 +55,7 @@ class cifar10_classifier():
         for index in range(9):
             image, target = self.trainset[index]
             image = image.data.numpy().transpose((1, 2, 0))
+            image = (image + 1) / 2
 
             plt.subplot(331 + index)
             plt.title(self.targetTable[int(target)])
@@ -146,6 +148,7 @@ class cifar10_classifier():
         plt.figure(figsize = (16, 6), dpi = 80)
         plt.interactive(True)
 
+        image = (image + 1) / 2
         plt.subplot(121)
         plt.axis('off')
         plt.imshow(image.data.numpy().transpose((1, 2, 0)))
