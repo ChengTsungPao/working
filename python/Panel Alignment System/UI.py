@@ -67,13 +67,6 @@ class UI(QtWidgets.QMainWindow):
         self.originImageLabel.setAlignment(Qt.AlignCenter)
 
 
-    def houghLinesP(self):
-        if self.image == []:
-            return
-
-        self.image_processing_fcn.houghLinesP()
-
-
     def findContours(self):
         if self.image == []:
             return
@@ -89,13 +82,28 @@ class UI(QtWidgets.QMainWindow):
         self.originImageLabel.setAlignment(Qt.AlignCenter)
 
 
+    def houghLinesP(self):
+        if self.image == []:
+            return
+
+        self.image_processing_fcn.houghLinesP(self.findContourAutoCheckBox.isChecked())
+
+        self.createFile(self.pathFolder + "findContour/")
+        cv2.imwrite(self.pathFolder + "findContour/" + self.filename + "_findContour.png", self.image_processing_fcn.drawFindContour)
+
+        self.image = cv2.imread(self.pathFolder + "findContour/" + self.filename + "_findContour.png")
+        self.originImageLabel.setPixmap(QPixmap(self.pathFolder + "findContour/" + self.filename + "_findContour.png"))
+        self.originImageLabel.setScaledContents(True)
+        self.originImageLabel.setAlignment(Qt.AlignCenter)
+
+
     def calculate(self):
         if self.image == []:
             return
 
         self.image_processing_fcn.calculateData()
 
-        canny, drawContour, cropResizeImage = self.image_processing_fcn.canny, self.image_processing_fcn.drawContour, self.image_processing_fcn.cropResizeImage
+        canny, drawFindContour, cropResizeImage = self.image_processing_fcn.canny, self.image_processing_fcn.drawFindContour, self.image_processing_fcn.cropResizeImage
         Gradient, magnitude, angle, orderContour = self.image_processing_fcn.Gradient, self.image_processing_fcn.magnitude, self.image_processing_fcn.angle, self.image_processing_fcn.orderContour
 
 
@@ -125,9 +133,9 @@ class UI(QtWidgets.QMainWindow):
 
         rad = 8
         point = orderContour[candidate[0][2]]
-        cv2.line(drawContour, (point[0] - rad , point[1] - rad), (point[0] + rad, point[1] + rad), (255, 0, 0), 5)
-        cv2.line(drawContour, (point[0] - rad , point[1] + rad), (point[0] + rad, point[1] - rad), (255, 0, 0), 5)
-        cv2.imwrite(self.pathFolder + "result/" + self.filename + "_result.png", drawContour)
+        cv2.line(drawFindContour, (point[0] - rad , point[1] - rad), (point[0] + rad, point[1] + rad), (255, 0, 0), 5)
+        cv2.line(drawFindContour, (point[0] - rad , point[1] + rad), (point[0] + rad, point[1] - rad), (255, 0, 0), 5)
+        cv2.imwrite(self.pathFolder + "result/" + self.filename + "_result.png", drawFindContour)
 
         self.originImageLabel.setPixmap(QPixmap(self.pathFolder + "result/" + self.filename + "_result.png"))
         self.originImageLabel.setScaledContents(True)

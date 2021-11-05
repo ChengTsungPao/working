@@ -17,8 +17,8 @@
    <widget class="QPushButton" name="loadButton">
     <property name="geometry">
      <rect>
-      <x>1390</x>
-      <y>940</y>
+      <x>1400</x>
+      <y>950</y>
       <width>151</width>
       <height>51</height>
      </rect>
@@ -94,8 +94,8 @@
    <widget class="QPushButton" name="calculateButton">
     <property name="geometry">
      <rect>
-      <x>1390</x>
-      <y>860</y>
+      <x>1400</x>
+      <y>870</y>
       <width>151</width>
       <height>51</height>
      </rect>
@@ -107,8 +107,8 @@
    <widget class="QPushButton" name="findContoursButton">
     <property name="geometry">
      <rect>
-      <x>1390</x>
-      <y>780</y>
+      <x>1401</x>
+      <y>579</y>
       <width>151</width>
       <height>51</height>
      </rect>
@@ -120,8 +120,8 @@
    <widget class="QPushButton" name="cannyButton">
     <property name="geometry">
      <rect>
-      <x>1390</x>
-      <y>700</y>
+      <x>1401</x>
+      <y>499</y>
       <width>151</width>
       <height>51</height>
      </rect>
@@ -130,18 +130,47 @@
      <string>Canny Detection</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="houghLinesPButton">
+   <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>1390</x>
-      <y>560</y>
-      <width>151</width>
-      <height>51</height>
+      <x>1380</x>
+      <y>660</y>
+      <width>191</width>
+      <height>181</height>
      </rect>
     </property>
-    <property name="text">
-     <string>HoughLinesP</string>
+    <property name="title">
+     <string>Choose Contour</string>
     </property>
+    <widget class="QPushButton" name="houghLinesPButton">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>151</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>HoughLinesP</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="findContourAutoCheckBox">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>120</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Find Contour Auto</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

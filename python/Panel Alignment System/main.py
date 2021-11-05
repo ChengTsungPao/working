@@ -56,8 +56,12 @@ if __name__ == "__main__":
     #             image_processing_fcn.findContour()
     #             cv2.imwrite(pathfolder + "contour/" + filename + "_contour.png", image_processing_fcn.drawContour)
 
+    #             createFile(pathfolder + "findContour/")
+    #             image_processing_fcn.houghLinesP()
+    #             cv2.imwrite(pathfolder + "findContour/" + filename + "_findContour.png", image_processing_fcn.drawFindContour)
+
     #             image_processing_fcn.calculateData()
-    #             canny, drawContour, cropResizeImage = image_processing_fcn.canny, image_processing_fcn.drawContour, image_processing_fcn.cropResizeImage
+    #             drawContour = image_processing_fcn.drawContour
     #             Gradient, magnitude, angle, orderContour = image_processing_fcn.Gradient, image_processing_fcn.magnitude, image_processing_fcn.angle, image_processing_fcn.orderContour
 
     #             Gradient = [Gradient[index] + (int(index),) for index in range(len(Gradient))]
