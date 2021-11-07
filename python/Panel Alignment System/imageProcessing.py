@@ -67,7 +67,42 @@ class imageProcessing():
             self.drawContour = cv2.drawContours(self.drawContour, copy.copy(self.contours[index]), -1, (0, 255, 255), 3)
 
 
+    def houghLinesPHandler(self, lines):
+
+        minLengthLinesScale = 1 / 4
+        minTwoLinesAngle = np.pi / 4
+
+        x1, y1, x2, y2 = lines[0][0]
+        vector1 = np.array([x1 - x2, y1 - y2])
+        length1 = np.linalg.norm(vector1)
+        vector1 = vector1 / length1
+
+        choose = [[lines[0][0]]]
+        bestLength = length1 * minLengthLinesScale
+        bestInnerProduct = float("inf")
+
+        for line in lines[1:]:
+            x1, y1, x2, y2 = line[0]
+            vector2 = np.array([x1 - x2, y1 - y2])
+            length2 = np.linalg.norm(vector2)
+            vector2 = vector2 / length2
+
+            innerProduct = abs(np.dot(vector1, vector2))
+            if length2 > bestLength and innerProduct < abs(np.cos(minTwoLinesAngle)) and innerProduct < bestInnerProduct:
+                bestInnerProduct = abs(np.dot(vector1, vector2))
+                bestLength = length2
+                if len(choose) == 2:
+                    choose[-1] = [line[0].copy()]
+                else:
+                    choose.append([line[0].copy()])
+
+        return choose, len(choose) == 2
+
+
     def houghLinesP(self, auto = True):
+        if self.canny == []:
+            self.cannyFilter()
+            self.findContour()
 
         def distance(pos1, pos2):
             return ((pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2) ** 0.5
@@ -79,7 +114,7 @@ class imageProcessing():
             maxLengthLines = []
             shape = np.shape(self.cropResizeImage)
 
-            minLineLength = 100
+            minLineLength = 10
             maxLineGap = 1
 
             for index in range(len(self.contours)):
@@ -95,9 +130,11 @@ class imageProcessing():
                     continue
                 else:
                     lines = sorted(lines, key = lambda x: (x[0][0] - x[0][2]) ** 2 + (x[0][1] - x[0][3]) ** 2, reverse = True)
+                    lines, isVertical = self.houghLinesPHandler(lines)
+                    if isVertical == False: continue
 
                 length = 0
-                for line in lines[:2]:
+                for line in lines:
                     x1, y1, x2, y2 = line[0]
                     length += distance((x1, y1), (x2, y2))
                     cv2.line(image, (x1, y1), (x2, y2), (0, 255, 0), 1)
