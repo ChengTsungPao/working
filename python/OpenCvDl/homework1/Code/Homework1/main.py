@@ -27,9 +27,10 @@ if __name__ == "__main__":
     # image_smoothing_fcn.median_filter()
 
 
-    path = "./Dataset_OpenCvDl_Hw1/Q3_Image/"
-    edge_detection_fcn = edge_detection(path)
-    edge_detection_fcn.gaussian_blur()
-    edge_detection_fcn.sobelX()
-    edge_detection_fcn.sobelY()
+    # path = "./Dataset_OpenCvDl_Hw1/Q3_Image/"
+    # edge_detection_fcn = edge_detection(path)
+    # edge_detection_fcn.gaussian_blur()
+    # edge_detection_fcn.sobelX()
+    # edge_detection_fcn.sobelY()
+    # edge_detection_fcn.magnitude()
 

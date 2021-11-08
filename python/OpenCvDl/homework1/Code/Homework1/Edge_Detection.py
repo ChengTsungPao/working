@@ -89,3 +89,16 @@ class edge_detection():
         cv2.imshow("sobelY", self.sobelY_image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+
+    def magnitude(self):
+
+        magnitude = copy.deepcopy(self.house_image) 
+
+        for i in range(len(magnitude)):
+            for j in range(len(magnitude[0])):
+                magnitude[i][j] = self.restrict_value((self.sobelX_image[i][j] ** 2 + self.sobelY_image[i][j] ** 2) ** 0.5)
+
+        cv2.imshow("magnitude", magnitude)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
