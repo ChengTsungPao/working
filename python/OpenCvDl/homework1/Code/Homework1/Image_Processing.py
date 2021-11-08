@@ -34,7 +34,7 @@ class image_processing():
 
     def color_transformation(self):
         gray_weight = cv2.cvtColor(self.sun_image, cv2.COLOR_BGR2GRAY)
-        gray_average = np.array((self.sun_image[:, :, 0] + self.sun_image[:, :, 1] + self.sun_image[:, :, 2]) / 3, dtype = "uint8")
+        gray_average = np.array((self.sun_image[:, :, 0] * (1 / 3)  + self.sun_image[:, :, 1] * (1 / 3) + self.sun_image[:, :, 2] * (1 / 3)), dtype = "uint8")
 
         cv2.imshow("OpenCV function", gray_weight)
         cv2.imshow("Average weighted", gray_average)
