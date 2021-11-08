@@ -11,6 +11,7 @@ if __name__ == "__main__":
     from Image_Processing import image_processing
     from Image_Smoothing import image_smoothing
     from Edge_Detection import edge_detection
+    from Transforms import transforms
 
     # path = "./Dataset_OpenCvDl_Hw1/Q1_Image/"
     # image_processing_fcn = image_processing(path)
@@ -33,4 +34,11 @@ if __name__ == "__main__":
     # edge_detection_fcn.sobelX()
     # edge_detection_fcn.sobelY()
     # edge_detection_fcn.magnitude()
+
+
+    path = "./Dataset_OpenCvDl_Hw1/Q4_Image/"
+    transforms_fcn = transforms(path)
+    transforms_fcn.resize()
+    transforms_fcn.translation()
+    transforms_fcn.scaling_rotation()
 
