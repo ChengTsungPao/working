@@ -27,8 +27,8 @@ class cifar10_classifier():
         self.epoch = 20
         self.batch_size = 512
         self.learning_rate = 0.001
-        self.momentum = 0.9
-        self.optimizer = torch.optim.SGD(self.model.parameters(), lr = self.learning_rate, momentum = self.momentum)
+        # self.momentum = 0.9
+        self.optimizer = torch.optim.Adam(self.model.parameters(), lr = self.learning_rate)
         
         # target or kind
         self.targetTable = {
