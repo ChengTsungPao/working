@@ -60,7 +60,7 @@ if __name__ == "__main__":
     #             image_processing_fcn.houghLinesP()
     #             cv2.imwrite(pathfolder + "findContour/" + filename + "_findContour.png", image_processing_fcn.drawFindContour)
 
-    #             image_processing_fcn.calculateData()
+    #             image_processing_fcn.calculateData(pathfolder, filename)
     #             drawContour = image_processing_fcn.drawContour
     #             Gradient, magnitude, angle, orderContour = image_processing_fcn.Gradient, image_processing_fcn.magnitude, image_processing_fcn.angle, image_processing_fcn.orderContour
 

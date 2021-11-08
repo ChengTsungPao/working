@@ -161,13 +161,22 @@ class imageProcessing():
             self.drawFindContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.copy(self.contour), -1, (0, 255, 255), 3)
 
 
-    def calculateData(self):
+    def calculateData(self, path = "", filename = ""):
         if self.contour == []:
             self.findContour()
             self.houghLinesP()
 
         self.Gradient, self.orderContour = getGradient(self.cropResizeImage, self.contour, self.imageType)
         self.magnitude, self.angle = getAngleMagnitude(self.Gradient, self.imageType)
+
+        Gradient = [self.Gradient[index] + (int(index),) for index in range(len(self.Gradient))]
+        candidate = np.array(sorted(Gradient, key = lambda x: abs(abs(x[0]) - abs(x[1])))[:1], int)
+        point = self.orderContour[candidate[0][2]]
+
+        if path != "" and filename != "":
+            f = open(path + "result.txt", "a")
+            f.write("{}: x = {}, y = {}\n".format(filename, point[0], point[1]))
+            f.close()
 
     
     def show_image(self, image, title = "test"):
