@@ -103,7 +103,7 @@ class UI(QtWidgets.QMainWindow):
 
         self.image_processing_fcn.calculateData()
 
-        canny, drawFindContour, cropResizeImage = self.image_processing_fcn.canny, self.image_processing_fcn.drawFindContour, self.image_processing_fcn.cropResizeImage
+        canny, drawContour, drawFindContour, cropResizeImage = self.image_processing_fcn.canny, self.image_processing_fcn.drawContour, self.image_processing_fcn.drawFindContour, self.image_processing_fcn.cropResizeImage
         Gradient, magnitude, angle, orderContour = self.image_processing_fcn.Gradient, self.image_processing_fcn.magnitude, self.image_processing_fcn.angle, self.image_processing_fcn.orderContour
 
 
@@ -133,9 +133,9 @@ class UI(QtWidgets.QMainWindow):
 
         rad = 8
         point = orderContour[candidate[0][2]]
-        cv2.line(drawFindContour, (point[0] - rad , point[1] - rad), (point[0] + rad, point[1] + rad), (255, 0, 0), 5)
-        cv2.line(drawFindContour, (point[0] - rad , point[1] + rad), (point[0] + rad, point[1] - rad), (255, 0, 0), 5)
-        cv2.imwrite(self.pathFolder + "result/" + self.filename + "_result.png", drawFindContour)
+        cv2.line(drawContour, (point[0] - rad , point[1] - rad), (point[0] + rad, point[1] + rad), (0, 255, 0), 5)
+        cv2.line(drawContour, (point[0] - rad , point[1] + rad), (point[0] + rad, point[1] - rad), (0, 255, 0), 5)
+        cv2.imwrite(self.pathFolder + "result/" + self.filename + "_result.png", drawContour)
 
         self.originImageLabel.setPixmap(QPixmap(self.pathFolder + "result/" + self.filename + "_result.png"))
         self.originImageLabel.setScaledContents(True)

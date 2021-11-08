@@ -152,6 +152,7 @@ class imageProcessing():
                     x1, y1, x2, y2 = line[0]
                     length += distance((x1, y1), (x2, y2))
                     cv2.line(self.drawFindContour, (x1, y1), (x2, y2), (0, 255, 0), 3)
+            self.drawContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.copy(self.contour), -1, (0, 255, 255), 3)
 
         else:
             ############################################ click and change contour ####################################################
@@ -159,6 +160,7 @@ class imageProcessing():
             self.index = self.index - 1 if abs(self.index - 1) <= len(self.contours) else -1
             self.contour = self.contours[self.index]
             self.drawFindContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.copy(self.contour), -1, (0, 255, 255), 3)
+            self.drawContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.copy(self.contour), -1, (0, 255, 255), 3)
 
 
     def calculateData(self, path = "", filename = ""):
