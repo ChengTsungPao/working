@@ -41,4 +41,5 @@ if __name__ == "__main__":
     transforms_fcn.resize()
     transforms_fcn.translation()
     transforms_fcn.scaling_rotation()
+    transforms_fcn.shearing()
 

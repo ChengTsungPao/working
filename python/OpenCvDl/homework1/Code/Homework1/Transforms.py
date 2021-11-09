@@ -53,7 +53,21 @@ class transforms():
         ])
         self.scaleImage = cv2.warpAffine(self.scaleImage, M, (400, 300))
 
+        # cv2.getRotationMatrix2D(()) ??
+
         cv2.imshow("translation", self.scaleImage)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
+
+    def shearing(self):
+        pass
+        # M = np.float32([
+        #     [1, 0, 128],
+        #     [0, 1, 188]
+        # ])
+        # source = np.array([[50,50],[200,50],[50,200]], dtype="uint8")
+        # destination = np.array([[10,100],[200,50],[100,250]], dtype="uint8")
+        # M = cv2.getAffineTransform(source, destination)
+        # print(M)
 
