@@ -28,6 +28,7 @@ class image_processing():
         cv2.imshow("B_channel", cv2.merge([B_channel, zeros, zeros]))
         cv2.imshow("G_channel", cv2.merge([zeros, G_channel, zeros]))
         cv2.imshow("R_channel", cv2.merge([zeros, zeros, R_channel]))
+        
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
@@ -48,12 +49,12 @@ class image_processing():
         dog_weak_weight= blend / 255
 
         image = cv2.addWeighted(self.dog_strong_image, dog_strong_weight, self.dog_weak_image, dog_weak_weight, 0)
-        cv2.imshow("color_transformation", image)
+        cv2.imshow("color transformation", image)
 
 
     def blending(self):
-        cv2.imshow("color_transformation", self.dog_strong_image)
-        cv2.createTrackbar("blend", "color_transformation", 0, 255, self.combine_image)
+        cv2.imshow("color transformation", self.dog_strong_image)
+        cv2.createTrackbar("blend", "color transformation", 0, 255, self.combine_image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()   
 

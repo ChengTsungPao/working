@@ -1,7 +1,7 @@
-# from Corner_Detection import corner_detection
-# from Augmented_Reality import augmented_reality
-# from Stereo_Disparity_Map import stereo_disparity_map
-# from Scale_Invariant_Feature_Transform import scale_invariant_feature_transform
+from Image_Processing import image_processing
+from Image_Smoothing import image_smoothing
+from Edge_Detection import edge_detection
+from Transforms import transforms
 
 from PyQt5 import QtWidgets, uic
 
@@ -15,111 +15,138 @@ class UI(QtWidgets.QMainWindow):
         # Image and Library Path
         self.path = ".//Dataset_OpenCvDl_Hw1//Q{}_Image//"
         
-    #     # problem 1 UI connect
-    #     self.corner_detection_fcn = None
-    #     self.Find_Corners.clicked.connect(self.find_corners)
-    #     self.Find_Intrinsic.clicked.connect(self.find_intrinsic)
-    #     self.Find_Extrinsic.clicked.connect(self.find_extrinsic)
-    #     self.Find_Distortion.clicked.connect(self.find_distortion)
-    #     self.Show_Result.clicked.connect(self.show_result)
+        # problem 1 UI connect
+        self.image_processing_fcn = None
+        self.Load_Image.clicked.connect(self.load_image)
+        self.Color_Separation.clicked.connect(self.color_separation)
+        self.Color_Transformations.clicked.connect(self.color_transformation)
+        self.Blending.clicked.connect(self.blending)
 
-    #     # problem 2 UI connect
-    #     self.augmented_reality_fcn = None
-    #     self.Show_Words_on_Board.clicked.connect(self.draw_board)
-    #     self.Show_Words_Vertically.clicked.connect(self.draw_vertical)
+        # problem 2 UI connect
+        self.image_smoothing_fcn = None
+        self.Gaussian_Blur.clicked.connect(self.gaussian_blur)
+        self.Bilateral_Filter.clicked.connect(self.bilateral_filter)
+        self.Median_Filter.clicked.connect(self.median_filter)
         
-    #     # problem = 3 UI connect
-    #     self.stereo_disparity_map_fcn = None
-    #     self.Stereo_Disparity_Map.clicked.connect(self.stereo_disparity_map)
+        # problem = 3 UI connect
+        self.edge_detection_fcn = None
+        self.Gaussian_Blur_Self.clicked.connect(self.gaussian_blur_self)
+        self.SobelX.clicked.connect(self.sobelX)
+        self.SobelY.clicked.connect(self.sobelY)
+        self.Magnitude.clicked.connect(self.magnitude)
 
-    #     # problem = 4 UI connect
-    #     self.scale_invariant_feature_transform_fcn = None
-    #     self.Keypoints.clicked.connect(self.find_keypoints)
-    #     self.Matched_keypoints.clicked.connect(self.matched_keypoints)
-    #     self.Warp_Image.clicked.connect(self.matched_images)
+        # problem = 4 UI connect
+        self.transforms_fcn = None
+        self.Resize.clicked.connect(self.resizeImage)
+        self.Translation.clicked.connect(self.translation)
+        self.Rotation_Scaling.clicked.connect(self.scaling_rotation)
+        self.Shearing.clicked.connect(self.shearing)
 
-    #     self.show()
+        self.show()
 
-    # # setup function
-    # def setup_camera_calibration(self):
-    #     self.corner_detection_fcn = corner_detection_fcn = corner_detection(self.path.format(1))
+    # setup function
+    def setup_image_processing(self):
+        self.image_processing_fcn = image_processing(self.path.format(1))
 
-    # def setup_augmented_reality(self):
-    #     self.augmented_reality_fcn = augmented_reality(self.path.format(2))
+    def setup_image_smoothing(self):
+        self.image_smoothing_fcn = image_smoothing(self.path.format(2))
 
-    # def setup_stereo_disparity_map(self):
-    #     self.stereo_disparity_map_fcn = stereo_disparity_map(self.path.format(3))
+    def setup_edge_detection(self):
+        self.edge_detection_fcn = edge_detection(self.path.format(3))
 
-    # def setup_scale_invariant_feature_transform(self):
-    #     self.scale_invariant_feature_transform_fcn = scale_invariant_feature_transform(self.path.format(4))
+    def setup_transforms(self):
+        self.transforms_fcn = transforms(self.path.format(4))
 
-    # # problem 1
-    # def find_corners(self):
-    #     if self.corner_detection_fcn == None:
-    #         self.setup_camera_calibration()
+    # problem 1
+    def load_image(self):
+        if self.image_processing_fcn == None:
+            self.setup_image_processing()
 
-    #     self.corner_detection_fcn.find_corners()
+        self.image_processing_fcn.load_image()
 
-    # def find_intrinsic(self):
-    #     if self.corner_detection_fcn == None:
-    #         self.setup_camera_calibration()
+    def color_separation(self):
+        if self.image_processing_fcn == None:
+            self.setup_image_processing()
 
-    #     self.corner_detection_fcn.find_intrinsic()
+        self.image_processing_fcn.color_separation()
 
-    # def find_extrinsic(self):
-    #     if self.corner_detection_fcn == None:
-    #         self.setup_camera_calibration()
+    def color_transformation(self):
+        if self.image_processing_fcn == None:
+            self.setup_image_processing()
 
-    #     self.corner_detection_fcn.find_extrinsic(self.Calibration_InputBox.text())   
+        self.image_processing_fcn.color_transformation()   
 
-    # def find_distortion(self):
-    #     if self.corner_detection_fcn == None:
-    #         self.setup_camera_calibration()
+    def blending(self):
+        if self.image_processing_fcn == None:
+            self.setup_image_processing()
 
-    #     self.corner_detection_fcn.find_distortion()  
+        self.image_processing_fcn.blending()  
 
-    # def show_result(self):
-    #     if self.corner_detection_fcn == None:
-    #         self.setup_camera_calibration()
+    # problem 2
+    def gaussian_blur(self):
+        if self.image_smoothing_fcn == None:
+            self.setup_image_smoothing()
 
-    #     self.corner_detection_fcn.show()  
+        self.image_smoothing_fcn.gaussian_blur()
 
-    # # problem 2
-    # def draw_board(self):
-    #     if self.augmented_reality_fcn == None:
-    #         self.setup_augmented_reality()
+    def bilateral_filter(self):
+        if self.image_smoothing_fcn == None:
+            self.setup_image_smoothing()
 
-    #     self.augmented_reality_fcn.draw_board(self.AR_InputBox.text())
+        self.image_smoothing_fcn.bilateral_filter()
 
-    # def draw_vertical(self):
-    #     if self.augmented_reality_fcn == None:
-    #         self.setup_augmented_reality()
+    def median_filter(self):
+        if self.image_smoothing_fcn == None:
+            self.setup_image_smoothing()
 
-    #     self.augmented_reality_fcn.draw_vertical(self.AR_InputBox.text())
+        self.image_smoothing_fcn.median_filter()
 
-    # # problem 3
-    # def stereo_disparity_map(self):
-    #     if self.stereo_disparity_map_fcn == None:
-    #         self.setup_stereo_disparity_map()
+    # problem 3
+    def gaussian_blur_self(self):
+        if self.edge_detection_fcn == None:
+            self.setup_edge_detection()
 
-    #     self.stereo_disparity_map_fcn.stereo_disparity_map()
-    #     self.stereo_disparity_map_fcn.check_disparity_value()
+        self.edge_detection_fcn.gaussian_blur()
 
-    # # problem 4
-    # def find_keypoints(self):
-    #     if self.scale_invariant_feature_transform_fcn == None:
-    #         self.setup_scale_invariant_feature_transform()
+    def sobelX(self):
+        if self.edge_detection_fcn == None:
+            self.setup_edge_detection()
 
-    #     self.scale_invariant_feature_transform_fcn.find_keypoints()
+        self.edge_detection_fcn.sobelX()
 
-    # def matched_keypoints(self):
-    #     if self.scale_invariant_feature_transform_fcn == None:
-    #         self.setup_scale_invariant_feature_transform()
+    def sobelY(self):
+        if self.edge_detection_fcn == None:
+            self.setup_edge_detection()
 
-    #     self.scale_invariant_feature_transform_fcn.matched_keypoints()
+        self.edge_detection_fcn.sobelY()
 
-    # def matched_images(self):
-    #     if self.scale_invariant_feature_transform_fcn == None:
-    #         self.setup_scale_invariant_feature_transform()
+    def magnitude(self):
+        if self.edge_detection_fcn == None:
+            self.setup_edge_detection()
 
-    #     self.scale_invariant_feature_transform_fcn.matched_images()
+        self.edge_detection_fcn.magnitude()
+
+    # problem 4
+    def resizeImage(self):
+        if self.transforms_fcn == None:
+            self.setup_transforms()
+
+        self.transforms_fcn.resize()
+
+    def translation(self):
+        if self.transforms_fcn == None:
+            self.setup_transforms()
+
+        self.transforms_fcn.translation()
+
+    def scaling_rotation(self):
+        if self.transforms_fcn == None:
+            self.setup_transforms()
+
+        self.transforms_fcn.scaling_rotation()
+
+    def shearing(self):
+        if self.transforms_fcn == None:
+            self.setup_transforms()
+
+        self.transforms_fcn.shearing()
