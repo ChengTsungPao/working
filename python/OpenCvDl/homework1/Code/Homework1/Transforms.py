@@ -34,26 +34,27 @@ class transforms():
 
 
     def scaling_rotation(self):
-        M = np.float32([
-            [0.5, 0.0, 0.0],
-            [0.0, 0.5, 0.0]
-        ])
-        self.scaleImage = cv2.warpAffine(self.resizeImage, M, (400, 300))
+        # M = np.float32([
+        #     [0.5, 0.0, 0.0],
+        #     [0.0, 0.5, 0.0]
+        # ])
+        # self.scaleImage = cv2.warpAffine(self.resizeImage, M, (400, 300))
 
-        M = np.float32([
-            [1, 0, 128],
-            [0, 1, 188]
-        ])
-        self.scaleImage = cv2.warpAffine(self.scaleImage, M, (400, 300))
+        # M = np.float32([
+        #     [1, 0, 128],
+        #     [0, 1, 188]
+        # ])
+        # self.scaleImage = cv2.warpAffine(self.SQUARE_image, M, (400, 300))
+        # shape = np.shape(self.scaleImage)
 
-        theta = 10 * np.pi / 180
-        M = np.float32([
-            [ np.cos(theta),  np.sin(theta), 0.0],
-            [-np.sin(theta),  np.cos(theta), 0.0]
-        ])
-        self.scaleImage = cv2.warpAffine(self.scaleImage, M, (400, 300))
+        # theta = 10 * np.pi / 180
+        # M = np.float32([
+        #     [ np.cos(theta),  np.sin(theta), 0.0],
+        #     [-np.sin(theta),  np.cos(theta), 0.0]
+        # ])
+        M = cv2.getRotationMatrix2D((128, 128), 10, 0.5)
+        self.scaleImage = cv2.warpAffine(self.SQUARE_image, M, (400, 300))
 
-        # cv2.getRotationMatrix2D(()) ??
 
         cv2.imshow("translation", self.scaleImage)
         cv2.waitKey(0)
@@ -61,13 +62,16 @@ class transforms():
 
 
     def shearing(self):
-        pass
         # M = np.float32([
         #     [1, 0, 128],
         #     [0, 1, 188]
         # ])
-        # source = np.array([[50,50],[200,50],[50,200]], dtype="uint8")
-        # destination = np.array([[10,100],[200,50],[100,250]], dtype="uint8")
-        # M = cv2.getAffineTransform(source, destination)
-        # print(M)
+        source = np.float32([[50,50],[200,50],[50,200]],)
+        destination = np.float32([[10,100],[200,50],[100,250]])
+        M = cv2.getAffineTransform(source, destination)
+        self.shearImage = cv2.warpAffine(self.scaleImage, M, (400, 300))
+
+        cv2.imshow("translation", self.shearImage)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
 
