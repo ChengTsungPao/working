@@ -239,7 +239,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Keypoints</string>
+      <string>4.1 Keypoints</string>
      </property>
     </widget>
     <widget class="QPushButton" name="Matched_keypoints">
@@ -265,7 +265,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Warp Image</string>
+      <string>4.3 Warp Image</string>
      </property>
     </widget>
    </widget>
@@ -276,7 +276,7 @@
      <x>0</x>
      <y>0</y>
      <width>932</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>
