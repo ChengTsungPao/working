@@ -6,13 +6,14 @@ class edge_detection():
 
     def __init__(self, path):
         self.setPath(path)
-        self.sobelX_image = []
-        self.sobelY_image = []
 
 
     def setPath(self, path):
         self.path = path
         self.house_image = cv2.imread(self.path + "House.jpg", 0)
+        self.sobelX_image = []
+        self.sobelY_image = []
+
 
     def restrict_value(self, val):
         return max(min(val, 255), 0)
@@ -46,12 +47,10 @@ class edge_detection():
             for j in range(len(padding_house_image[0]) - 2 * padding):
                 transfer_image[i][j] = self.restrict_value(np.sum(padding_house_image[i : i + 3, j : j + 3] * kernel_filter))
 
-        cv2.imshow("gaussian_blur", transfer_image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        self.showImage("gaussian_blur", transfer_image)
 
 
-    def sobelX(self):
+    def sobelX(self, visible = True):
         horizontal = [
             [ -1,  0,  1  ],
 	        [ -2,  0,  2  ],
@@ -66,12 +65,11 @@ class edge_detection():
             for j in range(len(padding_house_image[0]) - 2 * padding):
                 self.sobelX_image[i][j] = self.restrict_value(np.sum(padding_house_image[i : i + 3, j : j + 3] * horizontal))
 
-        cv2.imshow("sobelX", self.sobelX_image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        if visible:
+            self.showImage("sobelX", self.sobelX_image)
 
 
-    def sobelY(self):
+    def sobelY(self, visible = True):
         vertical = [
             [  1,  2,  1  ],
 	        [  0,  0,  0  ],
@@ -86,12 +84,16 @@ class edge_detection():
             for j in range(len(padding_house_image[0]) - 2 * padding):
                 self.sobelY_image[i][j] = self.restrict_value(np.sum(padding_house_image[i : i + 3, j : j + 3] * vertical))
 
-        cv2.imshow("sobelY", self.sobelY_image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        if visible:
+            self.showImage("sobelY", self.sobelY_image)
 
 
-    def magnitude(self):
+    def magnitude(self, visible = True):
+        if self.sobelX_image == []:
+            self.sobelX(False)
+
+        if self.sobelY_image == []:
+            self.sobelY(False)
 
         magnitude = copy.deepcopy(self.house_image) 
 
@@ -99,6 +101,11 @@ class edge_detection():
             for j in range(len(magnitude[0])):
                 magnitude[i][j] = self.restrict_value((self.sobelX_image[i][j] ** 2 + self.sobelY_image[i][j] ** 2) ** 0.5)
 
-        cv2.imshow("magnitude", magnitude)
+        if visible:
+            self.showImage("magnitude", magnitude)
+
+
+    def showImage(self, title, image):
+        cv2.imshow(title, image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()

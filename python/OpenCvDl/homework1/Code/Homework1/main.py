@@ -36,10 +36,10 @@ if __name__ == "__main__":
     # edge_detection_fcn.magnitude()
 
 
-    path = "./Dataset_OpenCvDl_Hw1/Q4_Image/"
-    transforms_fcn = transforms(path)
-    transforms_fcn.resize()
-    transforms_fcn.translation()
-    transforms_fcn.scaling_rotation()
-    transforms_fcn.shearing()
+    # path = "./Dataset_OpenCvDl_Hw1/Q4_Image/"
+    # transforms_fcn = transforms(path)
+    # transforms_fcn.resize()
+    # transforms_fcn.translation()
+    # transforms_fcn.scaling_rotation()
+    # transforms_fcn.shearing()
 
