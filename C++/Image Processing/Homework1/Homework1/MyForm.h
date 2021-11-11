@@ -997,9 +997,9 @@ namespace Homework1 {
 
 		transferImage = image_registration(originImage, transferImage, originPos, transferPos);
 		setPictureBox(pictureBox_after_image, transferImage);
-		setLabel(label_scaling, "Scaling = " + round(10 * scale) / 10);
-		setLabel(label_theta, "Theta = " + round(10 * angle * 180 / 3.14159) / 10 + " (degree)");
-		setLabel(label_difference, "Difference = " + round(10 * difference) / 10);
+		setLabel(label_scaling, "Scaling = " + round(100 * scale) / 100);
+		setLabel(label_theta, "Theta = " + round(100 * angle * 180 / 3.14159) / 100 + " (degree)");
+		setLabel(label_difference, "Difference = " + round(100 * difference) / 100);
 	}
 
 	private: System::Void pictureBox_before_image_Click(System::Object^  sender, System::EventArgs^  e) {
