@@ -52,12 +52,12 @@ class image_processing():
         dog_weak_weight= blend / 255
 
         image = cv2.addWeighted(self.dog_strong_image, dog_strong_weight, self.dog_weak_image, dog_weak_weight, 0)
-        cv2.imshow("color transformation", image)
+        cv2.imshow("blending", image)
 
 
     def blending(self):
         cv2.imshow("blending", self.dog_strong_image)
-        cv2.createTrackbar("blend", "color transformation", 0, 255, self.combine_image)
+        cv2.createTrackbar("Blend", "blending", 0, 255, self.combine_image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()   
 
