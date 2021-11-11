@@ -16,6 +16,9 @@ class image_processing():
 
 
     def load_image(self):
+        shape = np.shape(self.sun_image)
+        print("Height :  {}".format(shape[0]))
+        print("Width :  {}".format(shape[1]))
         cv2.imshow("Sun.jpg", self.sun_image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
