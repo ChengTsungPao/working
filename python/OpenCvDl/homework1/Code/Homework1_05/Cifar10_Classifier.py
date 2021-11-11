@@ -72,9 +72,11 @@ class cifar10_classifier():
 
 
     def show_hyperParameters(self):
-
-        print("Batch Size {},\n".format(self.batch_size))
-        print(self.optimizer)
+        
+        print("hyperparameters:")
+        print("batch size: {}".format(self.batch_size))
+        print("learning rate: {}".format(self.learning_rate))
+        print("optimizer: {}".format(type(self.optimizer).__name__))
 
 
     def train_data(self):  
