@@ -24,11 +24,11 @@ class cifar10_classifier():
         self.model = VGG16().to(self.device)
 
         # parameter
-        self.epoch = 20
+        self.epoch = 50
         self.batch_size = 512
-        self.learning_rate = 0.001
-        # self.momentum = 0.9
-        self.optimizer = torch.optim.Adam(self.model.parameters(), lr = self.learning_rate)
+        self.learning_rate = 0.0001
+        self.momentum = 0.9
+        self.optimizer = torch.optim.SGD(self.model.parameters(), lr = self.learning_rate, momentum = self.momentum)
         
         # target or kind
         self.targetTable = {
@@ -97,7 +97,7 @@ class cifar10_classifier():
             ######################## training ######################## 
 
             total_batch_train_loss = 0
-            correct_test_predict = 0
+            correct_train_predict = 0
             train_count = 0
 
             for images, targets in train_dataloader:
@@ -109,14 +109,14 @@ class cifar10_classifier():
                 self.optimizer.step()
 
                 _, predict = torch.max(nn.functional.softmax(output, dim = 1), 1)
-                correct_test_predict += (predict.data.cpu() == targets).sum()
+                correct_train_predict += (predict.data.cpu() == targets).sum()
                 total_batch_train_loss += loss.data.cpu().numpy()
 
                 print("\r", "Training: %.4f" % ((train_count / number_of_train_batch) * 100.), "%", " (loss = {}, epoch: {})".format(loss, step), end=" ")
                 train_count += 1
 
             epoch_train_loss += [total_batch_train_loss / number_of_train_batch]
-            epoch_train_accuracy += [correct_test_predict / number_of_train_data]
+            epoch_train_accuracy += [correct_train_predict / number_of_train_data]
             # print("\r", "Training: %.4f" % ((step / epoch) * 100.), "%", " (loss = {}, accuracy = {}, epoch: {})".format(epoch_loss[-1], epoch_accuracy[-1], step), end=" ")
 
             ######################## testing ######################## 
@@ -148,7 +148,7 @@ class cifar10_classifier():
         if not os.path.exists("./predict/"):
             os.makedirs("./predict/")
         np.savez("./predict/loss.npz", train = epoch_train_loss, test = epoch_test_loss)
-        np.savez("./predict/accuracy.npz", train = epoch_train_accuracy, test = epoch_test_loss)
+        np.savez("./predict/accuracy.npz", train = epoch_train_accuracy, test = epoch_test_accuracy)
 
 
     def test_data(self, index):

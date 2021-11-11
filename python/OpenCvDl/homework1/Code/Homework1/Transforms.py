@@ -11,67 +11,58 @@ class transforms():
     def setPath(self, path):
         self.path = path
         self.SQUARE_image = cv2.imread(self.path + "SQUARE-01.png")
+        self.resizeImage = []
+        self.translateImage = []
+        self.scaleRotationImage = []
 
 
-    def resize(self):
+    def resize(self, visible = True):
         self.resizeImage = cv2.resize(self.SQUARE_image, (256, 256), interpolation=cv2.INTER_AREA)
 
-        cv2.imshow("Resize", self.resizeImage)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        if visible:
+            self.showImage("Resize", self.resizeImage)
 
 
-    def translation(self):
+    def translation(self, visible = True):
+        if self.resizeImage == []:
+            self.resize(False)
+
         M = np.float32([
             [1, 0,  0],
             [0, 1, 60]
         ])
         self.translateImage = cv2.warpAffine(self.resizeImage, M, (400, 300))
 
-        cv2.imshow("translation", self.translateImage)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        if visible:
+            self.showImage("translation", self.translateImage)
 
 
-    def scaling_rotation(self):
-        # M = np.float32([
-        #     [0.5, 0.0, 0.0],
-        #     [0.0, 0.5, 0.0]
-        # ])
-        # self.scaleImage = cv2.warpAffine(self.resizeImage, M, (400, 300))
+    def scaling_rotation(self, visible = True):
+        if self.translateImage == []:
+            self.translation(False)
 
-        # M = np.float32([
-        #     [1, 0, 128],
-        #     [0, 1, 188]
-        # ])
-        # self.scaleImage = cv2.warpAffine(self.SQUARE_image, M, (400, 300))
-        # shape = np.shape(self.scaleImage)
+        M = cv2.getRotationMatrix2D((128, 188), 10, 0.5)
+        self.scaleRotationImage = cv2.warpAffine(self.translateImage, M, (400, 300))
 
-        # theta = 10 * np.pi / 180
-        # M = np.float32([
-        #     [ np.cos(theta),  np.sin(theta), 0.0],
-        #     [-np.sin(theta),  np.cos(theta), 0.0]
-        # ])
-        M = cv2.getRotationMatrix2D((128, 128), 10, 0.5)
-        self.scaleImage = cv2.warpAffine(self.SQUARE_image, M, (400, 300))
+        if visible:
+            self.showImage("scaling & rotation", self.scaleRotationImage)
 
 
-        cv2.imshow("translation", self.scaleImage)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+    def shearing(self, visible = True):
+        if self.scaleRotationImage == []:
+            self.scaling_rotation(False)
 
-
-    def shearing(self):
-        # M = np.float32([
-        #     [1, 0, 128],
-        #     [0, 1, 188]
-        # ])
-        source = np.float32([[50,50],[200,50],[50,200]],)
-        destination = np.float32([[10,100],[200,50],[100,250]])
+        source = np.float32([[50,50], [200,50], [50,200]])
+        destination = np.float32([[10,100], [200,50], [100,250]])
         M = cv2.getAffineTransform(source, destination)
-        self.shearImage = cv2.warpAffine(self.scaleImage, M, (400, 300))
+        self.shearImage = cv2.warpAffine(self.scaleRotationImage, M, (400, 300))
+        
+        if visible:
+            self.showImage("shearing", self.shearImage)
 
-        cv2.imshow("translation", self.shearImage)
+
+    def showImage(self, title, image):
+        cv2.imshow(title, image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
