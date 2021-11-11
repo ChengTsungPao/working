@@ -209,6 +209,7 @@ class cifar10_classifier():
         plt.plot(list(range(1, len(loss["train"]) + 1)), loss["train"], "-o", label = "Training")
         plt.plot(list(range(1, len(loss["test"]) + 1)), loss["test"], "-o", label = "Testing")
         plt.xticks(list(range(1, len(loss["train"]) + 1, 2)))
+        plt.legend()
 
         plt.subplot(122)
         plt.title("accuracy")
@@ -217,7 +218,7 @@ class cifar10_classifier():
         plt.plot(list(range(1, len(accuracy["train"]) + 1)), accuracy["train"], "-o", label = "Training")
         plt.plot(list(range(1, len(accuracy["test"]) + 1)), accuracy["test"], "-o", label = "Testing")
         plt.xticks(list(range(1, len(accuracy["train"]) + 1, 2)))
-
         plt.legend()
+
         plt.tight_layout()
         plt.show()
