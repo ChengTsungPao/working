@@ -22,7 +22,7 @@ class edge_detection():
     def get_gaussian_kernel(self, kernel_size = 3):
 
         def G(x, y):
-            sigma = 0.7
+            sigma = 2 ** (-0.5)
             times = - (x ** 2 + y ** 2) / (2 * sigma ** 2)
             return (np.e ** times) / (2 * np.pi * sigma ** 2)
 
@@ -47,7 +47,7 @@ class edge_detection():
             for j in range(len(padding_house_image[0]) - 2 * padding):
                 transfer_image[i][j] = self.restrict_value(np.sum(padding_house_image[i : i + 3, j : j + 3] * kernel_filter))
 
-        self.showImage("gaussian_blur", transfer_image)
+        self.showImage("gaussian blur", transfer_image)
 
 
     def sobelX(self, visible = True):

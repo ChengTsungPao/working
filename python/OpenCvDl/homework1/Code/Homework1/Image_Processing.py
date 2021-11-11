@@ -56,7 +56,7 @@ class image_processing():
 
 
     def blending(self):
-        cv2.imshow("color transformation", self.dog_strong_image)
+        cv2.imshow("blending", self.dog_strong_image)
         cv2.createTrackbar("blend", "color transformation", 0, 255, self.combine_image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()   
