@@ -15,6 +15,7 @@ if __name__ == "__main__":
     # import numpy as np
     # import os
     # import cv2
+    # import json 
 
     # def createFile(path):
     #     if not os.path.exists(path):
@@ -78,8 +79,108 @@ if __name__ == "__main__":
     #     # plt.show()
     #     plt.clf()
 
+    #     # answer
+    #     json_file_fail = False
+    #     try:
+    #         L_answer_table, R_answer_table = [[""] * 3 for _ in range(3)], [[""] * 3 for _ in range(3)]
+    #         for index in range(9):
+    #             f = open(path + "cal_{}_L.json".format(index), "r")
+    #             data = json.load(f)
+
+    #             x = int(data["shapes"][3]["points"][0][0])
+    #             y = int(data["shapes"][3]["points"][0][1])
+    #             i, j = table[index]
+    #             L_answer_table[i][j] = "({}, {})".format(x, y)
+
+    #         for index in range(9):
+    #             f = open(path + "cal_{}_R.json".format(index), "r")
+    #             data = json.load(f)
+
+    #             x = int(data["shapes"][3]["points"][0][0]) - 200
+    #             y = int(data["shapes"][3]["points"][0][1])
+    #             i, j = table[index]
+    #             R_answer_table[i][j] = "({}, {})".format(x, y)
+
+    #         plt.title(path.split("\\")[-1].split("//")[0] + "_L_answer")
+    #         the_table = plt.table(L_answer_table, loc="center")
+    #         the_table.set_fontsize(20)
+    #         the_table.scale(1, 7)
+    #         plt.axis('off')
+    #         plt.axis('tight')
+    #         plt.savefig(path + "L_answer_table.png")
+    #         # plt.show()
+    #         plt.clf()
+
+    #         plt.title(path.split("\\")[-1].split("//")[0] + "_R_answer")
+    #         the_table = plt.table(R_answer_table, loc="center")
+    #         the_table.scale(1, 7)
+    #         the_table.set_fontsize(20)
+    #         plt.axis('off')
+    #         plt.axis('tight')
+    #         plt.savefig(path + "R_answer_table.png")
+    #         # plt.show()
+    #         plt.clf()
+    #     except:
+    #         print(path + " do not find .json file")
+    #         json_file_fail = True
+    #         pass
+
+    #     return json_file_fail
+
+    # def cal_difference(path):
+    #     f = open(path + "result.txt", "r")
+    #     content = f.readlines()
+    #     content = "".join(content)
+
+    #     L_table, R_table = [], []
+    #     for index in range(11):
+    #         str_ = content.split("cal_{}_{}: ".format(index, "L"))[-1].split("\n")[0]
+    #         x = int(str_.split(",")[0].split("x = ")[-1])
+    #         y = int(str_.split(", y = ")[-1])
+    #         L_table += [(x, y)]
+
+    #     for index in range(11):
+    #         str_ = content.split("cal_{}_{}: ".format(index, "R"))[-1].split("\n")[0]
+    #         x = int(str_.split(",")[0].split("x = ")[-1])
+    #         y = int(str_.split(", y = ")[-1])
+    #         R_table += [(x, y)]
+
+    #     # answer
+    #     L_answer_table, R_answer_table = [], []
+    #     for index in range(11):
+    #         f = open(path + "cal_{}_L.json".format(index), "r")
+    #         data = json.load(f)
+
+    #         x = int(data["shapes"][3]["points"][0][0])
+    #         y = int(data["shapes"][3]["points"][0][1])
+    #         L_answer_table += [(x, y)]
+
+    #     for index in range(11):
+    #         f = open(path + "cal_{}_R.json".format(index), "r")
+    #         data = json.load(f)
+
+    #         x = int(data["shapes"][3]["points"][0][0]) - 200
+    #         y = int(data["shapes"][3]["points"][0][1])
+    #         R_answer_table += [(x, y)]
+
+    #     # diff
+    #     diff_L, diff_R = [], []
+    #     for index in range(len(L_answer_table)):
+    #         x, y = L_table[index]
+    #         _x, _y = L_answer_table[index]
+    #         diff_L.append(((x - _x) ** 2 + (y - _y) ** 2) ** 0.5)
+
+    #     for index in range(len(R_answer_table)):
+    #         x, y = R_table[index]
+    #         _x, _y = R_answer_table[index]
+    #         diff_R.append(((x - _x) ** 2 + (y - _y) ** 2) ** 0.5)
+
+    #     return np.mean(diff_L), np.mean(diff_R)
+
+
     # image_processing_fcn = imageProcessing()
     # paths = glob("./Test Image_20210913/M3mm*")
+    # diff = {"1": {"L": [], "R": []}, "2.5": {"L": [], "R": []}}
     # # paths = ["./Test Image_20210913\\M3mm_Deg2.5_Bri150"]
     # for path in paths:
     #     light = int(path.split("Bri")[-1])
@@ -156,5 +257,38 @@ if __name__ == "__main__":
     #         except:
     #             print(file_)
 
-    #     create_table(path)
+    #     if create_table(path):
+    #         continue
+
+    #     degree = path.split("M3mm_Deg")[-1].split("_Bri")[0]
+    #     L_diff, R_diff = cal_difference(path)
+    #     diff[degree]["L"].append([int(light), L_diff])
+    #     diff[degree]["R"].append([int(light), R_diff])
+
+
+    # pathResult = "./Test Image_20210913/"
+    # for degree in diff.keys():
+    #     L_data = np.array(sorted(diff[degree]["L"]))
+    #     R_data = np.array(sorted(diff[degree]["R"]))
+
+    #     plt.figure(figsize = (8, 6), dpi = 80)
+    #     plt.title("left image degree = {}".format(degree))
+    #     plt.plot(L_data[:, 0], L_data[:, 1], "-o")
+    #     plt.xlabel("light")
+    #     plt.ylabel("mean of difference (pixel)")
+    #     plt.savefig(pathResult + "left_image_degree{}.png".format(degree))
+    #     plt.clf()
+
+    #     plt.figure(figsize = (8, 6), dpi = 80)
+    #     plt.title("right image degree = {}".format(degree))
+    #     plt.plot(R_data[:, 0], R_data[:, 1], "-o")
+    #     plt.xlabel("light")
+    #     plt.ylabel("mean of difference (pixel)")
+    #     plt.savefig(pathResult + "right_image_degree{}.png".format(degree))
+    #     plt.clf()
+
+    
+
+
+
         
