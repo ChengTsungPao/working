@@ -62,6 +62,7 @@ class imageProcessing():
             self.cannyFilter()
         
         self.contours, hierarchy = cv2.findContours(self.canny, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        self.contours.sort(key = len)
         self.drawContour = copy.deepcopy(self.cropResizeImage)
         for index in range(len(self.contours)):
             self.drawContour = cv2.drawContours(self.drawContour, copy.copy(self.contours[index]), -1, (0, 255, 255), 3)
@@ -141,6 +142,7 @@ class imageProcessing():
 
                 if maxLength < length:
                     contour_index = index
+                    maxLength = length
                     maxLengthLines = copy.deepcopy(lines[:2])
 
             self.contour = self.contours[contour_index]
