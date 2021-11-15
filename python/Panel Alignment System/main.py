@@ -181,7 +181,7 @@ if __name__ == "__main__":
     # image_processing_fcn = imageProcessing()
     # paths = glob("./Test Image_20210913/M3mm*")
     # diff = {"1": {"L": [], "R": []}, "2.5": {"L": [], "R": []}}
-    # # paths = ["./Test Image_20210913\\M3mm_Deg2.5_Bri150"]
+    # # paths = ["./Test Image_20210913\\M3mm_Deg1_Bri255"]
     # for path in paths:
     #     light = int(path.split("Bri")[-1])
     #     path += "//"

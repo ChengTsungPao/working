@@ -41,7 +41,6 @@ class imageProcessing():
 
         w = 1080
         h = 660
-
         imageTemp = self.image[y : y + h , x : x + w]
         self.cropResizeImage = imageTemp
         # shape = np.shape(imageTemp)
@@ -54,6 +53,7 @@ class imageProcessing():
             
         imageTemp = cv2.medianBlur(self.cropResizeImage, 5)
         imageTemp = cv2.GaussianBlur(imageTemp, (3, 3), 0)
+        self.smoothImage = copy.deepcopy(imageTemp)
         self.canny = cv2.Canny(imageTemp, 80, 130)
 
 
@@ -170,7 +170,7 @@ class imageProcessing():
             self.findContour()
             self.houghLinesP()
 
-        self.Gradient, self.orderContour = getGradient(self.cropResizeImage, self.contour, self.imageType)
+        self.Gradient, self.orderContour = getGradient(self.smoothImage, self.contour, self.imageType)
         self.magnitude, self.angle = getAngleMagnitude(self.Gradient, self.imageType)
 
         Gradient = [self.Gradient[index] + (int(index),) for index in range(len(self.Gradient))]
