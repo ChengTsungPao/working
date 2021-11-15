@@ -262,8 +262,8 @@ if __name__ == "__main__":
 
     #     degree = path.split("M3mm_Deg")[-1].split("_Bri")[0]
     #     L_diff, R_diff = cal_difference(path)
-    #     diff[degree]["L"].append([int(light), L_diff])
-    #     diff[degree]["R"].append([int(light), R_diff])
+    #     diff[degree]["L"].append([int(light), round(L_diff, 2)])
+    #     diff[degree]["R"].append([int(light), round(R_diff, 2)])
 
 
     # pathResult = "./Test Image_20210913/"
@@ -277,6 +277,19 @@ if __name__ == "__main__":
     #     plt.xlabel("light")
     #     plt.ylabel("mean of difference (pixel)")
     #     plt.savefig(pathResult + "left_image_degree{}.png".format(degree))
+    #     # plt.show()
+    #     plt.clf()
+
+    #     plt.figure(figsize = (8, 6), dpi = 80)
+    #     plt.title("left image table degree = {}".format(degree))
+    #     the_table = plt.table(np.array([L_data[:, 0], L_data[:, 1]]), rowLabels=["light","difference"], loc="center")
+    #     the_table.scale(1, 6)
+    #     the_table.set_fontsize(20)
+    #     plt.axis('off')
+    #     plt.axis('tight')
+    #     plt.savefig(pathResult + "left_image_table_degree{}.png".format(degree))
+    #     plt.legend()
+    #     # plt.show()
     #     plt.clf()
 
     #     plt.figure(figsize = (8, 6), dpi = 80)
@@ -285,6 +298,19 @@ if __name__ == "__main__":
     #     plt.xlabel("light")
     #     plt.ylabel("mean of difference (pixel)")
     #     plt.savefig(pathResult + "right_image_degree{}.png".format(degree))
+    #     # plt.show()
+    #     plt.clf()
+
+    #     plt.figure(figsize = (8, 6), dpi = 80)
+    #     plt.title("right image table degree = {}".format(degree))
+    #     the_table = plt.table(np.array([R_data[:, 0], R_data[:, 1]]), rowLabels=["light","difference"], loc="center")
+    #     the_table.scale(1, 6)
+    #     the_table.set_fontsize(20)
+    #     plt.axis('off')
+    #     plt.axis('tight')
+    #     plt.legend()
+    #     plt.savefig(pathResult + "right_image_table_degree{}.png".format(degree))
+    #     # plt.show()
     #     plt.clf()
 
     
