@@ -23,6 +23,11 @@ def getAngleMagnitude(Gradient, imageType):
     return np.array(mag), np.array(angle)
 
 def getGradient(image, contour, imageType):
+
+    # def angle_distance(pos, param):
+    #     angle = math.atan(abs(param[0] - pos[1]) / abs(param[1] - pos[0]))
+    #     distance = ((param[0] - pos[1]) ** 2 + (param[1] - pos[0]) ** 2) ** 0.5
+    #     return angle, distance
     
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     shape = np.shape(image)
@@ -36,6 +41,11 @@ def getGradient(image, contour, imageType):
 
     if imageType == "L":
         newContour.sort(key = lambda x: math.atan(abs(shape[0] - x[1]) / abs(shape[1] - x[0])))
+        # temp = [newContour[0]]
+        # for i in range(1, len(newContour)):
+            # angle, distance = angle_distance(temp[-1], [])
+            # if math.atan(abs(shape[0] - x[1]) / abs(shape[1] - x[0])
+
     else:
         newContour.sort(key = lambda x: math.atan(abs(0 - x[1]) / abs(shape[1] - x[0])))
 
