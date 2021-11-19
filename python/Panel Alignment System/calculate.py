@@ -1,4 +1,4 @@
-import cv2
+import cv2, copy
 import math
 import numpy as np
 import warnings
@@ -24,10 +24,22 @@ def getAngleMagnitude(Gradient, imageType):
 
 def getGradient(image, contour, imageType):
 
-    # def angle_distance(pos, param):
-    #     angle = math.atan(abs(param[0] - pos[1]) / abs(param[1] - pos[0]))
-    #     distance = ((param[0] - pos[1]) ** 2 + (param[1] - pos[0]) ** 2) ** 0.5
-    #     return angle, distance
+    def angle_distance(pos, param):
+        angle = math.atan(abs(param[0] - pos[1]) / abs(param[1] - pos[0]))
+        distance = ((param[0] - pos[1]) ** 2 + (param[1] - pos[0]) ** 2) ** 0.5
+        return angle, distance
+
+    def contour_transfer(newContour, param):
+        temp = [newContour[0]]
+        for i in range(1, len(newContour)):
+            angle1, distance1 = angle_distance(temp[-1], [param[0], param[1]])
+            angle2, distance2 = angle_distance(newContour[i], [param[0], param[1]])
+            if min(abs(angle1 - angle2), np.pi - abs(angle1 - angle2)) <= 2 * np.pi / 180 and distance1 > distance2:
+                # print("remove {}".format(i))
+                temp[-1] = copy.copy(newContour[i])
+            else:
+                temp.append(copy.copy(newContour[i]))
+        return copy.deepcopy(temp)
     
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     shape = np.shape(image)
@@ -41,13 +53,11 @@ def getGradient(image, contour, imageType):
 
     if imageType == "L":
         newContour.sort(key = lambda x: math.atan(abs(shape[0] - x[1]) / abs(shape[1] - x[0])))
-        # temp = [newContour[0]]
-        # for i in range(1, len(newContour)):
-            # angle, distance = angle_distance(temp[-1], [])
-            # if math.atan(abs(shape[0] - x[1]) / abs(shape[1] - x[0])
+        newContour = contour_transfer(newContour, [shape[0], shape[1]])
 
     else:
         newContour.sort(key = lambda x: math.atan(abs(0 - x[1]) / abs(shape[1] - x[0])))
+        newContour = contour_transfer(newContour, [0, shape[1]])
 
     Gradient = []
     for pos in newContour:
