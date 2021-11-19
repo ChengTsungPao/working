@@ -13,10 +13,11 @@ class edge_detection():
         self.house_image = cv2.imread(self.path + "House.jpg", 0)
         self.sobelX_image = []
         self.sobelY_image = []
+        self.gaussian_image = []
 
 
     def restrict_value(self, val):
-        return max(min(val, 255), 0)
+        return min(abs(val), 255)
 
 
     def get_gaussian_kernel(self, kernel_size = 3):
@@ -37,20 +38,24 @@ class edge_detection():
         return kernel_filter / np.sum(kernel_filter)
 
 
-    def gaussian_blur(self, kernel_size = 3):
+    def gaussian_blur(self, kernel_size = 3, visible = True):
         padding = (kernel_size - 1) // 2
         kernel_filter = self.get_gaussian_kernel(kernel_size)
         padding_house_image = np.pad(self.house_image, padding)
-        transfer_image = copy.deepcopy(self.house_image) 
+        self.gaussian_image = copy.deepcopy(self.house_image) 
 
         for i in range(len(padding_house_image) - 2 * padding):
             for j in range(len(padding_house_image[0]) - 2 * padding):
-                transfer_image[i][j] = self.restrict_value(np.sum(padding_house_image[i : i + 3, j : j + 3] * kernel_filter))
+                self.gaussian_image[i][j] = self.restrict_value(np.sum(padding_house_image[i : i + 3, j : j + 3] * kernel_filter))
 
-        self.showImage("gaussian blur", transfer_image)
+        if visible:
+            self.showImage("gaussian blur", self.gaussian_image)
 
 
     def sobelX(self, visible = True):
+        if self.gaussian_image == []:
+            self.gaussian_blur(visible = False)
+
         horizontal = [
             [ -1,  0,  1  ],
 	        [ -2,  0,  2  ],
@@ -70,6 +75,9 @@ class edge_detection():
 
 
     def sobelY(self, visible = True):
+        if self.gaussian_image == []:
+            self.gaussian_blur(visible = False)
+
         vertical = [
             [  1,  2,  1  ],
 	        [  0,  0,  0  ],
