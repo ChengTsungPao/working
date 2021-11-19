@@ -63,12 +63,12 @@ class edge_detection():
         ] 
 
         padding = (len(horizontal) - 1) // 2
-        padding_house_image = np.pad(self.house_image, padding)
-        self.sobelX_image = copy.deepcopy(self.house_image) 
+        padding_gaussian_image = np.pad(self.gaussian_image, padding)
+        self.sobelX_image = copy.deepcopy(self.gaussian_image) 
 
-        for i in range(len(padding_house_image) - 2 * padding):
-            for j in range(len(padding_house_image[0]) - 2 * padding):
-                self.sobelX_image[i][j] = self.restrict_value(np.sum(padding_house_image[i : i + 3, j : j + 3] * horizontal))
+        for i in range(len(padding_gaussian_image) - 2 * padding):
+            for j in range(len(padding_gaussian_image[0]) - 2 * padding):
+                self.sobelX_image[i][j] = self.restrict_value(np.sum(padding_gaussian_image[i : i + 3, j : j + 3] * horizontal))
 
         if visible:
             self.showImage("sobelX", self.sobelX_image)
@@ -85,12 +85,12 @@ class edge_detection():
         ] 
 
         padding = (len(vertical) - 1) // 2
-        padding_house_image = np.pad(self.house_image, padding)
-        self.sobelY_image = copy.deepcopy(self.house_image) 
+        padding_gaussian_image = np.pad(self.gaussian_image, padding)
+        self.sobelY_image = copy.deepcopy(self.gaussian_image) 
 
-        for i in range(len(padding_house_image) - 2 * padding):
-            for j in range(len(padding_house_image[0]) - 2 * padding):
-                self.sobelY_image[i][j] = self.restrict_value(np.sum(padding_house_image[i : i + 3, j : j + 3] * vertical))
+        for i in range(len(padding_gaussian_image) - 2 * padding):
+            for j in range(len(padding_gaussian_image[0]) - 2 * padding):
+                self.sobelY_image[i][j] = self.restrict_value(np.sum(padding_gaussian_image[i : i + 3, j : j + 3] * vertical))
 
         if visible:
             self.showImage("sobelY", self.sobelY_image)
