@@ -136,6 +136,7 @@ class UI(QtWidgets.QMainWindow):
         cv2.line(drawContour, (point[0] - rad , point[1] - rad), (point[0] + rad, point[1] + rad), (0, 255, 0), 5)
         cv2.line(drawContour, (point[0] - rad , point[1] + rad), (point[0] + rad, point[1] - rad), (0, 255, 0), 5)
         cv2.imwrite(self.pathFolder + "result/" + self.filename + "_result.png", drawContour)
+        # self.show_image(drawContour)
 
         self.originImageLabel.setPixmap(QPixmap(self.pathFolder + "result/" + self.filename + "_result.png"))
         self.originImageLabel.setScaledContents(True)
@@ -158,6 +159,10 @@ class UI(QtWidgets.QMainWindow):
         if not os.path.exists(path):
             os.makedirs(path)
 
+    def show_image(self, image, title = "test"):
+        cv2.imshow(title, image)
+        cv2.waitKey(0) 
+        cv2.destroyAllWindows() 
 
     def mergeFolder(self, folders):
         path = ""

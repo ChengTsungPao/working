@@ -2,7 +2,7 @@ import cv2
 import copy
 import numpy as np
 from numpy.core.fromnumeric import shape
-from calculate import getAngleMagnitude, getGradient
+from calculate import getAngleMagnitude, getGradient, transferContour
 
 class imageProcessing():
 
@@ -147,22 +147,25 @@ class imageProcessing():
 
             self.contour = self.contours[contour_index]
             image = cv2.drawContours(image, copy.copy(self.contour) , -1, (255, 255, 255), 2)
-            self.drawFindContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.copy(self.contour), -1, (0, 255, 255), 3)
+            self.orderContour = transferContour(np.shape(self.smoothImage), self.contour, self.imageType)
+            self.drawFindContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.deepcopy(self.transferSize(self.orderContour)), -1, (0, 255, 255), 3)
             
             if maxLengthLines != []:
                 for line in maxLengthLines:
                     x1, y1, x2, y2 = line[0]
                     length += distance((x1, y1), (x2, y2))
                     cv2.line(self.drawFindContour, (x1, y1), (x2, y2), (0, 255, 0), 3)
-            self.drawContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.copy(self.contour), -1, (0, 255, 255), 3)
+                    
+            self.drawContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.deepcopy(self.transferSize(self.orderContour)), -1, (0, 255, 255), 3)
 
         else:
             ############################################ click and change contour ####################################################
             self.contours.sort(key = len)
             self.index = self.index - 1 if abs(self.index - 1) <= len(self.contours) else -1
             self.contour = self.contours[self.index]
-            self.drawFindContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.copy(self.contour), -1, (0, 255, 255), 3)
-            self.drawContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.copy(self.contour), -1, (0, 255, 255), 3)
+            self.orderContour = transferContour(np.shape(self.smoothImage), self.contour, self.imageType)
+            self.drawFindContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.deepcopy(self.transferSize(self.orderContour)), -1, (0, 255, 255), 3)
+            self.drawContour = cv2.drawContours(copy.deepcopy(self.cropResizeImage), copy.deepcopy(self.transferSize(self.orderContour)), -1, (0, 255, 255), 3)
 
 
     def calculateData(self, path = "", filename = ""):
@@ -170,11 +173,22 @@ class imageProcessing():
             self.findContour()
             self.houghLinesP()
 
-        self.Gradient, self.orderContour = getGradient(self.smoothImage, self.contour, self.imageType)
+        self.Gradient = getGradient(self.smoothImage, self.orderContour)
         self.magnitude, self.angle = getAngleMagnitude(self.Gradient, self.imageType)
 
         Gradient = [self.Gradient[index] + (int(index),) for index in range(len(self.Gradient))]
         candidate = np.array(sorted(Gradient, key = lambda x: abs(abs(x[0]) - abs(x[1])))[:1], int)
+
+        # test = list(self.orderContour)
+        # for index in range(len(test)):
+        #     test[index] = list(test[index])
+        #     test[index].append(index)
+        # shape = np.shape(self.cropResizeImage)
+        # if self.imageType == "L":
+        #     candidate = np.array(sorted(test, key = lambda x: (x[0] - shape[1]) ** 2 + (x[1] - shape[0]) ** 2)[:1], int)
+        # else:
+        #     candidate = np.array(sorted(test, key = lambda x: (x[0] - shape[1]) ** 2 + (x[1] - 0) ** 2)[:1], int)
+
         point = self.orderContour[candidate[0][2]]
 
         if path != "" and filename != "":
@@ -187,6 +201,13 @@ class imageProcessing():
         cv2.imshow(title, image)
         cv2.waitKey(0) 
         cv2.destroyAllWindows() 
+
+    
+    def transferSize(self, contour):
+        newContour = []
+        for x in contour:
+            newContour.append(np.array([x]))
+        return newContour
 
 
     # remove maybe not use

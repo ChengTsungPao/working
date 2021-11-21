@@ -22,7 +22,7 @@ def getAngleMagnitude(Gradient, imageType):
 
     return np.array(mag), np.array(angle)
 
-def getGradient(image, contour, imageType):
+def transferContour(shape, contour, imageType):
 
     def angle_distance(pos, param):
         angle = math.atan(abs(param[0] - pos[1]) / abs(param[1] - pos[0]))
@@ -34,18 +34,18 @@ def getGradient(image, contour, imageType):
         for i in range(1, len(newContour)):
             angle1, distance1 = angle_distance(temp[-1], [param[0], param[1]])
             angle2, distance2 = angle_distance(newContour[i], [param[0], param[1]])
-            if min(abs(angle1 - angle2), np.pi - abs(angle1 - angle2)) <= 2 * np.pi / 180 and distance1 > distance2:
+            if min(abs(angle1 - angle2), np.pi - abs(angle1 - angle2)) <= 0.05 * np.pi / 180:
                 # print("remove {}".format(i))
-                temp[-1] = copy.copy(newContour[i])
+                if abs(distance1 - distance2) >= 1:
+                    if distance1 > distance2:
+                        temp[-1] = copy.copy(newContour[i])
+                    else:
+                        pass
+                else:
+                    temp.append(copy.copy(newContour[i]))
             else:
                 temp.append(copy.copy(newContour[i]))
         return copy.deepcopy(temp)
-    
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    shape = np.shape(image)
-
-    sobelx = cv2.Sobel(image,cv2.CV_64F, 1, 0, ksize=11)
-    sobely = cv2.Sobel(image,cv2.CV_64F, 0, 1, ksize=11)
 
     newContour = []
     for x in contour:
@@ -59,13 +59,23 @@ def getGradient(image, contour, imageType):
         newContour.sort(key = lambda x: math.atan(abs(0 - x[1]) / abs(shape[1] - x[0])))
         newContour = contour_transfer(newContour, [0, shape[1]])
 
+    return newContour
+
+
+def getGradient(image, newContour):
+
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    sobelx = cv2.Sobel(image,cv2.CV_64F, 1, 0, ksize=11)
+    sobely = cv2.Sobel(image,cv2.CV_64F, 0, 1, ksize=11)
+
     Gradient = []
     for pos in newContour:
         y, x = pos[0], pos[1]
         Gx, Gy = sobelx[x][y], sobely[x][y]
         Gradient.append((restrictRange(Gx), restrictRange(Gy)))
 
-    return Gradient, newContour
+    return Gradient
 
 def restrictRange(val):
     return val
