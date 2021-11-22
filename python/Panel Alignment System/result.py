@@ -79,10 +79,14 @@ paths = glob(".\Test Image_20210913\M3mm_Deg*")
 
 for path in paths:
     path += "\\"
-    diff_translation = np.mean(cal_difference(path, [0, 8]))
-    diff_rotation = np.mean(cal_difference(path, [9, 10]))
+    diff_L_translation, diff_R_translation = cal_difference(path, [0, 8])
+    diff_translation = np.mean([diff_L_translation, diff_R_translation])
+    diff_L_rotation, diff_R_rotation = cal_difference(path, [9, 10])
+    diff_rotation = np.mean([diff_L_rotation, diff_R_rotation])
     print(path)
+    print("diff_translation", round(diff_L_translation, 2), round(diff_R_translation, 2))
     print("diff_translation", round(diff_translation, 2))
+    print("diff_rotation", round(diff_L_rotation, 2), round(diff_R_rotation, 2))
     print("diff_rotation", round(diff_rotation, 2))
     print("=================================")
 
