@@ -133,8 +133,18 @@ class UI(QtWidgets.QMainWindow):
 
         rad = 8
         point = orderContour[candidate[0][2]]
-        cv2.line(drawContour, (point[0] - rad , point[1] - rad), (point[0] + rad, point[1] + rad), (0, 255, 0), 5)
-        cv2.line(drawContour, (point[0] - rad , point[1] + rad), (point[0] + rad, point[1] - rad), (0, 255, 0), 5)
+        cv2.line(drawContour, (point[0] - rad , point[1] - rad), (point[0] + rad, point[1] + rad), (0, 255, 0), 2)
+        cv2.line(drawContour, (point[0] - rad , point[1] + rad), (point[0] + rad, point[1] - rad), (0, 255, 0), 2)
+
+        import json
+        f = open(self.pathFolder + self.filename + ".json", "r")
+        data = json.load(f)
+        x = int(data["shapes"][3]["points"][0][0]) - (200 if self.imageType == "R" else 0)
+        y = int(data["shapes"][3]["points"][0][1])
+        # x, y = y, x
+        cv2.line(drawContour, (x - rad , y - rad), (x + rad, y + rad), (255, 0, 0), 5)
+        cv2.line(drawContour, (x - rad , y + rad), (x + rad, y - rad), (255, 0, 0), 5)
+
         cv2.imwrite(self.pathFolder + "result/" + self.filename + "_result.png", drawContour)
         # self.show_image(drawContour)
 

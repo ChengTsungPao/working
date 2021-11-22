@@ -60,22 +60,28 @@ def cal_difference(path, index):
 
     # diff
     diff_L, diff_R = [], []
+    # print("left")
     for index in range(len(L_answer_table)):
         x, y = L_table[index]
         _x, _y = L_answer_table[index]
+        # print((x, y), (_x, _y))
         diff_L.append(((x - _x) ** 2 + (y - _y) ** 2) ** 0.5)
 
+    # print("right")
     for index in range(len(R_answer_table)):
         x, y = R_table[index]
         _x, _y = R_answer_table[index]
+        # print((x, y), (_x, _y))
         diff_R.append(((x - _x) ** 2 + (y - _y) ** 2) ** 0.5)
-        
+    
+    # print(diff_L)
+    # print(diff_R)
     return np.mean(diff_L), np.mean(diff_R)
 
 
 
 paths = glob(".\Test Image_20210913\M3mm_Deg*")
-# paths = [".\Test Image_20210913\M3mm_Deg1_Bri30\\"]
+# paths = [".\Test Image_20210913\M3mm_Deg2.5_Bri100\\"]
 
 for path in paths:
     path += "\\"
@@ -84,9 +90,9 @@ for path in paths:
     diff_L_rotation, diff_R_rotation = cal_difference(path, [9, 10])
     diff_rotation = np.mean([diff_L_rotation, diff_R_rotation])
     print(path)
-    print("diff_translation", round(diff_L_translation, 2), round(diff_R_translation, 2))
+    # print("diff_translation", round(diff_L_translation, 2), round(diff_R_translation, 2))
     print("diff_translation", round(diff_translation, 2))
-    print("diff_rotation", round(diff_L_rotation, 2), round(diff_R_rotation, 2))
+    # print("diff_rotation", round(diff_L_rotation, 2), round(diff_R_rotation, 2))
     print("diff_rotation", round(diff_rotation, 2))
     print("=================================")
 
