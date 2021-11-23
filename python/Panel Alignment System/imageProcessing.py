@@ -51,7 +51,7 @@ class imageProcessing():
         self.resetImage()
         self.cropImageResize()
             
-        imageTemp = cv2.medianBlur(self.cropResizeImage, 5)
+        imageTemp = cv2.medianBlur(self.cropResizeImage, 11)
         imageTemp = cv2.GaussianBlur(imageTemp, (3, 3), 0)
         self.smoothImage = copy.deepcopy(imageTemp)
         self.canny = cv2.Canny(imageTemp, 80, 130)

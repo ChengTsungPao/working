@@ -253,6 +253,14 @@ if __name__ == "__main__":
     #             point = orderContour[candidate[0][2]]
     #             cv2.line(drawContour, (point[0] - rad , point[1] - rad), (point[0] + rad, point[1] + rad), (0, 255, 0), 5)
     #             cv2.line(drawContour, (point[0] - rad , point[1] + rad), (point[0] + rad, point[1] - rad), (0, 255, 0), 5)
+
+    #             f = open(pathfolder + filename + ".json", "r")
+    #             data = json.load(f)
+    #             x = int(data["shapes"][3]["points"][0][0]) - (200 if imageType == "R" else 0)
+    #             y = int(data["shapes"][3]["points"][0][1])
+    #             cv2.line(drawContour, (x - rad , y - rad), (x + rad, y + rad), (255, 0, 0), 5)
+    #             cv2.line(drawContour, (x - rad , y + rad), (x + rad, y - rad), (255, 0, 0), 5)
+
     #             cv2.imwrite(pathfolder + "result/" + filename + "_result.png", drawContour)
     #         except:
     #             print(file_)
