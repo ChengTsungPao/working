@@ -21,6 +21,7 @@ def compare_image():
     print(diff)
     print(image1 - image2)
 
+
 def cal_difference_distance():
 
     def cal_difference(path, index):
@@ -82,7 +83,6 @@ def cal_difference_distance():
         return np.mean(diff_L), np.mean(diff_R)
 
 
-
     paths = glob(".\Test Image_20210913\M3mm_Deg*")
     # paths = [".\Test Image_20210913\M3mm_Deg2.5_Bri100\\"]
 
@@ -98,8 +98,6 @@ def cal_difference_distance():
         # print("diff_rotation", round(diff_L_rotation, 2), round(diff_R_rotation, 2))
         print("diff_rotation", round(diff_rotation, 2))
         print("=================================")
-
-
 
 
 def create_sheet_result():
