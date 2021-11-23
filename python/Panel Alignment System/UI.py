@@ -133,13 +133,13 @@ class UI(QtWidgets.QMainWindow):
 
         rad = 8
         import json
-        f = open(self.pathFolder + self.filename + ".json", "r")
-        data = json.load(f)
-        x = int(data["shapes"][3]["points"][0][0]) - (200 if self.imageType == "R" else 0)
-        y = int(data["shapes"][3]["points"][0][1])
-        # x, y = y, x
-        cv2.line(drawContour, (x - rad , y - rad), (x + rad, y + rad), (255, 0, 0), 5)
-        cv2.line(drawContour, (x - rad , y + rad), (x + rad, y - rad), (255, 0, 0), 5)
+        # f = open(self.pathFolder + self.filename + ".json", "r")
+        # data = json.load(f)
+        # x = int(data["shapes"][3]["points"][0][0]) - (200 if self.imageType == "R" else 0)
+        # y = int(data["shapes"][3]["points"][0][1])
+        # # x, y = y, x
+        # cv2.line(drawContour, (x - rad , y - rad), (x + rad, y + rad), (255, 0, 0), 5)
+        # cv2.line(drawContour, (x - rad , y + rad), (x + rad, y - rad), (255, 0, 0), 5)
         # print("Ground Truth", [x, y])
         # print("Difference", [x - point[0], y - point[1]])
 

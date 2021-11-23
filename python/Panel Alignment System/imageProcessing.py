@@ -70,7 +70,7 @@ class imageProcessing():
 
     def houghLinesPHandler(self, lines):
 
-        minLengthLinesScale = 1 / 4
+        minLengthLinesScale = 0 # Do not know why should this ??
         minTwoLinesAngle = np.pi / 4
 
         x1, y1, x2, y2 = lines[0][0]
@@ -126,6 +126,7 @@ class imageProcessing():
                 gray = cv2.cvtColor(np.array(image).astype(np.uint8) , cv2.COLOR_BGR2GRAY)
                 image = cv2.cvtColor(gray , cv2.COLOR_BGR2RGB)
                 lines = cv2.HoughLinesP(gray, 1, np.pi/180, 100, minLineLength, maxLineGap)
+                # print(cv2.HoughLines(gray, 1, np.pi/180, 100))
 
                 if np.array([lines == None]).any():
                     continue
