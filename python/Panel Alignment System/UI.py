@@ -135,6 +135,7 @@ class UI(QtWidgets.QMainWindow):
         point = orderContour[candidate[0][2]]
         cv2.line(drawContour, (point[0] - rad , point[1] - rad), (point[0] + rad, point[1] + rad), (0, 255, 0), 2)
         cv2.line(drawContour, (point[0] - rad , point[1] + rad), (point[0] + rad, point[1] - rad), (0, 255, 0), 2)
+        # print("Detect", point)
 
         import json
         f = open(self.pathFolder + self.filename + ".json", "r")
@@ -144,6 +145,8 @@ class UI(QtWidgets.QMainWindow):
         # x, y = y, x
         cv2.line(drawContour, (x - rad , y - rad), (x + rad, y + rad), (255, 0, 0), 5)
         cv2.line(drawContour, (x - rad , y + rad), (x + rad, y - rad), (255, 0, 0), 5)
+        # print("Ground Truth", [x, y])
+        # print("Difference", [x - point[0], y - point[1]])
 
         cv2.imwrite(self.pathFolder + "result/" + self.filename + "_result.png", drawContour)
         # self.show_image(drawContour)
