@@ -535,7 +535,7 @@
        <string>2.Find Contour</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_9">
+     <widget class="QPushButton" name="Image_Load_Button">
       <property name="geometry">
        <rect>
         <x>9</x>
@@ -1373,7 +1373,7 @@
      <x>0</x>
      <y>0</y>
      <width>1866</width>
-     <height>17</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>
