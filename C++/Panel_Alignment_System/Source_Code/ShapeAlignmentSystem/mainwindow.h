@@ -73,11 +73,11 @@ private slots:
     void on_pushButton_6_clicked();
     void on_pushButton_7_clicked();
     void on_pushButton_8_clicked();
-    void on_pushButton_9_clicked();
-    void on_pushButton_10_clicked();
-    void on_pushButton_11_clicked();
+    void on_Image_Load_Button_clicked();
+    void on_Find_Contour_Button_clicked();
+    void on_Calculate_Button_clicked();
     void on_pushButton_12_clicked();
-    void on_pushButton_13_clicked();
+    void on_Show_Graph_Button_clicked();
     void on_pushButton_14_clicked();
     void on_pushButton_15_clicked();
     void on_pushButton_16_clicked();

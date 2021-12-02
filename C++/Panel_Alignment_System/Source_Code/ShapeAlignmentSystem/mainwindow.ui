@@ -509,7 +509,7 @@
      <property name="title">
       <string>Normal Direection Detecti</string>
      </property>
-     <widget class="QPushButton" name="pushButton_11">
+     <widget class="QPushButton" name="Calculate_Button">
       <property name="geometry">
        <rect>
         <x>8</x>
@@ -522,7 +522,7 @@
        <string>3. Calculate</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_10">
+     <widget class="QPushButton" name="Find_Contour_Button">
       <property name="geometry">
        <rect>
         <x>9</x>
@@ -535,7 +535,7 @@
        <string>2.Find Contour</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_9">
+     <widget class="QPushButton" name="Image_Load_Button">
       <property name="geometry">
        <rect>
         <x>9</x>
@@ -548,7 +548,7 @@
        <string>1.Image Load</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_13">
+     <widget class="QPushButton" name="Show_Graph_Button">
       <property name="geometry">
        <rect>
         <x>8</x>
@@ -1373,7 +1373,7 @@
      <x>0</x>
      <y>0</y>
      <width>1866</width>
-     <height>20</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>

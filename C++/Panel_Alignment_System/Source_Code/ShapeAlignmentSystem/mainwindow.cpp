@@ -2338,8 +2338,9 @@ void MainWindow::on_pushButton_8_clicked()
 
 
 //1. Image Load
-void MainWindow::on_pushButton_9_clicked()
+void MainWindow::on_Image_Load_Button_clicked()
 {
+    cout << "test" << endl;
     //Data Initialize
     if(!g_InImg1.empty())
     {
@@ -2454,7 +2455,7 @@ void MainWindow::on_pushButton_9_clicked()
 
 
 //2. find contour
-void MainWindow::on_pushButton_10_clicked()
+void MainWindow::on_Find_Contour_Button_clicked()
 {
 
     //contour shape save check
@@ -2946,7 +2947,7 @@ void MainWindow::on_pushButton_10_clicked()
 }
 
 //3. Get the normal direction angle and magnitude
-void MainWindow::on_pushButton_11_clicked()
+void MainWindow::on_Calculate_Button_clicked()
 {
 
     //data null chaeck
@@ -3247,7 +3248,7 @@ void MainWindow::on_pushButton_12_clicked()
 }
 
 //Magnitude, angle data graph oputput
-void MainWindow::on_pushButton_13_clicked()
+void MainWindow::on_Show_Graph_Button_clicked()
 {
     add_data();
     plot_graph();
