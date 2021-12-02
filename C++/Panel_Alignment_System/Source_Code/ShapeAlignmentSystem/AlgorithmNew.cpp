@@ -9,6 +9,8 @@
 #include <vector>
 #include <tuple>
 #include <Canny_Ben.h>
+#include <iostream>
+#include <algorithm>
 //#include <opencv2/core/mat.hpp>
 
 using namespace std;
@@ -43,12 +45,13 @@ vector<Point> orderContour(vector<Point> contour, int x, int y){
     int x_, y_;
     float angle;
     vector<tuple<float, Point>> data;
-//    for(int i = 0; i < contour.size(); i++){
-//        x_ = contour[i].x;
-//        y_ = contour[i].y;
-//        angle = (float)(y - y_) / (x - x_);
-//        data.push_back(make_tuple(angle, Point(x, y)));
-//    }
+    for(int i = 0; i < contour.size(); i++){
+        x_ = contour[i].x;
+        y_ = contour[i].y;
+        angle = (float)(y - y_) / (x - x_);
+        data.push_back(make_tuple(angle, Point(x, y)));
+    }
+
 //    sort(data.begin(), data.end());
 
     vector<Point> ans;
