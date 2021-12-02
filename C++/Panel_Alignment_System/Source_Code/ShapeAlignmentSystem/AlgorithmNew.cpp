@@ -12,6 +12,7 @@
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <math.h>
 //#include <opencv2/core/mat.hpp>
 
 using namespace std;
@@ -21,6 +22,8 @@ Mat Image_Load(QString left_image_filename ,QString right_image_filename);
 vector<Point> findBestContour(vector<vector<Point>> contours);
 vector<Point> orderContour(vector<Point> contour, int x, int y);
 void Find_Contour_Button(Mat left_image, Mat right_image);
+vector<tuple<double, double>> getGradient(Mat image_smooth, vector<Point> contour);
+tuple<vector<double>, vector<double>> getAngleMagnitude(vector<tuple<double, double>> image_Gradient);
 
 
 Mat Image_Load(QString left_image_filename ,QString right_image_filename){
@@ -33,7 +36,7 @@ Mat Image_Load(QString left_image_filename ,QString right_image_filename){
 vector<Point> findBestContour(vector<vector<Point>> contours){
     vector<Point> ans = contours[0];
 
-    for(int i = 1; i < contours.size(); i++){
+    for(unsigned int i = 1; i < contours.size(); i++){
         if(contours[i].size() > ans.size()){
             ans = contours[i];
         }
@@ -55,7 +58,7 @@ vector<Point> orderContour(vector<Point> contour, int x, int y){
     int x_, y_;
     float angle;
     vector<tuple<float, Point>> data;
-    for(int i = 0; i < contour.size(); i++){
+    for(unsigned int i = 0; i < contour.size(); i++){
         x_ = contour[i].x;
         y_ = contour[i].y;
         angle = atan2((x - x_), (y - y_));
@@ -68,7 +71,7 @@ vector<Point> orderContour(vector<Point> contour, int x, int y){
     cout << get<0>(data[300]) << " " << get<0>(data[400]) << " " << get<0>(data[500]) << endl;
 
     vector<Point> ans;
-    for(int i = 0; i < data.size(); i++){
+    for(unsigned int i = 0; i < data.size(); i++){
         ans.push_back(get<1>(data[i]));
     }
     cout << ans[0].x << " " << ans[100].x << " " << ans[200].x << endl;
@@ -77,105 +80,84 @@ vector<Point> orderContour(vector<Point> contour, int x, int y){
 }
 
 
-void Find_Contour_Button(Mat left_image, Mat right_image)
+void Find_Contour_Button(Mat image, char imageType)
 {
 
     //Data Initialize
-    if(!left_image.empty()){ left_image.zeros(left_image.rows, left_image.cols, CV_8UC3);}
-    if(!right_image.empty()){ right_image.zeros(right_image.rows, right_image.cols, CV_8UC3);}
-
+    if(!image.empty()){ image.zeros(image.rows, image.cols, CV_8UC3);}
 
     //ROI Setting
-    left_image = left_image(cv::Rect(0,0,1080,660)); //Left
-    right_image = right_image(cv::Rect(200,0,1080,660)); //Right
-
+    image = imageType == 'L' ? image(cv::Rect(0,0,1080,660)) : image(cv::Rect(200,0,1080,660));
 
     //Remove noise
-    //Left
-    Mat left_image_smooth;
-    cv::medianBlur(left_image,left_image_smooth,11);
-    cv::GaussianBlur(left_image_smooth,left_image_smooth,Size(3,3),0,0);
+    Mat image_smooth;
+    cv::medianBlur(image,image_smooth,11);
+    cv::GaussianBlur(image_smooth,image_smooth,Size(3,3),0,0);
+    Mat test = image_smooth.clone();
 
+    //Edge Detection
+    Mat image_canny;
+    Mat image_SobelX, image_SobelY;
+    Canny_Ben(image_smooth,image_canny,70,130,3,0,image_SobelX,image_SobelY); //get the Gx, Gy
+    image_SobelX.convertTo(image_SobelX,CV_64F);
+    image_SobelY.convertTo(image_SobelY,CV_64F);
+    cv::imshow("image_canny",image_canny);
 
-    //Right
-    Mat right_image_smooth;
-    cv::medianBlur(right_image,right_image_smooth,11);
-    cv::GaussianBlur(right_image_smooth,right_image_smooth,Size(3,3),0,0);
+    //Find Contour
+    vector<vector<Point>> image_contours;
+    cv::findContours(image_canny, image_contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
+    vector<Point> image_contour = findBestContour(image_contours);
+    image_contour = imageType == 'L' ? orderContour(image_contour, 0, 0) : image_contour = orderContour(image_contour, 1080, 0);
 
-    //shape match mat
-    Mat left_image_shape, right_image_shape;
-    left_image_shape = left_image_smooth.clone();
-    right_image_shape = right_image_smooth.clone();
-    cv::cvtColor(left_image_shape, left_image_shape, CV_BGR2GRAY);
-    cv::cvtColor(right_image_shape, right_image_shape, CV_BGR2GRAY);
+    vector<vector<Point>> contours;
+    contours.push_back(image_contour);
+    cv::drawContours(image,contours,0,Scalar(0, 255, 0), 5);
 
-//    cv::imshow("left_image_shape",left_image_shape);
-//    cv::imshow("right_image_shape",right_image_shape);
-
-
-    Mat Edge_Left, Edge_Right;
-    Mat LX, LY, RX, RY;
-    Canny_Ben(left_image_shape,Edge_Left,70,130,3,0,LX,LY); //Get Edge
-    Canny_Ben(right_image_shape,Edge_Right,70,130,3,0,RX,RY); //Get Edge
-    cv::imshow("Left",Edge_Left);
-    cv::imshow("Right",Edge_Right);
-
-
-    //Left
-    Mat left_image_canny;
-    Mat left_image_SobelX, left_image_SobelY;
-    Canny_Ben(left_image_smooth,left_image_canny,70,130,3,0,left_image_SobelX,left_image_SobelY); //get the Gx, Gy
-    left_image_SobelX.convertTo(left_image_SobelX,CV_64F);
-    left_image_SobelY.convertTo(left_image_SobelY,CV_64F);
-
-    //Right
-    Mat right_image_canny;
-    Mat right_image_SobelX, right_image_SobelY;
-    Canny_Ben(right_image_smooth,right_image_canny,70,130,3,0,right_image_SobelX,right_image_SobelY); //get the Gx, Gy
-    right_image_SobelX.convertTo(right_image_SobelX,CV_64F);
-    right_image_SobelY.convertTo(right_image_SobelY,CV_64F);
-
-    vector<vector<Point>> left_image_contours;
-    cv::findContours(Edge_Left, left_image_contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
-    vector<vector<Point>> right_image_contours;
-    cv::findContours(Edge_Right, right_image_contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
-
-    vector<Point> left_image_contour = findBestContour(left_image_contours);
-    vector<Point> right_image_contour = findBestContour(right_image_contours);
-
-    left_image_contour = orderContour(left_image_contour, 0, 0);
-    right_image_contour = orderContour(right_image_contour, 1080, 0);
-
-
-    vector<vector<Point>> left_right_contours;
-    left_right_contours.push_back(left_image_contour);
-    left_right_contours.push_back(right_image_contour);
-
-    cv::drawContours(left_image,left_right_contours,0,Scalar(255, 0, 0),5);
-    cv::drawContours(right_image,left_right_contours,1,Scalar(255, 0, 0),5);
-
-//    for(int i = 0; i < left_image_contour.size(); i+=10){
-//        cv::drawMarker(left_image, left_image_contour[i],Scalar(0,255,0),1);
-//    }
-
-    for(int i = 0; i < left_image_contour.size(); i+=100){
+    for(unsigned int i = 0; i < image_contour.size(); i += 100){
         std::string tmp = std::to_string(i);
         char const *num_text = tmp.c_str();
-        cv::putText(left_image, num_text, left_image_contour[i],FONT_HERSHEY_PLAIN,1,Scalar(0,255,0),1);
+        cv::putText(image, num_text, image_contour[i],FONT_HERSHEY_PLAIN,1,Scalar(255, 0, 0),1);
     }
 
+    cv::imshow("image",image);
 
-    cv::imshow("left_image",left_image);
-    cv::imshow("right_image",right_image);
-
-
+    vector<tuple<double, double>> image_Gradient = getGradient(test, image_contour);
 
 }
 
-//tuple<vector<Point>, vector<Point>> getGradient(Mat left_image, Mat right_image){
+vector<tuple<double, double>> getGradient(Mat image_smooth, vector<Point> contour){
 
-//}
+    Mat image_SobelX, image_SobelY;
+    cvtColor(image_smooth, image_smooth, CV_BGR2GRAY);
+    Sobel(image_smooth, image_SobelX, CV_64F, 1, 0, 11);
+    Sobel(image_smooth, image_SobelY, CV_64F, 0, 1, 11);
+
+    int x, y;
+    vector<tuple<double, double>> image_Gradient;
+    for(unsigned int i = 0; i < contour.size(); i++){
+        y = contour[i].x;
+        x = contour[i].y;
+        image_Gradient.push_back(make_tuple(image_SobelX.at<double>(x, y), image_SobelY.at<double>(x, y)));
+//        cout << image_SobelX.at<double>(x, y) << " " << image_SobelY.at<double>(x, y) << endl;
+    }
+
+    return image_Gradient;
+}
+
+tuple<vector<double>, vector<double>> getAngleMagnitude(vector<tuple<double, double>> image_Gradient){
+    float Gx, Gy;
+    vector<double> magnitude, angle;
+    for(unsigned int i = 0; i < image_Gradient.size(); i++){
+        Gx = get<0>(image_Gradient[i]);
+        Gy = get<1>(image_Gradient[i]);
+        magnitude.push_back(sqrt(Gx * Gx + Gy * Gy));
+        angle.push_back(atan2(Gx, Gy));
+    }
+
+    return make_tuple(magnitude, angle);
+
+}
 
 //tuple<vector<Point>, vector<Point>> getGradientCanny(){
 

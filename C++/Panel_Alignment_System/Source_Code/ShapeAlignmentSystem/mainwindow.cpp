@@ -2484,7 +2484,7 @@ void MainWindow::on_Find_Contour_Button_clicked()
     g_InImg1_ROI = ROI_L_g_InImg1.clone();//Left
     g_InImg2_ROI = ROI_R_g_InImg1.clone();//Right
 
-    Find_Contour_Button(g_InImg1, g_InImg2);
+    Find_Contour_Button(g_InImg1, 'L');
 
 
 

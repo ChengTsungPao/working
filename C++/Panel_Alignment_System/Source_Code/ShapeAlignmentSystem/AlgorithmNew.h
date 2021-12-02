@@ -9,4 +9,4 @@
 
 using namespace cv;
 
-void Find_Contour_Button(Mat left_image, Mat right_image);
+void Find_Contour_Button(Mat left_image, char imageType);
