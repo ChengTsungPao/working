@@ -23,6 +23,7 @@
 #include <limits.h>
 #include <QFileDialog>
 #include <QDebug>
+#include "AlgorithmNew.h"
 
 #define DIFF_ABS(X,Y) ((X)>(Y)? (X)-(Y) : (Y)-(X))
 
@@ -2483,6 +2484,10 @@ void MainWindow::on_Find_Contour_Button_clicked()
     g_InImg1_ROI = ROI_L_g_InImg1.clone();//Left
     g_InImg2_ROI = ROI_R_g_InImg1.clone();//Right
 
+    Find_Contour_Button(g_InImg1, g_InImg2);
+
+
+
     //output for result
     //Left
     Mat outimg = ROI_L_g_InImg1.clone();
@@ -2516,16 +2521,16 @@ void MainWindow::on_Find_Contour_Button_clicked()
     cv::threshold(shape_mat_left,shape_mat_left,0,255,THRESH_OTSU);
     cv::threshold(shape_mat_right,shape_mat_right,0,255,THRESH_OTSU);
 
-    cv::imshow("shape_mat_left",shape_mat_left);
-    cv::imshow("shape_mat_right",shape_mat_right);
+//    cv::imshow("shape_mat_left",shape_mat_left);
+//    cv::imshow("shape_mat_right",shape_mat_right);
 
 
     Mat Edge_Left, Edge_Right;
     Mat LX, LY, RX, RY;
     Canny_Ben(shape_mat_left,Edge_Left,70,130,3,0,LX,LY); //Get Edge
     Canny_Ben(shape_mat_right,Edge_Right,70,130,3,0,RX,RY); //Get Edge
-    cv::imshow("Left",Edge_Left);
-    cv::imshow("Right",Edge_Right);
+//    cv::imshow("Left",Edge_Left);
+//    cv::imshow("Right",Edge_Right);
 
     //Right
     Mat out_canny2;
@@ -2581,6 +2586,10 @@ void MainWindow::on_Find_Contour_Button_clicked()
     if(cont_are2.size() != 0) {cont_are2.clear();}
     if(g_contours_right.size() != 0) {g_contours_right.clear();}
     cv::findContours(Edge_Right, contours2, RETR_EXTERNAL, CHAIN_APPROX_NONE);
+
+    cout << contours2.size() << "here" << contours2[0][0].x << endl;
+
+    vector<Point> x = contours2[0];
 
 
     //if not saved contour shape data,choose the long contour data
