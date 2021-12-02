@@ -11,6 +11,7 @@
 #include <Canny_Ben.h>
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 //#include <opencv2/core/mat.hpp>
 
 using namespace std;
@@ -40,6 +41,15 @@ vector<Point> findBestContour(vector<vector<Point>> contours){
     return ans;
 }
 
+template<int M, template<typename> class F = std::less>
+struct TupleCompare
+{
+    template<typename T>
+    bool operator()(T const &t1, T const &t2)
+    {
+        return F<typename tuple_element<M, T>::type>()(std::get<M>(t1), std::get<M>(t2));
+    }
+};
 
 vector<Point> orderContour(vector<Point> contour, int x, int y){
     int x_, y_;
@@ -48,17 +58,21 @@ vector<Point> orderContour(vector<Point> contour, int x, int y){
     for(int i = 0; i < contour.size(); i++){
         x_ = contour[i].x;
         y_ = contour[i].y;
-        angle = (float)(y - y_) / (x - x_);
-        data.push_back(make_tuple(angle, Point(x, y)));
+        angle = atan2((x - x_), (y - y_));
+        data.push_back(make_tuple(angle, Point(x_, y_)));
     }
 
-//    sort(data.begin(), data.end());
+    sort(data.begin(), data.end(), TupleCompare<0>());
+
+    cout << get<0>(data[0]) << " " << get<0>(data[100]) << " " << get<0>(data[200]) << endl;
+    cout << get<0>(data[300]) << " " << get<0>(data[400]) << " " << get<0>(data[500]) << endl;
 
     vector<Point> ans;
     for(int i = 0; i < data.size(); i++){
         ans.push_back(get<1>(data[i]));
     }
-
+    cout << ans[0].x << " " << ans[100].x << " " << ans[200].x << endl;
+    cout << ans[300].x << " " << ans[400].x << " " << ans[500].x << endl;
     return ans;
 }
 
@@ -80,13 +94,13 @@ void Find_Contour_Button(Mat left_image, Mat right_image)
     //Left
     Mat left_image_smooth;
     cv::medianBlur(left_image,left_image_smooth,11);
-    cv::GaussianBlur(left_image_smooth,left_image_smooth,Size(5,5),0,0);
+    cv::GaussianBlur(left_image_smooth,left_image_smooth,Size(3,3),0,0);
 
 
     //Right
     Mat right_image_smooth;
     cv::medianBlur(right_image,right_image_smooth,11);
-    cv::GaussianBlur(right_image_smooth,right_image_smooth,Size(5,5),0,0);
+    cv::GaussianBlur(right_image_smooth,right_image_smooth,Size(3,3),0,0);
 
 
     //shape match mat
@@ -134,6 +148,37 @@ void Find_Contour_Button(Mat left_image, Mat right_image)
     right_image_contour = orderContour(right_image_contour, 1080, 0);
 
 
+    vector<vector<Point>> left_right_contours;
+    left_right_contours.push_back(left_image_contour);
+    left_right_contours.push_back(right_image_contour);
+
+    cv::drawContours(left_image,left_right_contours,0,Scalar(255, 0, 0),5);
+    cv::drawContours(right_image,left_right_contours,1,Scalar(255, 0, 0),5);
+
+//    for(int i = 0; i < left_image_contour.size(); i+=10){
+//        cv::drawMarker(left_image, left_image_contour[i],Scalar(0,255,0),1);
+//    }
+
+    for(int i = 0; i < left_image_contour.size(); i+=100){
+        std::string tmp = std::to_string(i);
+        char const *num_text = tmp.c_str();
+        cv::putText(left_image, num_text, left_image_contour[i],FONT_HERSHEY_PLAIN,1,Scalar(0,255,0),1);
+    }
+
+
+    cv::imshow("left_image",left_image);
+    cv::imshow("right_image",right_image);
+
+
+
 }
+
+//tuple<vector<Point>, vector<Point>> getGradient(Mat left_image, Mat right_image){
+
+//}
+
+//tuple<vector<Point>, vector<Point>> getGradientCanny(){
+
+//}
 
 
