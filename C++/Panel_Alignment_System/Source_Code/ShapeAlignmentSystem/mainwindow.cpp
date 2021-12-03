@@ -2383,7 +2383,7 @@ void MainWindow::on_Image_Load_Button_clicked()
     QJsonArray_conv.setArray(array_4_point);
     QString dataToString = QJsonArray_conv.toJson();
     std::string  t = dataToString.toUtf8().constData();
-    std::cout << t << std::endl;
+//    std::cout << t << std::endl;
 
     char chars[] = "[] ";
     for(int i=0; i<strlen(chars); i++)
@@ -2394,7 +2394,7 @@ void MainWindow::on_Image_Load_Button_clicked()
     std::vector<std::string> out;
     tokenize(t, delim, out);
 
-    cout << "L_x:" << std::stoi(out.at(0)) << ",L_y:" << std::stoi(out.at(1)) << endl;
+//    cout << "L_x:" << std::stoi(out.at(0)) << ",L_y:" << std::stoi(out.at(1)) << endl;
 
     L_X_label = std::stoi(out.at(0));
     L_Y_label = std::stoi(out.at(1));
@@ -2414,7 +2414,7 @@ void MainWindow::on_Image_Load_Button_clicked()
     QJsonArray_conv_r.setArray(array_4_point_r);
     QString dataToString_r = QJsonArray_conv_r.toJson();
     std::string  t2 = dataToString_r.toUtf8().constData();
-    std::cout << t2 << std::endl;
+//    std::cout << t2 << std::endl;
 
 
     char chars_r[] = "[] ";
@@ -2484,7 +2484,7 @@ void MainWindow::on_Find_Contour_Button_clicked()
     g_InImg1_ROI = ROI_L_g_InImg1.clone();//Left
     g_InImg2_ROI = ROI_R_g_InImg1.clone();//Right
 
-    Find_Contour_Button(g_InImg1, 'L');
+    Find_Contour_Button(g_InImg2, 'R');
 
 
 
@@ -2587,7 +2587,7 @@ void MainWindow::on_Find_Contour_Button_clicked()
     if(g_contours_right.size() != 0) {g_contours_right.clear();}
     cv::findContours(Edge_Right, contours2, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
-    cout << contours2.size() << "here" << contours2[0][0].x << endl;
+//    cout << contours2.size() << "here" << contours2[0][0].x << endl;
 
     vector<Point> x = contours2[0];
 
@@ -2666,8 +2666,8 @@ void MainWindow::on_Find_Contour_Button_clicked()
     {
 
 
-        cout << "Left contour size:" << contours.size() << endl;
-        cout << "Right contour size:" << contours2.size() << endl;
+//        cout << "Left contour size:" << contours.size() << endl;
+//        cout << "Right contour size:" << contours2.size() << endl;
 
             //Left
             if(contours.size() > 2) //abnoamal case. the other object on the image
@@ -2718,7 +2718,7 @@ void MainWindow::on_Find_Contour_Button_clicked()
                 sort(cont_simlar.begin(), cont_simlar.end());
                 //int left_n = cont_simlar.front().second;
                 nLargeIdx = cont_simlar.front().second;
-                cout << "Left final Index:" << nLargeIdx << endl;
+//                cout << "Left final Index:" << nLargeIdx << endl;
 
 
                 for(int i=0; i < contours[nLargeIdx].size(); i++)
@@ -3190,9 +3190,9 @@ void MainWindow::on_Calculate_Button_clicked()
      Right_ground.x = R_X_label-200; //because of crop image
      Right_ground.y = R_Y_label;
 
-     cout << "Get Gradient Step" << endl;
-     cout << "Left_ground_x:"<< L_X_label << endl;
-     cout << "Left_ground_y:"<< L_Y_label << endl;
+//     cout << "Get Gradient Step" << endl;
+//     cout << "Left_ground_x:"<< L_X_label << endl;
+//     cout << "Left_ground_y:"<< L_Y_label << endl;
 
      cv::drawMarker(g_Left_result,Left_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
      cv::drawMarker(g_Right_result,Right_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
