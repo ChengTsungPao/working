@@ -25,7 +25,6 @@ void Find_Contour_Button(Mat left_image, Mat right_image);
 vector<tuple<double, double>> getGradient(Mat image_smooth, vector<Point> contour);
 tuple<vector<double>, vector<double>> getAngleMagnitude(vector<tuple<double, double>> image_Gradient);
 
-
 Mat Image_Load(QString left_image_filename ,QString right_image_filename){
 
         Mat g_InImg1 = cv::imread(left_image_filename.toStdString());
@@ -79,7 +78,6 @@ vector<Point> orderContour(vector<Point> contour, int x, int y){
     return ans;
 }
 
-
 void Find_Contour_Button(Mat image, char imageType)
 {
 
@@ -108,7 +106,7 @@ void Find_Contour_Button(Mat image, char imageType)
     cv::findContours(image_canny, image_contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
     vector<Point> image_contour = findBestContour(image_contours);
-    image_contour = imageType == 'L' ? orderContour(image_contour, 0, 0) : image_contour = orderContour(image_contour, 1080, 0);
+    image_contour = imageType == 'L' ? orderContour(image_contour, 0, 0) : orderContour(image_contour, 1080, 0);
 
     vector<vector<Point>> contours;
     contours.push_back(image_contour);
@@ -123,6 +121,7 @@ void Find_Contour_Button(Mat image, char imageType)
     cv::imshow("image",image);
 
     vector<tuple<double, double>> image_Gradient = getGradient(test, image_contour);
+    tuple<vector<double>, vector<double>> result = getAngleMagnitude(image_Gradient);
 
 }
 
@@ -153,6 +152,7 @@ tuple<vector<double>, vector<double>> getAngleMagnitude(vector<tuple<double, dou
         Gy = get<1>(image_Gradient[i]);
         magnitude.push_back(sqrt(Gx * Gx + Gy * Gy));
         angle.push_back(atan2(Gx, Gy));
+        cout << atan2(Gx, Gy) << endl;
     }
 
     return make_tuple(magnitude, angle);
