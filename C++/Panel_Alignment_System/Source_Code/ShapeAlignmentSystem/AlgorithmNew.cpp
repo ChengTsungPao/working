@@ -21,7 +21,8 @@ using namespace cv;
 tuple<Mat, Mat> Image_Load(QString left_image_filename ,QString right_image_filename);
 vector<Point> findBestContour(vector<vector<Point>> contours, vector<int> shape);
 vector<Point> orderContour(vector<Point> contour, int x, int y);
-void Find_Contour_Button(Mat left_image, Mat right_image);
+void drawContour(Mat &drawImage, vector<Point> image_contour);
+void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_contour, char imageType);
 vector<tuple<double, double>> getGradient(Mat image_smooth, vector<Point> contour);
 tuple<vector<double>, vector<double>> getAngleMagnitude(vector<tuple<double, double>> image_Gradient);
 int findExtremePoint(vector<tuple<double, double>> image_Gradient);
@@ -68,12 +69,12 @@ struct TupleCompare
 
 vector<Point> orderContour(vector<Point> contour, int x, int y){
     int x_, y_;
-    float angle;
-    vector<tuple<float, Point>> data;
+    double angle;
+    vector<tuple<double, Point>> data;
     for(unsigned int i = 0; i < contour.size(); i++){
         x_ = contour[i].x;
         y_ = contour[i].y;
-        angle = atan2((x - x_), (y - y_));
+        angle = atan2((y - x_), (x - y_));
         data.push_back(make_tuple(angle, Point(x_, y_)));
     }
 
@@ -87,7 +88,19 @@ vector<Point> orderContour(vector<Point> contour, int x, int y){
     return ans;
 }
 
-void Find_Contour_Button(Mat image, char imageType)
+void drawContour(Mat &drawImage, vector<Point> image_contour){
+    vector<vector<Point>> contours;
+    contours.push_back(image_contour);
+    cv::drawContours(drawImage,contours,0,Scalar(0, 255, 0), 2);
+
+    for(unsigned int i = 0; i < image_contour.size(); i += 100){
+        std::string tmp = std::to_string(i);
+        char const *num_text = tmp.c_str();
+        cv::putText(drawImage, num_text, image_contour[i], FONT_HERSHEY_PLAIN, 1, Scalar(255, 0, 0), 1);
+    }
+}
+
+void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_contour, char imageType)
 {
 
     //Data Initialize
@@ -97,17 +110,12 @@ void Find_Contour_Button(Mat image, char imageType)
     image = imageType == 'L' ? image(cv::Rect(0,0,1080,660)) : image(cv::Rect(200,0,1080,660));
 
     //Remove noise
-    Mat image_smooth;
     cv::medianBlur(image,image_smooth,11);
     cv::GaussianBlur(image_smooth,image_smooth,Size(3,3),0,0);
-    Mat test = image_smooth.clone();
 
     //Edge Detection
     Mat image_canny;
-    Mat image_SobelX, image_SobelY;
-    Canny_Ben(image_smooth,image_canny,70,130,3,0,image_SobelX,image_SobelY); //get the Gx, Gy
-    image_SobelX.convertTo(image_SobelX,CV_64F);
-    image_SobelY.convertTo(image_SobelY,CV_64F);
+    Canny(image_smooth, image_canny, 80, 130);
     cv::imshow("image_canny",image_canny);
 
     //Find Contour
@@ -115,26 +123,8 @@ void Find_Contour_Button(Mat image, char imageType)
     cv::findContours(image_canny, image_contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
     vector<int> shape = {image.rows, image.cols};
-    vector<Point> image_contour = findBestContour(image_contours, shape);
-    image_contour = imageType == 'L' ? orderContour(image_contour, 0, 0) : orderContour(image_contour, 1080, 0);
-
-    vector<vector<Point>> contours;
-    contours.push_back(image_contour);
-    cv::drawContours(image,contours,0,Scalar(0, 255, 0), 5);
-
-    for(unsigned int i = 0; i < image_contour.size(); i += 100){
-        std::string tmp = std::to_string(i);
-        char const *num_text = tmp.c_str();
-        cv::putText(image, num_text, image_contour[i], FONT_HERSHEY_PLAIN, 1, Scalar(255, 0, 0), 1);
-    }
-
-    vector<tuple<double, double>> image_Gradient = getGradient(test, image_contour);
-    tuple<vector<double>, vector<double>> result = getAngleMagnitude(image_Gradient);
-    int extremePoint = findExtremePoint(image_Gradient);
-    cout << "Extreme Point = " << extremePoint << endl;
-
-    cv::drawMarker(image,image_contour[extremePoint],Scalar(0, 0, 255), 10);
-    cv::imshow("image",image);
+    image_contour = findBestContour(image_contours, shape);
+    image_contour = imageType == 'L' ? orderContour(image_contour, shape[0], shape[1]) : orderContour(image_contour, shape[0], 0);
 
 }
 

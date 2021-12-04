@@ -9,4 +9,8 @@
 #include "mainwindow.h"
 using namespace cv;
 
-void Find_Contour_Button(Mat left_image, char imageType);
+void drawContour(Mat &drawImage, vector<Point> image_contour);
+void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_contour, char imageType);
+vector<tuple<double, double>> getGradient(Mat image_smooth, vector<Point> contour);
+tuple<vector<double>, vector<double>> getAngleMagnitude(vector<tuple<double, double>> image_Gradient);
+int findExtremePoint(vector<tuple<double, double>> image_Gradient);

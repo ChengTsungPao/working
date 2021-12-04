@@ -2338,906 +2338,6 @@ void MainWindow::on_pushButton_8_clicked()
 }
 
 
-//1. Image Load
-void MainWindow::on_Image_Load_Button_clicked()
-{
-    cout << "test" << endl;
-    //Data Initialize
-    if(!g_InImg1.empty())
-    {
-        g_InImg1.zeros(g_InImg1.rows, g_InImg1.cols, CV_8UC3);
-    }
-    if(!g_InImg2.empty())
-    {
-        g_InImg2.zeros(g_InImg2.rows, g_InImg2.cols, CV_8UC3);
-    }
-
-    //Iamge Load
-    filename = QFileDialog::getOpenFileName(this,tr("Choose"),"",tr("Images (*.png *.jpg *.jpeg *.bmp *.gif)"));
-    filename2 = QFileDialog::getOpenFileName(this,tr("Choose"),"",tr("Images (*.png *.jpg *.jpeg *.bmp *.gif)"));
-
-
-    QStringList left,right;
-    auto left_a = filename.chopped(4);
-    auto right_a = filename2.chopped(4);
-    QString l = left_a + ".json";
-    QString r = right_a + ".json";
-
-    L_X_label=L_Y_label=R_X_label=R_Y_label=0;
-
-    //Json
-    QJsonObject body1, body2;
-    QJsonDocument doc, doc_r;
-    QFile file, file2;
-
-    //Left
-    file.setFileName(l); //File Read
-    file.open(QIODevice::ReadOnly);
-    QByteArray load_data = file.readAll();
-    doc = QJsonDocument::fromJson(load_data);
-    body1 = doc.object();
-    QJsonArray s_array = body1.value("shapes").toArray();
-    QJsonObject array_4 = s_array.at(3).toObject();
-    QJsonArray array_4_point = array_4.value("points").toArray();
-    QJsonDocument QJsonArray_conv;
-    QJsonArray_conv.setArray(array_4_point);
-    QString dataToString = QJsonArray_conv.toJson();
-    std::string  t = dataToString.toUtf8().constData();
-//    std::cout << t << std::endl;
-
-    char chars[] = "[] ";
-    for(int i=0; i<strlen(chars); i++)
-    {
-        t.erase (std::remove(t.begin(), t.end(), chars[i]), t.end());
-    }
-    const char delim = ',';
-    std::vector<std::string> out;
-    tokenize(t, delim, out);
-
-//    cout << "L_x:" << std::stoi(out.at(0)) << ",L_y:" << std::stoi(out.at(1)) << endl;
-
-    L_X_label = std::stoi(out.at(0));
-    L_Y_label = std::stoi(out.at(1));
-
-
-
-    //Right
-    file2.setFileName(r); //File Read
-    file2.open(QIODevice::ReadOnly);
-    QByteArray load_data_r = file2.readAll();
-    doc_r = QJsonDocument::fromJson(load_data_r);
-    body2 = doc_r.object();
-    QJsonArray s_array_r = body2.value("shapes").toArray();
-    QJsonObject array_4_r = s_array_r.at(3).toObject();
-    QJsonArray array_4_point_r = array_4_r.value("points").toArray();
-    QJsonDocument QJsonArray_conv_r;
-    QJsonArray_conv_r.setArray(array_4_point_r);
-    QString dataToString_r = QJsonArray_conv_r.toJson();
-    std::string  t2 = dataToString_r.toUtf8().constData();
-//    std::cout << t2 << std::endl;
-
-
-    char chars_r[] = "[] ";
-    for(int i=0; i<strlen(chars_r); i++)
-    {
-        t2.erase (std::remove(t2.begin(), t2.end(), chars_r[i]), t2.end());
-    }
-     const char delim2 = ',';
-    std::vector<std::string> out2;
-    tokenize(t2, delim2, out2);
-
-    R_X_label = std::stoi(out2.at(0));
-    R_Y_label = std::stoi(out2.at(1));
-
-    file.close();
-    file2.close();
-    out.clear();
-    out2.clear();
-
-
-
-
-    g_InImg1 = cv::imread(filename.toStdString());
-    g_InImg2 = cv::imread(filename2.toStdString());
-
-
-    Mat nTemp = g_InImg1.clone();
-    Mat nTemp2 = g_InImg2.clone();
-
-    cv::resize(nTemp,nTemp,Size(),0.5,0.5,INTER_AREA);
-    cv::resize(nTemp2,nTemp2,Size(),0.5,0.5,INTER_AREA);
-
-    ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(nTemp.data,nTemp.cols,nTemp.rows,nTemp.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height(),Qt::KeepAspectRatio)));
-    ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(nTemp2.data,nTemp2.cols,nTemp2.rows,nTemp2.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
-
-
-
-}
-
-
-//2. find contour
-void MainWindow::on_Find_Contour_Button_clicked()
-{
-
-    //contour shape save check
-    /*
-    if(!bSavecont)
-    {
-        QMessageBox::information(this, "Save the shape error","Save the contour shape");
-        return;
-    }
-     */
-
-    //Data Initialize
-    if(!g_InImg1_ROI.empty()){ g_InImg1_ROI.zeros(g_InImg1_ROI.rows, g_InImg1_ROI.cols, CV_8UC3);}
-    if(!g_InImg2_ROI.empty()){ g_InImg2_ROI.zeros(g_InImg2_ROI.rows, g_InImg2_ROI.cols, CV_8UC3);}
-
-    if(!L_hist_mat.empty()){ L_hist_mat.zeros(L_hist_mat.rows, L_hist_mat.cols, CV_8UC3);}
-    if(!R_hist_mat.empty()){ R_hist_mat.zeros(R_hist_mat.rows, R_hist_mat.cols, CV_8UC3);}
-
-
-    //ROI Setting
-    cv::Mat ROI_L_g_InImg1 = g_InImg1(cv::Rect(0,0,1080,660)); //Left
-    cv::Mat ROI_R_g_InImg1 = g_InImg2(cv::Rect(200,0,1080,660)); //Right
-
-
-    g_InImg1_ROI = ROI_L_g_InImg1.clone();//Left
-    g_InImg2_ROI = ROI_R_g_InImg1.clone();//Right
-
-    Find_Contour_Button(g_InImg2, 'R');
-
-
-
-    //output for result
-    //Left
-    Mat outimg = ROI_L_g_InImg1.clone();
-    g_Left_result=outimg.clone();
-
-    //Right
-    Mat outimg2 = ROI_R_g_InImg1.clone();
-    g_Right_result=outimg2.clone();
-
-
-    //Remove noise
-    //Left
-    Mat median_result;
-    cv::medianBlur(ROI_L_g_InImg1,median_result,17);
-    cv::GaussianBlur(median_result,median_result,Size(5,5),0,0);
-
-
-    //Right
-    Mat median_result2;
-    cv::medianBlur(ROI_R_g_InImg1,median_result2,17);
-    cv::GaussianBlur(median_result2,median_result2,Size(5,5),0,0);
-
-
-    //shape match mat
-    Mat shape_mat_left, shape_mat_right;
-    shape_mat_left = median_result.clone();
-    shape_mat_right = median_result2.clone();
-    cv::cvtColor(shape_mat_left,shape_mat_left,CV_BGR2GRAY);
-    cv::cvtColor(shape_mat_right,shape_mat_right,CV_BGR2GRAY);
-
-    cv::threshold(shape_mat_left,shape_mat_left,0,255,THRESH_OTSU);
-    cv::threshold(shape_mat_right,shape_mat_right,0,255,THRESH_OTSU);
-
-//    cv::imshow("shape_mat_left",shape_mat_left);
-//    cv::imshow("shape_mat_right",shape_mat_right);
-
-
-    Mat Edge_Left, Edge_Right;
-    Mat LX, LY, RX, RY;
-    Canny_Ben(shape_mat_left,Edge_Left,70,130,3,0,LX,LY); //Get Edge
-    Canny_Ben(shape_mat_right,Edge_Right,70,130,3,0,RX,RY); //Get Edge
-//    cv::imshow("Left",Edge_Left);
-//    cv::imshow("Right",Edge_Right);
-
-    //Right
-    Mat out_canny2;
-    Canny_Ben(median_result2,out_canny2,70,130,3,0,R_SobelX_2,R_SobelY_2); //get the Gx, Gy
-    R_SobelX_2.convertTo(R_SobelX_2,CV_64F);
-    R_SobelY_2.convertTo(R_SobelY_2,CV_64F);
-
-
-    //Left
-    Mat out_canny;
-    Canny_Ben(median_result,out_canny,70,130,3,0,L_SobelX_2,L_SobelY_2); //get the Gx, Gy
-    L_SobelX_2.convertTo(L_SobelX_2,CV_64F);
-    L_SobelY_2.convertTo(L_SobelY_2,CV_64F);
-
-
-
-
-    //find contour
-    //Left
-    vector<vector<Point>> contours;
-    vector<pair<double,int>> cont_are;
-    vector<pair<double,int>> cont_simlar;
-    vector<Vec4i> hierarchy1;
-
-    //Right
-    vector<vector<Point>> contours2;
-    vector<pair<double,int>> cont_are2;
-    vector<pair<double,int>> cont_simlar2;
-    vector<Vec4i> hierarchy2;
-
-
-    vector<double> left;
-    vector<double> right;
-    vector<vector<Point>> contours_l_chk;
-    vector<vector<Point>> contours_r_chk;
-
-    vector<vector<Point>> contours_filtered;
-    vector<vector<Point>> contours2_filtered;
-
-    Mat final_con = cv::Mat::zeros(outimg.rows, outimg.cols, CV_8UC1); //Mat create -> Initialize by '0'
-    Mat final_con2 = cv::Mat::zeros(outimg.rows, outimg.cols, CV_8UC1); //Mat create -> Initialize by '0'
-
-
-
-    int nLargeIdx,nLargeIdx2;
-
-    if(contours.size() != 0) {contours.clear();}
-    if(cont_are.size() != 0) {cont_are.clear();}
-    if(g_contours_left.size() != 0) {g_contours_left.clear();}
-    cv::findContours(Edge_Left, contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
-
-    if(contours2.size() != 0) {contours2.clear();}
-    if(cont_are2.size() != 0) {cont_are2.clear();}
-    if(g_contours_right.size() != 0) {g_contours_right.clear();}
-    cv::findContours(Edge_Right, contours2, RETR_EXTERNAL, CHAIN_APPROX_NONE);
-
-//    cout << contours2.size() << "here" << contours2[0][0].x << endl;
-
-    vector<Point> x = contours2[0];
-
-
-    //if not saved contour shape data,choose the long contour data
-    if(!bSavecont)
-    {
-        Mat final_con = cv::Mat::zeros(outimg.rows, outimg.cols, CV_8UC1); //Mat create -> Initialize by '0'
-        Mat final_con2 = cv::Mat::zeros(outimg2.rows, outimg2.cols, CV_8UC1); //Mat create -> Initialize by '0'
-        //contour Length check
-        for(int i=0; i<contours.size(); i++)
-        {
-            cont_are.push_back(make_pair(cv::arcLength(contours[i],false),i));
-            cv::drawContours(final_con,contours,i,Scalar(255,255,255),5);
-        }
-        sort(cont_are.begin(),cont_are.end());
-        nLargeIdx = cont_are.back().second;
-      // cv::imshow("left_b",final_con);
-
-
-        for(int i=0; i < contours[nLargeIdx].size(); i++)
-        {
-           g_contours_left.push_back(contours[nLargeIdx].at(i)); //Copy contour point data to global vector
-        }
-        Scalar c(255, 228, 0);
-        if(bCntview)
-        {
-            cv::drawContours(outimg,contours,nLargeIdx,c,5);
-
-        }
-        else
-        {
-            cv::drawContours(outimg,contours,nLargeIdx,c,5);
-        }
-
-
-
-
-        //contour Length check
-        for(int i=0; i<contours2.size(); i++)
-        {
-            cont_are2.push_back(make_pair(cv::arcLength(contours2[i],false),i));
-            cv::drawContours(final_con2,contours2,i,Scalar(255,255,255),5);
-        }
-        sort(cont_are2.begin(),cont_are2.end());
-        nLargeIdx2 = cont_are2.back().second;
-       // cv::imshow("right_b",final_con2);
-
-
-
-        for(int i=0; i < contours2[nLargeIdx2].size(); i++)
-        {
-           g_contours_right.push_back(contours2[nLargeIdx2].at(i)); //Copy contour point data to global vector
-        }
-        Scalar c2(255, 228, 0);
-        if(bCntview)
-        {
-            cv::drawContours(outimg2,contours2,nLargeIdx2,c2,5);
-        }
-        else
-        {
-            cv::drawContours(outimg2,contours2,nLargeIdx2,c2,5);
-        }
-        //cv::imshow("left",final_con);
-        //cv::imshow("right",final_con2);
-
-        cont_are.clear();
-        vector<pair<double,int>>().swap(cont_are);
-
-        cont_are2.clear();
-        vector<pair<double,int>>().swap(cont_are2);
-
-    }
-
-    else if(bSavecont)
-    {
-
-
-//        cout << "Left contour size:" << contours.size() << endl;
-//        cout << "Right contour size:" << contours2.size() << endl;
-
-            //Left
-            if(contours.size() > 2) //abnoamal case. the other object on the image
-            {
-                //contour Length check
-
-
-                for(int i=0; i<contours.size(); i++)
-                {
-
-                    //1. contour length check with saved shape contour,
-                    /*
-                    if( (cv::arcLength(contours[i],false) < cv::arcLength(g_contour_left_save,false)/2) || (cv::arcLength(contours[i],false) > cv::arcLength(g_contour_left_save,false)*2))
-                    {
-                        continue;
-                    }
-                    */
-
-                            //probs[i] =  1.0 - fmin( matchShapes( contours[i], matchContour_, CV_CONTOURS_MATCH_I2, 0.0 ) / matchThreshold_, 1.0 );
-
-                    //double prob = 1.0 - fmin( matchShapes(contours[i], g_contour_left_save, CV_CONTOURS_MATCH_I2, 0.0)/0.2, 1.0);
-
-
-                    /*
-                    Moments m_l = moments(contours[i],false);
-                    cout << "m00:" << m_l.m00 << ",m01:" << m_l.m01 << ",m02:" << m_l.m02 << ",m03:" << m_l.m03 << ",m10:" << m_l.m10 << ",m11:" << m_l.m11 << ",m12:" << m_l.m12 <<",m20:" <<m_l.m20 << ",m21:" <<m_l.m21 <<",m30:"  << m_l.m30  << endl;
-
-                    double h[7];
-                    cv::HuMoments(m_l,h);
-                    cout << "h0:" << h[0] << ",h1:" << h[1] << ",h2:" << h[2] << ",h3:" << h[3] << ",h4:" << h[4] << ",h5:" << h[5] << ",h6:" << h[6] << endl;
-                    */
-
-                    double prob = 1.0 - std::round(cv::matchShapes(g_contour_left_save,contours[i],CONTOURS_MATCH_I3,0) * 1000)/1000;
-                    //QString s_prob = QString::number(prob);
-                    //cout << "similar value: [" << i << "]index, value : [" << std::round(cv::matchShapes(g_contour_left_save,contours[i],CONTOURS_MATCH_I3,0) * 1000)/1000 << "]" << endl;
-                    //cout << "similar value: [" << i << "]index, value : [" << s_prob << "]" << endl;
-
-                    //cout << std::round(prob) << endl;
-
-                    cont_simlar.push_back(make_pair(std::round(cv::matchShapes(g_contour_left_save,contours[i],CONTOURS_MATCH_I3,0) * 1000)/1000,i));
-                    cv::drawContours(final_con,contours,i,Scalar(255,255,255),5);
-
-                }
-             //   cv::imshow("left_b",final_con);
-
-
-
-                sort(cont_simlar.begin(), cont_simlar.end());
-                //int left_n = cont_simlar.front().second;
-                nLargeIdx = cont_simlar.front().second;
-//                cout << "Left final Index:" << nLargeIdx << endl;
-
-
-                for(int i=0; i < contours[nLargeIdx].size(); i++)
-                {
-                   g_contours_left.push_back(contours[nLargeIdx].at(i)); //Copy contour point data to global vector
-                }
-
-
-                //cont_are.clear();
-                //vector<pair<double,int>>().swap(cont_are);
-                //contours.clear();
-                //vector<vector<Point>>().swap(contours);
-
-
-
-            }
-            else if(contours.size() <= 2) //noamal case. the other object on the image
-            {
-                //contour Length check
-                for(int i=0; i<contours.size(); i++)
-                {
-                    cont_are.push_back(make_pair(cv::arcLength(contours[i],false),i));
-                    cv::drawContours(final_con,contours,i,Scalar(255,255,255),5);
-                }
-             //   cv::imshow("left_b",final_con);
-                sort(cont_are.begin(),cont_are.end());
-                nLargeIdx = cont_are.back().second;
-
-                for(int i=0; i < contours[nLargeIdx].size(); i++)
-                {
-                   g_contours_left.push_back(contours[nLargeIdx].at(i)); //Copy contour point data to global vector
-                }
-            }
-
-
-            //Right
-            if(contours2.size() > 2) //abnoamal case. the other object on the image
-            {
-
-
-
-
-
-                //contour Length check
-                for(int i=0; i<contours2.size(); i++)
-                {
-
-
-                    Moments m_r = moments(contours2[i],false);
-                    //cout << "m00_r:" << m_r.m00 << ",m01_r:" << m_r.m01 << ",m02_r:" << m_r.m02 << ",m03_r:" << m_r.m03 << ",m10_r:" << m_r.m10 << ",m11_r:" << m_r.m11 << ",m12_r:" << m_r.m12 <<",m20_r:" <<m_r.m20 << ",m21_r:" <<m_r.m21 <<",m30_r:"  << m_r.m30  << endl;
-
-                    double h_r[7];
-                    cv::HuMoments(m_r,h_r);
-                    //cout << "h0_r:" << h_r[0] << ",h1_r:" << h_r[1] << ",h2_r:" << h_r[2] << ",h3_r:" << h_r[3] << ",h4_r:" << h_r[4] << ",h5_r:" << h_r[5] << ",h6_r:" << h_r[6] << endl;
-
-
-
-
-
-                    //1. contour length check with saved shape contour,
-                    /*
-                    if( (cv::arcLength(contours2[i],false) < cv::arcLength(g_contour_right_save,false)/2) || (cv::arcLength(contours2[i],false) > cv::arcLength(g_contour_right_save,false)*2))
-                    {
-                        continue;
-                    }
-                    */
-                    //double prob = 1.0 - fmin( matchShapes(contours2[i], g_contour_right_save, CV_CONTOURS_MATCH_I2, 0.0)/0.2, 1.0);
-                    double prob = std::round(cv::matchShapes(g_contour_right_save,contours2[i],CONTOURS_MATCH_I3,0) * 1000)/1000;
-                    //cout << "similar value_right: [" << i << "]index, value : [" << std::round(cv::matchShapes(g_contour_right_save,contours2[i],CONTOURS_MATCH_I3,0) * 1000)/1000 << "]" << endl;
-                    //cout << "similar value_right: [" << i << "]index, value : [" << prob << "]" << endl;
-
-                    //cout << std::round(prob) << endl;
-
-                    cont_simlar2.push_back(make_pair(std::round(cv::matchShapes(g_contour_right_save,contours2[i],CONTOURS_MATCH_I3,0)*1000)/1000,i));
-                    cv::drawContours(final_con2,contours2,i,Scalar(255,255,255),5);
-
-                }
-              //  cv::imshow("right_b",final_con2);
-                int nLargeIdx2 = 0;
-                if(cont_simlar2.size()>1)
-                {
-                    sort(cont_simlar2.begin(), cont_simlar2.end());
-                    nLargeIdx2 = cont_simlar2.front().second;
-                }
-
-                //int left_n = cont_simlar.end().second;
-
-                //cout << "Right final Index:" << nLargeIdx2 << endl;
-
-
-
-                for(int i=0; i < contours2[nLargeIdx2].size(); i++)
-                {
-                   g_contours_right.push_back(contours2[nLargeIdx2].at(i));
-                }
-            }
-            else if(contours2.size() <= 2) //noamal case. the other object on the image
-            {
-                //contour Length check
-                for(int i=0; i<contours2.size(); i++)
-                {
-                    cont_are2.push_back(make_pair(cv::arcLength(contours2[i],false),i));
-                    cv::drawContours(final_con2,contours2,i,Scalar(255,255,255),5);
-                }
-                //cv::imshow("right_b",final_con2);
-                sort(cont_are2.begin(),cont_are2.end());
-                nLargeIdx2 = cont_are2.back().second;
-
-                for(int i=0; i < contours2[nLargeIdx2].size(); i++)
-                {
-                   g_contours_right.push_back(contours2[nLargeIdx2].at(i)); //Copy contour point data to global vector
-                }
-            }
-
-
-            contours_l_chk.push_back(g_contours_left);
-            contours_r_chk.push_back(g_contours_right);
-
-
-
-           Scalar c(255, 228, 0);
-
-
-           if(bCntview)
-           {
-               cv::drawContours(outimg,contours_l_chk,0,c,5);
-               cv::drawContours(outimg2,contours_r_chk,0,c,5);
-           }
-           else
-           {
-               cv::drawContours(outimg,contours_l_chk,0,c,5);
-               cv::drawContours(outimg2,contours_r_chk,0,c,5);
-           }
-
-           //cv::imshow("left_f",outimg);
-           //cv::imshow("right_f",outimg2);
-
-
-
-
-
-
-
-    }
-
-    //Left
-    /****************************************************************************************************/
-
-    g_L_index = nLargeIdx;
-    g_L_contours.assign(contours.begin(), contours.end()); //real contour(contoru를 draw하기 위한 데이터)
-    //contour coordinate duplicate point remove
-    removeduplpt(g_contours_left);
-
-
-    //data_Left_mag, data_Left_ang Points order work
-    //반시계방향. (Reference Point : (0,0), Calculation Point : Contour Point)
-    vector<tuple<float, int, int>> order_pts;
-
-    for(int i=0; i<g_contours_left.size(); i++)
-    {
-        Point Ref = Point(0,0);
-        int x = g_contours_left.at(i).x;
-        int y = g_contours_left.at(i).y;
-        Point cal = Point(x,y);
-
-        float temp = atan2(cal.y - Ref.y, cal.x - Ref.x);
-        temp = temp * (180.0/CV_PI);//Radian -> degree
-        if (temp < 0.0) { //convert to -pi ~ +pi ---> 0~2pi
-            temp += 360.0;
-        }
-
-        order_pts.push_back(make_tuple(temp,x,y));
-    }
-
-    sort(order_pts.begin(), order_pts.end()); //order contorur points by Angle
-    g_contours_left.clear();
-
-    //Reallocate the contour points by ordered data
-    for(int i=0; i<order_pts.size(); i++)
-    {
-        int x = std::get<1>(order_pts.at(i));
-        int y = std::get<2>(order_pts.at(i));
-        Point temp = Point(x,y);
-        g_contours_left.push_back(temp);
-
-    }
-    g_contours_left_back.assign(g_contours_left.begin(), g_contours_left.end());
-    /****************************************************************************************************/
-
-    //Right
-    /****************************************************************************************************/
-
-    g_R_index = nLargeIdx2;
-    g_R_contours.assign(contours2.begin(), contours2.end()); //real contour(contoru를 draw하기 위한 데이터)
-    removeduplpt(g_contours_right);
-
-    //시계방향. (Reference Point : (0,0), Calculation Point : Contour Point)
-    vector<tuple<float, int, int>> order_pts2;
-
-    for(int i=0; i<g_contours_right.size(); i++)
-    {
-        Point Ref = Point(540,0);
-        int x = g_contours_right.at(i).x;
-        int y = g_contours_right.at(i).y;
-        Point cal = Point(x,y);
-
-        float temp = atan2(cal.y - Ref.y, Ref.x - cal.x);
-        temp = temp * (180.0/CV_PI);//Radian -> degree
-        if (temp < 0.0) { //convert to -pi ~ +pi ---> 0~2pi
-            temp += 360.0;
-        }
-
-        order_pts2.push_back(make_tuple(temp,x,y));
-    }
-
-    sort(order_pts2.begin(), order_pts2.end()); //order contorur points by Angle
-    g_contours_right.clear();
-
-    //Reallocate the contour points by ordered data
-    for(int i=0; i<order_pts2.size(); i++)
-    {
-        int x = std::get<1>(order_pts2.at(i));
-        int y = std::get<2>(order_pts2.at(i));
-        Point temp = Point(x,y);
-        g_contours_right.push_back(temp);
-
-    }
-    g_contours_right_back.assign(g_contours_right.begin(), g_contours_right.end());
-
-    /****************************************************************************************************/
-
-    ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(outimg.data,outimg.cols,outimg.rows,outimg.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height(),Qt::KeepAspectRatio)));
-    ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(outimg2.data,outimg2.cols,outimg2.rows,outimg2.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
-
-}
-
-//3. Get the normal direction angle and magnitude
-void MainWindow::on_Calculate_Button_clicked()
-{
-
-    //data null chaeck
-    if(data_Left_mag.size() != 0) {data_Left_mag.clear();}
-    if(data_Left_ang.size() != 0) {data_Left_ang.clear();}
-    if(data_Left_mag_dev.size() != 0) {data_Left_mag_dev.clear();}
-    if(data_Left_ang_dev.size() != 0) {data_Left_ang_dev.clear();}
-
-    if(data_Right_mag.size() != 0) {data_Right_mag.clear();}
-    if(data_Right_ang.size() != 0) {data_Right_ang.clear();}
-    if(data_Right_mag_dev.size() != 0) {data_Right_mag_dev.clear();}
-    if(data_Right_ang_dev.size() != 0) {data_Right_ang_dev.clear();}
-
-    if(Left_gx.size() != 0) {Left_gx.clear();}
-    if(Left_gy.size() != 0) {Left_gy.clear();}
-    if(Right_gx.size() != 0) {Right_gx.clear();}
-    if(Right_gy.size() != 0) {Right_gy.clear();}
-
-
-
-    if(Left_gradient.size() != 0) {Left_gradient.clear();}
-    if(Right_gradient.size() != 0) {Right_gradient.clear();}
-
-
-    if(qv_x.size() != 0){qv_x.clear();}
-    if(qv_x2.size() != 0){qv_x2.clear();}
-    if(qv_x3.size() != 0){qv_x3.clear();}
-    if(qv_x4.size() != 0){qv_x4.clear();}
-
-    if(qv_y.size() != 0){qv_y.clear();}
-    if(qv_y2.size() != 0){qv_y2.clear();}
-    if(qv_y3.size() != 0){qv_y3.clear();}
-    if(qv_y4.size() != 0){qv_y4.clear();}
-    if(qv_y5.size() != 0){qv_y5.clear();}
-
-
-    //Left
-    vector<tuple<float, int, int>> data_Left_ang_dev_local;
-    vector<tuple<float, int, int>> data_Left_mag_dev_local;
-    Mat Grad_Left = g_InImg1_ROI.clone();
-    cvtColor(Grad_Left,Grad_Left,CV_BGR2GRAY);
-
-
-    //Right
-    vector<tuple<float, int, int>> data_Right_ang_dev_local;
-    vector<tuple<float, int, int>> data_Right_mag_dev_local;
-    Mat Grad_Right = g_InImg2_ROI.clone();
-    cvtColor(Grad_Right,Grad_Right,CV_BGR2GRAY);
-    cv::medianBlur(Grad_Right,Grad_Right,3);
-
-
-    //Calculate angle, magnitude
-    //Left
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////
-     for(int i=1; i<g_contours_left.size()-1; i++)
-     {
-
-         int xCoor = g_contours_left.at(i).x;
-         int yCoor = g_contours_left.at(i).y;
-
-         //Magnitude
-         float l_mag_x = L_SobelX_2.at<double>(yCoor,xCoor);
-         float l_mag_y = L_SobelY_2.at<double>(yCoor,xCoor);
-         float l_mag = sqrt(pow(l_mag_x,2) + pow(l_mag_y,2));
-
-
-
-         l_mag_x = abs(l_mag_x);
-         l_mag_y = abs(l_mag_y);
-
-
-         Left_gx.push_back(make_tuple(l_mag_x,xCoor,yCoor));
-         Left_gy.push_back(make_tuple(l_mag_y,xCoor,yCoor));
-
-
-         //Angle
-         //float temp = atan2(l_mag_y,l_mag_x);
-         float temp = atan2(l_mag_y,l_mag_x);
-         temp = temp * (180.0/CV_PI);//Radian -> degree
-         if (temp < 0.0) { //convert to -pi ~ +pi ---> 0~2pi
-             temp += 360.0;
-         }
-
-         data_Left_mag.push_back(make_tuple(l_mag,xCoor,yCoor));
-         data_Left_ang.push_back(make_tuple(temp,xCoor,yCoor));
-
-         if(i==1)
-         {
-             std::string tmp = std::to_string(i);
-             char const *num_text = tmp.c_str();
-
-             cv::putText(g_Left_result, num_text, Point(xCoor,yCoor),FONT_HERSHEY_PLAIN,1,Scalar(255,0,0),1);
-             cv::line(g_Left_result,Point(xCoor,yCoor),Point(xCoor,yCoor),Scalar(197,65,217),5,LINE_AA);
-
-         }
-         else if((i % 101)==0)
-         {
-             std::string tmp = std::to_string(i);
-             char const *num_text = tmp.c_str();
-
-             cv::putText(g_Left_result, num_text, Point(xCoor,yCoor),FONT_HERSHEY_PLAIN,1,Scalar(255,0,0),1);
-             cv::line(g_Left_result,Point(xCoor,yCoor),Point(xCoor,yCoor),Scalar(0,94,255),3,LINE_AA);
-
-         }
-
-
-
-     }
-
-
-     //////////////////////////////////////////////////////////////////////////////////////////////////////////
-     //Right
-     //////////////////////////////////////////////////////////////////////////////////////////////////////////
-      for(int i=1; i<g_contours_right.size()-1; i++)
-      {
-
-          int xCoor = g_contours_right.at(i).x;
-          int yCoor = g_contours_right.at(i).y;
-
-          //Magnitude
-          float r_mag_x = R_SobelX_2.at<double>(yCoor,xCoor);
-          float r_mag_y = R_SobelY_2.at<double>(yCoor,xCoor);
-          float r_mag = sqrt(pow(r_mag_x,2) + pow(r_mag_y,2));
-
-
-          r_mag_x = abs(r_mag_x);
-          r_mag_y = abs(r_mag_y);
-
-
-          Right_gx.push_back(make_tuple(r_mag_x,xCoor,yCoor));
-          Right_gy.push_back(make_tuple(r_mag_y,xCoor,yCoor));
-
-
-
-
-          //Angle
-          float temp = atan2(r_mag_y,r_mag_x);
-          temp = temp * (180.0/CV_PI);//Radian -> degree
-          if (temp < 0.0) { //convert to -pi ~ +pi ---> 0~2pi
-              temp += 360.0;
-          }
-
-
-
-          data_Right_mag.push_back(make_tuple(r_mag,xCoor,yCoor));
-          data_Right_ang.push_back(make_tuple(temp,xCoor,yCoor));
-
-          if(i==1)
-          {
-              std::string tmp = std::to_string(i);
-              char const *num_text = tmp.c_str();
-
-              cv::putText(g_Right_result, num_text, Point(xCoor,yCoor),FONT_HERSHEY_PLAIN,1,Scalar(255,0,0),1);
-              cv::line(g_Right_result,Point(xCoor,yCoor),Point(xCoor,yCoor),Scalar(197,65,217),5,LINE_AA);
-
-          }
-          else if((i % 101)==0)
-          {
-              std::string tmp = std::to_string(i);
-              char const *num_text = tmp.c_str();
-
-              cv::putText(g_Right_result, num_text, Point(xCoor,yCoor),FONT_HERSHEY_PLAIN,1,Scalar(255,0,0),1);
-              cv::line(g_Right_result,Point(xCoor,yCoor),Point(xCoor,yCoor),Scalar(0,94,255),3,LINE_AA);
-
-          }
-
-
-
-      }
-
-
-     //////////////////////////////////////////////////////////////////////////////////////////////////////////
-     // Extreme point cal Left_gradient
-     for(int i=0; i<Left_gx.size(); i++)
-     {
-         float left_gx = std::get<0>(Left_gx.at(i)); //gx
-         float left_gy = std::get<0>(Left_gy.at(i)); //gy
-         float temp = DIFF_ABS(fabs(left_gx),fabs(left_gy));
-         Left_gradient.push_back(make_tuple(temp, std::get<1>(Left_gx.at(i)), std::get<2>(Left_gx.at(i))));
-
-     }
-
-
-     sort(Left_gradient.begin(), Left_gradient.end());
-
-     ExtremePoint.x = std::get<1>(Left_gradient.front());
-     ExtremePoint.y = std::get<2>(Left_gradient.front());
-
-
-     for(int i=0; i<Right_gx.size(); i++)
-     {
-
-         float right_gx = std::get<0>(Right_gx.at(i)); //gx
-         float right_gy = std::get<0>(Right_gy.at(i)); //gy
-         float temp = DIFF_ABS(fabs(right_gx),fabs(right_gy));
-         Right_gradient.push_back(make_tuple(temp, std::get<1>(Right_gx.at(i)), std::get<2>(Right_gy.at(i))));
-
-     }
-
-     sort(Right_gradient.begin(), Right_gradient.end());
-
-     ExtremePoint2.x = std::get<1>(Right_gradient.front());
-     ExtremePoint2.y = std::get<2>(Right_gradient.front());
-
-
-
-
-
-     //draw contour
-     Scalar c(255, 0, 0);
-     if(bCntview)
-     {
-         cv::drawContours(g_Left_result,g_L_contours,g_L_index,c,5);
-         cv::drawContours(g_Right_result,g_R_contours,g_R_index,c,5);
-     }
-     else
-     {
-         cv::drawContours(g_Left_result,g_L_contours,g_L_index,c,0);
-         cv::drawContours(g_Right_result,g_R_contours,g_R_index,c,0);
-     }
-
-
-     cv::drawMarker(g_Left_result,ExtremePoint,Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
-     cv::drawMarker(g_Right_result,ExtremePoint2,Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
-
-     //Ground Truth (Label Data)
-     cv::Point Left_ground, Right_ground;
-
-     Left_ground.x = L_X_label;
-     Left_ground.y = L_Y_label;
-     Right_ground.x = R_X_label-200; //because of crop image
-     Right_ground.y = R_Y_label;
-
-//     cout << "Get Gradient Step" << endl;
-//     cout << "Left_ground_x:"<< L_X_label << endl;
-//     cout << "Left_ground_y:"<< L_Y_label << endl;
-
-     cv::drawMarker(g_Left_result,Left_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
-     cv::drawMarker(g_Right_result,Right_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
-
-
-
-
-
-
-     //Detection Position
-     ui->Left_x_detect->setText(QString::number(ExtremePoint.x));
-     ui->Left_y_detect->setText(QString::number(ExtremePoint.y));
-     ui->Right_x_detect->setText(QString::number(ExtremePoint2.x+200));
-     ui->Right_y_detect->setText(QString::number(ExtremePoint2.y));
-
-     //G.T. Position
-     ui->Left_x_GT->setText(QString::number(Left_ground.x));
-     ui->Left_y_GT->setText(QString::number(Left_ground.y));
-     ui->Right_x_GT->setText(QString::number(Right_ground.x));
-     ui->Right_y_GT->setText(QString::number(Right_ground.y));
-
-     //Different Detection Position <-> G.T.
-     double x_diff_left = DIFF_ABS(ExtremePoint.x, Left_ground.x);
-     double y_diff_left = DIFF_ABS(ExtremePoint.y, Left_ground.y);
-     double x_diff_right = DIFF_ABS(ExtremePoint2.x, Right_ground.x);
-     double y_diff_right = DIFF_ABS(ExtremePoint2.y, Right_ground.y);
-
-     ui->diff_x_left->setText(QString::number(x_diff_left));
-     ui->diff_y_left->setText(QString::number(y_diff_left));
-     ui->diff_x_right->setText(QString::number(x_diff_right));
-     ui->diff_y_right->setText(QString::number(y_diff_right));
-
-
-
-
-
-
-
-     ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(g_Left_result.data,g_Left_result.cols,g_Left_result.rows,g_Left_result.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height(),Qt::KeepAspectRatio)));
-     ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(g_Right_result.data,g_Right_result.cols,g_Right_result.rows,g_Right_result.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
-
-
-
-
-}
 
 void MainWindow::showPopup() //show the pop-up
 {
@@ -3254,14 +2354,6 @@ void MainWindow::on_pushButton_12_clicked()
     emit Send1(data_Left_mag);
     dlg->setModal(true);
     dlg->exec();
-}
-
-//Magnitude, angle data graph oputput
-void MainWindow::on_Show_Graph_Button_clicked()
-{
-    add_data();
-    plot_graph();
-
 }
 
 //Magnitude_smooth
@@ -3450,4 +2542,193 @@ void MainWindow::on_pushButton_20_clicked()
 
     }
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////// Tsung-Pao Cheng //////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void split(std::string const &str, const char delim, std::vector<std::string> &out)
+{
+    size_t start;
+    size_t end = 0;
+
+    while ((start = str.find_first_not_of(delim, end)) != std::string::npos)
+    {
+        end = str.find(delim, start);
+        out.push_back(str.substr(start, end - start));
+    }
+}
+
+tuple<int, int> readJsonFile(QString path){
+
+    QFile file;
+    file.setFileName(path); //File Read
+    file.open(QIODevice::ReadOnly);
+
+    QByteArray load_data = file.readAll();
+    QJsonDocument doc = QJsonDocument::fromJson(load_data);
+    QJsonObject body = doc.object();
+    QJsonArray s_array = body.value("shapes").toArray();
+    QJsonObject array_4 = s_array.at(3).toObject();
+    QJsonArray array_4_point = array_4.value("points").toArray();
+
+    QJsonDocument QJsonArray_conv;
+    QJsonArray_conv.setArray(array_4_point);
+
+    QString dataToString = QJsonArray_conv.toJson();
+    string t = dataToString.toUtf8().constData();
+
+    char chars[] = "[] ";
+    for(size_t i = 0; i < strlen(chars); i++) {
+        t.erase(std::remove(t.begin(), t.end(), chars[i]), t.end());
+    }
+    const char delim = ',';
+    vector<string> out;
+    split(t, delim, out);
+
+    int x = stoi(out.at(0));
+    int y = stoi(out.at(1));
+
+    file.close();
+    out.clear();
+
+    return make_tuple(x, y);
+}
+
+
+Mat left_image, right_image;
+Mat left_smooth_image, right_smooth_image;
+vector<Point> left_image_contour, right_image_contour;
+Mat left_contour_image, right_contour_image;
+
+//1. Image Load
+void MainWindow::on_Image_Load_Button_clicked()
+{
+    //Iamge Load
+    QString left_image_path = QFileDialog::getOpenFileName(this,tr("Choose"),"",tr("Images (*.png *.jpg *.jpeg *.bmp *.gif)"));
+    QString right_image_path = QFileDialog::getOpenFileName(this,tr("Choose"),"",tr("Images (*.png *.jpg *.jpeg *.bmp *.gif)"));
+    cout << left_image_path.toStdString() << endl;
+
+//    left_image.zeros(left_image.rows, left_image.cols, CV_8UC3);
+//    right_image.zeros(right_image.rows, right_image.cols, CV_8UC3);
+
+    tuple<int, int> groundTruth;
+
+    groundTruth = readJsonFile(left_image_path.chopped(4) + ".json");
+    L_X_label = get<0>(groundTruth);
+    L_Y_label = get<1>(groundTruth);
+
+    groundTruth = readJsonFile(right_image_path.chopped(4) + ".json");
+    R_X_label = get<0>(groundTruth);
+    R_Y_label = get<1>(groundTruth);
+
+    left_image = cv::imread(left_image_path.toStdString());
+    right_image = cv::imread(right_image_path.toStdString());
+
+    // test in current
+    g_InImg1 = left_image.clone();
+    g_InImg2 = right_image.clone();
+
+    Mat show_left_image = left_image.clone();
+    Mat show_right_image = right_image.clone();
+
+//    cv::resize(show_left_image,show_left_image,Size(),0.5,0.5,INTER_AREA);
+//    cv::resize(show_right_image,show_right_image,Size(),0.5,0.5,INTER_AREA);
+
+    ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(show_left_image.data, show_left_image.cols, show_left_image.rows, show_left_image.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height(),Qt::KeepAspectRatio)));
+    ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(show_right_image.data, show_right_image.cols, show_right_image.rows, show_right_image.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
+}
+
+
+//2. find contour
+void MainWindow::on_Find_Contour_Button_clicked()
+{
+
+    Find_Contour_Button(left_image, left_smooth_image, left_image_contour, 'L');
+    Find_Contour_Button(right_image, right_smooth_image, right_image_contour, 'R');
+
+    left_contour_image = left_smooth_image.clone();
+    right_contour_image = right_smooth_image.clone();
+    drawContour(left_contour_image, left_image_contour);
+    drawContour(right_contour_image, right_image_contour);
+
+    ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(left_contour_image.data,left_contour_image.cols,left_contour_image.rows,left_contour_image.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height(),Qt::KeepAspectRatio)));
+    ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(right_contour_image.data,right_contour_image.cols,right_contour_image.rows,right_contour_image.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
+
+}
+
+//3. Get the normal direction angle and magnitude
+void MainWindow::on_Calculate_Button_clicked()
+{
+     vector<tuple<double, double>> left_image_Gradient, right_image_Gradient;
+     tuple<vector<double>, vector<double>> left_image_result, right_image_result;
+     int left_image_extremePoint_index, right_image_extremePoint_index;
+
+     left_image_Gradient = getGradient(left_smooth_image, left_image_contour);
+     left_image_result = getAngleMagnitude(left_image_Gradient);
+     left_image_extremePoint_index = findExtremePoint(left_image_Gradient);
+     cout << "Extreme Point = " << left_image_extremePoint_index << endl;
+
+     right_image_Gradient = getGradient(right_smooth_image, right_image_contour);
+     right_image_result = getAngleMagnitude(right_image_Gradient);
+     right_image_extremePoint_index = findExtremePoint(right_image_Gradient);
+     cout << "Extreme Point = " << right_image_extremePoint_index << endl;
+
+     Point left_image_extremePoint = left_image_contour[left_image_extremePoint_index];
+     Point right_image_extremePoint = right_image_contour[right_image_extremePoint_index];
+
+     Mat show_left_image_result = left_smooth_image.clone();
+     Mat show_right_image_result  = right_smooth_image.clone();
+
+     cv::drawMarker(show_left_image_result,left_image_extremePoint,Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
+     cv::drawMarker(show_right_image_result,right_image_extremePoint,Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
+
+     //Ground Truth (Label Data)
+     cv::Point Left_ground, Right_ground;
+
+     Left_ground.x = L_X_label;
+     Left_ground.y = L_Y_label;
+     Right_ground.x = R_X_label-200; //because of crop image
+     Right_ground.y = R_Y_label;
+
+     cv::drawMarker(show_left_image_result,Left_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
+     cv::drawMarker(show_right_image_result,Right_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
+
+     //Detection Position
+     ui->Left_x_detect->setText(QString::number(left_image_extremePoint.x));
+     ui->Left_y_detect->setText(QString::number(left_image_extremePoint.y));
+     ui->Right_x_detect->setText(QString::number(right_image_extremePoint.x+200));
+     ui->Right_y_detect->setText(QString::number(right_image_extremePoint.y));
+
+     //G.T. Position
+     ui->Left_x_GT->setText(QString::number(Left_ground.x));
+     ui->Left_y_GT->setText(QString::number(Left_ground.y));
+     ui->Right_x_GT->setText(QString::number(Right_ground.x));
+     ui->Right_y_GT->setText(QString::number(Right_ground.y));
+
+     //Different Detection Position <-> G.T.
+     double x_diff_left = DIFF_ABS(left_image_extremePoint.x, Left_ground.x);
+     double y_diff_left = DIFF_ABS(left_image_extremePoint.y, Left_ground.y);
+     double x_diff_right = DIFF_ABS(right_image_extremePoint.x, Right_ground.x);
+     double y_diff_right = DIFF_ABS(right_image_extremePoint.y, Right_ground.y);
+
+     ui->diff_x_left->setText(QString::number(x_diff_left));
+     ui->diff_y_left->setText(QString::number(y_diff_left));
+     ui->diff_x_right->setText(QString::number(x_diff_right));
+     ui->diff_y_right->setText(QString::number(y_diff_right));
+
+     ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(show_left_image_result.data,show_left_image_result.cols,show_left_image_result.rows,show_left_image_result.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height(),Qt::KeepAspectRatio)));
+     ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(show_right_image_result.data,show_right_image_result.cols,show_right_image_result.rows,show_right_image_result.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
+
+}
+
+//Magnitude, angle data graph oputput
+void MainWindow::on_Show_Graph_Button_clicked()
+{
+//    add_data();
+//    plot_graph();
+
+}
+
 
