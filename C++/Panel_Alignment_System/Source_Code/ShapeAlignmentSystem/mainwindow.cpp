@@ -294,77 +294,6 @@ bool compare(const tuple<int, int, float>& a, const tuple<int, int, float>& b){
     return (get<2>(a) > get<2>(b));
 }
 
-//Data Insert fucntion
-void MainWindow::add_data()
-{
-    if(bchoose_graph) //right image graph
-    {
-        for(int i=0; i<Right_gx.size(); i++)
-        {
-            qv_x.append(i);
-            qv_y.append(std::get<0>(Right_gx.at(i)));
-
-            qv_x2.append(i);
-            qv_y2.append(std::get<0>(Right_gy.at(i)));
-        }
-
-        for(int i=0; i<data_Right_ang.size(); i++)
-        {
-            qv_x3.append(i);
-            qv_y3.append(std::get<0>(data_Right_ang.at(i)));
-        }
-        for(int i=0; i<data_Right_mag.size(); i++)
-        {
-            qv_x4.append(i);
-            qv_y4.append(std::get<0>(data_Right_mag.at(i)));
-        }
-    }
-    else //left image graph
-    {
-        for(int i=0; i<Left_gx.size(); i++)
-        {
-            qv_x.append(i);
-            qv_y.append(std::get<0>(Left_gx.at(i)));
-
-            qv_x2.append(i);
-            qv_y2.append(std::get<0>(Left_gy.at(i)));
-        }
-
-        for(int i=0; i<data_Left_ang.size(); i++)
-        {
-            qv_x3.append(i);
-            qv_y3.append(std::get<0>(data_Left_ang.at(i)));
-        }
-        for(int i=0; i<data_Left_mag.size(); i++)
-        {
-            qv_x4.append(i);
-            qv_y4.append(std::get<0>(data_Left_mag.at(i)));
-        }
-    }
-
-}
-
-//Only Draw function
-void MainWindow::plot_graph()
-{
-    //Just Draw data of add_data function
-    ui->widget->graph(0)->setData(qv_x,qv_y);
-    ui->widget->graph(1)->setData(qv_x2,qv_y2);
-    ui->widget->rescaleAxes();
-    ui->widget->replot();
-    ui->widget->update();
-
-    ui->widget_2->graph(0)->setData(qv_x3,qv_y3);
-    ui->widget_2->rescaleAxes();
-    ui->widget_2->replot();
-    ui->widget_2->update();
-
-    ui->widget_3->graph(0)->setData(qv_x4,qv_y4);
-    ui->widget_3->rescaleAxes();
-    ui->widget_3->replot();
-    ui->widget_3->update();
-
-}
 
 
 void MainWindow::on_pushButton_clicked()
@@ -2596,11 +2525,59 @@ tuple<int, int> readJsonFile(QString path){
     return make_tuple(x, y);
 }
 
+//Data Insert fucntion
+void MainWindow::set_data(tuple<vector<double>, vector<double>> image_result, vector<tuple<double, double>> image_Gradient)
+{
+    qv_x.clear();
+    for(unsigned int i = 0; i < get<0>(image_result).size(); i++){
+        qv_x.append(i);
+    }
+    qv_x2 = qv_x;
+    qv_x3 = qv_x;
+    qv_x4 = qv_x;
+
+    qv_y4 = QVector<double>::fromStdVector(get<0>(image_result));
+    qv_y3 = QVector<double>::fromStdVector(get<1>(image_result));
+
+    qv_y.clear();
+    qv_y2.clear();
+    for(unsigned int i = 0; i < image_Gradient.size(); i++){
+        qv_y.append(get<0>(image_Gradient[i]));
+        qv_y2.append(get<1>(image_Gradient[i]));
+    }
+
+}
+
+
+void MainWindow::plot_graph()
+{
+    //Just Draw data of add_data function
+    ui->widget->graph(0)->setData(qv_x,qv_y);
+    ui->widget->graph(1)->setData(qv_x2,qv_y2);
+    ui->widget->rescaleAxes();
+    ui->widget->replot();
+    ui->widget->update();
+
+    ui->widget_2->graph(0)->setData(qv_x3,qv_y3);
+    ui->widget_2->rescaleAxes();
+    ui->widget_2->replot();
+    ui->widget_2->update();
+
+    ui->widget_3->graph(0)->setData(qv_x4,qv_y4);
+    ui->widget_3->rescaleAxes();
+    ui->widget_3->replot();
+    ui->widget_3->update();
+
+}
+
 
 Mat left_image, right_image;
 Mat left_smooth_image, right_smooth_image;
 vector<Point> left_image_contour, right_image_contour;
 Mat left_contour_image, right_contour_image;
+
+vector<tuple<double, double>> left_image_Gradient, right_image_Gradient;
+tuple<vector<double>, vector<double>> left_image_result, right_image_result;
 
 //1. Image Load
 void MainWindow::on_Image_Load_Button_clicked()
@@ -2661,19 +2638,15 @@ void MainWindow::on_Find_Contour_Button_clicked()
 //3. Get the normal direction angle and magnitude
 void MainWindow::on_Calculate_Button_clicked()
 {
-     vector<tuple<double, double>> left_image_Gradient, right_image_Gradient;
-     tuple<vector<double>, vector<double>> left_image_result, right_image_result;
      int left_image_extremePoint_index, right_image_extremePoint_index;
 
      left_image_Gradient = getGradient(left_smooth_image, left_image_contour);
      left_image_result = getAngleMagnitude(left_image_Gradient);
      left_image_extremePoint_index = findExtremePoint(left_image_Gradient);
-     cout << "Extreme Point = " << left_image_extremePoint_index << endl;
 
      right_image_Gradient = getGradient(right_smooth_image, right_image_contour);
      right_image_result = getAngleMagnitude(right_image_Gradient);
      right_image_extremePoint_index = findExtremePoint(right_image_Gradient);
-     cout << "Extreme Point = " << right_image_extremePoint_index << endl;
 
      Point left_image_extremePoint = left_image_contour[left_image_extremePoint_index];
      Point right_image_extremePoint = right_image_contour[right_image_extremePoint_index];
@@ -2698,7 +2671,7 @@ void MainWindow::on_Calculate_Button_clicked()
      //Detection Position
      ui->Left_x_detect->setText(QString::number(left_image_extremePoint.x));
      ui->Left_y_detect->setText(QString::number(left_image_extremePoint.y));
-     ui->Right_x_detect->setText(QString::number(right_image_extremePoint.x+200));
+     ui->Right_x_detect->setText(QString::number(right_image_extremePoint.x));
      ui->Right_y_detect->setText(QString::number(right_image_extremePoint.y));
 
      //G.T. Position
@@ -2724,11 +2697,15 @@ void MainWindow::on_Calculate_Button_clicked()
 }
 
 //Magnitude, angle data graph oputput
-void MainWindow::on_Show_Graph_Button_clicked()
-{
-//    add_data();
-//    plot_graph();
+void MainWindow::on_Show_Graph_Button_clicked(){
 
+    if(bchoose_graph){
+        set_data(left_image_result, left_image_Gradient);
+    } else{
+        set_data(right_image_result, right_image_Gradient);
+    }
+
+    plot_graph();
 }
 
 

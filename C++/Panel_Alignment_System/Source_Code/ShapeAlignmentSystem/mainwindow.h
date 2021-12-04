@@ -138,7 +138,7 @@ public:
     void tokenize(std::string const &str, const char delim, std::vector<std::string> &out);
 
     //Draw the graph (using Qcustomplot API)
-    void add_data();   //Data Insert fucntion
+    void set_data(tuple<vector<double>, vector<double>> image_result, vector<tuple<double, double>> image_Gradient);   //Data Insert fucntion
     void plot_graph(); //Only Draw function
 
 

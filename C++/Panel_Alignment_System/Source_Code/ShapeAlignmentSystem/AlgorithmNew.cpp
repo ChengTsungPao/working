@@ -140,7 +140,7 @@ vector<tuple<double, double>> getGradient(Mat image_smooth, vector<Point> contou
     for(unsigned int i = 0; i < contour.size(); i++){
         y = contour[i].x;
         x = contour[i].y;
-        image_Gradient.push_back(make_tuple(image_SobelX.at<double>(x, y), image_SobelY.at<double>(x, y)));
+        image_Gradient.push_back(make_tuple(abs(image_SobelX.at<double>(x, y)), abs(image_SobelY.at<double>(x, y))));
         cout << "index = " << i << " " << image_SobelX.at<double>(x, y) << " " << image_SobelY.at<double>(x, y) << endl;
     }
 
