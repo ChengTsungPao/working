@@ -1,29 +1,4 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "AlignProcess.h"
-#include "PLCCom.h"
-#include "QIODevice"
-#include <algorithm>
-#include <vector>
-#include <iostream>
-#include <QPainter>
-#include <math.h>
-#include <tuple>
-#include <QtAlgorithms>
-#include <map>
-#include <unordered_set> //중복 Point 제거 위해 사용
-#include <functional>
-#include <Canny_Ben.h>
-#include "secdialog.h"
-#include <QJsonObject>
-#include <QJsonDocument>
-#include <QJsonArray>
-#include <QFile>
-#include <string>
-#include <limits.h>
-#include <QFileDialog>
-#include <QDebug>
-#include "AlgorithmNew.h"
 
 #define DIFF_ABS(X,Y) ((X)>(Y)? (X)-(Y) : (Y)-(X))
 
@@ -2477,100 +2452,6 @@ void MainWindow::on_pushButton_20_clicked()
 ////////////////////////////////////////////////////// Tsung-Pao Cheng //////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void split(std::string const &str, const char delim, std::vector<std::string> &out)
-{
-    size_t start;
-    size_t end = 0;
-
-    while ((start = str.find_first_not_of(delim, end)) != std::string::npos)
-    {
-        end = str.find(delim, start);
-        out.push_back(str.substr(start, end - start));
-    }
-}
-
-tuple<int, int> readJsonFile(QString path){
-
-    QFile file;
-    file.setFileName(path); //File Read
-    file.open(QIODevice::ReadOnly);
-
-    QByteArray load_data = file.readAll();
-    QJsonDocument doc = QJsonDocument::fromJson(load_data);
-    QJsonObject body = doc.object();
-    QJsonArray s_array = body.value("shapes").toArray();
-    QJsonObject array_4 = s_array.at(3).toObject();
-    QJsonArray array_4_point = array_4.value("points").toArray();
-
-    QJsonDocument QJsonArray_conv;
-    QJsonArray_conv.setArray(array_4_point);
-
-    QString dataToString = QJsonArray_conv.toJson();
-    string t = dataToString.toUtf8().constData();
-
-    char chars[] = "[] ";
-    for(size_t i = 0; i < strlen(chars); i++) {
-        t.erase(std::remove(t.begin(), t.end(), chars[i]), t.end());
-    }
-    const char delim = ',';
-    vector<string> out;
-    split(t, delim, out);
-
-    int x = stoi(out.at(0));
-    int y = stoi(out.at(1));
-
-    file.close();
-    out.clear();
-
-    return make_tuple(x, y);
-}
-
-//Data Insert fucntion
-void MainWindow::set_data(tuple<vector<double>, vector<double>> image_result, vector<tuple<double, double>> image_Gradient)
-{
-    qv_x.clear();
-    for(unsigned int i = 0; i < get<0>(image_result).size(); i++){
-        qv_x.append(i);
-    }
-    qv_x2 = qv_x;
-    qv_x3 = qv_x;
-    qv_x4 = qv_x;
-
-    qv_y4 = QVector<double>::fromStdVector(get<0>(image_result));
-    qv_y3 = QVector<double>::fromStdVector(get<1>(image_result));
-
-    qv_y.clear();
-    qv_y2.clear();
-    for(unsigned int i = 0; i < image_Gradient.size(); i++){
-        qv_y.append(get<0>(image_Gradient[i]));
-        qv_y2.append(get<1>(image_Gradient[i]));
-    }
-
-}
-
-
-void MainWindow::plot_graph()
-{
-    //Just Draw data of add_data function
-    ui->widget->graph(0)->setData(qv_x,qv_y);
-    ui->widget->graph(1)->setData(qv_x2,qv_y2);
-    ui->widget->rescaleAxes();
-    ui->widget->replot();
-    ui->widget->update();
-
-    ui->widget_2->graph(0)->setData(qv_x3,qv_y3);
-    ui->widget_2->rescaleAxes();
-    ui->widget_2->replot();
-    ui->widget_2->update();
-
-    ui->widget_3->graph(0)->setData(qv_x4,qv_y4);
-    ui->widget_3->rescaleAxes();
-    ui->widget_3->replot();
-    ui->widget_3->update();
-
-}
-
-
 Mat left_image, right_image;
 Mat left_smooth_image, right_smooth_image;
 vector<Point> left_image_contour, right_image_contour;
@@ -2579,29 +2460,21 @@ Mat left_contour_image, right_contour_image;
 vector<tuple<double, double>> left_image_Gradient, right_image_Gradient;
 tuple<vector<double>, vector<double>> left_image_result, right_image_result;
 
+tuple<int, int> left_image_groundTruth, right_image_groundTruth;
+
 //1. Image Load
 void MainWindow::on_Image_Load_Button_clicked()
 {
     //Iamge Load
     QString left_image_path = QFileDialog::getOpenFileName(this,tr("Choose"),"",tr("Images (*.png *.jpg *.jpeg *.bmp *.gif)"));
     QString right_image_path = QFileDialog::getOpenFileName(this,tr("Choose"),"",tr("Images (*.png *.jpg *.jpeg *.bmp *.gif)"));
-    cout << left_image_path.toStdString() << endl;
 
-//    left_image.zeros(left_image.rows, left_image.cols, CV_8UC3);
-//    right_image.zeros(right_image.rows, right_image.cols, CV_8UC3);
+    left_image_groundTruth = readJsonFile(left_image_path.chopped(4) + ".json");
+    right_image_groundTruth = readJsonFile(right_image_path.chopped(4) + ".json");
 
-    tuple<int, int> groundTruth;
-
-    groundTruth = readJsonFile(left_image_path.chopped(4) + ".json");
-    L_X_label = get<0>(groundTruth);
-    L_Y_label = get<1>(groundTruth);
-
-    groundTruth = readJsonFile(right_image_path.chopped(4) + ".json");
-    R_X_label = get<0>(groundTruth);
-    R_Y_label = get<1>(groundTruth);
-
-    left_image = cv::imread(left_image_path.toStdString());
-    right_image = cv::imread(right_image_path.toStdString());
+    Image_Load(left_image_path.toStdString(), left_image);
+    Image_Load(right_image_path.toStdString(), right_image);
+    getExtremePoint(left_image_path.toStdString(), 'L', true);
 
     // test in current
     g_InImg1 = left_image.clone();
@@ -2610,8 +2483,8 @@ void MainWindow::on_Image_Load_Button_clicked()
     Mat show_left_image = left_image.clone();
     Mat show_right_image = right_image.clone();
 
-//    cv::resize(show_left_image,show_left_image,Size(),0.5,0.5,INTER_AREA);
-//    cv::resize(show_right_image,show_right_image,Size(),0.5,0.5,INTER_AREA);
+//    resize(show_left_image,show_left_image,Size(),0.5,0.5,INTER_AREA);
+//    resize(show_right_image,show_right_image,Size(),0.5,0.5,INTER_AREA);
 
     ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(show_left_image.data, show_left_image.cols, show_left_image.rows, show_left_image.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height(),Qt::KeepAspectRatio)));
     ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(show_right_image.data, show_right_image.cols, show_right_image.rows, show_right_image.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
@@ -2654,19 +2527,18 @@ void MainWindow::on_Calculate_Button_clicked()
      Mat show_left_image_result = left_smooth_image.clone();
      Mat show_right_image_result  = right_smooth_image.clone();
 
-     cv::drawMarker(show_left_image_result,left_image_extremePoint,Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
-     cv::drawMarker(show_right_image_result,right_image_extremePoint,Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
+     drawMarker(show_left_image_result,left_image_extremePoint,Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
+     drawMarker(show_right_image_result,right_image_extremePoint,Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
 
      //Ground Truth (Label Data)
-     cv::Point Left_ground, Right_ground;
+     Point Left_ground, Right_ground;
+     Left_ground.x = get<0>(left_image_groundTruth);
+     Left_ground.y = get<1>(left_image_groundTruth);
+     Right_ground.x = get<0>(right_image_groundTruth) - 200; //because of crop image
+     Right_ground.y = get<1>(right_image_groundTruth);
 
-     Left_ground.x = L_X_label;
-     Left_ground.y = L_Y_label;
-     Right_ground.x = R_X_label-200; //because of crop image
-     Right_ground.y = R_Y_label;
-
-     cv::drawMarker(show_left_image_result,Left_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
-     cv::drawMarker(show_right_image_result,Right_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
+     drawMarker(show_left_image_result,Left_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
+     drawMarker(show_right_image_result,Right_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
 
      //Detection Position
      ui->Left_x_detect->setText(QString::number(left_image_extremePoint.x));
@@ -2708,4 +2580,46 @@ void MainWindow::on_Show_Graph_Button_clicked(){
     plot_graph();
 }
 
+//Data Insert fucntion
+void MainWindow::set_data(tuple<vector<double>, vector<double>> image_result, vector<tuple<double, double>> image_Gradient)
+{
+    qv_x.clear();
+    for(unsigned int i = 0; i < get<0>(image_result).size(); i++){
+        qv_x.append(i);
+    }
+    qv_x2 = qv_x;
+    qv_x3 = qv_x;
+    qv_x4 = qv_x;
 
+    qv_y4 = QVector<double>::fromStdVector(get<0>(image_result));
+    qv_y3 = QVector<double>::fromStdVector(get<1>(image_result));
+
+    qv_y.clear();
+    qv_y2.clear();
+    for(unsigned int i = 0; i < image_Gradient.size(); i++){
+        qv_y.append(get<0>(image_Gradient[i]));
+        qv_y2.append(get<1>(image_Gradient[i]));
+    }
+
+}
+
+void MainWindow::plot_graph()
+{
+    //Just Draw data of add_data function
+    ui->widget->graph(0)->setData(qv_x,qv_y);
+    ui->widget->graph(1)->setData(qv_x2,qv_y2);
+    ui->widget->rescaleAxes();
+    ui->widget->replot();
+    ui->widget->update();
+
+    ui->widget_2->graph(0)->setData(qv_x3,qv_y3);
+    ui->widget_2->rescaleAxes();
+    ui->widget_2->replot();
+    ui->widget_2->update();
+
+    ui->widget_3->graph(0)->setData(qv_x4,qv_y4);
+    ui->widget_3->rescaleAxes();
+    ui->widget_3->replot();
+    ui->widget_3->update();
+
+}

@@ -1,6 +1,16 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <algorithm>
+#include <vector>
+#include <iostream>
+#include <QPainter>
+#include <math.h>
+#include <tuple>
+#include <QtAlgorithms>
+#include <map>
+#include <unordered_set> //중복 Point 제거 위해 사용
+#include <functional>
 
 #include <QMainWindow>
 #include <QFileDialog>
@@ -9,23 +19,40 @@
 #include <QChartView>
 #include <QLineSeries>
 
-
-#include "AlignProcessThread.h"
-#include "PLCCom.h"
-#include "VirtualPointDetection.h"
-#include "AppDoc.h"
-#include "communication.h"
-#include "wviewgraph.h"
-#include "secdialog.h"
-#include "Drawgraph.h"
-#include "Canny_Ben.h"
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QFile>
+#include <string>
+#include <limits.h>
+#include <QFileDialog>
+#include <QDebug>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/features2d.hpp>
 
+#include "ui_mainwindow.h"
+#include "AppDoc.h"
+#include "AlignProcess.h"
+#include "AlignProcessThread.h"
+#include "Canny_Ben.h"
+#include "communication.h"
+#include "Drawgraph.h"
+#include "PLCCom.h"
+#include "PLCCom.h"
+#include "QIODevice"
+#include "secdialog.h"
+#include "VirtualPointDetection.h"
+#include "wviewgraph.h"
 
+
+#include "AlgorithmInterface/AlgorithmInterface.h"
+#include "AlgorithmInterface/LoadImage.h"
+#include "AlgorithmInterface/Contour.h"
+#include "AlgorithmInterface/Function.h"
+#include "AlgorithmInterface/Gradient.h"
 
 
 using namespace std;
@@ -140,10 +167,6 @@ public:
     //Draw the graph (using Qcustomplot API)
     void set_data(tuple<vector<double>, vector<double>> image_result, vector<tuple<double, double>> image_Gradient);   //Data Insert fucntion
     void plot_graph(); //Only Draw function
-
-
-
-
 
 
 };
