@@ -31,3 +31,4 @@ void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_cont
 vector<tuple<double, double>> getGradient(Mat image_smooth, vector<Point> contour);
 tuple<vector<double>, vector<double>> getAngleMagnitude(vector<tuple<double, double>> image_Gradient);
 int findExtremePoint(vector<tuple<double, double>> image_Gradient);
+void HoughLinesPHandler(vector<int> shape, vector<vector<Point>> contours, unsigned int contourIndex);

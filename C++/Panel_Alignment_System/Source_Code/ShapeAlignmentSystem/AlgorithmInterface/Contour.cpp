@@ -2,7 +2,6 @@
 
 void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_contour, char imageType)
 {
-
     //Data Initialize
     if(!image.empty()){ image.zeros(image.rows, image.cols, CV_8UC3);}
 
@@ -25,17 +24,28 @@ void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_cont
     image_contour = findBestContour(image_contours, shape);
     image_contour = imageType == 'L' ? orderContour(image_contour, shape[0], shape[1]) : orderContour(image_contour, shape[0], 0);
 
+//    Mat test = image_smooth.clone();
+//    test = Mat::zeros( image_smooth.size(), CV_8UC3 );
+//    drawContours(test, image_contours, 0, Scalar(0, 255, 255), 2);
+//    imshow("test132", test);
+
 }
 
 vector<Point> findBestContour(vector<vector<Point>> contours, vector<int> shape){
-    cout << shape[0] << " " << shape[1] << endl;
-    vector<Point> ans = contours[0];
 
+    for(unsigned int i = 0; i < contours.size(); i++){
+        HoughLinesPHandler(shape, contours, i);
+    }
+
+    vector<Point> ans = contours[0];
+    unsigned int test = 0;
     for(unsigned int i = 1; i < contours.size(); i++){
         if(contours[i].size() > ans.size()){
             ans = contours[i];
+            test = i;
         }
     }
+
     return ans;
 }
 
@@ -43,10 +53,19 @@ void HoughLinesPHandler(vector<int> shape, vector<vector<Point>> contours, unsig
     int minLineLength = 10;
     int maxLineGap = 1;
 
-    vector<vector<int>> image(shape[0], vector<int> (shape[1], 0));
+    Mat image = Mat::zeros(Size(shape[1], shape[0]), CV_8UC3);
     drawContours(image, contours, contourIndex, Scalar(0, 255, 255), 2);
+//    imshow("image", image);
+//    waitKey(1000);
+//    destroyAllWindows();
+    cvtColor(image, image, CV_BGR2GRAY);
+
     vector<Vec4i> lines;
     HoughLinesP(image, lines, 1, M_PI / 180, 100, minLineLength, maxLineGap);
+    for(unsigned int i = 0; i < lines.size(); i++){
+        cout << lines[i] << endl;
+    }
+    cout << "************* end *************" << endl;
 }
 
 template<int M, template<typename> class F = std::less>
