@@ -2472,9 +2472,12 @@ void MainWindow::on_Image_Load_Button_clicked()
     left_image_groundTruth = readJsonFile(left_image_path.chopped(4) + ".json");
     right_image_groundTruth = readJsonFile(right_image_path.chopped(4) + ".json");
 
+//    left_image_groundTruth = make_tuple(0, 0);
+//    right_image_groundTruth = make_tuple(0, 0);
+
     Image_Load(left_image_path.toStdString(), left_image);
     Image_Load(right_image_path.toStdString(), right_image);
-    getExtremePoint(left_image_path.toStdString(), 'L', true);
+//    getExtremePoint(left_image_path.toStdString(), 'L', true);
 
     // test in current
     g_InImg1 = left_image.clone();
