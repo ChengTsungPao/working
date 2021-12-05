@@ -38,7 +38,7 @@ Point getExtremePoint(Mat image, char imageType, bool visiable) {
 
 
 
-    // draw Image
+    // Draw Image
     if(visiable){
         result_image = smooth_image.clone();
 

@@ -24,11 +24,6 @@ void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_cont
     image_contour = findBestContour(image_contours, shape);
     image_contour = imageType == 'L' ? orderContour(image_contour, shape[0], shape[1]) : orderContour(image_contour, shape[0], 0);
 
-//    Mat test = image_smooth.clone();
-//    test = Mat::zeros( image_smooth.size(), CV_8UC3 );
-//    drawContours(test, image_contours, 0, Scalar(0, 255, 255), 2);
-//    imshow("test132", test);
-
 }
 
 vector<Point> findBestContour(vector<vector<Point>> contours, vector<int> shape){
