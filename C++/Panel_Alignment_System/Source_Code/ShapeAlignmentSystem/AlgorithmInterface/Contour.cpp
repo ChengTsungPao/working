@@ -1,6 +1,6 @@
 #include "Contour.h"
 
-void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_contour, char imageType)
+void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_contour, vector<Vec4i> &bestTwoLines, char imageType)
 {
     //Data Initialize
     if(!image.empty()){ image.zeros(image.rows, image.cols, CV_8UC3);}
@@ -21,12 +21,12 @@ void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_cont
     findContours(image_canny, image_contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
     vector<int> shape = {image.rows, image.cols};
-    image_contour = findBestContour(image_contours, shape);
+    image_contour = findBestContour(image_contours, bestTwoLines, shape);
     image_contour = imageType == 'L' ? orderContour(image_contour, shape[0], shape[1]) : orderContour(image_contour, shape[0], 0);
 
 }
 
-vector<Point> findBestContour(vector<vector<Point>> contours, vector<int> shape){
+vector<Point> findBestContour(vector<vector<Point>> contours, vector<Vec4i> &bestTwoLines, vector<int> shape){
 
     vector<Point> contour;
     tuple<bool, vector<Vec4i>> bestTwoLinesResult;
@@ -43,6 +43,7 @@ vector<Point> findBestContour(vector<vector<Point>> contours, vector<int> shape)
             if(length > bestLength){
                 bestLength = length;
                 contour = contours[i];
+                bestTwoLines = get<1>(bestTwoLinesResult);
             }
         }
     }
@@ -162,13 +163,18 @@ vector<Point> orderContour(vector<Point> contour, int x, int y){
 void drawContour(Mat &drawImage, vector<Point> image_contour){
     vector<vector<Point>> contours;
     contours.push_back(image_contour);
-    drawContours(drawImage,contours,0,Scalar(0, 255, 0), 2);
+    drawContours(drawImage,contours,0,Scalar(255, 255, 0), 5);
 
     for(unsigned int i = 0; i < image_contour.size(); i += 100){
         std::string tmp = std::to_string(i);
         char const *num_text = tmp.c_str();
-        putText(drawImage, num_text, image_contour[i], FONT_HERSHEY_PLAIN, 1, Scalar(255, 0, 0), 1);
+        putText(drawImage, num_text, image_contour[i], FONT_HERSHEY_PLAIN, 1, Scalar(255, 0, 0), 2);
     }
+}
+
+void drawLines(Mat &drawImage, vector<Vec4i> bestTwoLines){
+    line(drawImage, Point(bestTwoLines[0][0], bestTwoLines[0][1]), Point(bestTwoLines[0][2], bestTwoLines[0][3]), Scalar(0, 255, 0), 3);
+    line(drawImage, Point(bestTwoLines[1][0], bestTwoLines[1][1]), Point(bestTwoLines[1][2], bestTwoLines[1][3]), Scalar(0, 255, 0), 3);
 }
 
 

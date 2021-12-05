@@ -17,7 +17,8 @@ Point getExtremePoint(Mat image, char imageType, bool visiable) {
     Mat contour_image;                                     // draw contour on image
     Mat result_image;                                      // draw result on image
 
-    vector<Point> image_contour;
+    vector<Point> image_contour;                           // best contour of image
+    vector<Vec4i> bestTwoLines;                            // best two lines of houghLinesP
     int image_extremePoint_index;                          // image_contour[image_extremePoint_index] => extremePoint
 
     vector<tuple<double, double>> image_Gradient;          // Gradient of image_contour
@@ -26,7 +27,7 @@ Point getExtremePoint(Mat image, char imageType, bool visiable) {
 
 
     // Find Contour
-    Find_Contour_Button(image, smooth_image, image_contour, imageType);
+    Find_Contour_Button(image, smooth_image, image_contour, bestTwoLines, imageType);
     contour_image = smooth_image.clone();
 
     // Get Contour Gradient
@@ -43,6 +44,7 @@ Point getExtremePoint(Mat image, char imageType, bool visiable) {
         result_image = smooth_image.clone();
 
         drawContour(contour_image, image_contour);
+        drawLines(contour_image, bestTwoLines);
         drawMarker(result_image,image_contour[image_extremePoint_index],Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
         showImage(image, smooth_image, contour_image, result_image);
     }

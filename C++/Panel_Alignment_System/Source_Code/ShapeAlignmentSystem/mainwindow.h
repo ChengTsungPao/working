@@ -48,11 +48,12 @@
 #include "wviewgraph.h"
 
 
-#include "AlgorithmInterface/AlgorithmInterface.h"
+//#include "AlgorithmInterface/AlgorithmInterface.h"
 #include "AlgorithmInterface/LoadImage.h"
 #include "AlgorithmInterface/Contour.h"
 #include "AlgorithmInterface/Function.h"
 #include "AlgorithmInterface/Gradient.h"
+//#include "AlgorithmInterface/TestResult.h"
 
 
 using namespace std;

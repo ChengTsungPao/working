@@ -2465,6 +2465,8 @@ tuple<int, int> left_image_groundTruth, right_image_groundTruth;
 //1. Image Load
 void MainWindow::on_Image_Load_Button_clicked()
 {
+//    test_all_data();
+
     //Iamge Load
     QString left_image_path = QFileDialog::getOpenFileName(this,tr("Choose"),"",tr("Images (*.png *.jpg *.jpeg *.bmp *.gif)"));
     QString right_image_path = QFileDialog::getOpenFileName(this,tr("Choose"),"",tr("Images (*.png *.jpg *.jpeg *.bmp *.gif)"));
@@ -2501,14 +2503,17 @@ void MainWindow::on_Image_Load_Button_clicked()
 //2. find contour
 void MainWindow::on_Find_Contour_Button_clicked()
 {
+    vector<Vec4i> leftBestTwoLines, rightBestTwoLines;
 
-    Find_Contour_Button(left_image, left_smooth_image, left_image_contour, 'L');
-    Find_Contour_Button(right_image, right_smooth_image, right_image_contour, 'R');
+    Find_Contour_Button(left_image, left_smooth_image, left_image_contour, leftBestTwoLines, 'L');
+    Find_Contour_Button(right_image, right_smooth_image, right_image_contour, rightBestTwoLines, 'R');
 
     left_contour_image = left_smooth_image.clone();
     right_contour_image = right_smooth_image.clone();
     drawContour(left_contour_image, left_image_contour);
     drawContour(right_contour_image, right_image_contour);
+    drawLines(left_contour_image, leftBestTwoLines);
+    drawLines(right_contour_image, rightBestTwoLines);
 
     ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(left_contour_image.data,left_contour_image.cols,left_contour_image.rows,left_contour_image.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height(),Qt::KeepAspectRatio)));
     ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(right_contour_image.data,right_contour_image.cols,right_contour_image.rows,right_contour_image.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
