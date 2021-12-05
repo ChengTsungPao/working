@@ -2469,6 +2469,10 @@ void MainWindow::on_Image_Load_Button_clicked()
     QString left_image_path = QFileDialog::getOpenFileName(this,tr("Choose"),"",tr("Images (*.png *.jpg *.jpeg *.bmp *.gif)"));
     QString right_image_path = QFileDialog::getOpenFileName(this,tr("Choose"),"",tr("Images (*.png *.jpg *.jpeg *.bmp *.gif)"));
 
+    if(left_image_path.toStdString() == "" or right_image_path.toStdString() == ""){
+        return;
+    }
+
     left_image_groundTruth = readJsonFile(left_image_path.chopped(4) + ".json");
     right_image_groundTruth = readJsonFile(right_image_path.chopped(4) + ".json");
 

@@ -20,6 +20,8 @@
 #include <math.h>
 //#include <opencv2/core/mat.hpp>
 
+#include "Function.h"
+
 using namespace std;
 using namespace cv;
 
@@ -31,4 +33,5 @@ void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_cont
 vector<tuple<double, double>> getGradient(Mat image_smooth, vector<Point> contour);
 tuple<vector<double>, vector<double>> getAngleMagnitude(vector<tuple<double, double>> image_Gradient);
 int findExtremePoint(vector<tuple<double, double>> image_Gradient);
-void HoughLinesPHandler(vector<int> shape, vector<vector<Point>> contours, unsigned int contourIndex);
+tuple<bool, vector<Vec4i>> HoughLinesPHandler(vector<int> shape, vector<vector<Point>> contours, unsigned int contourIndex);
+vector<Point> findMaxLengthContour(vector<vector<Point>> contours);

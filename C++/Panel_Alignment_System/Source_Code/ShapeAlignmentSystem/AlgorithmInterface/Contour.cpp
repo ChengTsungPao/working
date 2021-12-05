@@ -33,39 +33,104 @@ void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_cont
 
 vector<Point> findBestContour(vector<vector<Point>> contours, vector<int> shape){
 
-    for(unsigned int i = 0; i < contours.size(); i++){
-        HoughLinesPHandler(shape, contours, i);
-    }
+    vector<Point> contour;
+    tuple<bool, vector<Vec4i>> bestTwoLinesResult;
 
-    vector<Point> ans = contours[0];
-    unsigned int test = 0;
-    for(unsigned int i = 1; i < contours.size(); i++){
-        if(contours[i].size() > ans.size()){
-            ans = contours[i];
-            test = i;
+    double bestLength = 0;
+    double length;
+    bool vaild;
+
+    for(unsigned int i = 0; i < contours.size(); i++){
+        bestTwoLinesResult = HoughLinesPHandler(shape, contours, i);
+        vaild = get<0>(bestTwoLinesResult);
+        if(vaild){
+            length = distance(get<1>(bestTwoLinesResult)[0]) + distance(get<1>(bestTwoLinesResult)[1]); // first line lenght + second line length
+            if(length > bestLength){
+                bestLength = length;
+                contour = contours[i];
+            }
         }
     }
 
-    return ans;
+    if(contour.size() == 0){
+        return findMaxLengthContour(contours);
+    } else {
+        return contour;
+    }
 }
 
-void HoughLinesPHandler(vector<int> shape, vector<vector<Point>> contours, unsigned int contourIndex){
+tuple<bool, vector<Vec4i>> HoughLinesPHandler(vector<int> shape, vector<vector<Point>> contours, unsigned int contourIndex){
     int minLineLength = 10;
     int maxLineGap = 1;
 
     Mat image = Mat::zeros(Size(shape[1], shape[0]), CV_8UC3);
-    drawContours(image, contours, contourIndex, Scalar(0, 255, 255), 2);
-//    imshow("image", image);
-//    waitKey(1000);
-//    destroyAllWindows();
-    cvtColor(image, image, CV_BGR2GRAY);
-
     vector<Vec4i> lines;
+    vector<Vec4i> bestTwoLines;
+
+    drawContours(image, contours, contourIndex, Scalar(0, 255, 255), 2);
+    cvtColor(image, image, CV_BGR2GRAY);
     HoughLinesP(image, lines, 1, M_PI / 180, 100, minLineLength, maxLineGap);
-    for(unsigned int i = 0; i < lines.size(); i++){
-        cout << lines[i] << endl;
+
+    if(lines.size() == 0){
+        return { false, bestTwoLines };
     }
-    cout << "************* end *************" << endl;
+
+    double minLengthLinesScale = 0;
+    double minTwoLinesAngle = M_PI_4;
+
+    unsigned int firstIndex = 0;
+    bestTwoLines.push_back(lines[0]);
+    for(unsigned int i = 1; i < lines.size(); i++){
+        if(distance(lines[i]) > distance(bestTwoLines[0])){
+            bestTwoLines.pop_back();
+            bestTwoLines.push_back(lines[i]);
+            firstIndex = i;
+        }
+    }
+
+    tuple<double, double> vector1 = normalize(bestTwoLines[0][0] - bestTwoLines[0][2], bestTwoLines[0][1] - bestTwoLines[0][3]);
+    tuple<double, double> vector2;
+    double length1 = distance(bestTwoLines[0]);
+    double length2;
+    double bestLength = length1 * minLengthLinesScale;
+    double bestInnerProduct = 1;
+    double currentInnerProducr;
+
+    for(unsigned int i = 1; i < lines.size(); i++){
+        if(i == firstIndex){
+            continue;
+        }
+
+        vector2 = normalize(lines[i][0] - lines[i][2], lines[i][1] - lines[i][3]);
+        length2 = distance(lines[i]);
+        currentInnerProducr = abs(innerProduct(vector1, vector2));
+
+        if(length2 > bestLength && currentInnerProducr < abs(cos(minTwoLinesAngle)) && currentInnerProducr < bestInnerProduct){
+            bestInnerProduct = currentInnerProducr;
+            bestLength = length2;
+            if(bestTwoLines.size() == 2){
+                bestTwoLines.pop_back();
+                bestTwoLines.push_back(lines[i]);
+            }else{
+                bestTwoLines.push_back(lines[i]);
+            }
+        }
+    }
+
+    return { bestTwoLines.size() == 2, bestTwoLines };
+}
+
+vector<Point> findMaxLengthContour(vector<vector<Point>> contours){
+
+    vector<Point> ans = contours[0];
+
+    for(unsigned int i = 1; i < contours.size(); i++){
+        if(contours[i].size() > ans.size()){
+            ans = contours[i];
+        }
+    }
+
+    return ans;
 }
 
 template<int M, template<typename> class F = std::less>

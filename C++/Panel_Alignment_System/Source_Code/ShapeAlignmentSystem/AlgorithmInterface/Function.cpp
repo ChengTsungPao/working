@@ -1,5 +1,30 @@
 #include "Function.h"
 
+double distance(Vec4i position){
+    return distance(position[0], position[1], position[2], position[3]);
+}
+
+double distance(double x1, double y1, double x2, double y2){
+    return sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+}
+
+double innerProduct(Vec4i position1, Vec4i position2){
+    return innerProduct(position1[0] - position1[2], position1[1] - position1[3], position2[0] - position2[2], position2[1] - position2[3]);
+}
+
+double innerProduct(tuple<double, double> position1, tuple<double, double> position2){
+    return innerProduct(get<0>(position1), get<1>(position1), get<0>(position2), get<1>(position2));
+}
+
+double innerProduct(double x1, double y1, double x2, double y2){
+    return x1 * x2 + y1 * y2;
+}
+
+tuple<double, double> normalize(double x, double y){
+    double length = distance(x, y, 0, 0);
+    return { x / length, y / length };
+}
+
 void split(std::string const &str, const char delim, std::vector<std::string> &out)
 {
     size_t start;
