@@ -173,7 +173,7 @@ void drawContour(Mat &drawImage, vector<Point> image_contour){
     for(unsigned int i = 0; i < image_contour.size(); i += 100){
         std::string tmp = std::to_string(i);
         char const *num_text = tmp.c_str();
-        putText(drawImage, num_text, image_contour[i], FONT_HERSHEY_PLAIN, 1, Scalar(255, 0, 0), 2);
+        putText(drawImage, num_text, image_contour[i], FONT_HERSHEY_PLAIN, 1, Scalar(255, 0, 0), 3);
     }
 }
 
