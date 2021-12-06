@@ -53,7 +53,7 @@
 #include "AlgorithmInterface/Contour.h"
 #include "AlgorithmInterface/Function.h"
 #include "AlgorithmInterface/Gradient.h"
-//#include "AlgorithmInterface/TestResult.h"
+#include "AlgorithmInterface/TestResult.h"
 
 
 using namespace std;

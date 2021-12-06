@@ -1,6 +1,4 @@
 #include "TestResult.h"
-#include <iostream>
-#include <time.h>
 
 void test_all_data(){
     cout << "This is test result function !!!" << endl;
@@ -14,12 +12,11 @@ void test_all_data(){
         paths.push_back(str);
     }
 
-    double start = clock();
     for(unsigned int i = 0; i < paths.size(); i++){
         result = getExtremePoint(paths[i] + "L.png", 'L');
         cout << paths[i] + "L.png" << ": " << result << endl;
         result = getExtremePoint(paths[i] + "R.png", 'R');
         cout << paths[i] + "R.png" << ": " << result << endl;
     }
-    cout << "Time: " << clock() - start << endl;
+
 }
