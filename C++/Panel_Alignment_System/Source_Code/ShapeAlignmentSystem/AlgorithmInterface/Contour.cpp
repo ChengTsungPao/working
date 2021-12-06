@@ -6,7 +6,7 @@ void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_cont
     if(!image.empty()){ image.zeros(image.rows, image.cols, CV_8UC3);}
 
     //ROI Setting
-    image = imageType == 'L' ? image(Rect(0,0,1080,660)) : image(Rect(200,0,1080,660));
+    image = imageType == 'L' ? image(Rect(0,0,1080,700)) : image(Rect(200,0,1080,700));
 
     //Remove noise
     medianBlur(image,image_smooth,11);
@@ -178,6 +178,9 @@ void drawContour(Mat &drawImage, vector<Point> image_contour){
 }
 
 void drawLines(Mat &drawImage, vector<Vec4i> bestTwoLines){
+    if(bestTwoLines.size() < 2){
+        return;
+    }
     line(drawImage, Point(bestTwoLines[0][0], bestTwoLines[0][1]), Point(bestTwoLines[0][2], bestTwoLines[0][3]), Scalar(0, 255, 0), 3);
     line(drawImage, Point(bestTwoLines[1][0], bestTwoLines[1][1]), Point(bestTwoLines[1][2], bestTwoLines[1][3]), Scalar(0, 255, 0), 3);
 }
