@@ -27,6 +27,10 @@
 #include <limits.h>
 #include <QFileDialog>
 #include <QDebug>
+#include <QtCore>
+#include <QThread>
+
+#include <QFileDialog>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/imgproc.hpp>
@@ -34,19 +38,19 @@
 #include <opencv2/features2d.hpp>
 
 #include "ui_mainwindow.h"
-#include "AppDoc.h"
-#include "AlignProcess.h"
-#include "AlignProcessThread.h"
-#include "Canny_Ben.h"
-#include "communication.h"
+// #include "AppDoc.h"
+// #include "AlignProcess.h"
+// #include "Canny_Ben.h"
 #include "Drawgraph.h"
-#include "PLCCom.h"
-#include "PLCCom.h"
-#include "QIODevice"
-#include "secdialog.h"
-#include "VirtualPointDetection.h"
-#include "wviewgraph.h"
+// #include "PLCCom.h"
+// #include "PLCCom.h"
+// #include "QIODevice"
+// #include "secdialog.h"
+// #include "wviewgraph.h"
 
+// #include "AlignProcessThread.h"
+// #include "communication.h"
+#include "VirtualPointDetection.h"
 
 //#include "AlgorithmInterface/AlgorithmInterface.h"
 #include "AlgorithmInterface/LoadImage.h"
@@ -85,23 +89,17 @@ protected:
     void paintEvent(QPaintEvent *e);
 
 private slots:
-    void on_btnCalibrate_clicked();
-    void on_btnStop_clicked();
-    void on_btnStart_clicked();
-    void on_table_Left_cellChanged(int row, int column);
-    void on_table_right_cellChanged(int row, int column);
     void on_Image_Load_Button_clicked();
     void on_Find_Contour_Button_clicked();
     void on_Calculate_Button_clicked();
     void on_Show_Graph_Button_clicked();
-    void on_checkBox_stateChanged(int arg1);
 
 
 
 private:
     Ui::MainWindow *ui;
-    AlignProcessThread *testThread;
-    SecDialog *dlg;
+    // AlignProcessThread *testThread;
+    // SecDialog *dlg;
 
     //Calibration
     int count_calpos;
@@ -118,27 +116,12 @@ private:
 
 
 
-public slots:
-    //void PrintToScreen();
-    void set_calculatedValues();
-    void OnTimerCallbackFunc();
-    void OnTimerCallbackFunc_Calibration();
-    void readACK(QString str);
 
 public:
     //PLC Communication
-    Communication* com;
+    // Communication* com;
     bool bThreadStatus;
-    QString ControlPLC(Communication *, QString, double *);
-    void SetPulse(double*, int, int, int);
-    void display_log(QString);
-    QString _Pulse2MM(double);
-    double _Pix2MM(double pix);
-    void insertionSort(int window[]);
-    int xGradient(Mat image, int x, int y);
-    int yGradient(Mat image, int x, int y);
     void showPopup(); //show the pop-up
-    void removeduplpt(std::vector<cv::Point>& vec); //중복 Point제거 위해 사용
 
     //Draw the graph (using Qcustomplot API)
     void set_data(tuple<vector<double>, vector<double>> image_result, vector<tuple<double, double>> image_Gradient);   //Data Insert fucntion

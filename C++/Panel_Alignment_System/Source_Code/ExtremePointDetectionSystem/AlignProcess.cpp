@@ -49,10 +49,10 @@ void AlignProcess::Align_mainprocess(void){
     double pulse[3] = {0,0,0};
     int *final_pulse;
 
-    if(!bStatusAlignPro)
-    {
-        ui_ext->ControlPLC(ui_ext->com, "Zero", nullptr);
-    }
+    // if(!bStatusAlignPro)
+    // {
+    //     ui_ext->ControlPLC(ui_ext->com, "Zero", nullptr);
+    // }
 
     cv::Mat input_1,input_2;
     cv::Mat out1,out2;
@@ -80,9 +80,9 @@ void AlignProcess::Align_mainprocess(void){
 
     //PC -> PLC Data Write
     pulse[0] = GetFinalAng();
-    ui_ext->ControlPLC(ui_ext->com, "Deg", pulse);
-    ui_ext->SetPulse(pulse, final_pulse[0], final_pulse[1], final_pulse[2]);
-    ui_ext->ControlPLC(ui_ext->com, "Rel", pulse);
+    // ui_ext->ControlPLC(ui_ext->com, "Deg", pulse);
+    // ui_ext->SetPulse(pulse, final_pulse[0], final_pulse[1], final_pulse[2]);
+    // ui_ext->ControlPLC(ui_ext->com, "Rel", pulse);
 
 
 
