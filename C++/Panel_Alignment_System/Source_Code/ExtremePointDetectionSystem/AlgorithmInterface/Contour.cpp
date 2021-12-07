@@ -6,7 +6,7 @@ void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_cont
     if(!image.empty()){ image.zeros(image.rows, image.cols, CV_8UC3);}
 
     //ROI Setting
-    image = imageType == 'L' ? image(Rect(0,0,1080,660)) : image(Rect(200,0,1080,660));
+    image = imageType == 'L' ? image(Rect(0,0,1080,700)) : image(Rect(200,0,1080,700));
 
     //Remove noise
     medianBlur(image,image_smooth,11);
@@ -26,6 +26,7 @@ void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_cont
 
 }
 
+
 vector<Point> findBestContour(vector<vector<Point>> contours, vector<Vec4i> &bestTwoLines, vector<int> shape){
 
     vector<Point> contour;
@@ -34,7 +35,7 @@ vector<Point> findBestContour(vector<vector<Point>> contours, vector<Vec4i> &bes
     double bestLength = 0;
     double length;
     bool vaild;
-
+//    sort(contours.begin(), contours.end(), [](const vector<Point> & a, const vector<Point> & b){ return a.size() > b.size(); });
     for(unsigned int i = 0; i < contours.size(); i++){
         bestTwoLinesResult = HoughLinesPHandler(shape, contours, i);
         vaild = get<0>(bestTwoLinesResult);
@@ -63,7 +64,7 @@ tuple<bool, vector<Vec4i>> HoughLinesPHandler(vector<int> shape, vector<vector<P
     vector<Vec4i> lines;
     vector<Vec4i> bestTwoLines;
 
-    drawContours(image, contours, contourIndex, Scalar(0, 255, 255), 2);
+    drawContours(image, contours, contourIndex, Scalar(255, 255, 255), 3);
     cvtColor(image, image, CV_BGR2GRAY);
     HoughLinesP(image, lines, 1, M_PI / 180, 100, minLineLength, maxLineGap);
 
@@ -92,7 +93,7 @@ tuple<bool, vector<Vec4i>> HoughLinesPHandler(vector<int> shape, vector<vector<P
     double bestInnerProduct = 1;
     double currentInnerProducr;
 
-    for(unsigned int i = 1; i < lines.size(); i++){
+    for(unsigned int i = 0; i < lines.size(); i++){
         if(i == firstIndex){
             continue;
         }
@@ -161,9 +162,13 @@ vector<Point> orderContour(vector<Point> contour, int x, int y){
 }
 
 void drawContour(Mat &drawImage, vector<Point> image_contour){
-    vector<vector<Point>> contours;
-    contours.push_back(image_contour);
-    drawContours(drawImage,contours,0,Scalar(255, 255, 0), 5);
+//    vector<vector<Point>> contours;
+//    contours.push_back(image_contour);
+//    drawContours(drawImage,contours,0,Scalar(255, 255, 0), 5);
+
+    for(unsigned int i = 1; i < image_contour.size(); i++){
+        line(drawImage, image_contour[i - 1], image_contour[i], Scalar(255, 255, 0), 5);
+    }
 
     for(unsigned int i = 0; i < image_contour.size(); i += 100){
         std::string tmp = std::to_string(i);
@@ -173,6 +178,9 @@ void drawContour(Mat &drawImage, vector<Point> image_contour){
 }
 
 void drawLines(Mat &drawImage, vector<Vec4i> bestTwoLines){
+    if(bestTwoLines.size() < 2){
+        return;
+    }
     line(drawImage, Point(bestTwoLines[0][0], bestTwoLines[0][1]), Point(bestTwoLines[0][2], bestTwoLines[0][3]), Scalar(0, 255, 0), 3);
     line(drawImage, Point(bestTwoLines[1][0], bestTwoLines[1][1]), Point(bestTwoLines[1][2], bestTwoLines[1][3]), Scalar(0, 255, 0), 3);
 }
