@@ -17,9 +17,9 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>610</x>
+      <x>750</x>
       <y>10</y>
-      <width>211</width>
+      <width>121</width>
       <height>16</height>
      </rect>
     </property>
@@ -54,7 +54,7 @@
    <widget class="QLabel" name="lbl_img2">
     <property name="geometry">
      <rect>
-      <x>752</x>
+      <x>756</x>
       <y>36</y>
       <width>750</width>
       <height>601</height>
@@ -753,7 +753,7 @@
    <widget class="QCustomPlot" name="widget" native="true">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>580</x>
       <y>640</y>
       <width>561</width>
       <height>281</height>
@@ -763,7 +763,7 @@
    <widget class="QCustomPlot" name="widget_2" native="true">
     <property name="geometry">
      <rect>
-      <x>580</x>
+      <x>10</x>
       <y>640</y>
       <width>561</width>
       <height>281</height>

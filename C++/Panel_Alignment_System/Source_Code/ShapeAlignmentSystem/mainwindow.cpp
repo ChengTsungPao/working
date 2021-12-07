@@ -196,7 +196,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget->graph(1)->setLineStyle(QCPGraph::lsLine);
     ui->widget->graph(1)->setPen(QPen(QColor(255, 0, 0), 2));
 
-    ui->widget->xAxis->setLabel("Index");
+    ui->widget->xAxis->setLabel("Boundary Point Index");
     if(bchoose_graph)
     {
         ui->widget->yAxis->setLabel("Gx,Gy[Right]]");
@@ -216,7 +216,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget_2->addGraph();
     ui->widget_2->graph(0)->setLineStyle(QCPGraph::lsLine);
     ui->widget_2->graph(0)->setPen(QPen(QColor(0, 0, 255), 2));
-    ui->widget_2->xAxis->setLabel("Index");
+    ui->widget_2->xAxis->setLabel("Boundary Point Index");
     //ui->widget_2->yAxis->setLabel("Angle[Left]");
     if(bchoose_graph)
     {
@@ -235,7 +235,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget_3->addGraph();
     ui->widget_3->graph(0)->setLineStyle(QCPGraph::lsLine);
     ui->widget_3->graph(0)->setPen(QPen(QColor(0, 0, 255), 2));
-    ui->widget_3->xAxis->setLabel("Index");
+    ui->widget_3->xAxis->setLabel("Boundary Point Index");
     //ui->widget_3->yAxis->setLabel("Magnitude[Left]");
     if(bchoose_graph)
     {
