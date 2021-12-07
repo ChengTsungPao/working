@@ -13,7 +13,6 @@
 #include <opencv2/highgui.hpp>
 #include <vector>
 #include <tuple>
-#include <Canny_Ben.h>
 #include <iostream>
 #include <algorithm>
 #include <cmath>
