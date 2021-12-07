@@ -2,12 +2,7 @@
 
 #define DIFF_ABS(X,Y) ((X)>(Y)? (X)-(Y) : (Y)-(X))
 
-
 using namespace std;
-//using namespace cv;
-
-MainWindow* ui_ext = NULL;
-
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -15,11 +10,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-
-
-    ui_ext = this;
-    bThreadStatus = false;
-    bchoose_graph = false;
     //#1 graph screen
     //graph1 gx blue
     ui->widget->addGraph();
@@ -31,19 +21,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget->graph(1)->setPen(QPen(QColor(255, 0, 0), 2));
 
     ui->widget->xAxis->setLabel("Boundary Point Index");
-    if(bchoose_graph)
-    {
-        ui->widget->yAxis->setLabel("Gx,Gy[Right]]");
-    }
-    else
-    {
-        ui->widget->yAxis->setLabel("Gx,Gy[Left]]]");
-    }
+    ui->widget->yAxis->setLabel("Gx,Gy");
 
     ui->widget->xAxis->rescale(false);
     ui->widget->yAxis->rescale(false);
-
-
 
     //#2 graph screen
     //graph1 angle blue
@@ -52,14 +33,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget_2->graph(0)->setPen(QPen(QColor(0, 0, 255), 2));
     ui->widget_2->xAxis->setLabel("Boundary Point Index");
     //ui->widget_2->yAxis->setLabel("Angle[Left]");
-    if(bchoose_graph)
-    {
-        ui->widget_2->yAxis->setLabel("Angle[Right]");
-    }
-    else
-    {
-        ui->widget_2->yAxis->setLabel("Angle[Left]");
-    }
+
+    ui->widget_2->yAxis->setLabel("Angle");
     ui->widget_2->xAxis->rescale(false);
     ui->widget_2->yAxis->rescale(false);
     //ui->widget_2->replot();
@@ -71,25 +46,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget_3->graph(0)->setPen(QPen(QColor(0, 0, 255), 2));
     ui->widget_3->xAxis->setLabel("Boundary Point Index");
     //ui->widget_3->yAxis->setLabel("Magnitude[Left]");
-    if(bchoose_graph)
-    {
-        ui->widget_3->yAxis->setLabel("Magnitude[Right]]");
-    }
-    else
-    {
-        ui->widget_3->yAxis->setLabel("Magnitude[Left]");
-    }
+
+    ui->widget_3->yAxis->setLabel("Magnitude");
     ui->widget_3->xAxis->rescale(false);
     ui->widget_3->yAxis->rescale(false);
-
-
-//    connect(ui->radioButton, SIGNAL(clicked()), this, SLOT(radio_button_left()));
-//    connect(ui->radioButton_2, SIGNAL(clicked()), this, SLOT(radio_button_right()));
-
-
-
-
-
 
 }
 
@@ -97,81 +57,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
-
-
-bool compare(const tuple<int, int, float>& a, const tuple<int, int, float>& b){
-    return (get<2>(a) > get<2>(b));
-}
-
-
-
-
-
-
-
-// Drawing
-//여기서 Drawing, update는 외부의 함수에서  QWidget::update(); 사용.
-void MainWindow::paintEvent(QPaintEvent *event)
-{
-
-    /***************************************************************/
-//    QString filename = "C:/contour_L.jpg";
-//    Mat img = cv::imread(filename.toStdString());
-
-//    char repaint_test_var_char[10];
-//    sprintf_s(repaint_test_var_char, "X: %d",repaint_test_var);
-//    putText(img, repaint_test_var_char, Point(20,20),FONT_HERSHEY_PLAIN,1,Scalar(0,255,0),2);
-//    QPainter painter(this);
-//    ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(img.data,img.cols,img.rows,img.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height())));
-//    QWidget::paintEvent(event);
-    /***************************************************************/
-
-
-    /*
-    QString filename = "C:/contour_L.bmp";
-    QString filename2 = "C:/contour_R.bmp";
-    Mat input_1 = cv::imread(filename.toStdString());
-    Mat input_2 = cv::imread(filename2.toStdString());
-
-    Mat out1,out2;
-    bool result;
-    CoorData cam1_coor, cam2_coor;
-
-
-    result = test->FindVirtualPoint(input_1,input_2,&out1,&out2, &cam1_coor, &cam2_coor);
-
-    char repaint_test_var_char[10];
-    sprintf_s(repaint_test_var_char, "X: %d",repaint_test_var);
-    putText(out1, repaint_test_var_char, Point(20,20),FONT_HERSHEY_PLAIN,1,Scalar(0,255,0),2);
-    putText(out2, repaint_test_var_char, Point(20,20),FONT_HERSHEY_PLAIN,1,Scalar(0,255,0),2);
-
-    QPainter painter(this);
-
-    if(result){
-        ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(out1.data,out1.cols,out1.rows,out1.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height())));
-        ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(out2.data,out2.cols,out2.rows,out2.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height())));
-    }
-    */
-
-    QWidget::paintEvent(event);
-
-
-}
-
-
-
-
-
-
-
-
-void MainWindow::showPopup() //show the pop-up
-{
-
-
-}
-
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
