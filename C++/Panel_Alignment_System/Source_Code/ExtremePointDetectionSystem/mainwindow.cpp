@@ -2,7 +2,9 @@
 
 #define DIFF_ABS(X,Y) ((X)>(Y)? (X)-(Y) : (Y)-(X))
 
-using namespace std;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////// UI setup //////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -10,46 +12,46 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    //#1 graph screen
-    //graph1 gx blue
-    ui->widget->addGraph();
-    ui->widget->graph(0)->setLineStyle(QCPGraph::lsLine);
-    ui->widget->graph(0)->setPen(QPen(QColor(0, 0, 255), 2));
-    //graph2 gy Red
-    ui->widget->addGraph();
-    ui->widget->graph(1)->setLineStyle(QCPGraph::lsLine);
-    ui->widget->graph(1)->setPen(QPen(QColor(255, 0, 0), 2));
 
-    ui->widget->xAxis->setLabel("Boundary Point Index");
-    ui->widget->yAxis->setLabel("Gx,Gy");
+    // Angle plot
 
-    ui->widget->xAxis->rescale(false);
-    ui->widget->yAxis->rescale(false);
+    ui->widget_angle->addGraph();
+    ui->widget_angle->graph(0)->setLineStyle(QCPGraph::lsLine);
+    ui->widget_angle->graph(0)->setPen(QPen(QColor(0, 0, 255), 2));
+    ui->widget_angle->xAxis->setLabel("Boundary Point Index");
+    // axis
+    ui->widget_angle->yAxis->setLabel("Angle");
+    ui->widget_angle->xAxis->rescale(false);
+    ui->widget_angle->yAxis->rescale(false);
 
-    //#2 graph screen
-    //graph1 angle blue
-    ui->widget_2->addGraph();
-    ui->widget_2->graph(0)->setLineStyle(QCPGraph::lsLine);
-    ui->widget_2->graph(0)->setPen(QPen(QColor(0, 0, 255), 2));
-    ui->widget_2->xAxis->setLabel("Boundary Point Index");
-    //ui->widget_2->yAxis->setLabel("Angle[Left]");
 
-    ui->widget_2->yAxis->setLabel("Angle");
-    ui->widget_2->xAxis->rescale(false);
-    ui->widget_2->yAxis->rescale(false);
-    //ui->widget_2->replot();
+    // Gradient plot
 
-    //#3 graph screen
-    //graph1 gx blue
-    ui->widget_3->addGraph();
-    ui->widget_3->graph(0)->setLineStyle(QCPGraph::lsLine);
-    ui->widget_3->graph(0)->setPen(QPen(QColor(0, 0, 255), 2));
-    ui->widget_3->xAxis->setLabel("Boundary Point Index");
-    //ui->widget_3->yAxis->setLabel("Magnitude[Left]");
+    // Gx
+    ui->widget_gradient->addGraph();
+    ui->widget_gradient->graph(0)->setLineStyle(QCPGraph::lsLine);
+    ui->widget_gradient->graph(0)->setPen(QPen(QColor(0, 0, 255), 2));
+    // Gy
+    ui->widget_gradient->addGraph();
+    ui->widget_gradient->graph(1)->setLineStyle(QCPGraph::lsLine);
+    ui->widget_gradient->graph(1)->setPen(QPen(QColor(255, 0, 0), 2));
+    // axis
+    ui->widget_gradient->xAxis->setLabel("Boundary Point Index");
+    ui->widget_gradient->yAxis->setLabel("Gx,Gy");
+    ui->widget_gradient->xAxis->rescale(false);
+    ui->widget_gradient->yAxis->rescale(false);
 
-    ui->widget_3->yAxis->setLabel("Magnitude");
-    ui->widget_3->xAxis->rescale(false);
-    ui->widget_3->yAxis->rescale(false);
+
+    // Magnitude plot
+
+    ui->widget_magnitude->addGraph();
+    ui->widget_magnitude->graph(0)->setLineStyle(QCPGraph::lsLine);
+    ui->widget_magnitude->graph(0)->setPen(QPen(QColor(0, 0, 255), 2));
+    ui->widget_magnitude->xAxis->setLabel("Boundary Point Index");
+    // axis
+    ui->widget_magnitude->yAxis->setLabel("Magnitude");
+    ui->widget_magnitude->xAxis->rescale(false);
+    ui->widget_magnitude->yAxis->rescale(false);
 
 }
 
@@ -62,16 +64,6 @@ MainWindow::~MainWindow()
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////// Tsung-Pao Cheng //////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-Mat left_image, right_image;
-Mat left_smooth_image, right_smooth_image;
-vector<Point> left_image_contour, right_image_contour;
-Mat left_contour_image, right_contour_image;
-
-vector<tuple<double, double>> left_image_Gradient, right_image_Gradient;
-tuple<vector<double>, vector<double>> left_image_result, right_image_result;
-
-tuple<int, int> left_image_groundTruth, right_image_groundTruth;
 
 //1. Image Load
 void MainWindow::on_Image_Load_Button_clicked()
@@ -98,9 +90,6 @@ void MainWindow::on_Image_Load_Button_clicked()
 
     Mat show_left_image = left_image.clone();
     Mat show_right_image = right_image.clone();
-
-//    resize(show_left_image,show_left_image,Size(),0.5,0.5,INTER_AREA);
-//    resize(show_right_image,show_right_image,Size(),0.5,0.5,INTER_AREA);
 
     ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(show_left_image.data, show_left_image.cols, show_left_image.rows, show_left_image.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height(),Qt::KeepAspectRatio)));
     ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(show_right_image.data, show_right_image.cols, show_right_image.rows, show_right_image.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
@@ -191,54 +180,42 @@ void MainWindow::on_Calculate_Button_clicked()
 void MainWindow::on_Show_Graph_Button_clicked(){
 
     if(ui->radioButton->isChecked() || (ui->radioButton->isChecked() == 0 && ui->radioButton_2->isChecked() == 0)){
-        set_data(left_image_result, left_image_Gradient);
+        plot_graph(left_image_result, left_image_Gradient);
     } else{
-        set_data(right_image_result, right_image_Gradient);
+        plot_graph(right_image_result, right_image_Gradient);
     }
 
-    plot_graph();
 }
 
-//Data Insert fucntion
-void MainWindow::set_data(tuple<vector<double>, vector<double>> image_result, vector<tuple<double, double>> image_Gradient)
+void MainWindow::plot_graph(tuple<vector<double>, vector<double>> image_result, vector<tuple<double, double>> image_Gradient)
 {
-    qv_x.clear();
+
+    QVector<double> index_of_boundary;
     for(unsigned int i = 0; i < get<0>(image_result).size(); i++){
-        qv_x.append(i);
+        index_of_boundary.append(i);
     }
-    qv_x2 = qv_x;
-    qv_x3 = qv_x;
-    qv_x4 = qv_x;
 
-    qv_y4 = QVector<double>::fromStdVector(get<0>(image_result));
-    qv_y3 = QVector<double>::fromStdVector(get<1>(image_result));
-
-    qv_y.clear();
-    qv_y2.clear();
+    QVector<double> Gx, Gy;
     for(unsigned int i = 0; i < image_Gradient.size(); i++){
-        qv_y.append(get<0>(image_Gradient[i]));
-        qv_y2.append(get<1>(image_Gradient[i]));
+        Gx.append(get<0>(image_Gradient[i]));
+        Gy.append(get<1>(image_Gradient[i]));
     }
+    ui->widget_gradient->graph(0)->setData(index_of_boundary, Gx);
+    ui->widget_gradient->graph(1)->setData(index_of_boundary, Gy);
+    ui->widget_gradient->rescaleAxes();
+    ui->widget_gradient->replot();
+    ui->widget_gradient->update();
 
-}
+    QVector<double> angle = QVector<double>::fromStdVector(get<1>(image_result));
+    ui->widget_angle->graph(0)->setData(index_of_boundary, angle);
+    ui->widget_angle->rescaleAxes();
+    ui->widget_angle->replot();
+    ui->widget_angle->update();
 
-void MainWindow::plot_graph()
-{
-    //Just Draw data of add_data function
-    ui->widget->graph(0)->setData(qv_x,qv_y);
-    ui->widget->graph(1)->setData(qv_x2,qv_y2);
-    ui->widget->rescaleAxes();
-    ui->widget->replot();
-    ui->widget->update();
-
-    ui->widget_2->graph(0)->setData(qv_x3,qv_y3);
-    ui->widget_2->rescaleAxes();
-    ui->widget_2->replot();
-    ui->widget_2->update();
-
-    ui->widget_3->graph(0)->setData(qv_x4,qv_y4);
-    ui->widget_3->rescaleAxes();
-    ui->widget_3->replot();
-    ui->widget_3->update();
+    QVector<double> magnitude = QVector<double>::fromStdVector(get<0>(image_result));
+    ui->widget_magnitude->graph(0)->setData(index_of_boundary, magnitude);
+    ui->widget_magnitude->rescaleAxes();
+    ui->widget_magnitude->replot();
+    ui->widget_magnitude->update();
 
 }

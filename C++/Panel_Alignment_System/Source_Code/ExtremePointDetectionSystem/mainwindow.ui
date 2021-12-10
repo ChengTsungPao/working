@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1866</width>
-    <height>993</height>
+    <width>1952</width>
+    <height>1002</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
      <rect>
       <x>750</x>
       <y>10</y>
-      <width>121</width>
-      <height>16</height>
+      <width>161</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="font">
@@ -78,7 +78,7 @@
      <rect>
       <x>1530</x>
       <y>290</y>
-      <width>221</width>
+      <width>241</width>
       <height>121</height>
      </rect>
     </property>
@@ -142,7 +142,7 @@
        <x>150</x>
        <y>60</y>
        <width>81</width>
-       <height>16</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -153,8 +153,8 @@
    <widget class="QLabel" name="label_21">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>930</y>
+      <x>740</x>
+      <y>928</y>
       <width>261</width>
       <height>21</height>
      </rect>
@@ -163,7 +163,7 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Gradient (Gx[Blue], Gy[Red])&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QCustomPlot" name="widget" native="true">
+   <widget class="QCustomPlot" name="widget_gradient" native="true">
     <property name="geometry">
      <rect>
       <x>580</x>
@@ -173,7 +173,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QCustomPlot" name="widget_2" native="true">
+   <widget class="QCustomPlot" name="widget_angle" native="true">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -186,7 +186,7 @@
    <widget class="QLabel" name="label_22">
     <property name="geometry">
      <rect>
-      <x>840</x>
+      <x>270</x>
       <y>930</y>
       <width>51</width>
       <height>21</height>
@@ -215,7 +215,7 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:11pt; font-weight:600;&quot;&gt;Magnitude&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
-   <widget class="QCustomPlot" name="widget_3" native="true">
+   <widget class="QCustomPlot" name="widget_magnitude" native="true">
     <property name="geometry">
      <rect>
       <x>1150</x>
@@ -230,7 +230,7 @@
      <rect>
       <x>1530</x>
       <y>90</y>
-      <width>101</width>
+      <width>131</width>
       <height>151</height>
      </rect>
     </property>
@@ -384,9 +384,9 @@
    <widget class="QGroupBox" name="groupBox_10">
     <property name="geometry">
      <rect>
-      <x>1640</x>
+      <x>1670</x>
       <y>90</y>
-      <width>101</width>
+      <width>131</width>
       <height>151</height>
      </rect>
     </property>
@@ -527,9 +527,9 @@
    <widget class="QGroupBox" name="groupBox_11">
     <property name="geometry">
      <rect>
-      <x>1750</x>
+      <x>1810</x>
       <y>90</y>
-      <width>101</width>
+      <width>131</width>
       <height>151</height>
      </rect>
     </property>
@@ -684,7 +684,7 @@
       <rect>
        <x>20</x>
        <y>60</y>
-       <width>41</width>
+       <width>61</width>
        <height>16</height>
       </rect>
      </property>
@@ -697,7 +697,7 @@
       <rect>
        <x>80</x>
        <y>60</y>
-       <width>51</width>
+       <width>81</width>
        <height>16</height>
       </rect>
      </property>
@@ -725,8 +725,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1866</width>
-     <height>20</height>
+     <width>1952</width>
+     <height>24</height>
     </rect>
    </property>
   </widget>

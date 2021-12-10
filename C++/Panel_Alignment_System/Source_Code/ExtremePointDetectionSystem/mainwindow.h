@@ -2,9 +2,10 @@
 #define MAINWINDOW_H
 
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <algorithm>
 #include <vector>
-#include <math.h>
 #include <tuple>
 
 #include <QMainWindow>
@@ -50,15 +51,19 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    //variable for graph
-    QVector<double> qv_x, qv_y, qv_x2, qv_y2, qv_x3, qv_y3, qv_x4, qv_y4, qv_x5, qv_y5;
 
+    Mat left_image, right_image;
+    Mat left_smooth_image, right_smooth_image;
+    vector<Point> left_image_contour, right_image_contour;
+    Mat left_contour_image, right_contour_image;
+
+    vector<tuple<double, double>> left_image_Gradient, right_image_Gradient;
+    tuple<vector<double>, vector<double>> left_image_result, right_image_result;
+
+    tuple<int, int> left_image_groundTruth, right_image_groundTruth;
 
 public:
-    //Draw the graph (using Qcustomplot API)
-    void set_data(tuple<vector<double>, vector<double>> image_result, vector<tuple<double, double>> image_Gradient);   //Data Insert fucntion
-    void plot_graph(); //Only Draw function
-
+    void plot_graph(tuple<vector<double>, vector<double>> image_result, vector<tuple<double, double>> image_Gradient);
 
 };
 
