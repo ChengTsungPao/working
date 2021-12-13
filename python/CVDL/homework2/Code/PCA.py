@@ -1,4 +1,3 @@
-from matplotlib.pyplot import imshow
 from sklearn.decomposition import PCA
 import matplotlib.pylab as plt
 import numpy as np

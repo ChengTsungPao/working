@@ -1,4 +1,5 @@
 from PCA import pca
+from ASIRRA_Classifier import ASIRRA_classifier
 
 if __name__ == "__main__":
 
@@ -6,3 +7,7 @@ if __name__ == "__main__":
     pca_fcn = pca(path)
     pca_fcn.image_reconstruction()
     pca_fcn.compute_reconstruction_error()
+
+
+    ASIRRA_classifier_fcn = ASIRRA_classifier()
+    ASIRRA_classifier_fcn.data_augmentation()
