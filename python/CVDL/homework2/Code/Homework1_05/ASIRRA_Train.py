@@ -31,7 +31,6 @@ class ASIRRA_train():
         self.model = ResNet50()
         
 
-
     def data_resize(self, image):
         return cv2.resize(image, dsize=(224, 224), interpolation=cv2.INTER_LINEAR)
 
