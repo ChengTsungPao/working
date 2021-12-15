@@ -1,13 +1,18 @@
-from keras.layers import Activation, Dense, GlobalAveragePooling2D
 import tensorflow as tf
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Activation
+from tensorflow.keras import Model
+import os
 
 
 def ResNet50():
 
-    model = tf.keras.applications.ResNet50(include_top=False, weights="imagenet")
-    layer = model.output
-    layer = GlobalAveragePooling2D(layer)
-    layer = Dense(1024, Activation = "relu")(layer)
-    layer = Dense(2, Activation = "relu")(layer)
+    resnet = tf.keras.applications.resnet50.ResNet50(include_top = False, weights = "imagenet", classes = 2)
+    layer = resnet.output
+    layer = GlobalAveragePooling2D() (layer)
+    layer = Dense(2048, activation = "relu") (layer)
+    layer = Dense(2, activation = "softmax") (layer)
+    model = Model(inputs = resnet.input, outputs = layer)
 
-    return layer
+    os.system("cls||clear")
+
+    return model
