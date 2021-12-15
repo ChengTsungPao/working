@@ -31,7 +31,7 @@ class ASIRRA_classifier(ASIRRA_train):
         if self.test_data == []:
             self.get_test_data()
             
-        index -= 1
+        index = (int(index) - 1) % len(self.test_data)
         origin_model = load_model("./model/origin_model.h5")
         predict = origin_model.predict(self.test_data[index].reshape(-1, self.test_data.shape[1], self.test_data.shape[2], self.test_data.shape[3]))
         predict = np.argmax(predict[0])
