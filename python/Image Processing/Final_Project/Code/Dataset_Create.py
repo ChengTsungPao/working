@@ -35,7 +35,7 @@ class dataset_create(torch.utils.data.Dataset):
         # split the color-encoded mask into a set
         # of binary masks
         number_of_object = 1
-        masks = mask == 1 #obj_ids[:, None, None]    
+        masks = mask > 0 #obj_ids[:, None, None]    
    
         boxes = []
         pos = np.where(masks)

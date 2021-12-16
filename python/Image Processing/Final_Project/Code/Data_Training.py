@@ -25,8 +25,8 @@ class data_training(data_transfer):
         model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained = True).to(self.device)
         train_dataloader = torch.utils.data.DataLoader(self.bounding_box_wider_dataset, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
 
-        optimizer = torch.optim.SGD(model.parameters(), lr = 0.005, momentum = 0.9, weight_decay=0.0005)
-        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=3, gamma=0.1)
+        optimizer = torch.optim.SGD(model.parameters(), lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 
         for epoch in range(EPOCH):
             train_one_epoch(model, optimizer, train_dataloader, self.device, epoch, BATCH_SIZE, print_freq = 1)

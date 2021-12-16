@@ -18,6 +18,7 @@ class data_transfer(data_reader):
         newImage = np.zeros((image.shape[0], image.shape[1]))
         for i in range(len(newImage)):
             for j in range(len(newImage[0])):
+                # if (top == i and left <= j <= right) or (i == down and left <= j <= right) or (left == j and top <= i <= down) or (j == right and top <= i <= down):
                 if top <= i <= down and left <= j <= right:
                     newImage[i][j] = 1
                     # image[i][j] = 1
