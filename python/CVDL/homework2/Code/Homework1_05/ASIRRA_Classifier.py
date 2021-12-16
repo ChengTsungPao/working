@@ -3,7 +3,8 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.utils import to_categorical
 import numpy as np
 import matplotlib.pylab as plt
-from threading import Thread
+# from threading import Thread
+# from multiprocessing import Process
 import os
 
 class ASIRRA_classifier(ASIRRA_train):
@@ -25,7 +26,8 @@ class ASIRRA_classifier(ASIRRA_train):
         if not os.path.exists("./predict/"):
             self.train_origin()
 
-        Thread(target = self.open_tensorboard)
+        # Process(target = self.open_tensorboard)
+        os.system("start http://localhost:6006/")
 
     
     def open_tensorboard(self):
