@@ -114,8 +114,8 @@ class ASIRRA_train():
         if self.train_data == []:
             self.get_train_data()
         
-        logdir = os.path.join("logs", datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
-        tensorboard_callback = tf.keras.callbacks.TensorBoard(logdir, histogram_freq=1)
+        logdir = os.path.join("predict", datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + "-origin_image")
+        tensorboard_callback = tf.keras.callbacks.TensorBoard(logdir, histogram_freq = 1)
         
         self.model = ResNet50()
         self.model.compile(optimizer = "Adam", loss = "categorical_crossentropy", metrics = ["acc"])
@@ -140,6 +140,9 @@ class ASIRRA_train():
         if self.train_augmentation_data == []:
             self.data_augmentation()
 
+        logdir = os.path.join("predict", datetime.datetime.now().strftime("%Y%m%d-%H%M%S") + "-augmentation_image")
+        tensorboard_callback = tf.keras.callbacks.TensorBoard(logdir, histogram_freq = 1)
+
         self.model = ResNet50()
         self.model.compile(optimizer = "Adam", loss = "categorical_crossentropy", metrics = ["acc"])
 
@@ -147,6 +150,7 @@ class ASIRRA_train():
             self.train_augmentation_data, 
             to_categorical(self.train_target), 
             validation_data = [self.val_data, to_categorical(self.val_target)], 
+            callbacks=[tensorboard_callback],
             epochs = self.EPOCH, 
             batch_size = self.BATCH_SIZE, 
             shuffle = True
