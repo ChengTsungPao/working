@@ -3,6 +3,7 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.utils import to_categorical
 import numpy as np
 import matplotlib.pylab as plt
+from threading import Thread
 import os
 
 class ASIRRA_classifier(ASIRRA_train):
@@ -21,7 +22,14 @@ class ASIRRA_classifier(ASIRRA_train):
 
 
     def show_tensorboard(self):
-        pass
+        if not os.path.exists("./predict/"):
+            self.train_origin()
+
+        Thread(target = self.open_tensorboard)
+
+    
+    def open_tensorboard(self):
+        os.system("tensorboard --logdir=predict/")
 
 
     def show_test_result(self, index = 1):
