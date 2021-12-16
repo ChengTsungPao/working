@@ -10,6 +10,8 @@ class data_reader():
 
         self.fracture_image = [] 
         self.normal_image = []
+        self.fracture_filename = [] 
+        self.normal_filename = []
 
         self.bounding_box_wider_data = []
         self.bounding_box_wider_target = []
@@ -42,13 +44,17 @@ class data_reader():
 
     def read_image(self):
         path_image = self.path + "Images/"
+        self.fracture_filename = os.listdir(path_image + "Fracture/")
+        self.normal_filename = os.listdir(path_image + "Normal/")
 
-        for filename in os.listdir(path_image + "Fracture/"):
-            image = np.array(cv2.imread(path_image + "Fracture/" + filename)).astype(np.float64)
+        for filename in self.fracture_filename:
+            # image = np.array(cv2.imread(path_image + "Fracture/" + filename)).astype(np.float64)
+            image = np.array(cv2.imread(path_image + "Fracture/" + filename))
             self.fracture_image.append(image)
 
-        for filename in os.listdir(path_image + "Normal/"):
-            image = np.array(cv2.imread(path_image + "Normal/" + filename)).astype(np.float64)
+        for filename in self.normal_filename:
+            # image = np.array(cv2.imread(path_image + "Normal/" + filename)).astype(np.float64)
+            image = np.array(cv2.imread(path_image + "Normal/" + filename))
             self.normal_image.append(image)
 
 
@@ -57,7 +63,8 @@ class data_reader():
 
         self.bounding_box_wider_data = self.fracture_image + self.normal_image
 
-        for filename in os.listdir(path_target):
+        for filename in self.fracture_filename + self.normal_filename:
+            filename = filename.split(".bmp")[0] + ".json"
             f = open(path_target + filename, "r")
             data = json.load(f)
             self.bounding_box_wider_target.append([int(position) for position in data[0]["bbox"]])
@@ -68,7 +75,8 @@ class data_reader():
 
         self.bounding_box_narrow_data = self.fracture_image + self.normal_image
 
-        for filename in os.listdir(path_target):
+        for filename in self.fracture_filename + self.normal_filename:
+            filename = filename.split(".bmp")[0] + ".csv"
             data = pd.read_csv(path_target + filename)
             self.bounding_box_narrow_target.append(np.array([int(data[key][0]) for key in data.keys()]))
 
