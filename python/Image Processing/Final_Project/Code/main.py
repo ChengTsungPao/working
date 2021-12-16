@@ -1,7 +1,6 @@
-from Data_Reader import data_reader
+from Data_Training import data_training
 
 if __name__ == "__main__":
 
     path = "./Scaphoid/"
-    data_reader_fcn = data_reader(path)
-    data_reader_fcn.read_data()
+    data_transfer_fcn = data_training(path)
