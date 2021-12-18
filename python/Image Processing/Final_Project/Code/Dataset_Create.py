@@ -44,7 +44,6 @@ class dataset_create(torch.utils.data.Dataset):
         ymin = np.min(pos[0])
         ymax = np.max(pos[0])
         boxes.append([xmin, ymin, xmax, ymax])
-        # print(boxes)
 
         # convert everything into a torch.Tensor
         boxes = torch.as_tensor(boxes, dtype=torch.float32)

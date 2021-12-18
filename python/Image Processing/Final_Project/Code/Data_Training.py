@@ -1,25 +1,30 @@
 from numpy import mod
 from numpy.lib.type_check import imag
-from torch._C import device
 from Data_Transfer import data_transfer
 import torchvision
 import torch
 import numpy as np
 from engine import train_one_epoch
+import os
+import cv2
 
 class data_training(data_transfer):
 
     def __init__(self, path):
         super().__init__(path)
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-        self.train_bounding_box_wider_data()
+        # self.train_bounding_box_wider_data()
+        while True:
+            index = int(input("index of image: "))
+            self.predict_bounding_box_wider_data(index)
 
 
     def train_bounding_box_wider_data(self):
-        self.get_bounding_box_wider_data()
-        self.bounding_box_wider_data_transfer()
+        if self.bounding_box_wider_data == []:
+            self.get_bounding_box_wider_data()
+            self.bounding_box_wider_data_transfer()
 
-        EPOCH = 10
+        EPOCH = 50
         BATCH_SIZE = 4
 
         model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained = True).to(self.device)
@@ -32,16 +37,34 @@ class data_training(data_transfer):
             train_one_epoch(model, optimizer, train_dataloader, self.device, epoch, BATCH_SIZE, print_freq = 1)
             scheduler.step()
 
-            # scheduler.step()
-
-            # for step, (images, targets) in enumerate(train_dataloader):
-
-            #     targets = [{key: targets[key][index].to(self.device) for key in targets} for index in range(BATCH_SIZE)]
-            #     output = model(images.float().to(self.device), targets)
-            #     print(output)
-
-
         model.eval()
-        x = [torch.rand(3, 500, 500).to(self.device), torch.rand(3, 500, 500).to(self.device)]
-        predictions = model(x) 
-        print(predictions)
+
+        if not os.path.exists("./model/"):
+            os.makedirs("./model/")
+        torch.save(model, "./model/bounding_box_wider_model.pkl")
+
+
+    def predict_bounding_box_wider_data(self, index):
+        if self.bounding_box_wider_data == []:
+            self.get_bounding_box_wider_data()
+            self.bounding_box_wider_data_transfer()
+            
+        image, target = self.bounding_box_wider_data[index], self.bounding_box_wider_target[index]
+        origin_shape = image.shape
+        image = cv2.resize(image, (500, 500), interpolation=cv2.INTER_LINEAR)
+
+        model = torch.load("./model/bounding_box_wider_model.pkl")
+        predict = model([torch.tensor(image.transpose((2, 0, 1))).float().to(self.device)])
+
+        x1, y1, x2, y2 = predict[0]["boxes"][0].data.cpu().numpy().astype(np.int32)
+        cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 1)
+        image = cv2.resize(image, (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
+
+        x1, y1, x2, y2 = target
+        cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 4)
+        image = cv2.resize(image, (image.shape[1] // 2, image.shape[0] // 2), interpolation=cv2.INTER_LINEAR)
+
+        cv2.imshow("image", image)
+        cv2.waitKey()  
+        cv2.destroyAllWindows()  
+
