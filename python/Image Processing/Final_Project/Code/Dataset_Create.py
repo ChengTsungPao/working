@@ -35,7 +35,9 @@ class dataset_create(torch.utils.data.Dataset):
         # split the color-encoded mask into a set
         # of binary masks
         number_of_object = 1
-        masks = mask > 0 #obj_ids[:, None, None]    
+        masks = mask > 0 #obj_ids[:, None, None]   
+        # plt.imshow(masks)
+        # plt.show()
    
         boxes = []
         pos = np.where(masks)
@@ -48,7 +50,7 @@ class dataset_create(torch.utils.data.Dataset):
         # convert everything into a torch.Tensor
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
         labels = torch.ones((number_of_object,), dtype=torch.int64)
-        masks = torch.as_tensor(masks, dtype=torch.uint8)
+        masks = torch.as_tensor([masks], dtype=torch.uint8)
         image_id = torch.tensor([idx])
         area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
         iscrowd = torch.zeros((number_of_object,), dtype=torch.int64)

@@ -73,9 +73,9 @@ class data_reader():
     def get_bounding_box_narrow_data(self):
         path_target = self.path + "Annotations/" + "Fracture_Coordinate/"
 
-        self.bounding_box_narrow_data = self.fracture_image + self.normal_image
+        self.bounding_box_narrow_data = self.fracture_image
 
-        for filename in self.fracture_filename + self.normal_filename:
+        for filename in self.fracture_filename:
             filename = filename.split(".bmp")[0] + ".csv"
             data = pd.read_csv(path_target + filename)
             self.bounding_box_narrow_target.append(np.array([int(data[key][0]) for key in data.keys()]))
