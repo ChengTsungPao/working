@@ -151,17 +151,18 @@ class data_training(data_transfer):
             image = self.bounding_box_narrow_data[index][y1:y2, x1:x2]
             origin_shape = image.shape
             image = cv2.resize(image, (500, 500), interpolation=cv2.INTER_LINEAR)
-
             output = model([torch.tensor(image.transpose((2, 0, 1))).float().to(self.device)])
-            newImage = np.zeros((origin_shape[0], origin_shape[1]))
+
+            totalImage = np.zeros((origin_shape[0], origin_shape[1]))
             print(output)
             for i in range(len(output[0]["masks"])):
-                newImage += cv2.resize(output[0]["masks"][i].data.cpu().numpy().transpose((1, 2, 0)) * output[0]["scores"][i].data.cpu().numpy(), (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
-            print(newImage)
+                totalImage += cv2.resize(output[0]["masks"][i].data.cpu().numpy().transpose((1, 2, 0)) * output[0]["scores"][i].data.cpu().numpy(), (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
+            bestScoreImage = cv2.resize(output[0]["masks"][0].data.cpu().numpy().transpose((1, 2, 0)), (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
+
             plt.subplot(131)
-            plt.imshow(newImage, cmap="jet")
+            plt.imshow(totalImage, cmap="jet")
             plt.subplot(132)
-            plt.imshow(cv2.resize(output[0]["masks"][0].data.cpu().numpy().transpose((1, 2, 0)), (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR), cmap="jet")    
+            plt.imshow(bestScoreImage, cmap="jet")    
             plt.subplot(133)
             plt.imshow(self.bounding_box_narrow_data[index][y1:y2, x1:x2], cmap="binary")
             plt.get_current_fig_manager().window.showMaximized()
