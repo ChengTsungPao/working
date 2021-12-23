@@ -1,3 +1,6 @@
+from re import L
+from sys import prefix
+from matplotlib.pyplot import step
 from numpy import mod
 from numpy.lib.type_check import imag
 from Data_Transfer import data_transfer
@@ -8,6 +11,7 @@ from engine import train_one_epoch
 import os
 import cv2
 import matplotlib.pylab as plt
+from torchsummary import summary
 
 class data_training(data_transfer):
 
@@ -15,8 +19,11 @@ class data_training(data_transfer):
         super().__init__(path)
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
         # self.train_bounding_box_wider_data()
+        # self.predict_all_bounding_box_wider_data()
         # self.train_bounding_box_narrow_data()
-        self.predict_all_bounding_box_narrow_data()
+        # self.predict_all_bounding_box_narrow_data()
+        # self.train_classifier_data()
+        # self.predict_all_classifier_data()
 
 
     def train_bounding_box_wider_data(self):
@@ -150,7 +157,7 @@ class data_training(data_transfer):
             x1, y1, x2, y2 = result["predict"][index]
             image = self.bounding_box_narrow_data[index][y1:y2, x1:x2]
             origin_shape = image.shape
-            image = cv2.resize(image, (500, 500), interpolation=cv2.INTER_LINEAR)
+            image = cv2.resize(image, (training_size, training_size), interpolation=cv2.INTER_LINEAR)
             output = model([torch.tensor(image.transpose((2, 0, 1))).float().to(self.device)])
 
             totalImage = np.zeros((origin_shape[0], origin_shape[1]))
@@ -175,5 +182,82 @@ class data_training(data_transfer):
 
         # np.savez("./predict/bounding_box_narrow_data_predict.npz", predict = predict, goundTruth = self.bounding_box_narrow_target)
 
+    def train_classifier_data(self):
+        if self.classifier_dataset == []:
+            self.get_classifier_data()
+            self.classifier_data_transfer()
+
+        model = torch.nn.Sequential(
+            torchvision.models.resnet50(pretrained=True), 
+            torch.nn.ReLU(),
+            torch.nn.Linear(1000, 2)
+        ).to(self.device)
+
+        EPOCH = 50
+        BATCH_SIZE = 4
+
+        train_dataloader = torch.utils.data.DataLoader(self.classifier_dataset, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
+        number_of_batch = len(train_dataloader)
+        number_of_data = len(self.classifier_dataset)
+
+        optimizer = torch.optim.SGD(model.parameters(), lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
+        loss_func = torch.nn.CrossEntropyLoss()
+
+        for epoch in range(1, EPOCH + 1):
+
+            correct_predict = 0
+            total_batch_loss = 0
+
+            for step, (datas, targets) in enumerate(train_dataloader):
+
+                output = model(datas.float().to(self.device))
+                optimizer.zero_grad()
+                loss = loss_func(output, targets.long().to(self.device))
+                loss.backward()
+                optimizer.step()
+
+                _, predict = torch.max(torch.nn.functional.softmax(output, dim = 1), 1)
+                correct_predict += (predict.data.cpu() == targets).sum()
+                total_batch_loss += loss.data.cpu().numpy()
+
+                print("\r", "Batch of Training: %.4f" % ((step / number_of_batch) * 100.), "%", " (loss = {}, epoch: {})".format(loss, epoch), end=" ")
+
+            print("\n Epoch of Training: %.4f" % ((epoch / EPOCH) * 100.), "%", " (loss = {}, accuracy = {}, epoch: {})\n".format(total_batch_loss / number_of_batch, correct_predict / number_of_data, epoch), end=" ")
+            print("====================================================")
+
+        if not os.path.exists("./model/"):
+            os.makedirs("./model/")
+        torch.save(model, "./model/classifier_model.pkl")
+
+    
+    def predict_all_classifier_data(self):
+        if self.classifier_data == []:
+            self.get_classifier_data()
+
+        model = torch.load("./model/classifier_model.pkl")
+
+        predict = []
+        training_size = 500
+
+        for image in self.classifier_data:
+            image = cv2.resize(image, (training_size, training_size), interpolation=cv2.INTER_LINEAR)
+            output = model(torch.tensor([image.transpose((2, 0, 1))]).float().to(self.device))
+            _, pre = torch.max(torch.nn.functional.softmax(output, dim = 1), 1)
+            predict.append(pre.data.cpu()[0])
+
+        if not os.path.exists("./predict/"):
+            os.makedirs("./predict/")
+
+        np.savez("./predict/classifier.npz", label = np.array(["Fracture", "Normal"]), predict = predict, goundTruth = self.classifier_target)
+
+    def predict_classifier_data(self, index):
+
+        result = np.load("./predict/classifier.npz")
+
+        label = result["label"]
+        predict = result["predict"]
+        goundTruth = result["goundTruth"]
+
+        print("predict = {}, groundTruth = {}".format(label[predict[index]], label[goundTruth[index]]))
 
 

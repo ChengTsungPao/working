@@ -14,6 +14,7 @@ class data_transfer(data_reader):
         super().__init__(path)
         self.bounding_box_wider_dataset = []
         self.bounding_box_narrow_dataset = []
+        self.classifier_dataset = []
 
 
     def convertBoundingBoxToSeg_noRotated(self, image, target):
@@ -63,6 +64,10 @@ class data_transfer(data_reader):
         return newImage
 
 
+    def convertClassifierDataSize(self, image):
+        return cv2.resize(image, dsize=(500, 500), interpolation=cv2.INTER_LINEAR)
+
+
     def bounding_box_wider_data_transfer(self):
         
         mask = []
@@ -84,3 +89,15 @@ class data_transfer(data_reader):
             mask.append(self.convertBoundingBoxToSeg_rotated(self.bounding_box_narrow_data[index][y1:y2, x1:x2], self.bounding_box_narrow_target[index]))
 
         self.bounding_box_narrow_dataset = dataset_create(self.bounding_box_narrow_data, mask)
+
+
+    def classifier_data_transfer(self):
+
+        datas = []
+        for data in self.classifier_data:
+            datas.append(self.convertClassifierDataSize(data))
+
+        self.classifier_dataset = torch.utils.data.TensorDataset(
+            torch.tensor(np.array(datas, dtype=np.uint8).transpose((0, 3, 1, 2))), 
+            torch.tensor(np.array(self.classifier_target, dtype=np.uint8))
+        )
