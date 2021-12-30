@@ -7,19 +7,9 @@ import torchvision.transforms as T
 import matplotlib.pylab as plt
 import cv2
 
-def get_transform(train):
-    transforms = []
-    transforms.append(T.ToTensor())
-    if train:
-        transforms.append(T.RandomHorizontalFlip(0.5))
-    return T.Compose(transforms)
-
 
 class dataset_create(torch.utils.data.Dataset):
     def __init__(self, imgs, masks):
-        self.transforms = get_transform(train=True)
-        # load all image files, sorting them to
-        # ensure that they are aligned
         self.imgs = imgs
         self.masks = masks
 
@@ -32,8 +22,6 @@ class dataset_create(torch.utils.data.Dataset):
         img = img.transpose((2, 0, 1))
         mask = np.array(mask)
 
-        # split the color-encoded mask into a set
-        # of binary masks
         number_of_object = 1
         masks = (mask > 0) * 1 #obj_ids[:, None, None]   
         # plt.imshow(masks, cmap="binary")
@@ -63,8 +51,6 @@ class dataset_create(torch.utils.data.Dataset):
         target["area"] = area
         target["iscrowd"] = iscrowd
 
-        # if self.transforms is not None:
-        #     img, target = self.transforms(img, target)
         return img, target
 
     def __len__(self):
