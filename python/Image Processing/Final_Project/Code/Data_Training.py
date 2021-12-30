@@ -165,7 +165,8 @@ class data_training(data_transfer):
             for i in range(len(output[0]["masks"])):
                 totalImage += cv2.resize(output[0]["masks"][i].data.cpu().numpy().transpose((1, 2, 0)) * output[0]["scores"][i].data.cpu().numpy(), (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
             bestScoreImage = cv2.resize(output[0]["masks"][0].data.cpu().numpy().transpose((1, 2, 0)), (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
-
+            plt.imshow(output[0]["masks"][0].data.cpu().numpy().transpose((1, 2, 0)))
+            plt.show()
             # plt.subplot(131)
             # plt.imshow(totalImage, cmap="jet")
             # plt.subplot(132)

@@ -28,7 +28,7 @@ class dataset_create(torch.utils.data.Dataset):
         # plt.show()
    
         boxes = []
-        pos = np.where(masks)
+        pos = np.where(masks > 0)
         xmin = np.min(pos[1])
         xmax = np.max(pos[1])
         ymin = np.min(pos[0])
@@ -40,7 +40,7 @@ class dataset_create(torch.utils.data.Dataset):
         labels = torch.ones((number_of_object,), dtype=torch.int64)
         masks = torch.as_tensor(np.array([masks]), dtype=torch.float32)
         image_id = torch.tensor([idx])
-        area = len(np.where(masks == 1)[0]) # (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
+        area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0]) # len(np.where(masks == 1)[0])
         iscrowd = torch.zeros((number_of_object,), dtype=torch.int64)
 
         target = {}
