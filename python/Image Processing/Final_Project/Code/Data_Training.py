@@ -7,7 +7,7 @@ from Data_Transfer import data_transfer
 import torchvision
 import torch
 import numpy as np
-from engine import train_one_epoch
+from Library.engine import train_one_epoch
 import os
 import cv2
 import matplotlib.pylab as plt
@@ -20,7 +20,7 @@ class data_training(data_transfer):
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
         # self.train_bounding_box_wider_data()
         # self.predict_all_bounding_box_wider_data()
-        # self.train_bounding_box_narrow_data()
+        self.train_bounding_box_narrow_data()
         # self.predict_all_bounding_box_narrow_data()
         # self.train_classifier_data()
         # self.predict_all_classifier_data()
@@ -65,7 +65,7 @@ class data_training(data_transfer):
         for index in range(len(self.bounding_box_wider_data)):
             image = self.bounding_box_wider_data[index]
             origin_shape = image.shape
-            image = cv2.resize(image, (500, 500), interpolation=cv2.INTER_LINEAR)
+            image = cv2.resize(image, (training_size, training_size), interpolation=cv2.INTER_LINEAR)
 
             output = model([torch.tensor(image.transpose((2, 0, 1))).float().to(self.device)])
             x1, y1, x2, y2 = output[0]["boxes"][0].data.cpu().numpy().astype(np.float)
@@ -103,7 +103,7 @@ class data_training(data_transfer):
             self.bounding_box_narrow_data_transfer()
 
         def create_MaskRCNN_model(num_classes):
-            model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=True)
+            model = torchvision.models.detection.maskrcnn_resnet50_fpn(pretrained=False)
 
             # get the number of input features for the classifier
             in_features = model.roi_heads.box_predictor.cls_score.in_features
@@ -127,7 +127,7 @@ class data_training(data_transfer):
         train_dataloader = torch.utils.data.DataLoader(self.bounding_box_narrow_dataset, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
 
         params = [p for p in model.parameters() if p.requires_grad]
-        optimizer = torch.optim.SGD(params, lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
+        optimizer = torch.optim.SGD(params, lr = 0.00001, momentum = 0.9, weight_decay=0.0005)
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
 
         for epoch in range(EPOCH):
@@ -166,21 +166,30 @@ class data_training(data_transfer):
                 totalImage += cv2.resize(output[0]["masks"][i].data.cpu().numpy().transpose((1, 2, 0)) * output[0]["scores"][i].data.cpu().numpy(), (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
             bestScoreImage = cv2.resize(output[0]["masks"][0].data.cpu().numpy().transpose((1, 2, 0)), (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
 
-            plt.subplot(131)
+            # plt.subplot(131)
+            # plt.imshow(totalImage, cmap="jet")
+            # plt.subplot(132)
+            # plt.imshow(bestScoreImage, cmap="jet")    
+            # plt.subplot(133)
+            # plt.imshow(self.bounding_box_narrow_data[index][y1:y2, x1:x2], cmap="binary")
+            # plt.get_current_fig_manager().window.showMaximized()
+            # plt.show()     
+
+            plt.subplot(221)
             plt.imshow(totalImage, cmap="jet")
-            plt.subplot(132)
+            plt.subplot(222)
             plt.imshow(bestScoreImage, cmap="jet")    
-            plt.subplot(133)
+            plt.subplot(223)
             plt.imshow(self.bounding_box_narrow_data[index][y1:y2, x1:x2], cmap="binary")
-            plt.get_current_fig_manager().window.showMaximized()
-            plt.show()     
-            # break
+            plt.subplot(224)
+            plt.imshow(totalImage > 0.5, cmap="binary")    
+            plt.show() 
 
+        if not os.path.exists("./predict/"):
+            os.makedirs("./predict/")
 
-        # if not os.path.exists("./predict/"):
-        #     os.makedirs("./predict/")
+        np.savez("./predict/bounding_box_narrow_data_predict.npz", predict = predict, goundTruth = self.bounding_box_narrow_target)
 
-        # np.savez("./predict/bounding_box_narrow_data_predict.npz", predict = predict, goundTruth = self.bounding_box_narrow_target)
 
     def train_classifier_data(self):
         if self.classifier_dataset == []:
@@ -249,6 +258,7 @@ class data_training(data_transfer):
             os.makedirs("./predict/")
 
         np.savez("./predict/classifier.npz", label = np.array(["Fracture", "Normal"]), predict = predict, goundTruth = self.classifier_target)
+
 
     def predict_classifier_data(self, index):
 
