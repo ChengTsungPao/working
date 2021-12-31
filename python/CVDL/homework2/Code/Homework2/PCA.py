@@ -36,8 +36,8 @@ class pca():
         
         for i in range(30):
             red, green, blue = cv2.split(self.origin_images[i]) 
-            transfer_image = cv2.merge([self.pca_transform(red), self.pca_transform(green), self.pca_transform(blue)])
-            self.transfer_images.append(cv2.normalize(transfer_image, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8))
+            transfer_image = (np.dstack((self.pca_transform(red), self.pca_transform(green), self.pca_transform(blue))))
+            self.transfer_images.append(transfer_image)
 
         if visiable:
             self.showImage()
@@ -49,7 +49,8 @@ class pca():
 
         error = []
         for i in range(30):
-            origin_image, transfer_image = cv2.cvtColor(self.origin_images[i], cv2.COLOR_BGR2GRAY), cv2.cvtColor(self.transfer_images[i], cv2.COLOR_BGR2GRAY)
+            origin_image, transfer_image = cv2.normalize(self.origin_images[i].astype(np.uint8), None, 0, 255, cv2.NORM_MINMAX), cv2.normalize(self.transfer_images[i].astype(np.uint8), None, 0, 255, cv2.NORM_MINMAX)
+            origin_image, transfer_image = cv2.cvtColor(origin_image, cv2.COLOR_BGR2GRAY), cv2.cvtColor(transfer_image, cv2.COLOR_BGR2GRAY)
             error.append(np.sum(np.abs(transfer_image - origin_image)))
 
         print(error)
@@ -83,7 +84,7 @@ class pca():
             plt.subplot(4, 15, i + 16)
             plt.xticks([])
             plt.yticks([])
-            plt.imshow(self.transfer_images[i])
+            plt.imshow(np.clip(self.transfer_images[i], 0, 255).astype(np.uint8))
 
         for i in range(15, 30):
 
@@ -95,7 +96,7 @@ class pca():
             plt.subplot(4, 15, i + 31)
             plt.xticks([])
             plt.yticks([])
-            plt.imshow(self.transfer_images[i])
+            plt.imshow(np.clip(self.transfer_images[i], 0, 255).astype(np.uint8))
 
         plt.get_current_fig_manager().window.showMaximized()
         plt.interactive(True)
