@@ -18,14 +18,16 @@ class pca():
     def readImage(self):
         for i in range(1, 30 + 1):
             image = cv2.imread(self.path + "{}.jpg".format(i))
+            blue, green, red = cv2.split(image)
+            image = cv2.merge([red, green, blue])
             self.origin_images.append(image)
 
 
     def pca_transform(self, image):
-        pca_method = PCA(20)
+        pca_method = PCA(10)
         transformed = pca_method.fit_transform(image)
         inverted = pca_method.inverse_transform(transformed)
-        return cv2.normalize(inverted, inverted, 0, 255, cv2.NORM_MINMAX)
+        return inverted
 
 
     def image_reconstruction(self, visiable = True):
@@ -33,20 +35,22 @@ class pca():
             self.readImage()
         
         for i in range(30):
-            blue, green, red = cv2.split(self.origin_images[i]) 
-            transfer_image = (np.dstack((self.pca_transform(blue), self.pca_transform(green), self.pca_transform(red)))).astype(np.uint8)
+            red, green, blue = cv2.split(self.origin_images[i]) 
+            transfer_image = (np.dstack((self.pca_transform(red), self.pca_transform(green), self.pca_transform(blue))))
             self.transfer_images.append(transfer_image)
 
         if visiable:
             self.showImage()
 
+
     def compute_reconstruction_error(self):
         if self.transfer_images == []:
-            self.image_reconstruction()
+            self.image_reconstruction(False)
 
         error = []
         for i in range(30):
-            origin_image, transfer_image = cv2.cvtColor(self.origin_images[i], cv2.COLOR_BGR2GRAY), cv2.cvtColor(self.transfer_images[i], cv2.COLOR_BGR2GRAY)
+            origin_image, transfer_image = cv2.normalize(self.origin_images[i].astype(np.uint8), None, 0, 255, cv2.NORM_MINMAX), cv2.normalize(self.transfer_images[i].astype(np.uint8), None, 0, 255, cv2.NORM_MINMAX)
+            origin_image, transfer_image = cv2.cvtColor(origin_image, cv2.COLOR_BGR2GRAY), cv2.cvtColor(transfer_image, cv2.COLOR_BGR2GRAY)
             error.append(np.sum(np.abs(transfer_image - origin_image)))
 
         print(error)
@@ -80,7 +84,7 @@ class pca():
             plt.subplot(4, 15, i + 16)
             plt.xticks([])
             plt.yticks([])
-            plt.imshow(self.transfer_images[i])
+            plt.imshow(np.clip(self.transfer_images[i], 0, 255).astype(np.uint8))
 
         for i in range(15, 30):
 
@@ -92,7 +96,8 @@ class pca():
             plt.subplot(4, 15, i + 31)
             plt.xticks([])
             plt.yticks([])
-            plt.imshow(self.transfer_images[i])
+            plt.imshow(np.clip(self.transfer_images[i], 0, 255).astype(np.uint8))
 
         plt.get_current_fig_manager().window.showMaximized()
+        plt.interactive(True)
         plt.show()
