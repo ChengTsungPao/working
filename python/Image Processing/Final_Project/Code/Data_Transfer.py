@@ -1,3 +1,4 @@
+from numpy.core.fromnumeric import size
 from Data_Reader import data_reader
 from Config import wider_data_training_size, narrow_data_training_size, classifier_data_training_size
 import numpy as np
@@ -12,9 +13,18 @@ class data_transfer(data_reader):
 
     def __init__(self, path):
         super().__init__(path)
-        self.bounding_box_wider_dataset = []
-        self.bounding_box_narrow_dataset = []
-        self.classifier_dataset = []
+
+        self.bounding_box_wider_dataset1 = []
+        self.bounding_box_wider_dataset2 = []
+        self.bounding_box_wider_dataset3 = []
+
+        self.bounding_box_narrow_dataset1 = []
+        self.bounding_box_narrow_dataset2 = []
+        self.bounding_box_narrow_dataset3 = []
+
+        self.classifier_dataset1 = []
+        self.classifier_dataset2 = []
+        self.classifier_dataset3 = []
 
 
     def convertBoundingBoxToSeg_noRotated(self, image, target):
@@ -23,7 +33,6 @@ class data_transfer(data_reader):
         newImage = np.zeros((image.shape[0], image.shape[1]))
         for i in range(len(newImage)):
             for j in range(len(newImage[0])):
-                # if (top == i and left <= j <= right) or (i == down and left <= j <= right) or (left == j and top <= i <= down) or (j == right and top <= i <= down):
                 if top <= i <= down and left <= j <= right:
                     newImage[i][j] = 1
                     # image[i][j] = 1 # notice: call by reference
@@ -70,11 +79,22 @@ class data_transfer(data_reader):
 
     def bounding_box_wider_data_transfer(self):
         
+        images = []
         masks = []
         for index in range(len(self.bounding_box_wider_target)):
+            images.append(self.bounding_box_wider_data[index])
             masks.append(self.convertBoundingBoxToSeg_noRotated(self.bounding_box_wider_data[index], self.bounding_box_wider_target[index]))
 
-        self.bounding_box_wider_dataset = dataset_create(self.bounding_box_wider_data, masks, wider_data_training_size)
+        images = np.array(images)
+        masks = np.array(masks)
+
+        randomIndex = np.arange(len(images))
+        np.random.shuffle(randomIndex)
+        size = len(randomIndex) // 3
+
+        self.bounding_box_wider_dataset1 = dataset_create(images[randomIndex[: size]], masks[randomIndex[: size]], wider_data_training_size)
+        self.bounding_box_wider_dataset2 = dataset_create(images[randomIndex[size : size * 2]], masks[randomIndex[size : size * 2]], wider_data_training_size)
+        self.bounding_box_wider_dataset3 = dataset_create(images[randomIndex[size * 2:]], masks[randomIndex[size * 2:]], wider_data_training_size)
 
 
     def bounding_box_narrow_data_transfer(self):
@@ -90,7 +110,16 @@ class data_transfer(data_reader):
             images.append(self.bounding_box_narrow_data[index][y1:y2, x1:x2])
             masks.append(self.convertBoundingBoxToSeg_rotated(self.bounding_box_narrow_data[index][y1:y2, x1:x2], self.bounding_box_narrow_target[index]))
 
-        self.bounding_box_narrow_dataset = dataset_create(images, masks, narrow_data_training_size)
+        images = np.array(images)
+        masks = np.array(masks)
+
+        randomIndex = np.arange(len(images))
+        np.random.shuffle(randomIndex)
+        size = len(randomIndex) // 3
+
+        self.bounding_box_narrow_dataset1 = dataset_create(images[randomIndex[: size]], masks[randomIndex[:size]], narrow_data_training_size)
+        self.bounding_box_narrow_dataset2 = dataset_create(images[randomIndex[size : size * 2]], masks[randomIndex[size : size * 2]], narrow_data_training_size)
+        self.bounding_box_narrow_dataset3 = dataset_create(images[randomIndex[size * 2:]], masks[randomIndex[size * 2:]], narrow_data_training_size)
 
 
     def classifier_data_transfer(self):
@@ -102,7 +131,13 @@ class data_transfer(data_reader):
             x1, y1, x2, y2 = result["predict"][index]
             datas.append(self.convertClassifierDataSize(data[y1:y2, x1:x2]))
 
-        self.classifier_dataset = torch.utils.data.TensorDataset(
-            torch.tensor((np.array(datas).astype(np.float64) / 255).transpose((0, 3, 1, 2))), 
-            torch.tensor(np.array(self.classifier_target))
-        )
+        images = (np.array(datas).astype(np.float64) / 255).transpose((0, 3, 1, 2))
+        targets = np.array(self.classifier_target)
+
+        randomIndex = np.arange(len(images))
+        np.random.shuffle(randomIndex)
+        size = len(randomIndex) // 3
+
+        self.classifier_dataset1 = torch.utils.data.TensorDataset(torch.tensor(images[randomIndex[: size]]), torch.tensor(targets[randomIndex[: size]]))
+        self.classifier_dataset2 = torch.utils.data.TensorDataset(torch.tensor(images[randomIndex[size : size * 2]]), torch.tensor(targets[randomIndex[size : size * 2]]))
+        self.classifier_dataset3 = torch.utils.data.TensorDataset(torch.tensor(images[randomIndex[size * 2:]]), torch.tensor(targets[randomIndex[size * 2:]]))

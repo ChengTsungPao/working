@@ -3,7 +3,7 @@ from Config import wider_data_training_size, narrow_data_training_size, classifi
 import torchvision
 import torch
 import numpy as np
-from Library.engine import train_one_epoch
+from Library.engine import train_one_epoch, evaluate
 import os
 import cv2
 import copy
@@ -23,9 +23,12 @@ class data_training(data_transfer):
         # self.train_bounding_box_narrow_data()
         # self.train_classifier_data()
 
+    ########################################################################################################################################################
+    ##################################################### train_bounding_box_wider_data ####################################################################
+    ########################################################################################################################################################
 
     def train_bounding_box_wider_data(self):
-        if self.bounding_box_wider_dataset == []:
+        if self.bounding_box_wider_dataset1 == []:
             self.get_bounding_box_wider_data()
             self.bounding_box_wider_data_transfer()
 
@@ -33,13 +36,26 @@ class data_training(data_transfer):
         BATCH_SIZE = 4
 
         model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained = True).to(self.device)
-        train_dataloader = torch.utils.data.DataLoader(self.bounding_box_wider_dataset, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
+        train_dataloader1 = torch.utils.data.DataLoader(self.bounding_box_wider_dataset1, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
+        train_dataloader2 = torch.utils.data.DataLoader(self.bounding_box_wider_dataset2, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
+        train_dataloader3 = torch.utils.data.DataLoader(self.bounding_box_wider_dataset3, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
 
         optimizer = torch.optim.SGD(model.parameters(), lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
         # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 
         for epoch in range(EPOCH):
-            train_one_epoch(model, optimizer, train_dataloader, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            train_one_epoch(model, optimizer, train_dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            train_one_epoch(model, optimizer, train_dataloader2, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            evaluate(model, train_dataloader3, self.device)
+
+            train_one_epoch(model, optimizer, train_dataloader2, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            train_one_epoch(model, optimizer, train_dataloader3, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            evaluate(model, train_dataloader1, self.device)
+
+            train_one_epoch(model, optimizer, train_dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            train_one_epoch(model, optimizer, train_dataloader3, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            evaluate(model, train_dataloader2, self.device)
+
             # scheduler.step()
 
         model.eval()
@@ -93,9 +109,12 @@ class data_training(data_transfer):
         cv2.waitKey()  
         cv2.destroyAllWindows()  
         
+    ########################################################################################################################################################
+    ######################################################## train_bounding_box_narrow_data ###############################################################
+    ########################################################################################################################################################
 
     def train_bounding_box_narrow_data(self):
-        if self.bounding_box_narrow_dataset == []:
+        if self.bounding_box_narrow_dataset1 == []:
             self.get_bounding_box_narrow_data()
             self.bounding_box_narrow_data_transfer()
 
@@ -121,16 +140,28 @@ class data_training(data_transfer):
         BATCH_SIZE = 1
 
         model = create_MaskRCNN_model(2).to(self.device)
-        train_dataloader = torch.utils.data.DataLoader(self.bounding_box_narrow_dataset, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
-        print(model)
-        # return
+        train_dataloader1 = torch.utils.data.DataLoader(self.bounding_box_narrow_dataset1, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
+        train_dataloader2 = torch.utils.data.DataLoader(self.bounding_box_narrow_dataset2, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
+        train_dataloader3 = torch.utils.data.DataLoader(self.bounding_box_narrow_dataset3, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
+
         params = [p for p in model.parameters() if p.requires_grad]
         optimizer = torch.optim.SGD(model.parameters(), lr = 0.00001, momentum = 0.9)
         # optimizer = torch.optim.Adam(params, lr = 0.00001)
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
 
         for epoch in range(EPOCH):
-            train_one_epoch(model, optimizer, train_dataloader, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            train_one_epoch(model, optimizer, train_dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            train_one_epoch(model, optimizer, train_dataloader2, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            evaluate(model, train_dataloader3, self.device)
+            
+            train_one_epoch(model, optimizer, train_dataloader2, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            train_one_epoch(model, optimizer, train_dataloader3, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            evaluate(model, train_dataloader1, self.device)
+
+            train_one_epoch(model, optimizer, train_dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            train_one_epoch(model, optimizer, train_dataloader3, self.device, epoch, BATCH_SIZE, print_freq = 1)
+            evaluate(model, train_dataloader2, self.device)
+
             # scheduler.step()
 
         model.eval()
@@ -219,9 +250,12 @@ class data_training(data_transfer):
         cv2.waitKey()  
         cv2.destroyAllWindows() 
 
+    ########################################################################################################################################################
+    ########################################################### train_classifier_data ######################################################################
+    ########################################################################################################################################################
 
     def train_classifier_data(self):
-        if self.classifier_dataset == []:
+        if self.classifier_dataset1 == []:
             self.get_classifier_data()
             self.classifier_data_transfer()
 
@@ -234,17 +268,19 @@ class data_training(data_transfer):
         EPOCH = 50
         BATCH_SIZE = 4
 
-        train_dataloader = torch.utils.data.DataLoader(self.classifier_dataset, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
-        number_of_batch = len(train_dataloader)
-        number_of_data = len(self.classifier_dataset)
+        train_dataloader1 = torch.utils.data.DataLoader(self.classifier_dataset1, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
+        train_dataloader2 = torch.utils.data.DataLoader(self.classifier_dataset2, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
+        train_dataloader3 = torch.utils.data.DataLoader(self.classifier_dataset3, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
+
+        number_of_batch = len(train_dataloader1)
+        number_of_data = len(self.classifier_dataset1)
 
         optimizer = torch.optim.SGD(model.parameters(), lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
         loss_func = torch.nn.CrossEntropyLoss()
 
-        for epoch in range(1, EPOCH + 1):
 
-            correct_predict = 0
-            total_batch_loss = 0
+        def train_one_epoch(train_dataloader):
+            nonlocal correct_predict, total_batch_loss
 
             for step, (datas, targets) in enumerate(train_dataloader):
 
@@ -258,9 +294,46 @@ class data_training(data_transfer):
                 correct_predict += (predict.data.cpu() == targets).sum()
                 total_batch_loss += loss.data.cpu().numpy()
 
-                print("\r", "Batch of Training: %.4f" % ((step / number_of_batch) * 100.), "%", " (loss = {}, epoch: {})".format(loss, epoch), end=" ")
+                print("\r", "Batch of Training: %.4f" % (((step + 1) / number_of_batch) * 100.), "%", " (loss = {}, epoch: {})".format(loss, epoch), end=" ")
+            
+            print()
 
-            print("\n Epoch of Training: %.4f" % ((epoch / EPOCH) * 100.), "%", " (loss = {}, accuracy = {}, epoch: {})\n".format(total_batch_loss / number_of_batch, correct_predict / number_of_data, epoch), end=" ")
+        def evaluate(train_dataloader):
+            correct_predict = 0
+            total_batch_loss = 0
+            
+            for datas, targets in train_dataloader:
+
+                output = model(datas.float().to(self.device))
+                optimizer.zero_grad()
+                loss = loss_func(output, targets.long().to(self.device))
+                loss.backward()
+                optimizer.step()
+
+                _, predict = torch.max(torch.nn.functional.softmax(output, dim = 1), 1)
+                correct_predict += (predict.data.cpu() == targets).sum()
+                total_batch_loss += loss.data.cpu().numpy()
+
+            print("\r", "Test Data: Accuarcy = {}, loss = {}".format(correct_predict / number_of_data, total_batch_loss / number_of_batch))
+
+        correct_predict = 0
+        total_batch_loss = 0
+
+        for epoch in range(1, EPOCH + 1):
+
+            train_one_epoch(train_dataloader1)
+            train_one_epoch(train_dataloader2)
+            evaluate(train_dataloader3)
+
+            train_one_epoch(train_dataloader2)
+            train_one_epoch(train_dataloader3)
+            evaluate(train_dataloader1)
+            
+            train_one_epoch(train_dataloader1)
+            train_one_epoch(train_dataloader3)
+            evaluate(train_dataloader2)
+
+            print("\n Epoch of Training: %.4f" % ((epoch / EPOCH) * 100.), "%", " (loss = {}, accuracy = {}, epoch: {})\n".format(total_batch_loss / (number_of_batch * 6), correct_predict / (number_of_data * 6), epoch), end=" ")
             print("====================================================")
 
         if not os.path.exists("./model/"):
