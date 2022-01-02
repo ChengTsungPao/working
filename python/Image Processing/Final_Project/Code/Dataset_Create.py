@@ -9,26 +9,30 @@ import cv2
 
 
 class dataset_create(torch.utils.data.Dataset):
-    def __init__(self, imgs, masks):
+    def __init__(self, imgs, masks, training_size):
         self.imgs = imgs
         self.masks = masks
+        self.training_size = training_size
 
 
     def __getitem__(self, idx):
         img = self.imgs[idx]
         mask = self.masks[idx]
-        img = cv2.resize(img, dsize=(500, 500), interpolation=cv2.INTER_LINEAR)
-        mask = cv2.resize(mask, dsize=(500, 500), interpolation=cv2.INTER_LINEAR)
+        img = cv2.resize(img, dsize=(self.training_size, self.training_size), interpolation=cv2.INTER_LINEAR)
+        mask = cv2.resize(mask, dsize=(self.training_size, self.training_size), interpolation=cv2.INTER_LINEAR)
         img = img.transpose((2, 0, 1))
         mask = np.array(mask)
 
         number_of_object = 1
-        masks = (mask > 0) * 1 #obj_ids[:, None, None]   
+        masks = mask > 0 #obj_ids[:, None, None]   
+        # plt.subplot(121)
+        # plt.imshow(img.transpose((1, 2, 0)), cmap="binary")
+        # plt.subplot(122)
         # plt.imshow(masks, cmap="binary")
         # plt.show()
    
         boxes = []
-        pos = np.where(masks > 0)
+        pos = np.where(masks)
         xmin = np.min(pos[1])
         xmax = np.max(pos[1])
         ymin = np.min(pos[0])
@@ -38,7 +42,7 @@ class dataset_create(torch.utils.data.Dataset):
         # convert everything into a torch.Tensor
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
         labels = torch.ones((number_of_object,), dtype=torch.int64)
-        masks = torch.as_tensor(np.array([masks]), dtype=torch.float32)
+        masks = torch.as_tensor(np.array([masks]), dtype=torch.uint8)
         image_id = torch.tensor([idx])
         area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0]) # len(np.where(masks == 1)[0])
         iscrowd = torch.zeros((number_of_object,), dtype=torch.int64)
@@ -52,6 +56,7 @@ class dataset_create(torch.utils.data.Dataset):
         target["iscrowd"] = iscrowd
 
         return img, target
+
 
     def __len__(self):
         return len(self.imgs)

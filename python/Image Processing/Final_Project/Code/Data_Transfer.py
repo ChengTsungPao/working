@@ -1,5 +1,5 @@
-from PIL.Image import new
 from Data_Reader import data_reader
+from Config import wider_data_training_size, narrow_data_training_size, classifier_data_training_size
 import numpy as np
 import torch
 import matplotlib.pylab as plt
@@ -65,16 +65,16 @@ class data_transfer(data_reader):
 
 
     def convertClassifierDataSize(self, image):
-        return cv2.resize(image, dsize=(500, 500), interpolation=cv2.INTER_LINEAR)
+        return cv2.resize(image, dsize=(classifier_data_training_size, classifier_data_training_size), interpolation=cv2.INTER_LINEAR)
 
 
     def bounding_box_wider_data_transfer(self):
         
-        mask = []
+        masks = []
         for index in range(len(self.bounding_box_wider_target)):
-            mask.append(self.convertBoundingBoxToSeg_noRotated(self.bounding_box_wider_data[index], self.bounding_box_wider_target[index]))
+            masks.append(self.convertBoundingBoxToSeg_noRotated(self.bounding_box_wider_data[index], self.bounding_box_wider_target[index]))
 
-        self.bounding_box_wider_dataset = dataset_create(self.bounding_box_wider_data, mask)
+        self.bounding_box_wider_dataset = dataset_create(self.bounding_box_wider_data, masks, wider_data_training_size)
 
 
     def bounding_box_narrow_data_transfer(self):
@@ -83,12 +83,14 @@ class data_transfer(data_reader):
 
         result = np.load("./predict/bounding_box_wider_data_predict.npz")
 
-        mask = []
+        images = []
+        masks = []
         for index in range(len(self.bounding_box_narrow_target)):
-            x1, y1, x2, y2 = result["predict"][index]
-            mask.append(self.convertBoundingBoxToSeg_rotated(self.bounding_box_narrow_data[index][y1:y2, x1:x2], self.bounding_box_narrow_target[index]))
+            x1, y1, x2, y2 = result["goundTruth"][index]
+            images.append(self.bounding_box_narrow_data[index][y1:y2, x1:x2])
+            masks.append(self.convertBoundingBoxToSeg_rotated(self.bounding_box_narrow_data[index][y1:y2, x1:x2], self.bounding_box_narrow_target[index]))
 
-        self.bounding_box_narrow_dataset = dataset_create(self.bounding_box_narrow_data, mask)
+        self.bounding_box_narrow_dataset = dataset_create(images, masks, narrow_data_training_size)
 
 
     def classifier_data_transfer(self):
