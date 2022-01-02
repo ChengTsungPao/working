@@ -86,7 +86,7 @@ class data_transfer(data_reader):
         images = []
         masks = []
         for index in range(len(self.bounding_box_narrow_target)):
-            x1, y1, x2, y2 = result["goundTruth"][index]
+            x1, y1, x2, y2 = result["predict"][index]
             images.append(self.bounding_box_narrow_data[index][y1:y2, x1:x2])
             masks.append(self.convertBoundingBoxToSeg_rotated(self.bounding_box_narrow_data[index][y1:y2, x1:x2], self.bounding_box_narrow_target[index]))
 

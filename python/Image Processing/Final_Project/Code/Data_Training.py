@@ -1,4 +1,6 @@
 from hashlib import sha1
+
+from matplotlib.colors import PowerNorm
 from Data_Transfer import data_transfer
 from Config import wider_data_training_size, narrow_data_training_size, classifier_data_training_size
 import torchvision
@@ -18,7 +20,11 @@ class data_training(data_transfer):
         # self.train_bounding_box_wider_data()
         # self.predict_all_bounding_box_wider_data()
         # self.train_bounding_box_narrow_data()
-        self.predict_all_bounding_box_narrow_data()
+        # self.predict_all_bounding_box_narrow_data()
+        index = 0
+        while index < 120:
+            self.predict_bounding_box_narrow_data(index)
+            index += 1
         # self.train_classifier_data()
         # self.predict_all_classifier_data()
 
@@ -146,63 +152,21 @@ class data_training(data_transfer):
         if self.bounding_box_narrow_data == []:
             self.get_bounding_box_narrow_data()
 
-        def rotatedPos(pos, rotated_matrix):
-            newPos = [[], []]
-            points = []
-            for y, x in zip(pos[0], pos[1]):
-                y_ = rotated_matrix[0][0] * y + rotated_matrix[0][1] * x + rotated_matrix[0][2]
-                x_ = rotated_matrix[1][0] * y + rotated_matrix[1][1] * x + rotated_matrix[1][2]
-                newPos[1].append(x_)
-                newPos[0].append(y_)
-                points.append([x, y])
-
-            # test = np.zeros((1500, 1500))
-
-            # (x, y), (width, height), angle = cv2.minAreaRect(points)
-            # rect = cv2.minAreaRect(np.array(points))
-            # a = cv2.boxPoints(rect)
-            # print("==============================")
-            # print(a)
-
-            
-
-            return newPos
-
-        def findBoundingBoxAngle(mask):
-            # try:
-            # print(mask)
+        def findBoundingBox(mask):
             mask = np.array(mask)
             pos = np.where(mask)
-            xmin = np.min(pos[1])
-            xmax = np.max(pos[1])
-            ymin = np.min(pos[0])
-            ymax = np.max(pos[0])
-            # print(xmin, xmax, ymin, ymax)
-            minArea = abs(xmin - xmax) * abs(ymin - ymax)
-            bestAngle = 0
 
-            xcenter = (xmin + xmax) / 2
-            ycenter = (ymin + ymax) / 2
+            points = []
+            for y, x in zip(pos[0], pos[1]):
+                points.append([x, y])
 
-            for angle in range(10, 360 + 1, 5):
-                rotated_matrix = cv2.getRotationMatrix2D((xcenter, ycenter), angle, 1)
-                newPos = rotatedPos(pos, rotated_matrix)
-                xmin = np.min(newPos[1])
-                xmax = np.max(newPos[1])
-                ymin = np.min(newPos[0])
-                ymax = np.max(newPos[0])
-                # print(xmin, xmax, ymin, ymax)
-                area = abs(xmin - xmax) * abs(ymin - ymax)
-                # print(area)
+            result = []
+            if len(points) > 0:
+                rect = cv2.minAreaRect(np.array(points))
+                result = cv2.boxPoints(rect)
 
-                if minArea - area > 10:
-                    minArea = area
-                    bestAngle = angle
-
-            return -bestAngle if -bestAngle >= 0 else -bestAngle + 360
-            # except:
-                # return 0
-
+            return np.array(result, int)
+            
 
         model = torch.load("./model/bounding_box_narrow_model.pkl")
         result = np.load("./predict/bounding_box_wider_data_predict.npz")
@@ -229,29 +193,69 @@ class data_training(data_transfer):
                     print(np.sum(image))
                     bestScoreImage = cv2.resize(image, (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
                     break 
-            print(findBoundingBoxAngle(bestScoreImage > 0.5))
+            
+            predictPoints = findBoundingBox(bestScoreImage > 0.5)
+            predict.append(predictPoints)
+
+            drawImage = np.array(self.bounding_box_narrow_data[index][y1:y2, x1:x2])
+            if len(predictPoints) > 0:
+                cv2.line(drawImage, tuple(predictPoints[0]), tuple(predictPoints[1]), (0, 0, 255), 2)
+                cv2.line(drawImage, tuple(predictPoints[1]), tuple(predictPoints[2]), (0, 0, 255), 2)
+                cv2.line(drawImage, tuple(predictPoints[2]), tuple(predictPoints[3]), (0, 0, 255), 2)
+                cv2.line(drawImage, tuple(predictPoints[3]), tuple(predictPoints[0]), (0, 0, 255), 2)
+            x, y, width, height, angle = np.array(self.bounding_box_narrow_target[index], float)
+            rect = (x, y), (width, height), angle
+            groundTruthPoints = np.array(cv2.boxPoints(rect), int)
+            cv2.line(drawImage, tuple(groundTruthPoints[0]), tuple(groundTruthPoints[1]), (0, 255, 0), 2)
+            cv2.line(drawImage, tuple(groundTruthPoints[1]), tuple(groundTruthPoints[2]), (0, 255, 0), 2)
+            cv2.line(drawImage, tuple(groundTruthPoints[2]), tuple(groundTruthPoints[3]), (0, 255, 0), 2)
+            cv2.line(drawImage, tuple(groundTruthPoints[3]), tuple(groundTruthPoints[0]), (0, 255, 0), 2)
+
             plt.subplot(221)
             plt.imshow(totalImage, cmap="jet")
             plt.subplot(222)
             plt.imshow(bestScoreImage, cmap="jet")    
             plt.subplot(223)
-            plt.imshow(self.bounding_box_narrow_data[index][y1:y2, x1:x2], cmap="binary")
+            plt.imshow(drawImage, cmap="binary")
             plt.subplot(224)
             plt.imshow(bestScoreImage > 0.5, cmap="binary")    
             plt.show() 
-
-            # plt.subplot(121)
-            # plt.imshow(cv2.resize(self.bounding_box_narrow_data[index][y1:y2, x1:x2], (narrow_data_training_size, narrow_data_training_size), interpolation=cv2.INTER_LINEAR), cmap="binary") 
-            # plt.subplot(122)
-            # plt.imshow(output[0]["masks"][0].data.cpu().numpy().transpose((1, 2, 0)), cmap="jet")  
-            # plt.show() 
-
             
 
         if not os.path.exists("./predict/"):
             os.makedirs("./predict/")
 
         np.savez("./predict/bounding_box_narrow_data_predict.npz", predict = predict, goundTruth = self.bounding_box_narrow_target)
+
+
+    def predict_bounding_box_narrow_data(self, index):
+        if self.bounding_box_narrow_data == []:
+            self.get_bounding_box_narrow_data()
+
+        bounding_box_wider_data_result = np.load("./predict/bounding_box_wider_data_predict.npz")
+        bounding_box_narrow_data_result = np.load("./predict/bounding_box_narrow_data_predict.npz", allow_pickle = True)
+
+        x1, y1, x2, y2 = bounding_box_wider_data_result["predict"][index]
+        image, target = self.bounding_box_narrow_data[index], self.bounding_box_narrow_target[index]
+        drawImage = np.array(image[y1:y2, x1:x2])
+
+        predictPoints = bounding_box_narrow_data_result["predict"][index]
+        if len(predictPoints) > 0:
+            cv2.line(drawImage, tuple(predictPoints[0]), tuple(predictPoints[1]), (255, 0, 0), 2)
+            cv2.line(drawImage, tuple(predictPoints[1]), tuple(predictPoints[2]), (255, 0, 0), 2)
+            cv2.line(drawImage, tuple(predictPoints[2]), tuple(predictPoints[3]), (255, 0, 0), 2)
+            cv2.line(drawImage, tuple(predictPoints[3]), tuple(predictPoints[0]), (255, 0, 0), 2)
+
+        x, y, width, height, angle = np.array(target, float)
+        rect = (x, y), (width, height), angle
+        groundTruthPoints = np.array(cv2.boxPoints(rect), int)
+        cv2.line(drawImage, tuple(groundTruthPoints[0]), tuple(groundTruthPoints[1]), (0, 255, 0), 2)
+        cv2.line(drawImage, tuple(groundTruthPoints[1]), tuple(groundTruthPoints[2]), (0, 255, 0), 2)
+        cv2.line(drawImage, tuple(groundTruthPoints[2]), tuple(groundTruthPoints[3]), (0, 255, 0), 2)
+        cv2.line(drawImage, tuple(groundTruthPoints[3]), tuple(groundTruthPoints[0]), (0, 255, 0), 2)
+        cv2.imshow("image", drawImage)
+        cv2.waitKey()  
+        cv2.destroyAllWindows() 
 
 
     def train_classifier_data(self):
