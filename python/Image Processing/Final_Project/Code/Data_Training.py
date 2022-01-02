@@ -20,7 +20,7 @@ class data_training(data_transfer):
         # self.train_bounding_box_wider_data()
         # self.predict_all_bounding_box_wider_data()
         # self.train_bounding_box_narrow_data()
-        # self.predict_all_bounding_box_narrow_data()
+        self.predict_all_bounding_box_narrow_data()
         index = 0
         while index < 120:
             self.predict_bounding_box_narrow_data(index)
@@ -181,46 +181,15 @@ class data_training(data_transfer):
             origin_shape = image.shape
             image = cv2.resize(image, (narrow_data_training_size, narrow_data_training_size), interpolation=cv2.INTER_LINEAR)
             output = model([torch.tensor(image.transpose((2, 0, 1))).float().to(self.device)])
-
-            totalImage = np.zeros((origin_shape[0], origin_shape[1]))
-            print(output)
-            for i in range(min(len(output[0]["masks"]), 3)):
-                totalImage += cv2.resize(output[0]["masks"][i].data.cpu().numpy().transpose((1, 2, 0)) * output[0]["scores"][i].data.cpu().numpy(), (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
             
             for i in range(len(output[0]["masks"])):
                 image = output[0]["masks"][i].data.cpu().numpy().transpose((1, 2, 0))
                 if np.sum(image) > 100:
-                    print(np.sum(image))
                     bestScoreImage = cv2.resize(image, (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
                     break 
             
             predictPoints = findBoundingBox(bestScoreImage > 0.5)
-            predict.append(predictPoints)
-
-            drawImage = np.array(self.bounding_box_narrow_data[index][y1:y2, x1:x2])
-            if len(predictPoints) > 0:
-                cv2.line(drawImage, tuple(predictPoints[0]), tuple(predictPoints[1]), (0, 0, 255), 2)
-                cv2.line(drawImage, tuple(predictPoints[1]), tuple(predictPoints[2]), (0, 0, 255), 2)
-                cv2.line(drawImage, tuple(predictPoints[2]), tuple(predictPoints[3]), (0, 0, 255), 2)
-                cv2.line(drawImage, tuple(predictPoints[3]), tuple(predictPoints[0]), (0, 0, 255), 2)
-            x, y, width, height, angle = np.array(self.bounding_box_narrow_target[index], float)
-            rect = (x, y), (width, height), angle
-            groundTruthPoints = np.array(cv2.boxPoints(rect), int)
-            cv2.line(drawImage, tuple(groundTruthPoints[0]), tuple(groundTruthPoints[1]), (0, 255, 0), 2)
-            cv2.line(drawImage, tuple(groundTruthPoints[1]), tuple(groundTruthPoints[2]), (0, 255, 0), 2)
-            cv2.line(drawImage, tuple(groundTruthPoints[2]), tuple(groundTruthPoints[3]), (0, 255, 0), 2)
-            cv2.line(drawImage, tuple(groundTruthPoints[3]), tuple(groundTruthPoints[0]), (0, 255, 0), 2)
-
-            plt.subplot(221)
-            plt.imshow(totalImage, cmap="jet")
-            plt.subplot(222)
-            plt.imshow(bestScoreImage, cmap="jet")    
-            plt.subplot(223)
-            plt.imshow(drawImage, cmap="binary")
-            plt.subplot(224)
-            plt.imshow(bestScoreImage > 0.5, cmap="binary")    
-            plt.show() 
-            
+            predict.append(predictPoints)            
 
         if not os.path.exists("./predict/"):
             os.makedirs("./predict/")
@@ -232,7 +201,7 @@ class data_training(data_transfer):
         if self.bounding_box_narrow_data == []:
             self.get_bounding_box_narrow_data()
 
-        bounding_box_wider_data_result = np.load("./predict/bounding_box_wider_data_predict.npz")
+        bounding_box_wider_data_result = np.load("./predict/bounding_box_wider_data_predict.npz", allow_pickle = True)
         bounding_box_narrow_data_result = np.load("./predict/bounding_box_narrow_data_predict.npz", allow_pickle = True)
 
         x1, y1, x2, y2 = bounding_box_wider_data_result["predict"][index]
