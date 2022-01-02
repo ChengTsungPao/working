@@ -95,11 +95,14 @@ class data_transfer(data_reader):
 
     def classifier_data_transfer(self):
 
+        result = np.load("./predict/bounding_box_wider_data_predict.npz")
+
         datas = []
-        for data in self.classifier_data:
-            datas.append(self.convertClassifierDataSize(data))
+        for index, data in enumerate(self.classifier_data):
+            x1, y1, x2, y2 = result["predict"][index]
+            datas.append(self.convertClassifierDataSize(data[y1:y2, x1:x2]))
 
         self.classifier_dataset = torch.utils.data.TensorDataset(
-            torch.tensor(np.array(datas, dtype=np.uint8).transpose((0, 3, 1, 2))), 
-            torch.tensor(np.array(self.classifier_target, dtype=np.uint8))
+            torch.tensor((np.array(datas).astype(np.float64) / 255).transpose((0, 3, 1, 2))), 
+            torch.tensor(np.array(self.classifier_target))
         )

@@ -1,6 +1,3 @@
-from hashlib import sha1
-
-from matplotlib.colors import PowerNorm
 from Data_Transfer import data_transfer
 from Config import wider_data_training_size, narrow_data_training_size, classifier_data_training_size
 import torchvision
@@ -9,24 +6,22 @@ import numpy as np
 from Library.engine import train_one_epoch
 import os
 import cv2
+import copy
 import matplotlib.pylab as plt
 from torchsummary import summary
+
+from pytorch_grad_cam import GradCAM, grad_cam
+from pytorch_grad_cam.utils.image import show_cam_on_image
 
 class data_training(data_transfer):
 
     def __init__(self, path):
         super().__init__(path)
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+
         # self.train_bounding_box_wider_data()
-        # self.predict_all_bounding_box_wider_data()
         # self.train_bounding_box_narrow_data()
-        self.predict_all_bounding_box_narrow_data()
-        index = 0
-        while index < 120:
-            self.predict_bounding_box_narrow_data(index)
-            index += 1
         # self.train_classifier_data()
-        # self.predict_all_classifier_data()
 
 
     def train_bounding_box_wider_data(self):
@@ -86,7 +81,7 @@ class data_training(data_transfer):
 
         result = np.load("./predict/bounding_box_wider_data_predict.npz")
 
-        image, target = self.bounding_box_wider_data[index], self.bounding_box_wider_target[index]
+        image, target = copy.deepcopy(self.bounding_box_wider_data[index]), self.bounding_box_wider_target[index]
 
         x1, y1, x2, y2 = result["predict"][index]
         cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 4)
@@ -98,7 +93,6 @@ class data_training(data_transfer):
         cv2.waitKey()  
         cv2.destroyAllWindows()  
         
-
 
     def train_bounding_box_narrow_data(self):
         if self.bounding_box_narrow_dataset == []:
@@ -167,7 +161,6 @@ class data_training(data_transfer):
 
             return np.array(result, int)
             
-
         model = torch.load("./model/bounding_box_narrow_model.pkl")
         result = np.load("./predict/bounding_box_wider_data_predict.npz")
 
@@ -222,7 +215,7 @@ class data_training(data_transfer):
         cv2.line(drawImage, tuple(groundTruthPoints[1]), tuple(groundTruthPoints[2]), (0, 255, 0), 2)
         cv2.line(drawImage, tuple(groundTruthPoints[2]), tuple(groundTruthPoints[3]), (0, 255, 0), 2)
         cv2.line(drawImage, tuple(groundTruthPoints[3]), tuple(groundTruthPoints[0]), (0, 255, 0), 2)
-        cv2.imshow("image", drawImage)
+        cv2.imshow("image", cv2.resize(drawImage, (drawImage.shape[1] * 2, drawImage.shape[0] * 2), interpolation=cv2.INTER_LINEAR))
         cv2.waitKey()  
         cv2.destroyAllWindows() 
 
@@ -280,19 +273,32 @@ class data_training(data_transfer):
             self.get_classifier_data()
 
         model = torch.load("./model/classifier_model.pkl")
+        bounding_box_wider_data_result = np.load("./predict/bounding_box_wider_data_predict.npz", allow_pickle = True)
 
         predict = []
+        grad_cam_image = []
 
-        for image in self.classifier_data:
-            image = cv2.resize(image, (classifier_data_training_size, classifier_data_training_size), interpolation=cv2.INTER_LINEAR)
+        for index, image in enumerate(self.classifier_data):
+            x1, y1, x2, y2 = bounding_box_wider_data_result["predict"][index]
+            image = image[y1:y2, x1:x2]
+            image = cv2.resize(image, (classifier_data_training_size, classifier_data_training_size), interpolation=cv2.INTER_LINEAR).astype(np.float32) / 255
+
             output = model(torch.tensor([image.transpose((2, 0, 1))]).float().to(self.device))
             _, pre = torch.max(torch.nn.functional.softmax(output, dim = 1), 1)
             predict.append(pre.data.cpu()[0])
 
+            target_layers = [model[0].layer4[-1]]
+            input_tensor = torch.tensor([image.transpose((2, 0, 1))]).float().to(self.device)
+            cam = GradCAM(model=model, target_layers=target_layers, use_cuda=torch.cuda.is_available())
+            grayscale_cam = cam(input_tensor=input_tensor)
+            grayscale_cam = grayscale_cam[0, :]
+            visualization = show_cam_on_image(image, grayscale_cam, use_rgb=True)
+            grad_cam_image.append(visualization)
+
         if not os.path.exists("./predict/"):
             os.makedirs("./predict/")
 
-        np.savez("./predict/classifier.npz", label = np.array(["Fracture", "Normal"]), predict = predict, goundTruth = self.classifier_target)
+        np.savez("./predict/classifier.npz", label = np.array(["Fracture", "Normal"]), predict = predict, goundTruth = self.classifier_target, grad_cam_image = grad_cam_image)
 
 
     def predict_classifier_data(self, index):
@@ -302,7 +308,10 @@ class data_training(data_transfer):
         label = result["label"]
         predict = result["predict"]
         goundTruth = result["goundTruth"]
+        grad_cam_image = result["grad_cam_image"]
 
         print("predict = {}, groundTruth = {}".format(label[predict[index]], label[goundTruth[index]]))
+        plt.imshow(grad_cam_image[index])
+        plt.show()
 
 
