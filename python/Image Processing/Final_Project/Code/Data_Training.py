@@ -20,7 +20,7 @@ class data_training(data_transfer):
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
         # self.train_bounding_box_wider_data()
-        # self.train_bounding_box_narrow_data()
+        self.train_bounding_box_narrow_data()
         # self.train_classifier_data()
 
     ########################################################################################################################################################
@@ -137,7 +137,7 @@ class data_training(data_transfer):
             return model
 
         EPOCH = 100
-        BATCH_SIZE = 1
+        BATCH_SIZE = 4
 
         model = create_MaskRCNN_model(2).to(self.device)
         train_dataloader1 = torch.utils.data.DataLoader(self.bounding_box_narrow_dataset1, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
@@ -265,7 +265,7 @@ class data_training(data_transfer):
             torch.nn.Linear(1000, 2)
         ).to(self.device)
 
-        EPOCH = 50
+        EPOCH = 100
         BATCH_SIZE = 4
 
         train_dataloader1 = torch.utils.data.DataLoader(self.classifier_dataset1, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
@@ -316,10 +316,11 @@ class data_training(data_transfer):
 
             print("\r", "Test Data: Accuarcy = {}, loss = {}".format(correct_predict / number_of_data, total_batch_loss / number_of_batch))
 
-        correct_predict = 0
-        total_batch_loss = 0
 
         for epoch in range(1, EPOCH + 1):
+
+            correct_predict = 0
+            total_batch_loss = 0
 
             train_one_epoch(train_dataloader1)
             train_one_epoch(train_dataloader2)
