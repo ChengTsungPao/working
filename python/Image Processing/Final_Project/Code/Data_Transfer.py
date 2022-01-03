@@ -7,7 +7,6 @@ import matplotlib.pylab as plt
 from Dataset_Create import dataset_create
 import cv2
 import os
-import copy
 
 class data_transfer(data_reader):
 
@@ -107,7 +106,7 @@ class data_transfer(data_reader):
         masks = []
         for index in range(len(self.bounding_box_narrow_target)):
             x1, y1, x2, y2 = result["predict"][index]
-            images.append(self.bounding_box_narrow_data[index][y1:y2, x1:x2])
+            images.append(np.array(self.bounding_box_narrow_data[index][y1:y2, x1:x2]).astype(np.float64) / 255)
             masks.append(self.convertBoundingBoxToSeg_rotated(self.bounding_box_narrow_data[index][y1:y2, x1:x2], self.bounding_box_narrow_target[index]))
 
         images = np.array(images)

@@ -1,23 +1,43 @@
 import numpy as np
+import collections
 
+def evaluationF1():
+    result = np.load("./predict/classifier.npz")
 
-def evaluation(predict, groundTruth): # pos = [[x0, y0], [x1, y1], [x2, y2], [x3, y3]]
-    if len(predict) == 0:
-        return 0, 0, 0, 0
+    predict = result["predict"]
+    goundTruth = result["goundTruth"]
 
-    predictPos = boundingBoxAreaPos(predict)
-    groundTruthPos = boundingBoxAreaPos(groundTruth)
+    count = collections.Counter(zip(predict, goundTruth))
+    TP, FP, TN, FN = count[0, 0], count[0, 1], count[1, 1], count[1, 0] # ["Fracture", "Normal"]
 
-    IOU = len(predictPos & groundTruthPos) / len(predictPos | groundTruthPos)
-    recall = len(predictPos & groundTruthPos) / len(groundTruthPos)
-    precision = len(predictPos & groundTruthPos) / len(predictPos)
+    recall = TP / (TP + FP)
+    precision = TP / (TP + FN)
 
     if recall == 0 and precision == 0:
         f1_score = 0
     else:
         f1_score = 2 / (recall ** -1 + precision ** -1)
 
-    return IOU, recall, precision, f1_score
+    return precision, recall, f1_score
+
+
+def evaluationIOU(predict, groundTruth): # pos = [[x0, y0], [x1, y1], [x2, y2], [x3, y3]]
+    if len(predict) == 0:
+        return 0
+
+    predictPos = boundingBoxAreaPos(predict)
+    groundTruthPos = boundingBoxAreaPos(groundTruth)
+
+    IOU = len(predictPos & groundTruthPos) / len(predictPos | groundTruthPos)
+    # recall = len(predictPos & groundTruthPos) / len(groundTruthPos)
+    # precision = len(predictPos & groundTruthPos) / len(predictPos)
+
+    # if recall == 0 and precision == 0:
+    #     f1_score = 0
+    # else:
+    #     f1_score = 2 / (recall ** -1 + precision ** -1)
+
+    return IOU
 
 
 def boundingBoxAreaPos(position):

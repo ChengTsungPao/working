@@ -1,5 +1,6 @@
 from Data_Transfer import data_transfer
 from Config import wider_data_training_size, narrow_data_training_size, classifier_data_training_size
+from Config import imageTempFolder, wider_data_image_filename, wider_data_result_filename, narrow_data_image_filename, narrow_data_result_filename, grad_cam_result_filename
 import torchvision
 import torch
 import numpy as np
@@ -7,8 +8,6 @@ from Library.engine import train_one_epoch, evaluate
 import os
 import cv2
 import copy
-import matplotlib.pylab as plt
-from torchsummary import summary
 
 from pytorch_grad_cam import GradCAM, grad_cam
 from pytorch_grad_cam.utils.image import show_cam_on_image
@@ -98,16 +97,18 @@ class data_training(data_transfer):
         result = np.load("./predict/bounding_box_wider_data_predict.npz")
 
         image, target = copy.deepcopy(self.bounding_box_wider_data[index]), self.bounding_box_wider_target[index]
+        cv2.imwrite(imageTempFolder + wider_data_image_filename, image)
 
         x1, y1, x2, y2 = result["predict"][index]
         cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 4)
 
         x1, y1, x2, y2 = target
-        cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 4)
+        cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), 4)
 
-        cv2.imshow("image", cv2.resize(image, (image.shape[1] // 2, image.shape[0] // 2), interpolation=cv2.INTER_LINEAR))
-        cv2.waitKey()  
-        cv2.destroyAllWindows()  
+        cv2.imwrite(imageTempFolder + wider_data_result_filename, image)
+        # cv2.imshow("wider_data_image", cv2.resize(image, (image.shape[1] // 2, image.shape[0] // 2), interpolation=cv2.INTER_LINEAR))
+        # cv2.waitKey()  
+        # cv2.destroyAllWindows() 
         
     ########################################################################################################################################################
     ######################################################## train_bounding_box_narrow_data ################################################################
@@ -203,7 +204,7 @@ class data_training(data_transfer):
             x1, y1, x2, y2 = result["predict"][index]
             image = self.bounding_box_narrow_data[index][y1:y2, x1:x2]
             origin_shape = image.shape
-            image = cv2.resize(image, (narrow_data_training_size, narrow_data_training_size), interpolation=cv2.INTER_LINEAR)
+            image = cv2.resize(image, (narrow_data_training_size, narrow_data_training_size), interpolation=cv2.INTER_LINEAR).astype(np.float64) / 255
             output = model([torch.tensor(image.transpose((2, 0, 1))).float().to(self.device)])
             
             # for i in range(len(output[0]["masks"])):
@@ -231,6 +232,7 @@ class data_training(data_transfer):
         x1, y1, x2, y2 = bounding_box_wider_data_result["predict"][index]
         image, target = self.bounding_box_narrow_data[index], self.bounding_box_narrow_target[index]
         drawImage = np.array(image[y1:y2, x1:x2])
+        cv2.imwrite(imageTempFolder + narrow_data_image_filename, drawImage)
 
         predictPoints = bounding_box_narrow_data_result["predict"][index]
         if len(predictPoints) > 0:
@@ -242,13 +244,14 @@ class data_training(data_transfer):
         x, y, width, height, angle = np.array(target, float)
         rect = (x, y), (width, height), angle
         groundTruthPoints = np.array(cv2.boxPoints(rect), int)
-        cv2.line(drawImage, tuple(groundTruthPoints[0]), tuple(groundTruthPoints[1]), (0, 255, 0), 2)
-        cv2.line(drawImage, tuple(groundTruthPoints[1]), tuple(groundTruthPoints[2]), (0, 255, 0), 2)
-        cv2.line(drawImage, tuple(groundTruthPoints[2]), tuple(groundTruthPoints[3]), (0, 255, 0), 2)
-        cv2.line(drawImage, tuple(groundTruthPoints[3]), tuple(groundTruthPoints[0]), (0, 255, 0), 2)
-        cv2.imshow("image", cv2.resize(drawImage, (drawImage.shape[1] * 2, drawImage.shape[0] * 2), interpolation=cv2.INTER_LINEAR))
-        cv2.waitKey()  
-        cv2.destroyAllWindows() 
+        cv2.line(drawImage, tuple(groundTruthPoints[0]), tuple(groundTruthPoints[1]), (0, 0, 255), 2)
+        cv2.line(drawImage, tuple(groundTruthPoints[1]), tuple(groundTruthPoints[2]), (0, 0, 255), 2)
+        cv2.line(drawImage, tuple(groundTruthPoints[2]), tuple(groundTruthPoints[3]), (0, 0, 255), 2)
+        cv2.line(drawImage, tuple(groundTruthPoints[3]), tuple(groundTruthPoints[0]), (0, 0, 255), 2)
+        cv2.imwrite(imageTempFolder + narrow_data_result_filename, drawImage)
+        # cv2.imshow("narrow_data_image", cv2.resize(drawImage, (drawImage.shape[1] * 2, drawImage.shape[0] * 2), interpolation=cv2.INTER_LINEAR))
+        # cv2.waitKey()  
+        # cv2.destroyAllWindows() 
 
     ########################################################################################################################################################
     ########################################################### train_classifier_data ######################################################################
@@ -357,12 +360,12 @@ class data_training(data_transfer):
             image = image[y1:y2, x1:x2]
             image = cv2.resize(image, (classifier_data_training_size, classifier_data_training_size), interpolation=cv2.INTER_LINEAR).astype(np.float32) / 255
 
-            output = model(torch.tensor([image.transpose((2, 0, 1))]).float().to(self.device))
+            output = model(torch.tensor(np.array([image.transpose((2, 0, 1))])).float().to(self.device))
             _, pre = torch.max(torch.nn.functional.softmax(output, dim = 1), 1)
             predict.append(pre.data.cpu()[0])
 
             target_layers = [model[0].layer4[-1]]
-            input_tensor = torch.tensor([image.transpose((2, 0, 1))]).float().to(self.device)
+            input_tensor = torch.tensor(np.array([image.transpose((2, 0, 1))])).float().to(self.device)
             cam = GradCAM(model=model, target_layers=target_layers, use_cuda=torch.cuda.is_available())
             grayscale_cam = cam(input_tensor=input_tensor)
             grayscale_cam = grayscale_cam[0, :]
@@ -384,8 +387,15 @@ class data_training(data_transfer):
         goundTruth = result["goundTruth"]
         grad_cam_image = result["grad_cam_image"]
 
-        print("predict = {}, groundTruth = {}".format(label[predict[index]], label[goundTruth[index]]))
-        plt.imshow(grad_cam_image[index])
-        plt.show()
+        # print("predict = {}, groundTruth = {}".format(label[predict[index]], label[goundTruth[index]]))
+
+        red, green, blue = cv2.split(grad_cam_image[index])
+        image = cv2.merge([blue, green, red])
+        cv2.imwrite(imageTempFolder + grad_cam_result_filename, image)
+        # cv2.imshow("classifier_data_image", grad_cam_image[index])
+        # cv2.waitKey()  
+        # cv2.destroyAllWindows() 
+
+        return label[predict[index]], label[goundTruth[index]]
 
 
