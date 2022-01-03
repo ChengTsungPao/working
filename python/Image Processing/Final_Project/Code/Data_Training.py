@@ -20,7 +20,7 @@ class data_training(data_transfer):
         self.device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
         # self.train_bounding_box_wider_data()
-        self.train_bounding_box_narrow_data()
+        # self.train_bounding_box_narrow_data()
         # self.train_classifier_data()
 
     ########################################################################################################################################################
@@ -206,11 +206,11 @@ class data_training(data_transfer):
             image = cv2.resize(image, (narrow_data_training_size, narrow_data_training_size), interpolation=cv2.INTER_LINEAR)
             output = model([torch.tensor(image.transpose((2, 0, 1))).float().to(self.device)])
             
-            for i in range(len(output[0]["masks"])):
-                image = output[0]["masks"][i].data.cpu().numpy().transpose((1, 2, 0))
-                if np.sum(image) > 100:
-                    bestScoreImage = cv2.resize(image, (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
-                    break 
+            # for i in range(len(output[0]["masks"])):
+            image = output[0]["masks"][0].data.cpu().numpy().transpose((1, 2, 0))
+                # if np.sum(image) > 100:
+            bestScoreImage = cv2.resize(image, (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
+                    # break 
             
             predictPoints = findBoundingBox(bestScoreImage > 0.5)
             predict.append(predictPoints)            

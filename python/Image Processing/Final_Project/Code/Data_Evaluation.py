@@ -17,7 +17,6 @@ def evaluation(predict, groundTruth): # pos = [[x0, y0], [x1, y1], [x2, y2], [x3
     else:
         f1_score = 2 / (recall ** -1 + precision ** -1)
 
-    print(IOU, recall, precision, f1_score)
     return IOU, recall, precision, f1_score
 
 
