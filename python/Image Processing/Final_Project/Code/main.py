@@ -12,4 +12,6 @@ if __name__ == "__main__":
 
     # path = "./Scaphoid/"
     # data_training_fcn = data_training(path)
+    # data_training_fcn.train_bounding_box_wider_data()
     # data_training_fcn.train_bounding_box_narrow_data()
+    # data_training_fcn.train_classifier_data()

@@ -1,6 +1,7 @@
 from Data_Transfer import data_transfer
 from Config import wider_data_training_size, narrow_data_training_size, classifier_data_training_size
 from Config import imageTempFolder, wider_data_image_filename, wider_data_result_filename, narrow_data_image_filename, narrow_data_result_filename, grad_cam_result_filename
+from Config import wider_data_model, narrow_data_model, classifier_data_model
 import torchvision
 import torch
 import numpy as np
@@ -34,36 +35,46 @@ class data_training(data_transfer):
         EPOCH = 100
         BATCH_SIZE = 4
 
-        model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained = True).to(self.device)
         train_dataloader1 = torch.utils.data.DataLoader(self.bounding_box_wider_dataset1, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
         train_dataloader2 = torch.utils.data.DataLoader(self.bounding_box_wider_dataset2, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
         train_dataloader3 = torch.utils.data.DataLoader(self.bounding_box_wider_dataset3, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
 
-        optimizer = torch.optim.SGD(model.parameters(), lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
-        # scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
+        def train_three_fold_data(dataloader1, dataloader2, dataloader3, nameIndex):
 
-        for epoch in range(EPOCH):
-            train_one_epoch(model, optimizer, train_dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
-            train_one_epoch(model, optimizer, train_dataloader2, self.device, epoch, BATCH_SIZE, print_freq = 1)
-            evaluate(model, train_dataloader3, self.device)
+            model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained = True).to(self.device)
+            optimizer = torch.optim.SGD(model.parameters(), lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
 
-            train_one_epoch(model, optimizer, train_dataloader2, self.device, epoch, BATCH_SIZE, print_freq = 1)
-            train_one_epoch(model, optimizer, train_dataloader3, self.device, epoch, BATCH_SIZE, print_freq = 1)
-            evaluate(model, train_dataloader1, self.device)
+            for epoch in range(1, EPOCH + 1):
+                train_one_epoch(model, optimizer, dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
+                train_one_epoch(model, optimizer, dataloader2, self.device, epoch, BATCH_SIZE, print_freq = 1)
+                evaluate(model, dataloader3, self.device)
 
-            train_one_epoch(model, optimizer, train_dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
-            train_one_epoch(model, optimizer, train_dataloader3, self.device, epoch, BATCH_SIZE, print_freq = 1)
-            evaluate(model, train_dataloader2, self.device)
+            model.eval()
 
-            # scheduler.step()
+            if not os.path.exists("./model/"):
+                os.makedirs("./model/")
+            torch.save(model, "./model/bounding_box_wider_model{}.pkl".format(nameIndex))
 
-        model.eval()
+        def train_all_data():
 
-        if not os.path.exists("./model/"):
-            os.makedirs("./model/")
-        torch.save(model, "./model/bounding_box_wider_model.pkl")
+            model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained = True).to(self.device)
+            optimizer = torch.optim.SGD(model.parameters(), lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
 
-        self.predict_all_bounding_box_wider_data()
+            for epoch in range(1, EPOCH + 1):
+                train_one_epoch(model, optimizer, train_dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
+                train_one_epoch(model, optimizer, train_dataloader2, self.device, epoch, BATCH_SIZE, print_freq = 1)
+                train_one_epoch(model, optimizer, train_dataloader3, self.device, epoch, BATCH_SIZE, print_freq = 1)
+
+            model.eval()
+
+            if not os.path.exists("./model/"):
+                os.makedirs("./model/")
+            torch.save(model, "./model/bounding_box_wider_model.pkl")
+
+        train_three_fold_data(train_dataloader1, train_dataloader2, train_dataloader3, 1)
+        train_three_fold_data(train_dataloader2, train_dataloader3, train_dataloader1, 2)
+        train_three_fold_data(train_dataloader1, train_dataloader3, train_dataloader2, 3)
+        # train_all_data()
 
 
     def predict_all_bounding_box_wider_data(self):
@@ -140,39 +151,46 @@ class data_training(data_transfer):
         EPOCH = 500
         BATCH_SIZE = 4
 
-        model = create_MaskRCNN_model(2).to(self.device)
         train_dataloader1 = torch.utils.data.DataLoader(self.bounding_box_narrow_dataset1, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
         train_dataloader2 = torch.utils.data.DataLoader(self.bounding_box_narrow_dataset2, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
         train_dataloader3 = torch.utils.data.DataLoader(self.bounding_box_narrow_dataset3, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
 
-        params = [p for p in model.parameters() if p.requires_grad]
-        optimizer = torch.optim.SGD(model.parameters(), lr = 0.00001, momentum = 0.9)
-        # optimizer = torch.optim.Adam(params, lr = 0.00001)
-        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
+        def train_three_fold_data(dataloader1, dataloader2, dataloader3, nameIndex):
 
-        for epoch in range(EPOCH):
-            train_one_epoch(model, optimizer, train_dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
-            train_one_epoch(model, optimizer, train_dataloader2, self.device, epoch, BATCH_SIZE, print_freq = 1)
-            evaluate(model, train_dataloader3, self.device)
-            
-            train_one_epoch(model, optimizer, train_dataloader2, self.device, epoch, BATCH_SIZE, print_freq = 1)
-            train_one_epoch(model, optimizer, train_dataloader3, self.device, epoch, BATCH_SIZE, print_freq = 1)
-            evaluate(model, train_dataloader1, self.device)
+            model = create_MaskRCNN_model(2).to(self.device)
+            optimizer = torch.optim.SGD(model.parameters(), lr = 0.00001, momentum = 0.9)
 
-            train_one_epoch(model, optimizer, train_dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
-            train_one_epoch(model, optimizer, train_dataloader3, self.device, epoch, BATCH_SIZE, print_freq = 1)
-            evaluate(model, train_dataloader2, self.device)
+            for epoch in range(1, EPOCH + 1):
+                train_one_epoch(model, optimizer, dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
+                train_one_epoch(model, optimizer, dataloader2, self.device, epoch, BATCH_SIZE, print_freq = 1)
+                evaluate(model, dataloader3, self.device)
 
-            # scheduler.step()
+            model.eval()
 
-        model.eval()
+            if not os.path.exists("./model/"):
+                os.makedirs("./model/")
+            torch.save(model, "./model/bounding_box_narrow_model{}.pkl".format(nameIndex))
 
-        if not os.path.exists("./model/"):
-            os.makedirs("./model/")
-        torch.save(model, "./model/bounding_box_narrow_model.pkl")
+        def train_all_data():
 
-        self.predict_all_bounding_box_narrow_data()
+            model = create_MaskRCNN_model(2).to(self.device)
+            optimizer = torch.optim.SGD(model.parameters(), lr = 0.00001, momentum = 0.9)
 
+            for epoch in range(1, EPOCH + 1):
+                train_one_epoch(model, optimizer, train_dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
+                train_one_epoch(model, optimizer, train_dataloader2, self.device, epoch, BATCH_SIZE, print_freq = 1)
+                train_one_epoch(model, optimizer, train_dataloader3, self.device, epoch, BATCH_SIZE, print_freq = 1)
+
+            model.eval()
+
+            if not os.path.exists("./model/"):
+                os.makedirs("./model/")
+            torch.save(model, "./model/bounding_box_narrow_model.pkl")
+
+        train_three_fold_data(train_dataloader1, train_dataloader2, train_dataloader3, 1)
+        train_three_fold_data(train_dataloader2, train_dataloader3, train_dataloader1, 2)
+        train_three_fold_data(train_dataloader1, train_dataloader3, train_dataloader2, 3)
+        # train_all_data()
 
     def predict_all_bounding_box_narrow_data(self):
         if self.bounding_box_narrow_data == []:
@@ -193,7 +211,7 @@ class data_training(data_transfer):
 
             return np.array(result, int)
             
-        model = torch.load("./model/bounding_box_narrow_model.pkl")
+        model = torch.load("./model/{}".format(narrow_data_model))
         result = np.load("./predict/bounding_box_wider_data_predict.npz")
 
         model.eval()
@@ -281,7 +299,6 @@ class data_training(data_transfer):
         optimizer = torch.optim.SGD(model.parameters(), lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
         loss_func = torch.nn.CrossEntropyLoss()
 
-
         def train_one_epoch(train_dataloader):
             nonlocal correct_predict, total_batch_loss
 
@@ -297,7 +314,7 @@ class data_training(data_transfer):
                 correct_predict += (predict.data.cpu() == targets).sum()
                 total_batch_loss += loss.data.cpu().numpy()
 
-                print("\r", "Batch of Training: %.4f" % (((step + 1) / number_of_batch) * 100.), "%", " (loss = {}, epoch: {})".format(loss, epoch), end=" ")
+                print("\r", "Batch of Training: %.4f" % (((step + 1) / number_of_batch) * 100.), "%", " (loss = {})".format(loss), end=" ")
             
             print()
 
@@ -319,37 +336,60 @@ class data_training(data_transfer):
 
             print("\r", "Test Data: Accuarcy = {}, loss = {}".format(correct_predict / number_of_data, total_batch_loss / number_of_batch))
 
+        def train_three_fold_data(dataloader1, dataloader2, dataloader3, nameIndex):
+            nonlocal correct_predict, total_batch_loss
 
-        for epoch in range(1, EPOCH + 1):
+            for epoch in range(1, EPOCH + 1):
+                print("Epoch: {}".format(epoch))
 
-            correct_predict = 0
-            total_batch_loss = 0
+                correct_predict = 0
+                total_batch_loss = 0
 
-            train_one_epoch(train_dataloader1)
-            train_one_epoch(train_dataloader2)
-            evaluate(train_dataloader3)
+                train_one_epoch(dataloader1)
+                train_one_epoch(dataloader2)
+                evaluate(dataloader3)
 
-            train_one_epoch(train_dataloader2)
-            train_one_epoch(train_dataloader3)
-            evaluate(train_dataloader1)
-            
-            train_one_epoch(train_dataloader1)
-            train_one_epoch(train_dataloader3)
-            evaluate(train_dataloader2)
+                print("\n Epoch of Training: %.4f" % ((epoch / EPOCH) * 100.), "%", " (loss = {}, accuracy = {}, epoch: {})\n".format(total_batch_loss / (number_of_batch * 6), correct_predict / (number_of_data * 6), epoch), end=" ")
+                print("====================================================")
 
-            print("\n Epoch of Training: %.4f" % ((epoch / EPOCH) * 100.), "%", " (loss = {}, accuracy = {}, epoch: {})\n".format(total_batch_loss / (number_of_batch * 6), correct_predict / (number_of_data * 6), epoch), end=" ")
-            print("====================================================")
+            if not os.path.exists("./model/"):
+                os.makedirs("./model/")
+            torch.save(model, "./model/classifier_model{}.pkl".format(nameIndex))
 
-        if not os.path.exists("./model/"):
-            os.makedirs("./model/")
-        torch.save(model, "./model/classifier_model.pkl")
+        def train_all_data():
+            nonlocal correct_predict, total_batch_loss
+
+            for epoch in range(1, EPOCH + 1):
+                print("Epoch: {}".format(epoch))
+
+                correct_predict = 0
+                total_batch_loss = 0
+
+                train_one_epoch(train_dataloader1)
+                train_one_epoch(train_dataloader2)
+                train_one_epoch(train_dataloader3)
+
+                print("\n Epoch of Training: %.4f" % ((epoch / EPOCH) * 100.), "%", " (loss = {}, accuracy = {}, epoch: {})\n".format(total_batch_loss / (number_of_batch * 6), correct_predict / (number_of_data * 6), epoch), end=" ")
+                print("====================================================")
+
+            if not os.path.exists("./model/"):
+                os.makedirs("./model/")
+            torch.save(model, "./model/classifier_model.pkl")
+
+        correct_predict, total_batch_loss = 0, 0
+        train_three_fold_data(train_dataloader1, train_dataloader2, train_dataloader3, 1)
+        train_three_fold_data(train_dataloader2, train_dataloader3, train_dataloader1, 2)
+        train_three_fold_data(train_dataloader1, train_dataloader3, train_dataloader2, 3)
+
+        # correct_predict, total_batch_loss = 0, 0
+        # train_all_data()
 
     
     def predict_all_classifier_data(self):
         if self.classifier_data == []:
             self.get_classifier_data()
 
-        model = torch.load("./model/classifier_model.pkl")
+        model = torch.load("./model/{}".format(classifier_data_model))
         bounding_box_wider_data_result = np.load("./predict/bounding_box_wider_data_predict.npz", allow_pickle = True)
 
         predict = []
