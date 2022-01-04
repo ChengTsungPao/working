@@ -6,13 +6,19 @@ from PIL import Image
 import torchvision.transforms as T
 import matplotlib.pylab as plt
 import cv2
-
+from torchvision import transforms
 
 class dataset_create(torch.utils.data.Dataset):
     def __init__(self, imgs, masks, training_size):
         self.imgs = imgs
         self.masks = masks
         self.training_size = training_size
+        self.transform = transforms.Compose([
+            transforms.ToTensor(),
+            transforms.RandomHorizontalFlip(p=0.5),
+            transforms.RandomVerticalFlip(p=0.5),
+            transforms.ColorJitter()
+        ])
 
 
     def __getitem__(self, idx):
@@ -54,6 +60,10 @@ class dataset_create(torch.utils.data.Dataset):
         target["image_id"] = image_id
         target["area"] = area
         target["iscrowd"] = iscrowd
+
+        img = self.transform(img)
+        img = np.array(img)
+        img = img.transpose(1, 2, 0)
 
         return img, target
 

@@ -151,7 +151,7 @@ class data_training(data_transfer):
 
             return model
 
-        EPOCH = 100
+        EPOCH = 500
         BATCH_SIZE = 4
 
         train_dataloader1 = torch.utils.data.DataLoader(self.bounding_box_narrow_dataset1, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
