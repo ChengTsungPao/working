@@ -137,7 +137,7 @@ class data_training(data_transfer):
 
             return model
 
-        EPOCH = 100
+        EPOCH = 500
         BATCH_SIZE = 4
 
         model = create_MaskRCNN_model(2).to(self.device)
@@ -148,7 +148,7 @@ class data_training(data_transfer):
         params = [p for p in model.parameters() if p.requires_grad]
         optimizer = torch.optim.SGD(model.parameters(), lr = 0.00001, momentum = 0.9)
         # optimizer = torch.optim.Adam(params, lr = 0.00001)
-        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=5, gamma=0.1)
+        scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
 
         for epoch in range(EPOCH):
             train_one_epoch(model, optimizer, train_dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)

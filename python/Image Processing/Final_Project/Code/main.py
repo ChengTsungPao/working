@@ -1,4 +1,4 @@
-from Show_Result import show_result
+from Data_Training import data_training
 import numpy as np
 import sys
 from PyQt5 import QtWidgets
@@ -11,5 +11,5 @@ if __name__ == "__main__":
     sys.exit(app.exec_())
 
     # path = "./Scaphoid/"
-    # show_result_fcn = show_result(path)
-    # show_result_fcn.train_bounding_box_narrow_data
+    # data_training_fcn = data_training(path)
+    # data_training_fcn.train_bounding_box_narrow_data()
