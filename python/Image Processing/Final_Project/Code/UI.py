@@ -12,13 +12,25 @@ class UI(QtWidgets.QMainWindow):
         super(UI, self).__init__()
         uic.loadUi('UI.ui', self)
 
-        self.path = "./Scaphoid/"
+        self.path = None
         self.show_result_fcn = None
         self.imageNameTable = {}
-        self.setup()
-
+        self.loadFolderButton.clicked.connect(self.load_folder)
+        
         self.comboBox.currentTextChanged.connect(self.combobox_changed)
         self.show()
+
+
+    def load_folder(self):
+        folderpath = QtWidgets.QFileDialog.getExistingDirectory(self, 'Select Folder')
+        if folderpath != "":
+            self.path = folderpath + "/"
+            try:
+                self.setup()
+                os.system("cls||clear")
+                print("Complete Setup !!!")
+            except:
+                print("Wrong Folder !!!")
 
 
     def setup(self):
@@ -74,7 +86,7 @@ class UI(QtWidgets.QMainWindow):
             self.resultImageLabel.setPixmap(QPixmap(imageTempFolder + narrow_data_result_filename))
 
         else:
-            self.locationFractureLabel.setText("Location of fracture: ")
+            self.locationFractureLabel.setText("Location of fracture: XX")
             self.cropImageLabel.clear()
             self.resultImageLabel.clear()
 

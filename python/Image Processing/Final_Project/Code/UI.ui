@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1273</width>
-    <height>776</height>
+    <width>1274</width>
+    <height>792</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,9 +17,9 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>165</x>
+      <x>153</x>
       <y>20</y>
-      <width>101</width>
+      <width>141</width>
       <height>51</height>
      </rect>
     </property>
@@ -35,9 +35,9 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>511</x>
+      <x>494</x>
       <y>20</y>
-      <width>101</width>
+      <width>141</width>
       <height>51</height>
      </rect>
     </property>
@@ -135,7 +135,7 @@
      <rect>
       <x>185</x>
       <y>690</y>
-      <width>51</width>
+      <width>71</width>
       <height>51</height>
      </rect>
     </property>
@@ -151,9 +151,9 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>540</x>
+      <x>529</x>
       <y>690</y>
-      <width>51</width>
+      <width>81</width>
       <height>51</height>
      </rect>
     </property>
@@ -338,14 +338,27 @@
      <string>Location of fracture :</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="loadFolderButton">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>660</y>
+      <width>251</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load Folder</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1273</width>
-     <height>21</height>
+     <width>1274</width>
+     <height>25</height>
     </rect>
    </property>
   </widget>

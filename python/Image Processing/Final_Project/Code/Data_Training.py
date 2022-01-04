@@ -81,7 +81,10 @@ class data_training(data_transfer):
         if self.bounding_box_wider_data == []:
             self.get_bounding_box_wider_data()
 
-        model = torch.load("./model/bounding_box_wider_model.pkl")
+        if torch.cuda.is_available():
+            model = torch.load("./model/{}".format(wider_data_model))
+        else:
+            model = torch.load("./model/{}".format(wider_data_model), map_location=torch.device('cpu'))
 
         predict = []
         
@@ -210,8 +213,12 @@ class data_training(data_transfer):
                 result = cv2.boxPoints(rect)
 
             return np.array(result, int)
-            
-        model = torch.load("./model/{}".format(narrow_data_model))
+
+        if torch.cuda.is_available():    
+            model = torch.load("./model/{}".format(narrow_data_model))
+        else:
+            model = torch.load("./model/{}".format(narrow_data_model), map_location=torch.device('cpu'))
+
         result = np.load("./predict/bounding_box_wider_data_predict.npz")
 
         model.eval()
@@ -393,14 +400,18 @@ class data_training(data_transfer):
         if self.classifier_data == []:
             self.get_classifier_data()
 
-        model = torch.load("./model/{}".format(classifier_data_model))
-        bounding_box_wider_data_result = np.load("./predict/bounding_box_wider_data_predict.npz", allow_pickle = True)
+        if torch.cuda.is_available(): 
+            model = torch.load("./model/{}".format(classifier_data_model))
+        else:
+            model = torch.load("./model/{}".format(classifier_data_model), map_location=torch.device('cpu'))
+
+        result = np.load("./predict/bounding_box_wider_data_predict.npz", allow_pickle = True)
 
         predict = []
         grad_cam_image = []
 
         for index, image in enumerate(self.classifier_data):
-            x1, y1, x2, y2 = bounding_box_wider_data_result["predict"][index]
+            x1, y1, x2, y2 = result["predict"][index]
             image = image[y1:y2, x1:x2]
             image = cv2.resize(image, (classifier_data_training_size, classifier_data_training_size), interpolation=cv2.INTER_LINEAR).astype(np.float32) / 255
 
