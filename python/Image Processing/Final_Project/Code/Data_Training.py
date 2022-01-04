@@ -297,12 +297,8 @@ class data_training(data_transfer):
         number_of_batch = len(train_dataloader1)
         number_of_data = len(self.classifier_dataset1)
 
-        model = torch.nn.Sequential()
-        optimizer = torch.optim.SGD(model.parameters(), lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
-        loss_func = torch.nn.CrossEntropyLoss()
-
-        def train_one_epoch(train_dataloader):
-            nonlocal correct_predict, total_batch_loss, model
+        def train_one_epoch(train_dataloader, model, optimizer, loss_func):
+            nonlocal correct_predict, total_batch_loss
 
             for step, (datas, targets) in enumerate(train_dataloader):
 
@@ -320,7 +316,7 @@ class data_training(data_transfer):
             
             print()
 
-        def evaluate(train_dataloader):
+        def evaluate(train_dataloader, model, loss_func):
             correct_predict = 0
             total_batch_loss = 0
             
@@ -336,13 +332,15 @@ class data_training(data_transfer):
             print("\r", "Test Data: Accuarcy = {}, loss = {}".format(correct_predict / number_of_data, total_batch_loss / number_of_batch))
 
         def train_three_fold_data(dataloader1, dataloader2, dataloader3, nameIndex):
-            nonlocal correct_predict, total_batch_loss, model
+            nonlocal correct_predict, total_batch_loss
 
             model = torch.nn.Sequential(
                 torchvision.models.resnet50(pretrained=True), 
                 torch.nn.ReLU(),
                 torch.nn.Linear(1000, 2)
             ).to(self.device)
+            optimizer = torch.optim.SGD(model.parameters(), lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
+            loss_func = torch.nn.CrossEntropyLoss()
 
             for epoch in range(1, EPOCH + 1):
                 print("Epoch: {}".format(epoch))
@@ -350,11 +348,11 @@ class data_training(data_transfer):
                 correct_predict = 0
                 total_batch_loss = 0
 
-                train_one_epoch(dataloader1)
-                train_one_epoch(dataloader2)
-                evaluate(dataloader3)
+                train_one_epoch(dataloader1, model, optimizer, loss_func)
+                train_one_epoch(dataloader2, model, optimizer, loss_func)
+                evaluate(dataloader3, model, loss_func)
 
-                print("\n Epoch of Training: %.4f" % ((epoch / EPOCH) * 100.), "%", " (loss = {}, accuracy = {}, epoch: {})\n".format(total_batch_loss / (number_of_batch * 6), correct_predict / (number_of_data * 6), epoch), end=" ")
+                print("\n Epoch of Training: %.4f" % ((epoch / EPOCH) * 100.), "%", " (loss = {}, accuracy = {}, epoch: {})\n".format(total_batch_loss / (number_of_batch * 2), correct_predict / (number_of_data * 2), epoch), end=" ")
                 print("====================================================")
 
             if not os.path.exists("./model/"):
@@ -362,13 +360,15 @@ class data_training(data_transfer):
             torch.save(model, "./model/classifier_model{}.pkl".format(nameIndex))
 
         def train_all_data():
-            nonlocal correct_predict, total_batch_loss, model
+            nonlocal correct_predict, total_batch_loss
 
             model = torch.nn.Sequential(
                 torchvision.models.resnet50(pretrained=True), 
                 torch.nn.ReLU(),
                 torch.nn.Linear(1000, 2)
             ).to(self.device)
+            optimizer = torch.optim.SGD(model.parameters(), lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
+            loss_func = torch.nn.CrossEntropyLoss()
 
             for epoch in range(1, EPOCH + 1):
                 print("Epoch: {}".format(epoch))
@@ -376,11 +376,11 @@ class data_training(data_transfer):
                 correct_predict = 0
                 total_batch_loss = 0
 
-                train_one_epoch(train_dataloader1)
-                train_one_epoch(train_dataloader2)
-                train_one_epoch(train_dataloader3)
+                train_one_epoch(train_dataloader1, model, optimizer, loss_func)
+                train_one_epoch(train_dataloader2, model, optimizer, loss_func)
+                train_one_epoch(train_dataloader3, model, optimizer, loss_func)
 
-                print("\n Epoch of Training: %.4f" % ((epoch / EPOCH) * 100.), "%", " (loss = {}, accuracy = {}, epoch: {})\n".format(total_batch_loss / (number_of_batch * 6), correct_predict / (number_of_data * 6), epoch), end=" ")
+                print("\n Epoch of Training: %.4f" % ((epoch / EPOCH) * 100.), "%", " (loss = {}, accuracy = {}, epoch: {})\n".format(total_batch_loss / (number_of_batch * 3), correct_predict / (number_of_data * 3), epoch), end=" ")
                 print("====================================================")
 
             if not os.path.exists("./model/"):
