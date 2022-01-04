@@ -42,7 +42,7 @@ class data_training(data_transfer):
         def train_three_fold_data(dataloader1, dataloader2, dataloader3, nameIndex):
 
             model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained = True).to(self.device)
-            optimizer = torch.optim.SGD(model.parameters(), lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
+            optimizer = torch.optim.SGD(model.parameters(), lr = 0.00001, momentum = 0.9, weight_decay=0.0005)
 
             for epoch in range(1, EPOCH + 1):
                 train_one_epoch(model, optimizer, dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
@@ -58,7 +58,7 @@ class data_training(data_transfer):
         def train_all_data():
 
             model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained = True).to(self.device)
-            optimizer = torch.optim.SGD(model.parameters(), lr = 0.0001, momentum = 0.9, weight_decay=0.0005)
+            optimizer = torch.optim.SGD(model.parameters(), lr = 0.00001, momentum = 0.9, weight_decay=0.0005)
 
             for epoch in range(1, EPOCH + 1):
                 train_one_epoch(model, optimizer, train_dataloader1, self.device, epoch, BATCH_SIZE, print_freq = 1)
@@ -148,7 +148,7 @@ class data_training(data_transfer):
 
             return model
 
-        EPOCH = 500
+        EPOCH = 100
         BATCH_SIZE = 4
 
         train_dataloader1 = torch.utils.data.DataLoader(self.bounding_box_narrow_dataset1, batch_size = BATCH_SIZE, shuffle = True, num_workers = 1)
