@@ -92,8 +92,11 @@ class data_training(data_transfer):
             image = self.bounding_box_wider_data[index]
             origin_shape = image.shape
             image = cv2.resize(image, (wider_data_training_size, wider_data_training_size), interpolation=cv2.INTER_LINEAR)
-
             output = model([torch.tensor(image.transpose((2, 0, 1))).float().to(self.device)])
+            if len(output[0]["boxes"]) == 0:
+                predict.append(np.array([0, 0, 1, 1], int))
+                continue
+            
             x1, y1, x2, y2 = output[0]["boxes"][0].data.cpu().numpy().astype(np.float)
             scaleX, scaleY = origin_shape[1] / wider_data_training_size, origin_shape[0] / wider_data_training_size
             predict.append(np.array([x1 * scaleX, y1 * scaleY, x2 * scaleX, y2 * scaleY], int))
@@ -108,7 +111,7 @@ class data_training(data_transfer):
         if self.bounding_box_wider_data == []:
             self.get_bounding_box_wider_data()
 
-        result = np.load("./predict/bounding_box_wider_data_predict.npz")
+        result = np.load("./predict/bounding_box_wider_data_predict.npz", allow_pickle = True)
 
         image, target = copy.deepcopy(self.bounding_box_wider_data[index]), self.bounding_box_wider_target[index]
         cv2.imwrite(imageTempFolder + wider_data_image_filename, image)
@@ -231,15 +234,15 @@ class data_training(data_transfer):
             origin_shape = image.shape
             image = cv2.resize(image, (narrow_data_training_size, narrow_data_training_size), interpolation=cv2.INTER_LINEAR).astype(np.float64) / 255
             output = model([torch.tensor(image.transpose((2, 0, 1))).float().to(self.device)])
+            if len(output[0]["masks"]) == 0:
+                predict.append([[0, 0], [0, 1], [1, 1], [1, 0]])
+                continue
             
-            # for i in range(len(output[0]["masks"])):
             image = output[0]["masks"][0].data.cpu().numpy().transpose((1, 2, 0))
-                # if np.sum(image) > 100:
             bestScoreImage = cv2.resize(image, (origin_shape[1], origin_shape[0]), interpolation=cv2.INTER_LINEAR)
-                    # break 
             
             predictPoints = findBoundingBox(bestScoreImage > 0.5)
-            predict.append(predictPoints)            
+            predict.append(predictPoints if len(predictPoints) > 0 else [[0, 0], [0, 1], [1, 1], [1, 0]])          
 
         if not os.path.exists("./predict/"):
             os.makedirs("./predict/")
