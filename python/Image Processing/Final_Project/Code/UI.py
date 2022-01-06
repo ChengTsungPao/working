@@ -72,6 +72,7 @@ class UI(QtWidgets.QMainWindow):
         self.show_result_fcn.predict_bounding_box_wider_data(index)
         self.originImageLabel.setPixmap(QPixmap(imageTempFolder + wider_data_image_filename))
         self.detectImageLabel.setPixmap(QPixmap(imageTempFolder + wider_data_result_filename))
+        self.cropImageLabel.setPixmap(QPixmap(imageTempFolder + narrow_data_image_filename))
 
         predict, goundTruth = self.show_result_fcn.predict_classifier_data(index)
         self.typeLabel.setText("Type: {}".format(goundTruth))
@@ -82,12 +83,10 @@ class UI(QtWidgets.QMainWindow):
             IOU = self.show_result_fcn.all_bounding_box_narrow_data_evaluation[index]
             self.locationFractureLabel.setText("Location of fracture: IOU = {:.2f}".format(IOU))
             self.show_result_fcn.predict_bounding_box_narrow_data(index)
-            self.cropImageLabel.setPixmap(QPixmap(imageTempFolder + narrow_data_image_filename))
             self.resultImageLabel.setPixmap(QPixmap(imageTempFolder + narrow_data_result_filename))
 
         else:
             self.locationFractureLabel.setText("Location of fracture: XX")
-            self.cropImageLabel.clear()
             self.resultImageLabel.clear()
 
 

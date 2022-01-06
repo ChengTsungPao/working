@@ -116,13 +116,14 @@ class data_training(data_transfer):
         image, target = copy.deepcopy(self.bounding_box_wider_data[index]), self.bounding_box_wider_target[index]
         cv2.imwrite(imageTempFolder + wider_data_image_filename, image)
 
-        x1, y1, x2, y2 = result["predict"][index]
-        cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 4)
-
         x1, y1, x2, y2 = target
         cv2.rectangle(image, (x1, y1), (x2, y2), (0, 0, 255), 4)
 
+        x1, y1, x2, y2 = result["predict"][index]
+        cv2.rectangle(image, (x1, y1), (x2, y2), (255, 0, 0), 4)
+
         cv2.imwrite(imageTempFolder + wider_data_result_filename, image)
+        cv2.imwrite(imageTempFolder + narrow_data_image_filename, copy.deepcopy(self.bounding_box_wider_data[index])[y1:y2, x1:x2])
         # cv2.imshow("wider_data_image", cv2.resize(image, (image.shape[1] // 2, image.shape[0] // 2), interpolation=cv2.INTER_LINEAR))
         # cv2.waitKey()  
         # cv2.destroyAllWindows() 
@@ -260,7 +261,6 @@ class data_training(data_transfer):
         x1, y1, x2, y2 = bounding_box_wider_data_result["predict"][index]
         image, target = self.bounding_box_narrow_data[index], self.bounding_box_narrow_target[index]
         drawImage = np.array(image[y1:y2, x1:x2])
-        cv2.imwrite(imageTempFolder + narrow_data_image_filename, drawImage)
 
         predictPoints = bounding_box_narrow_data_result["predict"][index]
         if len(predictPoints) > 0:
