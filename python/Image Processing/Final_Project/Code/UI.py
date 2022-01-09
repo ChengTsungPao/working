@@ -16,7 +16,6 @@ class UI(QtWidgets.QMainWindow):
         self.show_result_fcn = None
         self.imageNameTable = {}
         self.loadFolderButton.clicked.connect(self.load_folder)
-        
         self.comboBox.currentTextChanged.connect(self.combobox_changed)
         self.show()
 

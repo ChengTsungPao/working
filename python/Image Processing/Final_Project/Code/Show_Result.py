@@ -12,13 +12,15 @@ class show_result(data_training):
         self.predict_all_bounding_box_narrow_data()
         self.predict_all_classifier_data()
 
+        self.all_bounding_box_wider_data_evaluation = []
+        self.all_bounding_box_narrow_data_evaluation = []
+        self.all_classifier_data_evaluation = []
         self.classifier_data_evaluation()
         self.bounding_box_wider_data_evaluation()
         self.bounding_box_narrow_data_evaluation()
 
     
     def bounding_box_wider_data_evaluation(self):
-        self.all_bounding_box_wider_data_evaluation = []
 
         result = np.load("./predict/bounding_box_wider_data_predict.npz")
 
@@ -36,7 +38,6 @@ class show_result(data_training):
 
 
     def bounding_box_narrow_data_evaluation(self):
-        self.all_bounding_box_narrow_data_evaluation = []
 
         result = np.load("./predict/bounding_box_narrow_data_predict.npz", allow_pickle = True)
 
@@ -54,8 +55,6 @@ class show_result(data_training):
 
 
     def classifier_data_evaluation(self):
-        self.all_classifier_data_evaluation = []
-        
         self.all_classifier_data_evaluation = evaluationF1()
         
 
