@@ -18,7 +18,9 @@ def evaluationF1():
     else:
         f1_score = 2 / (recall ** -1 + precision ** -1)
 
-    return precision, recall, f1_score
+    accuracy = (TP + TN) / (TP + FP + TN + FN)
+
+    return precision, recall, f1_score, accuracy
 
 
 def evaluationIOU(predict, groundTruth): # pos = [[x0, y0], [x1, y1], [x2, y2], [x3, y3]]
@@ -29,13 +31,6 @@ def evaluationIOU(predict, groundTruth): # pos = [[x0, y0], [x1, y1], [x2, y2], 
     groundTruthPos = boundingBoxAreaPos(groundTruth)
 
     IOU = len(predictPos & groundTruthPos) / len(predictPos | groundTruthPos)
-    # recall = len(predictPos & groundTruthPos) / len(groundTruthPos)
-    # precision = len(predictPos & groundTruthPos) / len(predictPos)
-
-    # if recall == 0 and precision == 0:
-    #     f1_score = 0
-    # else:
-    #     f1_score = 2 / (recall ** -1 + precision ** -1)
 
     return IOU
 

@@ -42,8 +42,8 @@ class UI(QtWidgets.QMainWindow):
         IOU = np.mean(self.show_result_fcn.all_bounding_box_narrow_data_evaluation)
         self.allLocationFractureLabel.setText("Location of fracture: IOU = {:.2f}".format(IOU))
 
-        precision, recall, f1_score = self.show_result_fcn.all_classifier_data_evaluation
-        self.allClassificationLabel.setText("Classification: precision = {:.2f}  recall = {:.2f}  f1_score = {:.2f}".format(precision, recall, f1_score))
+        precision, recall, f1_score, accuracy = self.show_result_fcn.all_classifier_data_evaluation
+        self.allClassificationLabel.setText("Classification: precision = {:.2f}  recall = {:.2f}  f1_score = {:.2f}  accuracy = {:.2f}".format(precision, recall, f1_score, accuracy))
 
         for i in range(len(self.show_result_fcn.fracture_filename)):
             comboBoxName = self.show_result_fcn.fracture_filename[i] + " (fracture)"
