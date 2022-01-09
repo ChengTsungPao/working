@@ -3,7 +3,6 @@ from Config import imageTempFolder, wider_data_image_filename, wider_data_result
 from Show_Result import show_result
 from PyQt5.QtGui import QPixmap
 import numpy as np
-import cv2
 import os
 
 class UI(QtWidgets.QMainWindow):
@@ -44,6 +43,7 @@ class UI(QtWidgets.QMainWindow):
         precision, recall, f1_score, accuracy = self.show_result_fcn.all_classifier_data_evaluation
         self.allClassificationLabel.setText("Classification: precision = {:.2f}  recall = {:.2f}  f1_score = {:.2f}  accuracy = {:.2f}".format(precision, recall, f1_score, accuracy))
 
+        self.comboBox.clear()
         for i in range(len(self.show_result_fcn.fracture_filename)):
             comboBoxName = self.show_result_fcn.fracture_filename[i] + " (fracture)"
             self.imageNameTable[comboBoxName] = (i, "fracture")
@@ -64,6 +64,9 @@ class UI(QtWidgets.QMainWindow):
 
 
     def combobox_changed(self, imageName):
+        if imageName == "":
+            return
+
         index, imageType = self.imageNameTable[imageName]
 
         IOU = self.show_result_fcn.all_bounding_box_wider_data_evaluation[index]
