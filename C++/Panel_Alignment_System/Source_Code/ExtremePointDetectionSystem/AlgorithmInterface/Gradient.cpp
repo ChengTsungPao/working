@@ -54,3 +54,30 @@ int findExtremePointByGradient(vector<tuple<double, double>> image_Gradient) {
 
     return index;
 }
+
+int findExtremePointByMinMax(tuple<vector<double>, vector<double>> image_angle_magnitude) {
+    if(get<0>(image_angle_magnitude).size() == 0) {
+        return -1;
+    }
+
+    vector<double> angle = get<1>(image_angle_magnitude);
+    vector<double> magnitude = get<0>(image_angle_magnitude);
+
+    double maxAngle = angle[0];
+    double minAngle = angle[0];
+    for(unsigned int i = 1; i < angle.size(); i++) {
+        maxAngle = max(maxAngle, angle[i]);
+        minAngle = min(minAngle, angle[i]);
+    }
+
+    unsigned int index = 0;
+    double midAngle = (minAngle + maxAngle) / 2;
+    for(unsigned int i = 0; i < angle.size() - 1; i++) {
+        if(angle[i] <= midAngle && midAngle <= angle[i + 1]) {
+            index = i;
+            break;
+        }
+    }
+
+    return index;
+}
