@@ -197,8 +197,8 @@ void MainWindow::plot_graph(tuple<vector<double>, vector<double>> image_result, 
 
     QVector<double> Gx, Gy;
     for(unsigned int i = 0; i < image_Gradient.size(); i++){
-        Gx.append(get<0>(image_Gradient[i]));
-        Gy.append(get<1>(image_Gradient[i]));
+        Gx.append(abs(get<0>(image_Gradient[i])));
+        Gy.append(abs(get<1>(image_Gradient[i])));
     }
     ui->widget_gradient->graph(0)->setData(index_of_boundary, Gx);
     ui->widget_gradient->graph(1)->setData(index_of_boundary, Gy);

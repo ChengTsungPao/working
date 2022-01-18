@@ -12,7 +12,7 @@ vector<tuple<double, double>> getGradient(Mat image_smooth, vector<Point> contou
     for(unsigned int i = 0; i < contour.size(); i++){
         y = contour[i].x;
         x = contour[i].y;
-        image_Gradient.push_back(make_tuple(abs(image_SobelX.at<double>(x, y)), abs(image_SobelY.at<double>(x, y))));
+        image_Gradient.push_back(make_tuple(image_SobelX.at<double>(x, y), image_SobelY.at<double>(x, y)));
 //        cout << "index = " << i << " " << image_SobelX.at<double>(x, y) << " " << image_SobelY.at<double>(x, y) << endl;
     }
 
@@ -39,13 +39,13 @@ int findExtremePoint(vector<tuple<double, double>> image_Gradient) {
         return -1;
     }
 
-    double Gx = get<0>(image_Gradient[0]);
-    double Gy = get<1>(image_Gradient[0]);
+    double Gx = abs(get<0>(image_Gradient[0]));
+    double Gy = abs(get<1>(image_Gradient[0]));
     double minValue = abs(Gx - Gy);
     unsigned int index = 0;
     for(unsigned int i = 1; i < image_Gradient.size(); i++){
-        Gx = get<0>(image_Gradient[i]);
-        Gy = get<1>(image_Gradient[i]);
+        Gx = abs(get<0>(image_Gradient[i]));
+        Gy = abs(get<1>(image_Gradient[i]));
         if(abs(Gx - Gy) < minValue){
             minValue = abs(Gx - Gy);
             index = i;
