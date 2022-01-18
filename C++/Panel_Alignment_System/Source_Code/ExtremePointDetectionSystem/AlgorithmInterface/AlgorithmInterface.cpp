@@ -35,7 +35,7 @@ Point getExtremePoint(Mat image, char imageType, bool visiable) {
     image_result = getAngleMagnitude(image_Gradient);
 
     // Find Extreme Point
-    image_extremePoint_index = findExtremePoint(image_Gradient);
+    image_extremePoint_index = findExtremePointByGradient(image_Gradient);
 
 
 

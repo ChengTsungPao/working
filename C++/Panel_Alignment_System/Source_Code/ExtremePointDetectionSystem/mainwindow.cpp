@@ -123,11 +123,11 @@ void MainWindow::on_Calculate_Button_clicked()
 
      left_image_Gradient = getGradient(left_smooth_image, left_image_contour);
      left_image_result = getAngleMagnitude(left_image_Gradient);
-     left_image_extremePoint_index = findExtremePoint(left_image_Gradient);
+     left_image_extremePoint_index = findExtremePointByGradient(left_image_Gradient);
 
      right_image_Gradient = getGradient(right_smooth_image, right_image_contour);
      right_image_result = getAngleMagnitude(right_image_Gradient);
-     right_image_extremePoint_index = findExtremePoint(right_image_Gradient);
+     right_image_extremePoint_index = findExtremePointByGradient(right_image_Gradient);
 
      Point left_image_extremePoint = left_image_contour[left_image_extremePoint_index];
      Point right_image_extremePoint = right_image_contour[right_image_extremePoint_index];

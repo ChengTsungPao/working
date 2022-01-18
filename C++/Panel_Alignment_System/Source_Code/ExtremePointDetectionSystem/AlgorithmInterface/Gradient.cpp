@@ -34,7 +34,7 @@ tuple<vector<double>, vector<double>> getAngleMagnitude(vector<tuple<double, dou
 
 }
 
-int findExtremePoint(vector<tuple<double, double>> image_Gradient) {
+int findExtremePointByGradient(vector<tuple<double, double>> image_Gradient) {
     if(image_Gradient.size() == 0){
         return -1;
     }

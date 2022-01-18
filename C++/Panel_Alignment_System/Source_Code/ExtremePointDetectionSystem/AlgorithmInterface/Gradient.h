@@ -24,7 +24,7 @@ using namespace cv;
 
 vector<tuple<double, double>> getGradient(Mat image_smooth, vector<Point> contour);
 tuple<vector<double>, vector<double>> getAngleMagnitude(vector<tuple<double, double>> image_Gradient);
-int findExtremePoint(vector<tuple<double, double>> image_Gradient);
+int findExtremePointByGradient(vector<tuple<double, double>> image_Gradient);
 
 
 
