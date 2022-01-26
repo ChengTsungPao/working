@@ -36,6 +36,6 @@ double innerProduct(Vec4i position1, Vec4i position2);
 double innerProduct(tuple<double, double> position1, tuple<double, double> position2);
 double innerProduct(double x1, double y1, double x2, double y2);
 tuple<double, double> normalize(double x, double y);
-
+double sumVector(vector<double> arr, int i, int j);
 
 

@@ -68,7 +68,7 @@ MainWindow::~MainWindow()
 //1. Image Load
 void MainWindow::on_Image_Load_Button_clicked()
 {
-//    test_all_data();
+    test_all_data();
 
     //Iamge Load
     QString left_image_path = QFileDialog::getOpenFileName(this,tr("Choose"),"",tr("Images (*.png *.jpg *.jpeg *.bmp *.gif)"));

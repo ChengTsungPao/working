@@ -19,6 +19,8 @@
 #include <math.h>
 //#include <opencv2/core/mat.hpp>
 
+#include "Function.h"
+
 using namespace std;
 using namespace cv;
 

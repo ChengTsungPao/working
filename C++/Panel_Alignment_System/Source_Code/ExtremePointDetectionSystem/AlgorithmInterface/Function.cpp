@@ -25,6 +25,14 @@ tuple<double, double> normalize(double x, double y){
     return { x / length, y / length };
 }
 
+double sumVector(vector<double> arr, int i, int j){
+    double sum = 0;
+    for(; i <= j; i++){
+        sum += arr[i];
+    }
+    return sum;
+}
+
 void split(std::string const &str, const char delim, std::vector<std::string> &out)
 {
     size_t start;
