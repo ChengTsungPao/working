@@ -55,27 +55,6 @@ int findExtremePointByGradient(vector<tuple<double, double>> image_Gradient) {
     return index;
 }
 
-
-vector<double> smoothAngle(vector<double> angle, int windowSize){
-    vector<double> adjustAngle;
-
-    unsigned int i = 0;
-    unsigned int j = windowSize - 1;
-
-    while(i < angle.size()){
-        if(j < angle.size()){
-            adjustAngle.push_back(sumVector(angle, i, j) / windowSize);
-            j += 1;
-        }else{
-            adjustAngle.push_back(adjustAngle[adjustAngle.size() - 1]);
-        }
-        i += 1;
-    }
-
-    return adjustAngle;
-}
-
-
 int findExtremePointByMinMax(tuple<vector<double>, vector<double>> image_angle_magnitude) {
     if(get<0>(image_angle_magnitude).size() == 0) {
         return -1;
@@ -84,7 +63,7 @@ int findExtremePointByMinMax(tuple<vector<double>, vector<double>> image_angle_m
     vector<double> angle = get<1>(image_angle_magnitude);
     vector<double> magnitude = get<0>(image_angle_magnitude);
 
-    int windowSize = 20;
+    int windowSize = 20 + 1;
     angle = smoothAngle(angle, windowSize);
 
     double maxAngle = angle[0];
@@ -103,5 +82,27 @@ int findExtremePointByMinMax(tuple<vector<double>, vector<double>> image_angle_m
         }
     }
 
-    return index + windowSize / 2;
+    return index;
 }
+
+vector<double> smoothAngle(vector<double> angle, int windowSize){
+    vector<double> adjustAngle;
+
+    int left, right;
+
+    for(unsigned int mid = 0; mid < angle.size(); mid++){
+        left = mid - windowSize / 2;
+        right = mid + windowSize / 2;
+
+        if(left < 0){
+            adjustAngle.push_back(sumVector(angle, 0, windowSize - 1) / windowSize);
+        } else if(right >= (int)angle.size()) {
+            adjustAngle.push_back(sumVector(angle, angle.size() - windowSize, angle.size() - 1) / windowSize);
+        } else{
+            adjustAngle.push_back(sumVector(angle, left, right) / windowSize);
+        }
+    }
+
+    return adjustAngle;
+}
+
