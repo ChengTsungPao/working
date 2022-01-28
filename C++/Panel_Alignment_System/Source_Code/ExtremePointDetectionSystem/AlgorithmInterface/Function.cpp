@@ -33,6 +33,14 @@ double sumVector(vector<double> arr, int i, int j){
     return sum;
 }
 
+vector<double> splitVector(vector<double> arr, int i, int j){
+    vector<double> splitArr;
+    for(; i <= j; i++){
+        splitArr.push_back(arr[i]);
+    }
+    return splitArr;
+}
+
 void split(std::string const &str, const char delim, std::vector<std::string> &out)
 {
     size_t start;

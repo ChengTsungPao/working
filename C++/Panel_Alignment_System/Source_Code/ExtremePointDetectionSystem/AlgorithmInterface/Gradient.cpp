@@ -86,6 +86,7 @@ int findExtremePointByMinMax(tuple<vector<double>, vector<double>> image_angle_m
 }
 
 vector<double> smoothAngle(vector<double> angle, int windowSize){
+
     vector<double> adjustAngle;
 
     int left, right;
@@ -94,15 +95,38 @@ vector<double> smoothAngle(vector<double> angle, int windowSize){
         left = mid - windowSize / 2;
         right = mid + windowSize / 2;
 
+        // average
+        // median
+
         if(left < 0){
-            adjustAngle.push_back(sumVector(angle, 0, windowSize - 1) / windowSize);
+//            adjustAngle.push_back(sumVector(angle, 0, windowSize - 1) / windowSize);
+            adjustAngle.push_back(findMedian(splitVector(angle, 0, windowSize - 1)));
         } else if(right >= (int)angle.size()) {
-            adjustAngle.push_back(sumVector(angle, angle.size() - windowSize, angle.size() - 1) / windowSize);
+//            adjustAngle.push_back(sumVector(angle, angle.size() - windowSize, angle.size() - 1) / windowSize);
+            adjustAngle.push_back(findMedian(splitVector(angle, angle.size() - windowSize, angle.size() - 1)));
         } else{
-            adjustAngle.push_back(sumVector(angle, left, right) / windowSize);
+//            adjustAngle.push_back(sumVector(angle, left, right) / windowSize);
+            adjustAngle.push_back(findMedian(splitVector(angle, left, right)));
         }
+
     }
 
     return adjustAngle;
+}
+
+double findMedian(vector<double> arr) {
+    int size = arr.size();
+
+    if (size == 0) {
+        return 0;
+    }
+    else {
+        sort(arr.begin(), arr.end());
+        if (size % 2 == 0) {
+            return (arr[size / 2 - 1] + arr[size / 2]) / 2;
+        } else {
+            return arr[size / 2];
+        }
+    }
 }
 

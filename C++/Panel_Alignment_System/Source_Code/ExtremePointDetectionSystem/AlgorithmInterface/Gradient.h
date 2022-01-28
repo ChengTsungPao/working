@@ -29,6 +29,7 @@ tuple<vector<double>, vector<double>> getAngleMagnitude(vector<tuple<double, dou
 int findExtremePointByGradient(vector<tuple<double, double>> image_Gradient);
 int findExtremePointByMinMax(tuple<vector<double>, vector<double>> image_angle_magnitude);
 vector<double> smoothAngle(vector<double> angle, int windowSize);
+double findMedian(vector<double> arr);
 
 
 
