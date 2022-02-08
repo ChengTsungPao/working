@@ -20,6 +20,7 @@
 //#include <opencv2/core/mat.hpp>
 
 #include "Function.h"
+#include "Constant.h"
 
 using namespace std;
 using namespace cv;
@@ -28,7 +29,7 @@ vector<tuple<double, double>> getGradient(Mat image_smooth, vector<Point> contou
 tuple<vector<double>, vector<double>> getAngleMagnitude(vector<tuple<double, double>> image_Gradient);
 int findExtremePointByGradient(vector<tuple<double, double>> image_Gradient);
 int findExtremePointByMinMax(tuple<vector<double>, vector<double>> image_angle_magnitude);
-vector<double> smoothAngle(vector<double> angle, int windowSize);
+vector<double> smoothAngle(vector<double> angle);
 double findMedian(vector<double> arr);
 
 

@@ -4,8 +4,8 @@ vector<tuple<double, double>> getGradient(Mat image_smooth, vector<Point> contou
 
     Mat image_SobelX, image_SobelY;
     cvtColor(image_smooth, image_smooth, CV_BGR2GRAY);
-    Sobel(image_smooth, image_SobelX, CV_64F, 1, 0, 11);
-    Sobel(image_smooth, image_SobelY, CV_64F, 0, 1, 11);
+    Sobel(image_smooth, image_SobelX, CV_64F, 1, 0, SOBELSIZE);
+    Sobel(image_smooth, image_SobelY, CV_64F, 0, 1, SOBELSIZE);
 
     int x, y;
     vector<tuple<double, double>> image_Gradient;
@@ -63,8 +63,7 @@ int findExtremePointByMinMax(tuple<vector<double>, vector<double>> image_angle_m
     vector<double> angle = get<1>(image_angle_magnitude);
     vector<double> magnitude = get<0>(image_angle_magnitude);
 
-    int windowSize = 20 + 1;
-    angle = smoothAngle(angle, windowSize);
+    angle = smoothAngle(angle);
 
     double maxAngle = angle[0];
     double minAngle = angle[0];
@@ -85,27 +84,27 @@ int findExtremePointByMinMax(tuple<vector<double>, vector<double>> image_angle_m
     return index;
 }
 
-vector<double> smoothAngle(vector<double> angle, int windowSize){
+vector<double> smoothAngle(vector<double> angle){
 
     vector<double> adjustAngle;
 
     int left, right;
 
     for(unsigned int mid = 0; mid < angle.size(); mid++){
-        left = mid - windowSize / 2;
-        right = mid + windowSize / 2;
+        left = mid - WINDOWSIZE / 2;
+        right = mid + WINDOWSIZE / 2;
 
         // average
         // median
 
         if(left < 0){
-//            adjustAngle.push_back(sumVector(angle, 0, windowSize - 1) / windowSize);
-            adjustAngle.push_back(findMedian(splitVector(angle, 0, windowSize - 1)));
+//            adjustAngle.push_back(sumVector(angle, 0, WINDOWSIZE - 1) / WINDOWSIZE);
+            adjustAngle.push_back(findMedian(splitVector(angle, 0, WINDOWSIZE - 1)));
         } else if(right >= (int)angle.size()) {
-//            adjustAngle.push_back(sumVector(angle, angle.size() - windowSize, angle.size() - 1) / windowSize);
-            adjustAngle.push_back(findMedian(splitVector(angle, angle.size() - windowSize, angle.size() - 1)));
+//            adjustAngle.push_back(sumVector(angle, angle.size() - WINDOWSIZE, angle.size() - 1) / WINDOWSIZE);
+            adjustAngle.push_back(findMedian(splitVector(angle, angle.size() - WINDOWSIZE, angle.size() - 1)));
         } else{
-//            adjustAngle.push_back(sumVector(angle, left, right) / windowSize);
+//            adjustAngle.push_back(sumVector(angle, left, right) / WINDOWSIZE);
             adjustAngle.push_back(findMedian(splitVector(angle, left, right)));
         }
 

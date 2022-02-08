@@ -20,6 +20,7 @@
 //#include <opencv2/core/mat.hpp>
 
 #include "Function.h"
+#include "Constant.h"
 
 using namespace std;
 using namespace cv;

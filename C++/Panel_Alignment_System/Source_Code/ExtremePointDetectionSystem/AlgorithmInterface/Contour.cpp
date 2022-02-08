@@ -6,15 +6,15 @@ void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_cont
     if(!image.empty()){ image.zeros(image.rows, image.cols, CV_8UC3);}
 
     //ROI Setting
-    image = imageType == 'L' ? image(Rect(0,0,1080,700)) : image(Rect(200,0,1080,700));
+    if(ROISWITCH){ image = imageType == 'L' ? image(LEFTCROP) : image(RIGHTCROP);}
 
     //Remove noise
-    medianBlur(image,image_smooth,11);
-    GaussianBlur(image_smooth,image_smooth,Size(3,3),0,0);
+    medianBlur(image, image_smooth, MEDIAN_KERNEL_SIZE);
+    GaussianBlur(image_smooth, image_smooth, Size(GAUSSIAN_KERNEL_SIZE, GAUSSIAN_KERNEL_SIZE), 0, 0);
 
     //Edge Detection
     Mat image_canny;
-    Canny(image_smooth, image_canny, 80, 130);
+    Canny(image_smooth, image_canny, LOW_THRESHOLD, HIGH_THRESHOLD);
 
     //Find Contour
     vector<vector<Point>> image_contours;
@@ -57,8 +57,6 @@ vector<Point> findBestContour(vector<vector<Point>> contours, vector<Vec4i> &bes
 }
 
 tuple<bool, vector<Vec4i>> HoughLinesPHandler(vector<int> shape, vector<vector<Point>> contours, unsigned int contourIndex){
-    int minLineLength = 10;
-    int maxLineGap = 1;
 
     Mat image = Mat::zeros(Size(shape[1], shape[0]), CV_8UC3);
     vector<Vec4i> lines;
@@ -66,7 +64,7 @@ tuple<bool, vector<Vec4i>> HoughLinesPHandler(vector<int> shape, vector<vector<P
 
     drawContours(image, contours, contourIndex, Scalar(255, 255, 255), 3);
     cvtColor(image, image, CV_BGR2GRAY);
-    HoughLinesP(image, lines, 1, M_PI / 180, 100, minLineLength, maxLineGap);
+    HoughLinesP(image, lines, 1, M_PI / 180, 100, MINLINELENGTH, MAXLINEGAP);
 
     if(lines.size() == 0){
         return { false, bestTwoLines };
@@ -162,9 +160,6 @@ vector<Point> orderContour(vector<Point> contour, int x, int y){
 }
 
 void drawContour(Mat &drawImage, vector<Point> image_contour){
-//    vector<vector<Point>> contours;
-//    contours.push_back(image_contour);
-//    drawContours(drawImage,contours,0,Scalar(255, 255, 0), 5);
 
     for(unsigned int i = 1; i < image_contour.size(); i++){
         line(drawImage, image_contour[i - 1], image_contour[i], Scalar(255, 255, 0), 5);

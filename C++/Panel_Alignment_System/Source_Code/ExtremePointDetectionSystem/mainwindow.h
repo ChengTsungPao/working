@@ -25,6 +25,7 @@
 #include "AlgorithmInterface/Function.h"
 #include "AlgorithmInterface/Gradient.h"
 #include "AlgorithmInterface/TestResult.h"
+#include "AlgorithmInterface/Constant.h"
 
 
 using namespace std;

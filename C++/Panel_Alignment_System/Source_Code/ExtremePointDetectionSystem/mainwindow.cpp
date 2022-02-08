@@ -144,7 +144,7 @@ void MainWindow::on_Calculate_Button_clicked()
      Point Left_ground, Right_ground;
      Left_ground.x = get<0>(left_image_groundTruth);
      Left_ground.y = get<1>(left_image_groundTruth);
-     Right_ground.x = get<0>(right_image_groundTruth) - 200; //because of crop image
+     Right_ground.x = get<0>(right_image_groundTruth) - 200 * ROISWITCH; //because of crop image
      Right_ground.y = get<1>(right_image_groundTruth);
 
      drawMarker(show_left_image_result,Left_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
