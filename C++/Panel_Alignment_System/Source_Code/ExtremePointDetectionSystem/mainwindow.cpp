@@ -78,8 +78,8 @@ void MainWindow::on_Image_Load_Button_clicked()
         return;
     }
 
-    left_image_groundTruth = readJsonFile(left_image_path.chopped(4) + ".json");
-    right_image_groundTruth = readJsonFile(right_image_path.chopped(4) + ".json");
+    left_image_groundTruth = readJsonFile(left_image_path.split(".png").at(0) + ".json");
+    right_image_groundTruth = readJsonFile(right_image_path.split(".png").at(0) + ".json");
 
 //    left_image_groundTruth = make_tuple(0, 0);
 //    right_image_groundTruth = make_tuple(0, 0);

@@ -31,7 +31,7 @@ const int MAXLINEGAP = 1;
 // Find Extreme Point
 // Get Gradient (void getGradient)
 const int SOBELSIZE = 11;
-// Smooth Angle (void findExtremePointByMinMax)
+// Smooth Angle (void findExtremePointByMin
 const int WINDOWSIZE = 20 + 1;
 
 
