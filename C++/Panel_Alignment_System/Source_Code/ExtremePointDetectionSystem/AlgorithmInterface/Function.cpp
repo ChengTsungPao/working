@@ -60,7 +60,9 @@ tuple<int, int> readJsonFile(QString path){
 
     QFile file;
     file.setFileName(path); //File Read
-    file.open(QIODevice::ReadOnly);
+    if(file.open(QIODevice::ReadOnly) == 0){
+        return make_tuple(0, 0);
+    }
 
     QByteArray load_data = file.readAll();
     QJsonDocument doc = QJsonDocument::fromJson(load_data);
