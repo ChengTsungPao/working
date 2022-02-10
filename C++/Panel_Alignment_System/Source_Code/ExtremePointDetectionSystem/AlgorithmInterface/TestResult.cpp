@@ -1,5 +1,4 @@
 #include "TestResult.h"
-//#include <pthread.h>
 
 
 /* ======================================================================== */
@@ -51,24 +50,24 @@ void test_all_data(){
     double start = clock();
 
     // Single Thread
-    for(unsigned int i = 0; i < paths.size(); i++){
-        result = getExtremePoint(paths[i] + "L.png", 'L');
-        cout << paths[i] + "L.png" << ": " << result << endl;
-        result = getExtremePoint(paths[i] + "R.png", 'R');
-        cout << paths[i] + "R.png" << ": " << result << endl;
-    }
+//    for(unsigned int i = 0; i < paths.size(); i++){
+//        result = getExtremePoint(paths[i] + "L.png", 'L');
+//        cout << paths[i] + "L.png" << ": " << result << endl;
+//        result = getExtremePoint(paths[i] + "R.png", 'R');
+//        cout << paths[i] + "R.png" << ": " << result << endl;
+//    }
 
     // Double Thread
-//    for(unsigned int i = 0; i < paths.size(); i++){
-//        Thread leftImageThread(paths[i] + "L.png", 'L');
-//        Thread rightImageThread(paths[i] + "R.png", 'R');
+    for(unsigned int i = 0; i < paths.size(); i++){
+        Thread leftImageThread(paths[i] + "L.png", 'L');
+        Thread rightImageThread(paths[i] + "R.png", 'R');
 
-//        leftImageThread.create_thread();
-//        rightImageThread.create_thread();
+        leftImageThread.create_thread();
+        rightImageThread.create_thread();
 
-//        leftImageThread.join_thread();
-//        rightImageThread.join_thread();
-//    }
+        leftImageThread.join_thread();
+        rightImageThread.join_thread();
+    }
 
     // Four Thread
 //    for(unsigned int i = 0; i < paths.size(); i+=2){
