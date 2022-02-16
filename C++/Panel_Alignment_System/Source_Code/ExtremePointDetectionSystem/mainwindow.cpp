@@ -85,6 +85,9 @@ void MainWindow::on_Image_Load_Button_clicked()
     Image_Load(right_image_path.toStdString(), right_image);
 //    getExtremePoint(left_image_path.toStdString(), 'L', true);
 
+//    left_image_groundTruth = rotatedImage(left_image, left_image_groundTruth, -30);
+//    right_image_groundTruth = rotatedImage(right_image, right_image_groundTruth, -30);
+
     Mat show_left_image = left_image.clone();
     Mat show_right_image = right_image.clone();
 

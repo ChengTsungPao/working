@@ -93,3 +93,21 @@ tuple<int, int> readJsonFile(QString path){
 
     return make_tuple(x, y);
 }
+
+/*!
+ * Rotated Image and GroundTruth
+ */
+tuple<int, int> rotatedImage(Mat &image, tuple<int, int> groundTruth, int angle){
+    Point2f pc(image.cols/2., image.rows/2.);
+    Mat rotationMatrix = getRotationMatrix2D(pc, angle, 1.0);
+    warpAffine(image, image, rotationMatrix, image.size());
+
+    int x = get<0>(groundTruth) - image.cols / 2;
+    int y = get<1>(groundTruth) - image.rows / 2;
+    int new_y = std::cos(angle * M_PI / 180) * y - std::sin(angle * M_PI / 180) * x + image.rows / 2;
+    int new_x = std::sin(angle * M_PI / 180) * y + std::cos(angle * M_PI / 180) * x + image.cols / 2;
+
+    return make_tuple(new_x, new_y);
+}
+
+
