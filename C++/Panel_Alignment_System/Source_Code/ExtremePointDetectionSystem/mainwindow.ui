@@ -78,7 +78,7 @@
      <rect>
       <x>1530</x>
       <y>290</y>
-      <width>241</width>
+      <width>151</width>
       <height>121</height>
      </rect>
     </property>
@@ -134,19 +134,6 @@
      </property>
      <property name="text">
       <string>3. Find Corner</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>60</y>
-       <width>81</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Unvisible</string>
      </property>
     </widget>
    </widget>
@@ -726,7 +713,7 @@
      <x>0</x>
      <y>0</y>
      <width>1952</width>
-     <height>24</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
