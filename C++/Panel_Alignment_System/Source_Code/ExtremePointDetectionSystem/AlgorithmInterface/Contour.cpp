@@ -1,34 +1,16 @@
 #include "Contour.h"
 
-void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_contour, vector<Vec4i> &bestTwoLines, char imageType)
+vector<Point> Find_Contour(Mat canny_image, vector<Vec4i> &bestTwoLines, char imageType)
 {
-    //Data Initialize
-    if(!image.empty()){ image.zeros(image.rows, image.cols, CV_8UC3);}
-
-    //ROI Setting
-    if(ROISWITCH){ image = imageType == 'L' ? image(LEFTCROP) : image(RIGHTCROP);}
-
-    //Remove noise
-    medianBlur(image, image_smooth, MEDIAN_KERNEL_SIZE);
-    GaussianBlur(image_smooth, image_smooth, Size(GAUSSIAN_KERNEL_SIZE, GAUSSIAN_KERNEL_SIZE), 0, 0);
-
-    //Edge Detection
-    Mat image_canny;
-    Canny(image_smooth, image_canny, LOW_THRESHOLD, HIGH_THRESHOLD);
-//    if(imageType == 'L'){
-//        imshow("Canny L", image_canny);
-//    } else {
-//        imshow("Canny R", image_canny);
-//    }
-
     //Find Contour
+    vector<Point> image_contour;
     vector<vector<Point>> image_contours;
-    findContours(image_canny, image_contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
+    findContours(canny_image, image_contours, RETR_EXTERNAL, CHAIN_APPROX_NONE);
 
-    vector<int> shape = {image.rows, image.cols};
+    vector<int> shape = {canny_image.rows, canny_image.cols};
     image_contour = findBestContour(image_contours, bestTwoLines, shape);
     image_contour = imageType == 'L' ? orderContour(image_contour, shape[0], shape[1]) : orderContour(image_contour, shape[0], 0);
-
+    return image_contour;
 }
 
 

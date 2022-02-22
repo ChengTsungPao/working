@@ -29,7 +29,7 @@ tuple<Mat, Mat> Image_Load(QString left_image_filename ,QString right_image_file
 vector<Point> findBestContour(vector<vector<Point>> contours, vector<Vec4i> &bestTwoLines, vector<int> shape);
 vector<Point> orderContour(vector<Point> contour, int x, int y);
 void drawContour(Mat &drawImage, vector<Point> image_contour);
-void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_contour, vector<Vec4i> &bestTwoLines, char imageType);
+vector<Point> Find_Contour(Mat image_canny, vector<Vec4i> &bestTwoLines, char imageType);
 vector<tuple<double, double>> getGradient(Mat image_smooth, vector<Point> contour);
 tuple<vector<double>, vector<double>> getAngleMagnitude(vector<tuple<double, double>> image_Gradient);
 int findExtremePointByGradient(vector<tuple<double, double>> image_Gradient);

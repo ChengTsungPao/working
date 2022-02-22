@@ -14,6 +14,7 @@ Point getExtremePoint(string path, char imageType, bool visiable) {
 Point getExtremePoint(Mat image, char imageType, bool visiable) {
 
     Mat smooth_image;                                      // smooth of image
+    Mat canny_image;                                       // canny of image
     Mat contour_image;                                     // draw contour on image
     Mat result_image;                                      // draw result on image
 
@@ -25,9 +26,11 @@ Point getExtremePoint(Mat image, char imageType, bool visiable) {
     tuple<vector<double>, vector<double>> image_result;    // (magnitude, angle)
 
 
+    // Find Canny
+    Find_Canny(image, smooth_image, canny_image, imageType);
 
     // Find Contour
-    Find_Contour_Button(image, smooth_image, image_contour, bestTwoLines, imageType);
+    image_contour = Find_Contour(canny_image, bestTwoLines, imageType);
     contour_image = smooth_image.clone();
 
     // Get Contour Gradient
@@ -39,7 +42,6 @@ Point getExtremePoint(Mat image, char imageType, bool visiable) {
     image_extremePoint_index = findExtremePointByMinMax(image_result);
 
 
-
     // Draw Image
     if(visiable){
         result_image = smooth_image.clone();
@@ -47,7 +49,7 @@ Point getExtremePoint(Mat image, char imageType, bool visiable) {
         drawContour(contour_image, image_contour);
         drawLines(contour_image, bestTwoLines);
         drawMarker(result_image,image_contour[image_extremePoint_index],Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
-        showImage(image, smooth_image, contour_image, result_image);
+        showImage(image, smooth_image, canny_image, contour_image, result_image);
     }
 
     return image_contour[image_extremePoint_index];
@@ -55,10 +57,11 @@ Point getExtremePoint(Mat image, char imageType, bool visiable) {
 }
 
 
-void showImage(Mat image, Mat smooth_image, Mat contour_image, Mat result_image){
+void showImage(Mat image, Mat smooth_image, Mat canny_image, Mat contour_image, Mat result_image){
 
     imshow("origin Image", image);
     imshow("smooth image", smooth_image);
+    imshow("canny Image", canny_image);
     imshow("contour Image", contour_image);
     imshow("result Image", result_image);
 

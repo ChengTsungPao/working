@@ -42,7 +42,8 @@ void test_all_data(){
     vector<string> paths;
     Point result;
 
-    ifstream file("../../Test Image_20210913/all_rotated_image_path.txt");
+//    ifstream file("../../Test Image_20210913/all_rotated_image_path.txt");
+    ifstream file("../../Test Image_20210913/all_image_path.txt");
     while (getline(file, str)){
         paths.push_back(str);
     }
@@ -65,24 +66,24 @@ void test_all_data(){
 //    }
 
     // Single Thread
-//    for(unsigned int i = 0; i < paths.size(); i++){
-//        result = getExtremePoint(paths[i] + "L.png", 'L');
-//        cout << paths[i] + "L.png" << ": " << result << endl;
-//        result = getExtremePoint(paths[i] + "R.png", 'R');
-//        cout << paths[i] + "R.png" << ": " << result << endl;
-//    }
+    for(unsigned int i = 0; i < paths.size(); i++){
+        result = getExtremePoint(paths[i] + "L.png", 'L');
+        cout << paths[i] + "L.png" << ": " << result << endl;
+        result = getExtremePoint(paths[i] + "R.png", 'R');
+        cout << paths[i] + "R.png" << ": " << result << endl;
+    }
 
     // Double Thread
-    for(unsigned int i = 0; i < paths.size(); i++){
-        Thread leftImageThread(paths[i] + "L.png", 'L');
-        Thread rightImageThread(paths[i] + "R.png", 'R');
+//    for(unsigned int i = 0; i < paths.size(); i++){
+//        Thread leftImageThread(paths[i] + "L.png", 'L');
+//        Thread rightImageThread(paths[i] + "R.png", 'R');
 
-        leftImageThread.create_thread();
-        rightImageThread.create_thread();
+//        leftImageThread.create_thread();
+//        rightImageThread.create_thread();
 
-        leftImageThread.join_thread();
-        rightImageThread.join_thread();
-    }
+//        leftImageThread.join_thread();
+//        rightImageThread.join_thread();
+//    }
 
     // Four Thread
 //    for(unsigned int i = 0; i < paths.size(); i+=2){

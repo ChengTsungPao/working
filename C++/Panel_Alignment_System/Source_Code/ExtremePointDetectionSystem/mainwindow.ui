@@ -79,7 +79,7 @@
       <x>1530</x>
       <y>290</y>
       <width>151</width>
-      <height>121</height>
+      <height>151</height>
      </rect>
     </property>
     <property name="title">
@@ -108,20 +108,20 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>60</y>
+       <y>90</y>
        <width>131</width>
        <height>23</height>
       </rect>
      </property>
      <property name="text">
-      <string>  2. Find Contour</string>
+      <string>  3. Find Contour</string>
      </property>
     </widget>
     <widget class="QPushButton" name="Calculate_Button">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>90</y>
+       <y>120</y>
        <width>131</width>
        <height>23</height>
       </rect>
@@ -133,7 +133,20 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>3. Find Corner</string>
+      <string>4. Find Corner</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="Find_Canny_Button">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>131</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>2. Find Canny</string>
      </property>
     </widget>
    </widget>
@@ -658,7 +671,7 @@
     <property name="geometry">
      <rect>
       <x>1530</x>
-      <y>420</y>
+      <y>460</y>
       <width>151</width>
       <height>91</height>
      </rect>

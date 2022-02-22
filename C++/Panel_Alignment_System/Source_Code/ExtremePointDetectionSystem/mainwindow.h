@@ -21,6 +21,7 @@
 
 //#include "AlgorithmInterface/AlgorithmInterface.h"
 #include "AlgorithmInterface/LoadImage.h"
+#include "AlgorithmInterface/Canny.h"
 #include "AlgorithmInterface/Contour.h"
 #include "AlgorithmInterface/Function.h"
 #include "AlgorithmInterface/Gradient.h"
@@ -29,7 +30,7 @@
 
 
 using namespace std;
-//using namespace cv;
+using namespace cv;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -46,6 +47,7 @@ public:
 
 private slots:
     void on_Image_Load_Button_clicked();
+    void on_Find_Canny_Button_clicked();
     void on_Find_Contour_Button_clicked();
     void on_Calculate_Button_clicked();
     void on_Show_Graph_Button_clicked();
@@ -54,6 +56,7 @@ private:
     Ui::MainWindow *ui;
 
     Mat left_image, right_image;
+    Mat left_canny_image, right_canny_image;
     Mat left_smooth_image, right_smooth_image;
     vector<Point> left_image_contour, right_image_contour;
     Mat left_contour_image, right_contour_image;

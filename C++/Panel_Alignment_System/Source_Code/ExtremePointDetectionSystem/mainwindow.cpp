@@ -95,14 +95,39 @@ void MainWindow::on_Image_Load_Button_clicked()
     ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(show_right_image.data, show_right_image.cols, show_right_image.rows, show_right_image.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
 }
 
+//2. find Canny
+void MainWindow::on_Find_Canny_Button_clicked()
+{
+    if(left_image.empty() || right_image.empty()){
+        return;
+    }
 
-//2. find contour
+    Find_Canny(left_image, left_smooth_image, left_canny_image, 'L');
+    Find_Canny(right_image, right_smooth_image, right_canny_image, 'R');
+
+    Mat show_left_canny_image, show_right_canny_image;
+    vector<Mat> left_channels = {left_canny_image, left_canny_image, left_canny_image};
+    vector<Mat> right_channels = {right_canny_image, right_canny_image, right_canny_image};
+    merge(left_channels, show_left_canny_image);
+    merge(right_channels, show_right_canny_image);
+    cv::resize(show_left_canny_image, show_left_canny_image, Size(show_left_canny_image.cols * 1 / 2, show_left_canny_image.rows * 1 / 2), INTER_LINEAR);
+    cv::resize(show_right_canny_image, show_right_canny_image, Size(show_right_canny_image.cols * 1 / 2, show_right_canny_image.rows * 1 / 2), INTER_LINEAR);
+
+    ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(show_left_canny_image.data,show_left_canny_image.cols,show_left_canny_image.rows,show_left_canny_image.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height(),Qt::KeepAspectRatio)));
+    ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(show_right_canny_image.data,show_right_canny_image.cols,show_right_canny_image.rows,show_right_canny_image.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
+}
+
+//3. find contour
 void MainWindow::on_Find_Contour_Button_clicked()
 {
+    if(left_canny_image.empty() || right_canny_image.empty()){
+        return;
+    }
+
     vector<Vec4i> leftBestTwoLines, rightBestTwoLines;
 
-    Find_Contour_Button(left_image, left_smooth_image, left_image_contour, leftBestTwoLines, 'L');
-    Find_Contour_Button(right_image, right_smooth_image, right_image_contour, rightBestTwoLines, 'R');
+    left_image_contour = Find_Contour(left_canny_image, leftBestTwoLines, 'L');
+    right_image_contour = Find_Contour(right_canny_image, rightBestTwoLines, 'R');
 
     left_contour_image = left_smooth_image.clone();
     right_contour_image = right_smooth_image.clone();
@@ -113,85 +138,85 @@ void MainWindow::on_Find_Contour_Button_clicked()
 
     ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(left_contour_image.data,left_contour_image.cols,left_contour_image.rows,left_contour_image.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height(),Qt::KeepAspectRatio)));
     ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(right_contour_image.data,right_contour_image.cols,right_contour_image.rows,right_contour_image.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
-
 }
 
-//3. Get the normal direction angle and magnitude
+//4. Get the normal direction angle and magnitude
 void MainWindow::on_Calculate_Button_clicked()
 {
-     int left_image_extremePoint_index, right_image_extremePoint_index;
+    if(left_image_contour.size() == 0 || right_image_contour.size() == 0){
+        return;
+    }
 
-     left_image_Gradient = getGradient(left_smooth_image, left_image_contour);
-     left_image_result = getAngleMagnitude(left_image_Gradient);
-     // left_image_extremePoint_index = findExtremePointByGradient(left_image_Gradient);
-     left_image_extremePoint_index = findExtremePointByMinMax(left_image_result);
+    int left_image_extremePoint_index, right_image_extremePoint_index;
 
-     right_image_Gradient = getGradient(right_smooth_image, right_image_contour);
-     right_image_result = getAngleMagnitude(right_image_Gradient);
-     // right_image_extremePoint_index = findExtremePointByGradient(right_image_Gradient);
-     right_image_extremePoint_index = findExtremePointByMinMax(right_image_result);
+    left_image_Gradient = getGradient(left_smooth_image, left_image_contour);
+    left_image_result = getAngleMagnitude(left_image_Gradient);
+    // left_image_extremePoint_index = findExtremePointByGradient(left_image_Gradient);
+    left_image_extremePoint_index = findExtremePointByMinMax(left_image_result);
 
-     Point left_image_extremePoint = left_image_contour[left_image_extremePoint_index];
-     Point right_image_extremePoint = right_image_contour[right_image_extremePoint_index];
+    right_image_Gradient = getGradient(right_smooth_image, right_image_contour);
+    right_image_result = getAngleMagnitude(right_image_Gradient);
+    // right_image_extremePoint_index = findExtremePointByGradient(right_image_Gradient);
+    right_image_extremePoint_index = findExtremePointByMinMax(right_image_result);
 
-     Mat show_left_image_result = left_smooth_image.clone();
-     Mat show_right_image_result  = right_smooth_image.clone();
+    Point left_image_extremePoint = left_image_contour[left_image_extremePoint_index];
+    Point right_image_extremePoint = right_image_contour[right_image_extremePoint_index];
 
-     drawMarker(show_left_image_result,left_image_extremePoint,Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
-     drawMarker(show_right_image_result,right_image_extremePoint,Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
+    Mat show_left_image_result = left_smooth_image.clone();
+    Mat show_right_image_result  = right_smooth_image.clone();
 
-     //Ground Truth (Label Data)
-     Point Left_ground, Right_ground;
-     Left_ground.x = get<0>(left_image_groundTruth);
-     Left_ground.y = get<1>(left_image_groundTruth);
-     Right_ground.x = get<0>(right_image_groundTruth) - 200 * ROISWITCH; //because of crop image
-     Right_ground.y = get<1>(right_image_groundTruth);
+    drawMarker(show_left_image_result,left_image_extremePoint,Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
+    drawMarker(show_right_image_result,right_image_extremePoint,Scalar(0,255,0),MARKER_TILTED_CROSS,12,7,8);
 
-     drawMarker(show_left_image_result,Left_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
-     drawMarker(show_right_image_result,Right_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
+    //Ground Truth (Label Data)
+    Point Left_ground, Right_ground;
+    Left_ground.x = get<0>(left_image_groundTruth);
+    Left_ground.y = get<1>(left_image_groundTruth);
+    Right_ground.x = get<0>(right_image_groundTruth) - 200 * ROISWITCH; //because of crop image
+    Right_ground.y = get<1>(right_image_groundTruth);
 
-     //Detection Position
-     ui->Left_x_detect->setText(QString::number(left_image_extremePoint.x));
-     ui->Left_y_detect->setText(QString::number(left_image_extremePoint.y));
-     ui->Right_x_detect->setText(QString::number(right_image_extremePoint.x));
-     ui->Right_y_detect->setText(QString::number(right_image_extremePoint.y));
+    drawMarker(show_left_image_result,Left_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
+    drawMarker(show_right_image_result,Right_ground,Scalar(0,0,255),MARKER_SQUARE,6,7,8);
 
-     //G.T. Position
-     ui->Left_x_GT->setText(QString::number(Left_ground.x));
-     ui->Left_y_GT->setText(QString::number(Left_ground.y));
-     ui->Right_x_GT->setText(QString::number(Right_ground.x));
-     ui->Right_y_GT->setText(QString::number(Right_ground.y));
+    //Detection Position
+    ui->Left_x_detect->setText(QString::number(left_image_extremePoint.x));
+    ui->Left_y_detect->setText(QString::number(left_image_extremePoint.y));
+    ui->Right_x_detect->setText(QString::number(right_image_extremePoint.x));
+    ui->Right_y_detect->setText(QString::number(right_image_extremePoint.y));
 
-     //Different Detection Position <-> G.T.
-     double x_diff_left = DIFF_ABS(left_image_extremePoint.x, Left_ground.x);
-     double y_diff_left = DIFF_ABS(left_image_extremePoint.y, Left_ground.y);
-     double x_diff_right = DIFF_ABS(right_image_extremePoint.x, Right_ground.x);
-     double y_diff_right = DIFF_ABS(right_image_extremePoint.y, Right_ground.y);
+    //G.T. Position
+    ui->Left_x_GT->setText(QString::number(Left_ground.x));
+    ui->Left_y_GT->setText(QString::number(Left_ground.y));
+    ui->Right_x_GT->setText(QString::number(Right_ground.x));
+    ui->Right_y_GT->setText(QString::number(Right_ground.y));
 
-     ui->diff_x_left->setText(QString::number(x_diff_left));
-     ui->diff_y_left->setText(QString::number(y_diff_left));
-     ui->diff_x_right->setText(QString::number(x_diff_right));
-     ui->diff_y_right->setText(QString::number(y_diff_right));
+    //Different Detection Position <-> G.T.
+    double x_diff_left = DIFF_ABS(left_image_extremePoint.x, Left_ground.x);
+    double y_diff_left = DIFF_ABS(left_image_extremePoint.y, Left_ground.y);
+    double x_diff_right = DIFF_ABS(right_image_extremePoint.x, Right_ground.x);
+    double y_diff_right = DIFF_ABS(right_image_extremePoint.y, Right_ground.y);
 
-     ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(show_left_image_result.data,show_left_image_result.cols,show_left_image_result.rows,show_left_image_result.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height(),Qt::KeepAspectRatio)));
-     ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(show_right_image_result.data,show_right_image_result.cols,show_right_image_result.rows,show_right_image_result.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
+    ui->diff_x_left->setText(QString::number(x_diff_left));
+    ui->diff_y_left->setText(QString::number(y_diff_left));
+    ui->diff_x_right->setText(QString::number(x_diff_right));
+    ui->diff_y_right->setText(QString::number(y_diff_right));
 
+    ui->lbl_img1->setPixmap(QPixmap::fromImage(QImage(show_left_image_result.data,show_left_image_result.cols,show_left_image_result.rows,show_left_image_result.step,QImage::Format_RGB888).scaled(ui->lbl_img1->width(),ui->lbl_img1->height(),Qt::KeepAspectRatio)));
+    ui->lbl_img2->setPixmap(QPixmap::fromImage(QImage(show_right_image_result.data,show_right_image_result.cols,show_right_image_result.rows,show_right_image_result.step,QImage::Format_RGB888).scaled(ui->lbl_img2->width(),ui->lbl_img2->height(),Qt::KeepAspectRatio)));
 }
 
 //Magnitude, angle data graph oputput
-void MainWindow::on_Show_Graph_Button_clicked(){
-
+void MainWindow::on_Show_Graph_Button_clicked()
+{
     if(ui->radioButton->isChecked() || (ui->radioButton->isChecked() == 0 && ui->radioButton_2->isChecked() == 0)){
         plot_graph(left_image_result, left_image_Gradient);
     } else{
         plot_graph(right_image_result, right_image_Gradient);
     }
-
 }
 
 void MainWindow::plot_graph(tuple<vector<double>, vector<double>> image_result, vector<tuple<double, double>> image_Gradient)
 {
-
     QVector<double> index_of_boundary;
     for(unsigned int i = 0; i < get<0>(image_result).size(); i++){
         index_of_boundary.append(i);
@@ -219,5 +244,4 @@ void MainWindow::plot_graph(tuple<vector<double>, vector<double>> image_result, 
     ui->widget_magnitude->rescaleAxes();
     ui->widget_magnitude->replot();
     ui->widget_magnitude->update();
-
 }
