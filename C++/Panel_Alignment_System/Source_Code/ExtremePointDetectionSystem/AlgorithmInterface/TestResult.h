@@ -8,6 +8,7 @@
 #include <iostream>
 #include <time.h>
 #include "AlgorithmInterface/AlgorithmInterface.h"
+#include "AlgorithmInterface/Function.h"
 
 using namespace std;
 

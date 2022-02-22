@@ -15,6 +15,11 @@ void Find_Contour_Button(Mat image, Mat &image_smooth, vector<Point> &image_cont
     //Edge Detection
     Mat image_canny;
     Canny(image_smooth, image_canny, LOW_THRESHOLD, HIGH_THRESHOLD);
+//    if(imageType == 'L'){
+//        imshow("Canny L", image_canny);
+//    } else {
+//        imshow("Canny R", image_canny);
+//    }
 
     //Find Contour
     vector<vector<Point>> image_contours;

@@ -42,12 +42,27 @@ void test_all_data(){
     vector<string> paths;
     Point result;
 
-    ifstream file("../../Test Image_20210913/all_image_path.txt");
+    ifstream file("../../Test Image_20210913/all_rotated_image_path.txt");
     while (getline(file, str)){
         paths.push_back(str);
     }
 
     double start = clock();
+
+    // Angle
+//    Mat image;
+//    int Angle = 10;
+//    for(unsigned int i = 0; i < paths.size(); i++){
+//        Image_Load(paths[i] + "L.png", image);
+//        rotatedImage(image, make_tuple(0, 0), Angle);
+//        result = getExtremePoint(image, 'L');
+//        cout << paths[i] + "L.png" << ": " << result << endl;
+
+//        Image_Load(paths[i] + "R.png", image);
+//        rotatedImage(image, make_tuple(0, 0), Angle);
+//        result = getExtremePoint(image, 'R');
+//        cout << paths[i] + "R.png" << ": " << result << endl;
+//    }
 
     // Single Thread
 //    for(unsigned int i = 0; i < paths.size(); i++){
