@@ -111,6 +111,7 @@ if __name__ == "__main__":
     # )
 
     # Configure data loader (Cheng)
+    # Reference: https://www.kaggle.com/shilou/crypko-data
     def getData(folder, quantity):
 
         paths = glob(folder + "*.jpg")[:quantity]
