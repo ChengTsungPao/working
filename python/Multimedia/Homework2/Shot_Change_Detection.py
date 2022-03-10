@@ -72,8 +72,8 @@ class shot_change_detection():
             # loss.append(self.compare_histogram(hist1, hist2, total))
 
             # if loss[-1] > 750:
-            if loss[-1] > 1340:
-                ans.append(i + 1)
+            # if loss[-1] > 1340:
+            #     ans.append(i + 1)
 
         print(ans)
         plt.plot(loss)
