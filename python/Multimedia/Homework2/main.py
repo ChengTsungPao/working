@@ -24,4 +24,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     shot_change_detection_fcn = shot_change_detection(args)
-    shot_change_detection_fcn.color_histogram()
+    shot_change_detection_fcn.getShotChangeFrame()
