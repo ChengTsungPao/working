@@ -75,7 +75,6 @@ class shot_change_detection():
             self.loss.append(np.mean(abs(hist1 - hist2)))
             # self.loss.append(self.compare_histogram(hist1, hist2, total))
 
-        print(self.result)
         plt.plot(self.loss)
         plt.plot(self.groundTruth, [10] * len(self.groundTruth), "o")
         plt.show()
@@ -87,7 +86,7 @@ class shot_change_detection():
 
         self.result = []
         for i in range(len(self.loss) - 1):
-            if self.loss[-1] > 750:
+            if self.loss[i] > 750:
             # if self.loss[-1] > 1340:
                 self.result.append(i + 1)
 
