@@ -7,11 +7,16 @@ import cv2
 
 class shot_change_detection():
 
-    def __init__(self, imagePath, groundTruthFile):
+    def __init__(self, args):
+        # self.windowSize = args.windowSize
+
+        self.loss = []
+        self.result = []
+
         self.images = []
         self.groundTruth = []
-        self.load_image(imagePath)
-        self.readGroundTruth(groundTruthFile)
+        self.load_image(args.imagePath)
+        self.readGroundTruth(args.groundTruthFile)
 
 
     def readGroundTruth(self, groundTruthFile):
@@ -57,8 +62,7 @@ class shot_change_detection():
 
 
     def color_histogram(self):
-        ans = []
-        loss = []
+        self.loss = []
         total = 256 // 8
 
         for i in range(len(self.images) - 1):
@@ -68,14 +72,21 @@ class shot_change_detection():
             gray2 = cv2.cvtColor(self.images[i + 1], cv2.COLOR_BGR2GRAY)
             hist2 = cv2.calcHist([gray2], [0], None, [total], [0, 256])
 
-            loss.append(np.mean(abs(hist1 - hist2)))
-            # loss.append(self.compare_histogram(hist1, hist2, total))
+            self.loss.append(np.mean(abs(hist1 - hist2)))
+            # self.loss.append(self.compare_histogram(hist1, hist2, total))
 
-            # if loss[-1] > 750:
-            # if loss[-1] > 1340:
-            #     ans.append(i + 1)
+            # if self.loss[-1] > 750:
+            # if self.loss[-1] > 1340:
+            #     self.result.append(i + 1)
 
-        print(ans)
-        plt.plot(loss)
+        print(self.result)
+        plt.plot(self.loss)
         plt.plot(self.groundTruth, [10] * len(self.groundTruth), "o")
         plt.show()
+
+    
+    def getShotChangeFrame(self):
+        if self.loss == []:
+            self.color_histogram()
+
+        self.result = []
