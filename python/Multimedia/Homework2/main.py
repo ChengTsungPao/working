@@ -15,11 +15,18 @@ if __name__ == "__main__":
         "./dataset/hw2_2/ftfm_ground.txt"
     ]
 
-    index = 0
+    thresholds = [
+        750,
+        1400,
+        7400
+    ]
+
+    index = 1
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--imagePath', type = str, default = imagePaths[index], help = 'path of image')
     parser.add_argument('--groundTruthFile', type = str, default = groundTruthFiles[index], help = 'file of groundTruth')
+    parser.add_argument('--threshold', type = int, default = thresholds[index], help = 'width of color histogram')
     parser.add_argument('--windowSize', type = int, default = 8, help = 'width of color histogram')
     args = parser.parse_args()
 

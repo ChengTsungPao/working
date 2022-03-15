@@ -1,48 +1,29 @@
+from Data_Processing import data_processing
+from Data_Analyze import data_analyze
 from glob import glob
 import matplotlib.pylab as plt
 from scipy.stats import wasserstein_distance
 import numpy as np
+import collections
 import cv2
 
 
-class shot_change_detection():
+class shot_change_detection(data_processing):
 
     def __init__(self, args):
-        # self.windowSize = args.windowSize
+        self.data_analyze = data_analyze()
+
+        self.threshold = args.threshold
+        self.windowSize = args.windowSize
 
         self.loss = []
         self.result = []
 
-        self.images = []
-        self.groundTruth = []
         self.load_image(args.imagePath)
         self.readGroundTruth(args.groundTruthFile)
 
 
-    def readGroundTruth(self, groundTruthFile):
-        f = open(groundTruthFile, "r")
-        lines = f.readlines()[4:]
-        self.groundTruth = []
-        for line in lines:
-            line = line.split("\n")[0]
-            line = line.strip()
-            if "~" in line:
-                start, end = line.split("~")
-                start, end = int(start), int(end)
-            else:
-                start = int(line)
-            self.groundTruth.append(start)
-
-
-    def load_image(self, folderPath):
-        self.images = []
-        imagePaths = glob(folderPath + "*")
-        for imagePath in imagePaths:
-            self.images.append(cv2.imread(imagePath))
-
-
     def compare_histogram(self, hist1, hist2, total):
-
         sigma = 0.5
         def G(x):
             times = - (x ** 2) / (2 * sigma ** 2)
@@ -63,7 +44,7 @@ class shot_change_detection():
 
     def color_histogram(self):
         self.loss = []
-        total = 256 // 8
+        total = 256 // self.windowSize
 
         for i in range(len(self.images) - 1):
             gray1 = cv2.cvtColor(self.images[i], cv2.COLOR_BGR2GRAY)
@@ -76,7 +57,6 @@ class shot_change_detection():
             # self.loss.append(self.compare_histogram(hist1, hist2, total))
 
         plt.plot(self.loss)
-        plt.plot(self.groundTruth, [10] * len(self.groundTruth), "o")
         plt.show()
 
     
@@ -86,8 +66,11 @@ class shot_change_detection():
 
         self.result = []
         for i in range(len(self.loss) - 1):
-            if self.loss[i] > 750:
-            # if self.loss[-1] > 1340:
+            if self.loss[i] > self.threshold:
                 self.result.append(i + 1)
 
-        print(self.result)
+        self.result = self.data_analyze.dataAdjust(self.result)
+        
+        # print(self.result)
+        precision, recall = self.data_analyze.getAccuracy(self.result, self.groundTruth)
+        print("precision = {}, recall = {}".format(precision, recall))
