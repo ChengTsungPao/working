@@ -1,4 +1,4 @@
-from Shot_Change_Detection import shot_change_detection
+from Detect_Shot_Change import detect_shot_change
 import argparse
 
 if __name__ == "__main__":
@@ -21,7 +21,7 @@ if __name__ == "__main__":
         7400
     ]
 
-    index = 1
+    index = 2
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--imagePath', type = str, default = imagePaths[index], help = 'path of image')
@@ -30,5 +30,6 @@ if __name__ == "__main__":
     parser.add_argument('--windowSize', type = int, default = 8, help = 'width of color histogram')
     args = parser.parse_args()
 
-    shot_change_detection_fcn = shot_change_detection(args)
-    shot_change_detection_fcn.getShotChangeFrame()
+    shot_change_detection_fcn = detect_shot_change(args)
+    shot_change_detection_fcn.getKeypointShotChangeFrame()
+    # shot_change_detection_fcn.getShotChangeFrame()

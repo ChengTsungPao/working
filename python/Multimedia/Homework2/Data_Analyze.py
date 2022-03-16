@@ -13,16 +13,19 @@ class data_analyze():
         return ans
 
 
-    def getAccuracy(self, result, groundTruth):
+    def getAccuracy(self, result, groundTruth, delta = 0):
         count = 0
         total_dection = len(result)
         total_groundTruth = len(groundTruth.root)
 
         for i in range(total_dection):
-            if result[i] in groundTruth.parent:
-                frame = groundTruth.findParent(result[i])
-                groundTruth.root[frame] = True
-            else:
+            find = False
+            for f in range(result[i] - delta, result[i] + delta + 1):
+                if f in groundTruth.parent:
+                    frame = groundTruth.findParent(f)
+                    groundTruth.root[frame] = True
+                    find = True
+            if find == False:
                 count += 1
                 
         precision = (total_dection - count) / total_dection
