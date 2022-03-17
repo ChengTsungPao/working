@@ -21,7 +21,7 @@ if __name__ == "__main__":
         7400
     ]
 
-    index = 2
+    index = 1
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--imagePath', type = str, default = imagePaths[index], help = 'path of image')
@@ -32,4 +32,4 @@ if __name__ == "__main__":
 
     shot_change_detection_fcn = detect_shot_change(args)
     shot_change_detection_fcn.getKeypointShotChangeFrame()
-    # shot_change_detection_fcn.getShotChangeFrame()
+    # shot_change_detection_fcn.getColorShotChangeFrame()

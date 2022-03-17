@@ -4,7 +4,6 @@ from glob import glob
 import matplotlib.pylab as plt
 from scipy.stats import wasserstein_distance
 import numpy as np
-import collections
 import cv2
 
 
@@ -22,6 +21,8 @@ class detect_shot_change(data_processing):
         self.load_image(args.imagePath)
         self.readGroundTruth(args.groundTruthFile)
 
+
+    ###################### Algorithm 1 => color_histogram ######################
 
     def compare_histogram(self, hist1, hist2, total):
         sigma = 0.5
@@ -58,6 +59,25 @@ class detect_shot_change(data_processing):
 
         plt.plot(self.loss)
         plt.show()
+
+
+    def getColorShotChangeFrame(self):
+        if self.loss == []:
+            self.color_histogram()
+
+        self.result = []
+        for i in range(len(self.loss) - 1):
+            if self.loss[i] > self.threshold:
+                self.result.append(i + 1)
+
+        self.result = self.data_analyze.dataAdjust(self.result)
+        
+        # print(self.result)
+        precision, recall = self.data_analyze.getAccuracy(self.result, self.groundTruth)
+        print("precision = {}, recall = {}".format(precision, recall))
+
+
+    ###################### Algorithm 2 => keyPoints_dection ######################
 
     def keyPoints_dection(self):
 
@@ -136,21 +156,4 @@ class detect_shot_change(data_processing):
         
         print(self.result)
         precision, recall = self.data_analyze.getAccuracy(self.result, self.groundTruth, 3)
-        print("precision = {}, recall = {}".format(precision, recall))
-
-
-
-    def getShotChangeFrame(self):
-        if self.loss == []:
-            self.color_histogram()
-
-        self.result = []
-        for i in range(len(self.loss) - 1):
-            if self.loss[i] > self.threshold:
-                self.result.append(i + 1)
-
-        self.result = self.data_analyze.dataAdjust(self.result)
-        
-        # print(self.result)
-        precision, recall = self.data_analyze.getAccuracy(self.result, self.groundTruth)
         print("precision = {}, recall = {}".format(precision, recall))
