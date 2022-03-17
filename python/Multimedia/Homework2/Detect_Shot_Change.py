@@ -5,7 +5,7 @@ import matplotlib.pylab as plt
 from scipy.stats import wasserstein_distance
 import numpy as np
 import cv2
-from scipy.fft import fft
+from scipy.fft import fft, fft2
 
 
 class detect_shot_change(data_processing):
@@ -169,17 +169,17 @@ class detect_shot_change(data_processing):
         origin_loss = []
 
         for i in range(len(self.images) - 1):
-            image1 = np.array(self.images[i]).flatten()
-            image2 = np.array(self.images[i + 1]).flatten()
+            image1 = cv2.cvtColor(self.images[i], cv2.COLOR_BGR2GRAY)
+            image2 = cv2.cvtColor(self.images[i + 1], cv2.COLOR_BGR2GRAY)
 
-            imageFourier1 = np.abs(fft(image1))
-            imageFourier2 = np.abs(fft(image2))
+            imageFourier1 = np.abs(fft2(image1))
+            imageFourier2 = np.abs(fft2(image2))
 
             lossVal = np.mean(np.abs(imageFourier1 - imageFourier2))
             print(lossVal)
             origin_loss.append(lossVal)
 
-        k = 10
+        k = 5
         self.loss = []
         for i in range(len(origin_loss)):
             self.loss.append(np.median(origin_loss[max(0, i - k // 2): i + k // 2]))
