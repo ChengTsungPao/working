@@ -31,5 +31,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     shot_change_detection_fcn = detect_shot_change(args)
-    shot_change_detection_fcn.getKeypointShotChangeFrame()
     # shot_change_detection_fcn.getColorShotChangeFrame()
+    # shot_change_detection_fcn.getKeypointShotChangeFrame()
+    shot_change_detection_fcn.getFourierShotChangeFrame()

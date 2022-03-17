@@ -5,6 +5,7 @@ import matplotlib.pylab as plt
 from scipy.stats import wasserstein_distance
 import numpy as np
 import cv2
+from scipy.fft import fft
 
 
 class detect_shot_change(data_processing):
@@ -146,6 +147,51 @@ class detect_shot_change(data_processing):
             candidate = self.loss[i]
             for loss in self.loss[max(i - k // 2, 0): i + k // 2]:
                 if candidate > loss:
+                    hit = False
+                    break
+            
+            if hit:
+                self.result.append(i + 1)
+
+        self.result = self.data_analyze.dataAdjust(self.result)
+        
+        print(self.result)
+        precision, recall = self.data_analyze.getAccuracy(self.result, self.groundTruth, 3)
+        print("precision = {}, recall = {}".format(precision, recall))
+
+
+    ###################### Algorithm 3 => fourier_transform ######################
+
+    def fourier_transform(self):
+        self.loss = []
+
+        for i in range(len(self.images) - 1):
+            image1 = np.array(self.images[i]).flatten()
+            image2 = np.array(self.images[i + 1]).flatten()
+
+            imageFourier1 = np.abs(fft(image1))
+            imageFourier2 = np.abs(fft(image2))
+
+            lossVal = np.mean(np.abs(imageFourier1 - imageFourier2))
+            print(lossVal)
+            self.loss.append(lossVal)
+
+
+        plt.plot(self.loss)
+        plt.show()
+
+
+    def getFourierShotChangeFrame(self):
+        if self.loss == []:
+            self.fourier_transform()
+
+        k = 5
+        self.result = []
+        for i in range(len(self.loss)):
+            hit = True
+            candidate = self.loss[i]
+            for loss in self.loss[max(i - k // 2, 0): i + k // 2]:
+                if candidate < loss:
                     hit = False
                     break
             
