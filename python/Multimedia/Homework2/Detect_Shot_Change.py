@@ -5,7 +5,7 @@ import matplotlib.pylab as plt
 from scipy.stats import wasserstein_distance
 import numpy as np
 import cv2
-from scipy.fft import fft, fft2
+from scipy.fft import fft2
 
 
 class detect_shot_change(data_processing):
