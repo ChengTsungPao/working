@@ -14,7 +14,7 @@ class data_analyze():
 
 
     def getAccuracy(self, predict, groundTruth, total, delta = 0):
-        count = 0
+        FP = 0
         total_dection = len(predict)
         total_groundTruth = len(groundTruth.root)
 
@@ -26,10 +26,10 @@ class data_analyze():
                     groundTruth.root[frame] = True
                     find = True
             if find == False:
-                count += 1
+                FP += 1
                 
-        precision = (total_dection - count) / total_dection
+        precision = (total_dection - FP) / total_dection
         recall = sum(groundTruth.root.values()) / total_groundTruth
-        FSR = count / total
+        FSR = FP / (total - total_groundTruth)
 
         return precision, recall, FSR
