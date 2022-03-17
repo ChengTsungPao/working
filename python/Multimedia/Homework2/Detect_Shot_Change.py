@@ -82,6 +82,7 @@ class detect_shot_change(data_processing):
 
     def keyPoints_dection(self):
 
+        self.loss = []
         origin_loss = []
 
         for i in range(len(self.images) - 1):
@@ -163,7 +164,9 @@ class detect_shot_change(data_processing):
     ###################### Algorithm 3 => fourier_transform ######################
 
     def fourier_transform(self):
+
         self.loss = []
+        origin_loss = []
 
         for i in range(len(self.images) - 1):
             image1 = np.array(self.images[i]).flatten()
@@ -174,8 +177,12 @@ class detect_shot_change(data_processing):
 
             lossVal = np.mean(np.abs(imageFourier1 - imageFourier2))
             print(lossVal)
-            self.loss.append(lossVal)
+            origin_loss.append(lossVal)
 
+        k = 10
+        self.loss = []
+        for i in range(len(origin_loss)):
+            self.loss.append(np.median(origin_loss[max(0, i - k // 2): i + k // 2]))
 
         plt.plot(self.loss)
         plt.show()

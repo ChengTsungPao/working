@@ -21,7 +21,7 @@ if __name__ == "__main__":
         7400
     ]
 
-    index = 1
+    index = 2
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--imagePath', type = str, default = imagePaths[index], help = 'path of image')
