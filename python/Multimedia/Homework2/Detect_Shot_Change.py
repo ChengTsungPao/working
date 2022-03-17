@@ -25,15 +25,16 @@ class detect_shot_change(data_processing):
 
         self.load_image(self.imagePath)
         self.readGroundTruth(self.groundTruthFile)
+        self.totalFrames = len(self.images)
 
 
     def getShotChangeFrame(self):
         if self.algorithm == "color_histogram1" or self.algorithm == "color_histogram2":
-            self.getColorShotChangeFrame()
+            return self.getColorShotChangeFrame()
         elif self.algorithm == "keypoints_dection":
-            self.getKeypointShotChangeFrame()
+            return self.getKeypointShotChangeFrame()
         else:
-            self.getFourierShotChangeFrame()
+            return self.getFourierShotChangeFrame()
 
 
     ###################### Algorithm 1 => color_histogram ######################
@@ -89,7 +90,7 @@ class detect_shot_change(data_processing):
 
         plt.plot(self.loss)
         plt.savefig("./dataset/Result/current.png")
-        plt.show()
+        # plt.show()
         
 
     def getColorShotChangeFrame(self):
@@ -106,10 +107,10 @@ class detect_shot_change(data_processing):
 
         # self.result = self.data_analyze.dataAdjust(self.result)
         
-        print(self.result)
-        precision, recall = self.data_analyze.getAccuracy(self.result, self.groundTruth, 1)
-        print("precision = {}, recall = {}".format(precision, recall))
-
+        # print(self.result)
+        precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 1)
+        print("precision = {}, recall = {}, FSR = {}".format(precision, recall, FSR))
+        return precision, recall, FSR
 
     ###################### Algorithm 2 => keyPoints_dection ######################
 
@@ -190,9 +191,9 @@ class detect_shot_change(data_processing):
         self.result = self.data_analyze.dataAdjust(self.result)
         
         print(self.result)
-        precision, recall = self.data_analyze.getAccuracy(self.result, self.groundTruth, 3)
-        print("precision = {}, recall = {}".format(precision, recall))
-
+        precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 1)
+        print("precision = {}, recall = {}, FSR = {}".format(precision, recall, FSR))
+        return precision, recall, FSR
 
     ###################### Algorithm 3 => fourier_transform ######################
 
@@ -218,6 +219,7 @@ class detect_shot_change(data_processing):
             self.loss.append(np.median(origin_loss[max(0, i - k // 2): i + k // 2]))
 
         plt.plot(self.loss)
+        plt.savefig("./dataset/Result/current.png")
         plt.show()
 
 
@@ -241,5 +243,6 @@ class detect_shot_change(data_processing):
         self.result = self.data_analyze.dataAdjust(self.result)
         
         print(self.result)
-        precision, recall = self.data_analyze.getAccuracy(self.result, self.groundTruth, 3)
-        print("precision = {}, recall = {}".format(precision, recall))
+        precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 1)
+        print("precision = {}, recall = {}, FSR = {}".format(precision, recall, FSR))
+        return precision, recall, FSR
