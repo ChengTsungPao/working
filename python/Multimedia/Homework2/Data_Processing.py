@@ -34,5 +34,10 @@ class data_processing():
     def load_image(self, folderPath):
         self.images = []
         imagePaths = glob(folderPath + "*")
+        try:
+            imagePaths.sort(key = lambda x: int(x.split("\\")[-1].split(".jpg")[0]))
+        except:
+            pass
+        
         for imagePath in imagePaths:
             self.images.append(cv2.imread(imagePath))
