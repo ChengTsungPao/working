@@ -27,11 +27,11 @@ class Union_Find():
         if self.weight[p1] > self.weight[p2]:
             self.parent[p2] = p1
             del self.root[p2]
-        elif self.weight[p1] < self.weight[p1]:
+        elif self.weight[p1] < self.weight[p2]:
             self.parent[p1] = p2
             del self.root[p1]
         else:
             self.parent[p1] = p2
             self.weight[p2] += 1
-            del self.root[p2]
+            del self.root[p1]
 
