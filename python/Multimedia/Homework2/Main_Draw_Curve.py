@@ -19,11 +19,11 @@ if __name__ == "__main__":
     ]
 
     algorithm = "color_histogram1"
-    videoIndex = 2
+    videoIndex = 1
 
     precisions, recalls, FSRs = [], [], []
 
-    for threshold in np.arange(0.1, 1.1, 0.01):
+    for threshold in np.arange(0.2, 1.1, 0.05):
 
         parser = argparse.ArgumentParser()
         parser.add_argument('--imagePath', type = str, default = imagePaths[videoIndex], help = 'path of image')

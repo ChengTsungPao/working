@@ -9,7 +9,7 @@ class Union_Find():
         if frame not in self.parent:
             self.parent[frame] = frame
             self.weight[frame] = 1
-            self.root[frame] = False
+            self.root[frame] = 1
 
     def findParent(self, frame):
         if self.parent[frame] == frame:
@@ -26,12 +26,15 @@ class Union_Find():
 
         if self.weight[p1] > self.weight[p2]:
             self.parent[p2] = p1
+            self.root[p1] += self.root[p2]
             del self.root[p2]
         elif self.weight[p1] < self.weight[p2]:
             self.parent[p1] = p2
+            self.root[p2] += self.root[p1]
             del self.root[p1]
         else:
             self.parent[p1] = p2
             self.weight[p2] += 1
+            self.root[p2] += self.root[p1]
             del self.root[p1]
 
