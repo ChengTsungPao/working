@@ -19,7 +19,7 @@ if __name__ == "__main__":
     ]
 
     algorithm = "color_histogram1"
-    videoIndex = 1
+    videoIndex = 2
 
     precisions, recalls, FSRs = [], [], []
 
@@ -48,12 +48,14 @@ if __name__ == "__main__":
     plt.plot(result["recall"], result["precision"], "-o")
     plt.xlabel("recall")
     plt.ylabel("precision")
+    plt.savefig("./dataset/Result/video{}_{}_1.png".format(videoIndex, algorithm))
     plt.show()
 
     plt.clf()
     plt.plot(result["FSR"], result["recall"], "-o")
     plt.xlabel("FSR")
     plt.ylabel("recall")
+    plt.savefig("./dataset/Result/video{}_{}_2.png".format(videoIndex, algorithm))
     plt.show()
 
 
