@@ -1,7 +1,66 @@
+from cProfile import label
 from Detect_Shot_Change import detect_shot_change
 import matplotlib.pylab as plt
 import numpy as np
 import argparse
+
+def calculate(algorithm, videoIndex, args):
+    start_threshold = [0.6, 0.4, 0.6]
+    precisions, recalls, FSRs = [], [], []
+
+    for threshold in np.arange(start_threshold[videoIndex], 1.1, 0.05):
+        args.threshold = threshold
+
+        shot_change_detection_fcn = detect_shot_change(args)
+        precision, recall, FSR = shot_change_detection_fcn.getShotChangeFrame()
+
+        precisions.append(precision)
+        recalls.append(recall)
+        FSRs.append(FSR)
+
+    np.savez("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm), precision = precisions, recall = recalls, FSR = FSRs)
+
+    result = np.load("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm))
+    plt.clf()
+    plt.plot(result["recall"], result["precision"], "-o")
+    plt.xlabel("recall")
+    plt.ylabel("precision")
+    plt.savefig("./dataset/Result/video{}_{}_1.png".format(videoIndex, algorithm))
+
+    plt.clf()
+    plt.plot(result["FSR"], result["recall"], "-o")
+    plt.xlabel("FSR")
+    plt.ylabel("recall")
+    plt.savefig("./dataset/Result/video{}_{}_2.png".format(videoIndex, algorithm))
+
+
+def plot(algorithm):
+    video = ["news_out", "ngc_out", "ftfm_out"]
+
+    plt.clf()
+    plt.title("precision-recall")
+    for videoIndex in range(3):
+        result = np.load("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm))
+        plt.plot(result["recall"], result["precision"], "-o", label = video[videoIndex])
+
+    plt.xlabel("recall")
+    plt.ylabel("precision")
+    plt.legend()
+    plt.savefig("./dataset/Result/precision_recall_{}.png".format(algorithm))
+    plt.show()
+
+    plt.clf()
+    plt.title("recall-FSR")
+    for videoIndex in range(3):
+        result = np.load("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm))
+        plt.plot(result["FSR"], result["recall"], "-o", label = video[videoIndex])
+
+    plt.xlabel("FSR")
+    plt.ylabel("recall")
+    plt.legend()
+    plt.savefig("./dataset/Result/recall_FSR_{}.png".format(algorithm))
+    plt.show()
+
 
 
 if __name__ == "__main__":
@@ -21,42 +80,13 @@ if __name__ == "__main__":
     algorithm = "color_histogram1"
     videoIndex = 2
 
-    precisions, recalls, FSRs = [], [], []
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--imagePath', type = str, default = imagePaths[videoIndex], help = 'path of image')
+    parser.add_argument('--groundTruthFile', type = str, default = groundTruthFiles[videoIndex], help = 'file of groundTruth')
+    parser.add_argument('--algorithm', type = str, default = algorithm, help = 'algorithm of function')
+    parser.add_argument('--threshold', type = int, default = 0.85, help = 'width of color histogram')
+    parser.add_argument('--windowSize', type = int, default = 8, help = 'width of color histogram')
+    args = parser.parse_args()
 
-    for threshold in np.arange(0.2, 1.1, 0.05):
-
-        parser = argparse.ArgumentParser()
-        parser.add_argument('--imagePath', type = str, default = imagePaths[videoIndex], help = 'path of image')
-        parser.add_argument('--groundTruthFile', type = str, default = groundTruthFiles[videoIndex], help = 'file of groundTruth')
-        parser.add_argument('--algorithm', type = str, default = algorithm, help = 'algorithm of function')
-        parser.add_argument('--threshold', type = int, default = threshold, help = 'width of color histogram')
-        parser.add_argument('--windowSize', type = int, default = 8, help = 'width of color histogram')
-        args = parser.parse_args()
-
-        shot_change_detection_fcn = detect_shot_change(args)
-        precision, recall, FSR = shot_change_detection_fcn.getShotChangeFrame()
-
-        precisions.append(precision)
-        recalls.append(recall)
-        FSRs.append(FSR)
-
-    np.savez("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm), precision = precisions, recall = recalls, FSR = FSRs)
-
-    result = np.load("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm))
-
-    plt.clf()
-    plt.plot(result["recall"], result["precision"], "-o")
-    plt.xlabel("recall")
-    plt.ylabel("precision")
-    plt.savefig("./dataset/Result/video{}_{}_1.png".format(videoIndex, algorithm))
-    plt.show()
-
-    plt.clf()
-    plt.plot(result["FSR"], result["recall"], "-o")
-    plt.xlabel("FSR")
-    plt.ylabel("recall")
-    plt.savefig("./dataset/Result/video{}_{}_2.png".format(videoIndex, algorithm))
-    plt.show()
-
-
-
+    # calculate(algorithm, videoIndex, args)
+    plot(algorithm)

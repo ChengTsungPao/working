@@ -108,7 +108,7 @@ class detect_shot_change(data_processing):
         # self.result = self.data_analyze.dataAdjust(self.result)
         
         # print(self.result)
-        precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 1)
+        precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 0)
         print("precision = {}, recall = {}, FSR = {}".format(precision, recall, FSR))
         return precision, recall, FSR
 
@@ -120,8 +120,8 @@ class detect_shot_change(data_processing):
         origin_loss = []
 
         for i in range(len(self.images) - 1):
-            image1 = cv2.cvtColor(self.images[i], cv2.COLOR_BGR2GRAY)
-            image2 = cv2.cvtColor(self.images[i + 1], cv2.COLOR_BGR2GRAY)
+            image1 = cv2.cvtColor(self.images[i], cv2.COLOR_RGB2HSV)
+            image2 = cv2.cvtColor(self.images[i + 1], cv2.COLOR_RGB2HSV)
 
             ########################## find keypoint ##########################
 
@@ -154,17 +154,18 @@ class detect_shot_change(data_processing):
                 distance = [m.distance for m, n in matches]
                 total_distance = np.mean(distance)
 
-                print(total_distance)
+                # print(total_distance)
                 origin_loss.append(total_distance)
 
             except:
-                print(0)
+                # print(0)
                 origin_loss.append(0)
 
-        k = 10
-        self.loss = []
-        for i in range(len(origin_loss)):
-            self.loss.append(np.median(origin_loss[max(0, i - k // 2): i + k // 2]))
+        self.loss = origin_loss
+        # k = 10
+        # self.loss = []
+        # for i in range(len(origin_loss)):
+        #     self.loss.append(np.median(origin_loss[max(0, i - k // 2): i + k // 2]))
 
         plt.plot(self.loss)
         plt.savefig("./dataset/Result/current.png")
@@ -186,12 +187,15 @@ class detect_shot_change(data_processing):
                     break
             
             if hit and candidate != 0:
-                self.result.append(i + 1)
+                if "hw2_2" in self.imagePath:
+                    self.result.append(i + 2)
+                else:
+                    self.result.append(i + 1)
 
-        self.result = self.data_analyze.dataAdjust(self.result)
+        # self.result = self.data_analyze.dataAdjust(self.result)
         
         print(self.result)
-        precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 1)
+        precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 0)
         print("precision = {}, recall = {}, FSR = {}".format(precision, recall, FSR))
         return precision, recall, FSR
 
@@ -203,20 +207,21 @@ class detect_shot_change(data_processing):
         origin_loss = []
 
         for i in range(len(self.images) - 1):
-            image1 = cv2.cvtColor(self.images[i], cv2.COLOR_BGR2GRAY)
-            image2 = cv2.cvtColor(self.images[i + 1], cv2.COLOR_BGR2GRAY)
+            image1 = cv2.cvtColor(self.images[i], cv2.COLOR_RGB2HSV)
+            image2 = cv2.cvtColor(self.images[i + 1], cv2.COLOR_RGB2HSV)
 
             imageFourier1 = np.abs(fft2(image1))
             imageFourier2 = np.abs(fft2(image2))
 
             lossVal = np.mean(np.abs(imageFourier1 - imageFourier2))
-            print(lossVal)
+            # print(lossVal)
             origin_loss.append(lossVal)
 
-        k = 5
-        self.loss = []
-        for i in range(len(origin_loss)):
-            self.loss.append(np.median(origin_loss[max(0, i - k // 2): i + k // 2]))
+        self.loss = origin_loss
+        # k = 5
+        # self.loss = []
+        # for i in range(len(origin_loss)):
+        #     self.loss.append(np.median(origin_loss[max(0, i - k // 2): i + k // 2]))
 
         plt.plot(self.loss)
         plt.savefig("./dataset/Result/current.png")
@@ -227,7 +232,7 @@ class detect_shot_change(data_processing):
         if self.loss == []:
             self.fourier_transform()
 
-        k = 5
+        k = 10
         self.result = []
         for i in range(len(self.loss)):
             hit = True
@@ -238,11 +243,14 @@ class detect_shot_change(data_processing):
                     break
             
             if hit:
-                self.result.append(i + 1)
+                if "hw2_2" in self.imagePath:
+                    self.result.append(i + 2)
+                else:
+                    self.result.append(i + 1)
 
-        self.result = self.data_analyze.dataAdjust(self.result)
+        # self.result = self.data_analyze.dataAdjust(self.result)
         
         print(self.result)
-        precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 1)
+        precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 0)
         print("precision = {}, recall = {}, FSR = {}".format(precision, recall, FSR))
         return precision, recall, FSR
