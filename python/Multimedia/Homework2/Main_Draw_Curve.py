@@ -93,5 +93,6 @@ if __name__ == "__main__":
         parser.add_argument('--windowSize', type = int, default = 8, help = 'width of color histogram')
         args = parser.parse_args()
         calculate(algorithm, videoIndex, args)
+        print("Video{} Finish !!!".format(videoIndex))
 
     plot(algorithm)
