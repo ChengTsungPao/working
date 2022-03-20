@@ -1,6 +1,5 @@
 from Data_Processing import data_processing
 from Data_Analyze import data_analyze
-from glob import glob
 import matplotlib.pylab as plt
 import numpy as np
 import cv2
