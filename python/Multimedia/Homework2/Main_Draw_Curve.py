@@ -52,7 +52,7 @@ def plot(algorithm):
     plt.show()
 
     plt.clf()
-    plt.title("RF Curve", fontsize=titlefont)
+    plt.title("RF-Curve", fontsize=titlefont)
     for videoIndex in range(3):
         result = np.load("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm))
         plt.plot(result["FSR"], result["recall"], "-o", label = video[videoIndex])
