@@ -1,4 +1,3 @@
-from cProfile import label
 from Detect_Shot_Change import detect_shot_change
 import matplotlib.pylab as plt
 import numpy as np
