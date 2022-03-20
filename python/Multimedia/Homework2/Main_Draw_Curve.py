@@ -3,9 +3,10 @@ from Detect_Shot_Change import detect_shot_change
 import matplotlib.pylab as plt
 import numpy as np
 import argparse
+import os
 
 def calculate(algorithm, videoIndex, args):
-    start_threshold = [0.6, 0.4, 0.6]
+    start_threshold = [0.65, 0.45, 0.6]
     precisions, recalls, FSRs = [], [], []
 
     for threshold in np.arange(start_threshold[videoIndex], 1.1, 0.05):
@@ -35,28 +36,30 @@ def calculate(algorithm, videoIndex, args):
 
 
 def plot(algorithm):
+    titlefont = 20
+    font = 15
     video = ["news_out", "ngc_out", "ftfm_out"]
 
     plt.clf()
-    plt.title("precision-recall")
+    plt.title("PR-Curve", fontsize=titlefont)
     for videoIndex in range(3):
         result = np.load("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm))
         plt.plot(result["recall"], result["precision"], "-o", label = video[videoIndex])
 
-    plt.xlabel("recall")
-    plt.ylabel("precision")
+    plt.xlabel("recall", fontsize=font)
+    plt.ylabel("precision", fontsize=font)
     plt.legend()
     plt.savefig("./dataset/Result/precision_recall_{}.png".format(algorithm))
     plt.show()
 
     plt.clf()
-    plt.title("recall-FSR")
+    plt.title("RF Curve", fontsize=titlefont)
     for videoIndex in range(3):
         result = np.load("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm))
         plt.plot(result["FSR"], result["recall"], "-o", label = video[videoIndex])
 
-    plt.xlabel("FSR")
-    plt.ylabel("recall")
+    plt.xlabel("FSR", fontsize=font)
+    plt.ylabel("recall", fontsize=font)
     plt.legend()
     plt.savefig("./dataset/Result/recall_FSR_{}.png".format(algorithm))
     plt.show()
@@ -64,6 +67,8 @@ def plot(algorithm):
 
 
 if __name__ == "__main__":
+    if not os.path.exists("./dataset/Result/"):
+        os.makedirs("./dataset/Result/")
 
     imagePaths = [
         "./dataset/hw2_1/news_out/",

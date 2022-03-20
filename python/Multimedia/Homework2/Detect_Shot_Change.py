@@ -73,7 +73,7 @@ class detect_shot_change(data_processing):
             histH = cv2.calcHist([h], [0], None, [total], [0, 256])
             histS = cv2.calcHist([s], [0], None, [total], [0, 256])
             histV = cv2.calcHist([v], [0], None, [total], [0, 256])
-            hist = 0.5 * histH + 0.3 * histS + 0.2 * histV
+            hist = (histH + histS + histV) / 3
             return hist
 
         for i in range(len(self.images) - 1):
@@ -81,15 +81,15 @@ class detect_shot_change(data_processing):
                 hist1 = histogram_hsv(self.images[i])
                 hist2 = histogram_hsv(self.images[i + 1])
                 self.loss.append(np.sum(np.minimum(hist1, hist2)) / np.sum(hist1))
+                # self.loss.append(self.compare_histogram(hist1, hist2, total))
             else:
                 hist1 = histogram_gray(self.images[i])
                 hist2 = histogram_gray(self.images[i + 1])
                 self.loss.append(-np.mean(abs(hist1 - hist2)))
+                # self.loss.append(self.compare_histogram(hist1, hist2, total))
 
-            # self.loss.append(self.compare_histogram(hist1, hist2, total))
-
-        plt.plot(self.loss)
-        plt.savefig("./dataset/Result/current.png")
+        # plt.plot(self.loss)
+        # plt.savefig("./dataset/Result/current.png")
         # plt.show()
         
 
@@ -99,12 +99,15 @@ class detect_shot_change(data_processing):
 
         self.result = []
         for i in range(len(self.loss) - 1):
-            if self.loss[i] < self.threshold:
+            if self.loss[i] < self.threshold and \
+               self.loss[i] < self.loss[i + 1] and \
+               (i == 0 or self.loss[i] < self.loss[i - 1]):
                 if "hw2_2" in self.imagePath:
                     self.result.append(i + 2)
                 else:
                     self.result.append(i + 1)
 
+        # detect continue frame choose the last frame
         # self.result = self.data_analyze.dataAdjust(self.result)
         
         # print(self.result)
@@ -161,22 +164,22 @@ class detect_shot_change(data_processing):
                 # print(0)
                 origin_loss.append(0)
 
-        self.loss = origin_loss
-        # k = 10
-        # self.loss = []
-        # for i in range(len(origin_loss)):
-        #     self.loss.append(np.median(origin_loss[max(0, i - k // 2): i + k // 2]))
+        # Find Local Min
+        k = 20 # k = 40 # news_out
+        self.loss = []
+        for i in range(len(origin_loss)):
+            self.loss.append(np.mean(origin_loss[max(0, i - k // 2): i + k // 2]))
 
-        plt.plot(self.loss)
-        plt.savefig("./dataset/Result/current.png")
-        plt.show()
+        # plt.plot(self.loss)
+        # plt.savefig("./dataset/Result/current.png")
+        # plt.show()
 
 
     def getKeypointShotChangeFrame(self):
         if self.loss == []:
             self.keyPoints_dection()
 
-        k = 5
+        k = 10
         self.result = []
         for i in range(len(self.loss)):
             hit = True
@@ -192,9 +195,10 @@ class detect_shot_change(data_processing):
                 else:
                     self.result.append(i + 1)
 
+        # detect continue frame choose the last frame
         # self.result = self.data_analyze.dataAdjust(self.result)
         
-        print(self.result)
+        # print(self.result)
         precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 0)
         print("precision = {}, recall = {}, FSR = {}".format(precision, recall, FSR))
         return precision, recall, FSR
@@ -217,22 +221,23 @@ class detect_shot_change(data_processing):
             # print(lossVal)
             origin_loss.append(lossVal)
 
-        self.loss = origin_loss
-        # k = 5
-        # self.loss = []
-        # for i in range(len(origin_loss)):
-        #     self.loss.append(np.median(origin_loss[max(0, i - k // 2): i + k // 2]))
+        # Median Filter
+        k = 10
+        self.loss = []
+        for i in range(len(origin_loss)):
+            self.loss.append(np.median(origin_loss[max(0, i - k // 2): i + k // 2]))
 
-        plt.plot(self.loss)
-        plt.savefig("./dataset/Result/current.png")
-        plt.show()
+        # plt.plot(self.loss)
+        # plt.savefig("./dataset/Result/current.png")
+        # plt.show()
 
 
     def getFourierShotChangeFrame(self):
         if self.loss == []:
             self.fourier_transform()
 
-        k = 10
+        # Find Local Min
+        k = 10 # k = 3 # news_out
         self.result = []
         for i in range(len(self.loss)):
             hit = True
@@ -248,9 +253,10 @@ class detect_shot_change(data_processing):
                 else:
                     self.result.append(i + 1)
 
+        # detect continue frame choose the last frame
         # self.result = self.data_analyze.dataAdjust(self.result)
         
-        print(self.result)
+        # print(self.result)
         precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 0)
         print("precision = {}, recall = {}, FSR = {}".format(precision, recall, FSR))
         return precision, recall, FSR

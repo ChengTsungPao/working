@@ -1,7 +1,10 @@
 from Detect_Shot_Change import detect_shot_change
 import argparse
+import os
 
 if __name__ == "__main__":
+    if not os.path.exists("./dataset/Result/"):
+        os.makedirs("./dataset/Result/")
 
     imagePaths = [
         "./dataset/hw2_1/news_out/",
@@ -16,7 +19,7 @@ if __name__ == "__main__":
     ]
 
     thresholds = {
-         "color_histogram1": [ 0.90,  0.90,  0.85],
+         "color_histogram1": [ 0.90,  0.95,  0.85],
          "color_histogram2": [ -750, -1400, -7500],
         "keypoints_dection": [    0,     0,     0],
         "fourier_transform": [    0,     0,     0]
