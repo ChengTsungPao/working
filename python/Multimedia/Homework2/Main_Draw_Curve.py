@@ -83,15 +83,15 @@ if __name__ == "__main__":
     ]
 
     algorithm = "color_histogram1"
-    videoIndex = 2
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--imagePath', type = str, default = imagePaths[videoIndex], help = 'path of image')
-    parser.add_argument('--groundTruthFile', type = str, default = groundTruthFiles[videoIndex], help = 'file of groundTruth')
-    parser.add_argument('--algorithm', type = str, default = algorithm, help = 'algorithm of function')
-    parser.add_argument('--threshold', type = int, default = 0.85, help = 'width of color histogram')
-    parser.add_argument('--windowSize', type = int, default = 8, help = 'width of color histogram')
-    args = parser.parse_args()
+    for videoIndex in range(3):
+        parser = argparse.ArgumentParser()
+        parser.add_argument('--imagePath', type = str, default = imagePaths[videoIndex], help = 'path of image')
+        parser.add_argument('--groundTruthFile', type = str, default = groundTruthFiles[videoIndex], help = 'file of groundTruth')
+        parser.add_argument('--algorithm', type = str, default = algorithm, help = 'algorithm of function')
+        parser.add_argument('--threshold', type = int, default = 0.85, help = 'width of color histogram')
+        parser.add_argument('--windowSize', type = int, default = 8, help = 'width of color histogram')
+        args = parser.parse_args()
+        calculate(algorithm, videoIndex, args)
 
-    # calculate(algorithm, videoIndex, args)
     plot(algorithm)
