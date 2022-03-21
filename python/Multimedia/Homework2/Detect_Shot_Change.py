@@ -108,9 +108,9 @@ class detect_shot_change(data_processing):
         # self.result = self.data_analyze.dataAdjust(self.result)
         
         # print(self.result)
-        precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 0)
-        print("precision = {}, recall = {}, FSR = {}".format(precision, recall, FSR))
-        return precision, recall, FSR
+        precision, recall, FPR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 0)
+        print("precision = {}, recall = {}, FPR = {}".format(precision, recall, FPR))
+        return precision, recall, FPR
 
     ###################### Algorithm 2 => keyPoints_dection ######################
 
@@ -196,9 +196,9 @@ class detect_shot_change(data_processing):
         # self.result = self.data_analyze.dataAdjust(self.result)
         
         # print(self.result)
-        precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 0)
-        print("precision = {}, recall = {}, FSR = {}".format(precision, recall, FSR))
-        return precision, recall, FSR
+        precision, recall, FPR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 0)
+        print("precision = {}, recall = {}, FPR = {}".format(precision, recall, FPR))
+        return precision, recall, FPR
 
     ###################### Algorithm 3 => fourier_transform ######################
 
@@ -254,6 +254,6 @@ class detect_shot_change(data_processing):
         # self.result = self.data_analyze.dataAdjust(self.result)
         
         # print(self.result)
-        precision, recall, FSR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 0)
-        print("precision = {}, recall = {}, FSR = {}".format(precision, recall, FSR))
-        return precision, recall, FSR
+        precision, recall, FPR = self.data_analyze.getAccuracy(self.result, self.groundTruth, self.totalFrames, 0)
+        print("precision = {}, recall = {}, FPR = {}".format(precision, recall, FPR))
+        return precision, recall, FPR

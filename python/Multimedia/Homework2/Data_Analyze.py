@@ -32,6 +32,6 @@ class data_analyze():
 
         precision = TP / total_dection
         recall = TP / total_groundTruth
-        FSR = FP / (total - total_groundTruth)
+        FPR = FP / (total - total_groundTruth)
 
-        return precision, recall, FSR
+        return precision, recall, FPR

@@ -6,19 +6,19 @@ import os
 
 def calculate(algorithm, videoIndex, args):
     start_threshold = [0.65, 0.45, 0.6]
-    precisions, recalls, FSRs = [], [], []
+    precisions, recalls, FPRs = [], [], []
 
     for threshold in np.arange(start_threshold[videoIndex], 1.1, 0.05):
         args.threshold = threshold
 
         shot_change_detection_fcn = detect_shot_change(args)
-        precision, recall, FSR = shot_change_detection_fcn.getShotChangeFrame()
+        precision, recall, FPR = shot_change_detection_fcn.getShotChangeFrame()
 
         precisions.append(precision)
         recalls.append(recall)
-        FSRs.append(FSR)
+        FPRs.append(FPR)
 
-    np.savez("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm), precision = precisions, recall = recalls, FSR = FSRs)
+    np.savez("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm), precision = precisions, recall = recalls, FPR = FPRs)
 
     result = np.load("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm))
     plt.clf()
@@ -28,8 +28,8 @@ def calculate(algorithm, videoIndex, args):
     plt.savefig("./dataset/Result/video{}_{}_1.png".format(videoIndex, algorithm))
 
     plt.clf()
-    plt.plot(result["FSR"], result["recall"], "-o")
-    plt.xlabel("FSR")
+    plt.plot(result["FPR"], result["recall"], "-o")
+    plt.xlabel("FPR")
     plt.ylabel("recall")
     plt.savefig("./dataset/Result/video{}_{}_2.png".format(videoIndex, algorithm))
 
@@ -55,12 +55,12 @@ def plot(algorithm):
     plt.title("RF-Curve", fontsize=titlefont)
     for videoIndex in range(3):
         result = np.load("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm))
-        plt.plot(result["FSR"], result["recall"], "-o", label = video[videoIndex])
+        plt.plot(result["FPR"], result["recall"], "-o", label = video[videoIndex])
 
-    plt.xlabel("FSR", fontsize=font)
+    plt.xlabel("FPR", fontsize=font)
     plt.ylabel("recall", fontsize=font)
     plt.legend()
-    plt.savefig("./dataset/Result/recall_FSR_{}.png".format(algorithm))
+    plt.savefig("./dataset/Result/recall_FPR_{}.png".format(algorithm))
     plt.show()
 
 
