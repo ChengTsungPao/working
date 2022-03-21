@@ -20,18 +20,18 @@ def calculate(algorithm, videoIndex, args):
 
     np.savez("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm), precision = precisions, recall = recalls, FPR = FPRs)
 
-    result = np.load("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm))
-    plt.clf()
-    plt.plot(result["recall"], result["precision"], "-o")
-    plt.xlabel("recall")
-    plt.ylabel("precision")
-    plt.savefig("./dataset/Result/video{}_{}_1.png".format(videoIndex, algorithm))
+    # result = np.load("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm))
+    # plt.clf()
+    # plt.plot(result["recall"], result["precision"], "-o")
+    # plt.xlabel("recall")
+    # plt.ylabel("precision")
+    # plt.savefig("./dataset/Result/video{}_{}_1.png".format(videoIndex, algorithm))
 
-    plt.clf()
-    plt.plot(result["FPR"], result["recall"], "-o")
-    plt.xlabel("FPR")
-    plt.ylabel("recall")
-    plt.savefig("./dataset/Result/video{}_{}_2.png".format(videoIndex, algorithm))
+    # plt.clf()
+    # plt.plot(result["FPR"], result["recall"], "-o")
+    # plt.xlabel("FPR")
+    # plt.ylabel("recall")
+    # plt.savefig("./dataset/Result/video{}_{}_2.png".format(videoIndex, algorithm))
 
 
 def plot(algorithm):
@@ -52,7 +52,7 @@ def plot(algorithm):
     plt.show()
 
     plt.clf()
-    plt.title("RF-Curve", fontsize=titlefont)
+    plt.title("ROC-Curve", fontsize=titlefont)
     for videoIndex in range(3):
         result = np.load("./dataset/Result/video{}_{}.npz".format(videoIndex, algorithm))
         plt.plot(result["FPR"], result["recall"], "-o", label = video[videoIndex])
