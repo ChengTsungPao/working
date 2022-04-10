@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
 
     # Problem 3 (Powell’s conjugate direction method )
-    print("Problem 3 (Powell’s conjugate direction method )")
+    print("Problem 3 (Powell’s conjugate direction method)")
 
     
 
