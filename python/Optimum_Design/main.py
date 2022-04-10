@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pylab as plt
 from GoldSearch import goldSearch
+from DichotomousSearch import dichotomousSearch
 from CyclicCoordinate import cyclicCoordinate
 
 def f1(position):
@@ -15,10 +16,14 @@ if __name__ == "__main__":
 
     # Problem 1 (goldSearch)
     print("Problem 1 (goldSearch)")
-    xMin, fMin, valuesMin = goldSearch(f1, -2, 2, True)
-    xMax, fMax, valuesMax = goldSearch(f1, -2, 2, False)
-    print("  Local Min: position = {}, value = {}".format(xMin, fMin))
-    print("  Local Max: position = {}, value = {}".format(xMax, fMax))
+    xMinG, fMinG = goldSearch(f1, -2, 2, True)
+    xMaxG, fMaxG = goldSearch(f1, -2, 2, False)
+    xMinD, fMinD, valuesMin = dichotomousSearch(f1, -2, 2, True)
+    xMaxD, fMaxD, valuesMax = dichotomousSearch(f1, -2, 2, False)
+    print("  Local Min: position = {}, value = {} (goldSearch)".format(xMinG, fMinG))
+    print("  Local Max: position = {}, value = {} (goldSearch)".format(xMaxG, fMaxG))
+    print("  Local Min: position = {}, value = {} (dichotomousSearch)".format(xMinD, fMinD))
+    print("  Local Max: position = {}, value = {} (dichotomousSearch)".format(xMaxD, fMaxD))
     print()
 
     plt.plot(list(range(1, len(valuesMin) + 1)), valuesMin, "-o")
