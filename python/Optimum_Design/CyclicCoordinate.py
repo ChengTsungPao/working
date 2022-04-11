@@ -26,7 +26,7 @@ def cyclicCoordinate(f, start, tol = 10 ** -5):
             vector[d] = 1
 
             # find 1D function Min
-            lambda_, value = goldSearch(function_1D, -20, 20)
+            lambda_, value, _ = goldSearch(function_1D, -5, 5)
 
             # get next position
             prePosition = position

@@ -9,7 +9,14 @@ def goldSearch(f, a, b, findMin = True, tol = 10 ** -7):
     f1 = f(x1)
     f2 = f(x2)
 
+    values = []
+
     while (b - a) > tol:
+
+        if findMin:
+            values.append(min(f1, f2))
+        else:
+            values.append(max(f1, f2))
 
         if (f1 > f2) == findMin:
             a = x1
@@ -30,5 +37,6 @@ def goldSearch(f, a, b, findMin = True, tol = 10 ** -7):
     else:
         fExtreme = f2
         xExtreme = x2
+    values.append(fExtreme)
 
-    return xExtreme, fExtreme
+    return xExtreme, fExtreme, values

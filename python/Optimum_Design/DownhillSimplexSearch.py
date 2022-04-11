@@ -18,7 +18,7 @@ def downhillSimplexSearch(f, start, iteration = 100, parameter = [1, 0.5, 2]):
         x1 = positions[0]
         xn = positions[-2]
         xn_1 = positions[-1]
-        minPositions.append(x0)
+        minPositions.append(np.average(positions, axis = 0))
         values.append(f(x1))
 
         # Reflection
