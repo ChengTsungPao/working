@@ -15,8 +15,8 @@ def f2(position):
 
 if __name__ == "__main__":
 
-    # Problem 1 (goldSearch)
-    print("Problem 1 (goldSearch)")
+    # Problem 1 (dichotomousSearch)
+    print("Problem 1 (dichotomousSearch)")
     xMinG, fMinG = goldSearch(f1, -2, 2, True)
     xMaxG, fMaxG = goldSearch(f1, -2, 2, False)
     xMinD, fMinD, valuesMin = dichotomousSearch(f1, -2, 2, True)
