@@ -12,14 +12,14 @@ def downhillSimplexSearch(f, start, iteration = 100, parameter = [1, 0.5, 2]):
 
         # Order
         positions = np.array(sorted(positions, key = lambda position: f(position)), float)
-        minPositions.append(positions[-1])
-        values.append(f(positions[-1]))
 
         # Calculate x0
         x0 = np.average(positions[:-1], axis = 0)
         x1 = positions[0]
         xn = positions[-2]
         xn_1 = positions[-1]
+        minPositions.append(x0)
+        values.append(f(x1))
 
         # Reflection
         xr = x0 + alpha * (x0 - xn_1)
