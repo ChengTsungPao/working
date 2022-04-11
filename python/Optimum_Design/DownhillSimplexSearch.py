@@ -1,14 +1,14 @@
 from turtle import pos
 import numpy as np
 
-def downhillSimplexSearch(f, start, parameter = [1, 0.5, 2]):
+def downhillSimplexSearch(f, start, iteration = 100, parameter = [1, 0.5, 2]):
 
     values = []
     alpha, beta, gamma = parameter
     positions = np.array(sorted(start, key = lambda position: f(position)), float)
     minPositions = []
 
-    for _ in range(100):
+    for _ in range(iteration):
 
         # Order
         positions = np.array(sorted(positions, key = lambda position: f(position)), float)
