@@ -2,7 +2,7 @@ from turtle import pos
 from GoldSearch import goldSearch
 import numpy as np
 
-def cyclicCoordinate(f, start):
+def cyclicCoordinate(f, start, tol = 10 ** -5):
     
     def function_1D(lambda_):
         return f(position + lambda_ * vector)
@@ -17,7 +17,7 @@ def cyclicCoordinate(f, start):
     positions = [position]
     values = [f(position)]
 
-    while distance(prePosition, position) > 10 ** -5:
+    while distance(prePosition, position) > tol:
         # print(distance(prePosition, position))
         
         for d in range(dim):

@@ -3,6 +3,7 @@ import matplotlib.pylab as plt
 from GoldSearch import goldSearch
 from DichotomousSearch import dichotomousSearch
 from CyclicCoordinate import cyclicCoordinate
+from DownhillSimplexSearch import downhillSimplexSearch
 
 def f1(position):
     x = position
@@ -27,6 +28,7 @@ if __name__ == "__main__":
     print()
 
     plt.plot(list(range(1, len(valuesMin) + 1)), valuesMin, "-o")
+    plt.xticks(list(range(1, len(valuesMin) + 1, 1)))
     plt.show()
 
 
@@ -42,8 +44,15 @@ if __name__ == "__main__":
     plt.show()
 
 
-    # Problem 3 (Powell’s conjugate direction method )
-    print("Problem 3 (Powell’s conjugate direction method)")
+    # Problem 3 (Nelder-Mead downhill simplex method)
+    print("Problem 3 (Nelder-Mead downhill simplex method)")
+    positions1, values1 = downhillSimplexSearch(f2, [[3, 4], [4, 4], [3, 3]])
+    positions2, values2 = downhillSimplexSearch(f2, [[-3, -4], [-4, -4], [-3, -3]])
+    print("  Local Min: position = {}, value = {}".format(tuple(positions1[-1]), values1[-1]))
+    print("  Local Min: position = {}, value = {}".format(tuple(positions2[-1]), values2[-1]))
+
+    plt.plot(positions1[:, 0], positions1[:, 1], "-o")
+    plt.show()
 
     
 
