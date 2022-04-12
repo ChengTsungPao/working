@@ -1,6 +1,6 @@
 import numpy as np
 
-def goldSearch(f, a, b, findMin = True, tol = 10 ** -7):  
+def goldSearch(f, a, b, findMin = True, tol = 10 ** -5):  
 
     R = (np.sqrt(5) - 1) / 2
     C = 1 - R
