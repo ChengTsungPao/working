@@ -28,7 +28,6 @@ def GaussianMixtureModel(path, filename):
     plt.yticks([])
     plt.plot(bin_centers, hist, lw=2)
 
-
     plt.subplot(133)
     plt.axis('off')
     plt.imshow(binary_image, cmap=plt.cm.gray, interpolation='nearest')
