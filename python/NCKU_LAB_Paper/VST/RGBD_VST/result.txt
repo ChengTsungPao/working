@@ -1,0 +1,8 @@
+NJUD (RGBD_VST): 0.0519 mae || 0.8925 max-fm || 0.8550 mean-fm || 0.9406 max-Emeasure || 0.9099 mean-Emeasure || 0.8991 S-measure || 0.9301 AP || 0.9854 AUC.
+NLPR (RGBD_VST): 0.0350 mae || 0.8905 max-fm || 0.8463 mean-fm || 0.9525 max-Emeasure || 0.9203 mean-Emeasure || 0.9097 S-measure || 0.9414 AP || 0.9895 AUC.
+DUTLF-Depth (RGBD_VST): 0.0434 mae || 0.9206 max-fm || 0.8809 mean-fm || 0.9526 max-Emeasure || 0.9252 mean-Emeasure || 0.9152 S-measure || 0.9638 AP || 0.9889 AUC.
+STERE (RGBD_VST): 0.0555 mae || 0.8829 max-fm || 0.8386 mean-fm || 0.9382 max-Emeasure || 0.9043 mean-Emeasure || 0.8936 S-measure || 0.9331 AP || 0.9840 AUC.
+SSD (RGBD_VST): 0.0584 mae || 0.8547 max-fm || 0.8106 mean-fm || 0.9308 max-Emeasure || 0.8898 mean-Emeasure || 0.8677 S-measure || 0.8839 AP || 0.9766 AUC.
+SIP (RGBD_VST): 0.0642 mae || 0.8745 max-fm || 0.8355 mean-fm || 0.9244 max-Emeasure || 0.8926 mean-Emeasure || 0.8690 S-measure || 0.9096 AP || 0.9664 AUC.
+RGBD135 (RGBD_VST): 0.0316 mae || 0.8872 max-fm || 0.8536 mean-fm || 0.9540 max-Emeasure || 0.9167 mean-Emeasure || 0.9113 S-measure || 0.9531 AP || 0.9904 AUC.
+LFSD (RGBD_VST): 0.0875 mae || 0.8666 max-fm || 0.8337 mean-fm || 0.8972 max-Emeasure || 0.8732 mean-Emeasure || 0.8614 S-measure || 0.9170 AP || 0.9675 AUC.
