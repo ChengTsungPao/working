@@ -19,7 +19,7 @@ class gaussianMixtureModel:
         self.binaryImage = []
 
 
-    def getGaussianMixtureModel(self, filenames):
+    def getGaussianMixtureModel(self, filenames, n = 2):
         print("\nCreate Gaussian Mixture Model by {}".format(filenames))
         np.random.seed(1)
 
@@ -29,7 +29,7 @@ class gaussianMixtureModel:
             images += list(image.reshape((-1, 3)))
         imageReshape = np.array(images)
 
-        self.GMM_Model = GaussianMixture(n_components=2).fit(imageReshape)
+        self.GMM_Model = GaussianMixture(n_components = n).fit(imageReshape)
 
         
     def predictGaussianMixtureModel(self, filename, reverse = False):
