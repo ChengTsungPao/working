@@ -9,10 +9,16 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
+##################################### create gaussian mixture model #####################################
+
 class gaussianMixtureModel:
 
     def __init__(self, path = "./"):
         self.path = path
+        self.resetGaussianMixtureModel()
+
+
+    def resetGaussianMixtureModel(self):
         self.GMM_Model = []
         self.predictImage = []
         self.histogram = []
@@ -20,7 +26,7 @@ class gaussianMixtureModel:
 
 
     def getGaussianMixtureModel(self, filenames, n = 2):
-        print("\nCreate Gaussian Mixture Model by {}".format(filenames))
+        print("\nCreate Gaussian Mixture Model by {} (n_components = {})".format(filenames, n))
         np.random.seed(1)
 
         images = []
@@ -45,8 +51,7 @@ class gaussianMixtureModel:
         gmm_label = self.GMM_Model.predict(imageReshape)
         self.binaryImage = gmm_label.reshape((self.predictImage.shape[0], self.predictImage.shape[1]))
         self.binaryImage = np.where(self.binaryImage, (not reverse) * 1, reverse * 1)
-
-        self.calculateAccuracy(filename)
+        return self.calculateAccuracy(filename)
 
 
     def calculateAccuracy(self, filename):
@@ -58,6 +63,7 @@ class gaussianMixtureModel:
         precision = TP / (TP + FP)
         recall = TP / (TP + FN)
         print("    {}: precision = {}, recall = {}".format(filename, precision, recall))
+        return precision, recall
 
     
     def plotResult(self):
@@ -82,3 +88,43 @@ class gaussianMixtureModel:
 
         plt.subplots_adjust(wspace=0.02, hspace=0.3, top=1, bottom=0.1, left=0, right=1)
         plt.show()
+
+
+########################### test difference n_components in gaussian mixture model ##############################
+
+def test_gaussianMixtureModel(path, soccer1_filename, soccer2_filename, n_components_range = [2, 10]):
+    gmm_func = gaussianMixtureModel(path)
+
+    n_components = list(range(n_components_range[0], n_components_range[1]))
+    soccer1_precisions = []
+    soccer2_precisions = []
+    soccer1_recalls = []
+    soccer2_recalls = []
+
+    for n in n_components:
+        gmm_func.getGaussianMixtureModel([soccer1_filename, soccer2_filename], n)
+        
+        soccer1_precision, soccer1_recall = gmm_func.predictGaussianMixtureModel(soccer1_filename, n == 5)
+        soccer2_precision, soccer2_recall = gmm_func.predictGaussianMixtureModel(soccer2_filename)
+        soccer1_precisions.append(soccer1_precision)
+        soccer2_precisions.append(soccer2_precision)
+        soccer1_recalls.append(soccer1_recall)
+        soccer2_recalls.append(soccer2_recall)
+
+    plt.clf()
+    plt.title(soccer1_filename)
+    plt.plot(n_components, soccer1_precisions, "-o", label = "precision")
+    plt.plot(n_components, soccer1_recalls, "-o", label = "recall")
+    plt.xlabel("n_components")
+    plt.ylabel("accuracy")
+    plt.legend()
+    plt.show()
+
+    plt.clf()
+    plt.title(soccer2_filename)
+    plt.plot(n_components, soccer2_precisions, "-o", label = "precision")
+    plt.plot(n_components, soccer2_recalls, "-o", label = "recall")
+    plt.xlabel("n_components")
+    plt.ylabel("accuracy")
+    plt.legend()
+    plt.show()

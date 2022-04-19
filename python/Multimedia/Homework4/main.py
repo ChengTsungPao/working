@@ -1,4 +1,5 @@
-from GaussianMixtureModel import gaussianMixtureModel
+from GaussianMixtureModel import gaussianMixtureModel, test_gaussianMixtureModel
+
 
 if __name__ == "__main__":
 
@@ -19,3 +20,5 @@ if __name__ == "__main__":
     gmm_func.plotResult()
     gmm_func.predictGaussianMixtureModel(soccer2_filename)
     gmm_func.plotResult()
+
+    test_gaussianMixtureModel(path, soccer1_filename, soccer2_filename, [2, 15])
