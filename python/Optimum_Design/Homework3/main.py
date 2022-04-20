@@ -1,4 +1,4 @@
-from Regression import linearRegression, polynomialRegression, printPolynomial
+from Regression import linearRegression, quadraticRegression, polynomialRegression, printPolynomial
 
 
 if __name__ == "__main__":
@@ -9,6 +9,12 @@ if __name__ == "__main__":
     result = linearRegression_func.fletcherReevesMethod([0, 0])
     printPolynomial(result)
     result = linearRegression_func.newtonMethod([0, 0])
+    printPolynomial(result)
+
+    quadraticRegression_func = quadraticRegression(dataX, dataY)
+    result = quadraticRegression_func.fletcherReevesMethod([0, 0, 0])
+    printPolynomial(result)
+    result = quadraticRegression_func.newtonMethod([0, 0, 0])
     printPolynomial(result)
 
     polynomialRegression_func = polynomialRegression(dataX, dataY)

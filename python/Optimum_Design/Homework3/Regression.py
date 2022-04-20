@@ -25,13 +25,12 @@ class linearRegression:
         d11 = sum([2 * (-x) * (-x) for x, y in zip(self.xData, self.yData)])
         return np.array([[d00, d01], [d10, d11]], float)
 
-    def fletcherReevesMethod(self, start = [0, 0], tol = 10 ** -5):
+    def fletcherReevesMethod(self, start = [0, 0], iteration = 100):
         position = np.array(start, float)
         gradient = self.getGradient(position)
         s = -gradient
 
-        _lambda = float("inf")
-        while _lambda > tol:
+        for _ in range(iteration):
             _lambda, _, _ = goldSearch(lambda x: self.regressionFunction(position + x * s), 0, 50)
             newPosition = position + _lambda * s
             newGradient = self.getGradient(newPosition)
@@ -44,7 +43,64 @@ class linearRegression:
 
         return position
 
-    def newtonMethod(self, start = [0, 0], iteration = 10):
+    def newtonMethod(self, start = [0, 0], iteration = 100):
+        position = np.array(start, float)
+
+        for _ in range(iteration):
+            position = position - np.dot(np.linalg.inv(self.getHessianMatrix(position)), self.getGradient(position).T).T
+
+        return position
+
+
+class quadraticRegression:
+
+    def __init__(self, xData, yData):
+        self.xData = xData
+        self.yData = yData
+
+    def regressionFunction(self, position):
+        a0, a1, a2 = position
+        return sum([(y - (a2 * x ** 2 + a1 * x + a0)) ** 2 for x, y in zip(self.xData, self.yData)])
+
+    def getGradient(self, position):
+        a0, a1, a2 = position
+        d0 = sum([2 * (y - (a2 * x ** 2 + a1 * x + a0)) * (-1)      for x, y in zip(self.xData, self.yData)])
+        d1 = sum([2 * (y - (a2 * x ** 2 + a1 * x + a0)) * (-x)      for x, y in zip(self.xData, self.yData)])
+        d2 = sum([2 * (y - (a2 * x ** 2 + a1 * x + a0)) * (-x ** 2) for x, y in zip(self.xData, self.yData)])
+        return np.array([d0, d1, d2], float)
+
+    def getHessianMatrix(self, position):
+        a0, a1, a2 = position
+        d00 = sum([2 * (-1)      * (-1)      for x, y in zip(self.xData, self.yData)])
+        d01 = sum([2 * (-x)      * (-1)      for x, y in zip(self.xData, self.yData)])
+        d02 = sum([2 * (-x ** 2) * (-1)      for x, y in zip(self.xData, self.yData)])
+        d10 = sum([2 * (-1)      * (-x)      for x, y in zip(self.xData, self.yData)])
+        d11 = sum([2 * (-x)      * (-x)      for x, y in zip(self.xData, self.yData)])
+        d12 = sum([2 * (-x ** 2) * (-x)      for x, y in zip(self.xData, self.yData)])
+        d20 = sum([2 * (-1)      * (-x ** 2) for x, y in zip(self.xData, self.yData)])
+        d21 = sum([2 * (-x)      * (-x ** 2) for x, y in zip(self.xData, self.yData)])
+        d22 = sum([2 * (-x ** 2) * (-x ** 2) for x, y in zip(self.xData, self.yData)])
+        return np.array([[d00, d01, d02], [d10, d11, d12], [d20, d21, d22]], float)
+
+    def fletcherReevesMethod(self, start = [0, 0, 0], iteration = 100):
+        position = np.array(start, float)
+        gradient = self.getGradient(position)
+        s = -gradient
+
+        for _ in range(iteration):
+            _lambda, _, _ = goldSearch(lambda x: self.regressionFunction(position + x * s), 0, 50)
+            newPosition = position + _lambda * s
+            newGradient = self.getGradient(newPosition)
+            beta = np.dot(newGradient, newGradient) / np.dot(gradient, gradient)
+            newS = -newGradient + beta * s
+
+            position = newPosition.copy()
+            gradient = newGradient.copy()
+            s = newS.copy()
+
+        return position
+
+    def newtonMethod(self, start = [0, 0, 0], iteration = 100):
         position = np.array(start, float)
 
         for _ in range(iteration):
