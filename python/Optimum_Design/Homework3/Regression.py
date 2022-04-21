@@ -195,13 +195,14 @@ def plotData(xData, yData, title = "", function = None):
             return
         X = np.linspace(0, 12, 100)
         Y = [function(x) for x in X]
-        plt.plot(X, Y)
+        plt.plot(X, Y, label = "Regression Curve")
 
     data = np.array(sorted(zip(xData, yData)))
     plt.figure(figsize = (10, 6))
     plt.title(title)
-    plt.plot(data[:, 0], data[:, 1], "-o")
+    plt.plot(data[:, 0], data[:, 1], "-o", label = "Origin Data")
     plt.xlabel("x")
     plt.ylabel("y")
     plotFunction()
+    plt.legend()
     plt.show()
