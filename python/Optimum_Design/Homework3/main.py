@@ -15,8 +15,6 @@ if __name__ == "__main__":
     printString = printFunction(coefficient)
     plotData(dataX, dataY, printString, lambda x: sum([a * x ** k for k, a in enumerate(coefficient)]))
 
-    ############################################ Problem 3 #############################################
-    print("\nProblem 3")
     quadraticRegression_func = quadraticRegression(dataX, dataY)
     coefficient = quadraticRegression_func.fletcherReevesMethod([0, 0, 0])
     printString = printFunction(coefficient)
@@ -24,7 +22,9 @@ if __name__ == "__main__":
     coefficient = quadraticRegression_func.newtonMethod([0, 0, 0])
     printString = printFunction(coefficient)
     plotData(dataX, dataY, printString, lambda x: sum([a * x ** k for k, a in enumerate(coefficient)]))
-    
+
+    ############################################ Problem 3 #############################################
+    print("\nProblem 3")
     polynomialRegression_func = polynomialRegression(dataX, dataY)
     coefficient = polynomialRegression_func.polynomialRegressionMethod(5)
     printString = printFunction(coefficient)
