@@ -38,19 +38,18 @@ class gaussianMixtureModel:
         self.GMM_Model = GaussianMixture(n_components = n).fit(imageReshape)
 
         
-    def predictGaussianMixtureModel(self, filename, reverse = False):
+    def predictGaussianMixtureModel(self, filename):
         if self.GMM_Model == []:
             return
 
         np.random.seed(1)
         self.predictImage = cv2.imread(self.path + filename)
         imageReshape = self.predictImage.reshape((-1, 3))
-
         self.histogram = np.histogram(self.predictImage, bins=100)
-
         gmm_label = self.GMM_Model.predict(imageReshape)
         self.binaryImage = gmm_label.reshape((self.predictImage.shape[0], self.predictImage.shape[1]))
-        self.binaryImage = np.where(self.binaryImage, (not reverse) * 1, reverse * 1)
+        kind = collections.Counter(list(gmm_label.flatten()))
+        self.binaryImage = np.where(self.binaryImage == max(kind, key = kind.get), 1, 0)
         return self.calculateAccuracy(filename)
 
 
@@ -95,7 +94,7 @@ class gaussianMixtureModel:
 def test_gaussianMixtureModel(path, soccer1_filename, soccer2_filename, n_components_range = [2, 10]):
     gmm_func = gaussianMixtureModel(path)
 
-    n_components = list(range(n_components_range[0], n_components_range[1]))
+    n_components = list(range(n_components_range[0], n_components_range[1] + 1))
     soccer1_precisions = []
     soccer2_precisions = []
     soccer1_recalls = []
@@ -104,7 +103,7 @@ def test_gaussianMixtureModel(path, soccer1_filename, soccer2_filename, n_compon
     for n in n_components:
         gmm_func.getGaussianMixtureModel([soccer1_filename, soccer2_filename], n)
         
-        soccer1_precision, soccer1_recall = gmm_func.predictGaussianMixtureModel(soccer1_filename, n == 5)
+        soccer1_precision, soccer1_recall = gmm_func.predictGaussianMixtureModel(soccer1_filename)
         soccer2_precision, soccer2_recall = gmm_func.predictGaussianMixtureModel(soccer2_filename)
         soccer1_precisions.append(soccer1_precision)
         soccer2_precisions.append(soccer2_precision)
