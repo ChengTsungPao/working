@@ -11,7 +11,7 @@ if __name__ == "__main__":
     
     # M1 Gaussian Mixture Model 
     gmm_func.getGaussianMixtureModel([soccer1_filename])
-    gmm_func.predictGaussianMixtureModel(soccer1_filename, reverse = True)
+    gmm_func.predictGaussianMixtureModel(soccer1_filename)
     gmm_func.plotResult()
     gmm_func.predictGaussianMixtureModel(soccer2_filename)
     gmm_func.plotResult()
@@ -24,4 +24,4 @@ if __name__ == "__main__":
     gmm_func.plotResult()
 
     # M2 Difference Components Gaussian Mixture Model 
-    test_gaussianMixtureModel(path, soccer1_filename, soccer2_filename, [2, 15])
+    test_gaussianMixtureModel(path, soccer1_filename, soccer2_filename, [2, 14])
