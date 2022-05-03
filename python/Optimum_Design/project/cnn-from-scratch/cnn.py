@@ -84,8 +84,6 @@ for epoch in range(3):
     loss += l
     num_correct += acc
 
-    break
-  break
 
 # Test the CNN
 print('\n--- Testing the CNN ---')
