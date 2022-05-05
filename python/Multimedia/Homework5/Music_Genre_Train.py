@@ -5,6 +5,7 @@ import os
 import time
 import random
 import numpy as np
+from multiprocessing import Process
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import Sequential
@@ -24,7 +25,7 @@ class music_genre_train:
         self.test_data = []
         self.test_label= []
         
-        self.EPOCH = 50
+        self.EPOCH = 20
         self.BATCH_SIZE = 4
         self.LR = 0.0001
         self.model = None
@@ -81,38 +82,39 @@ class music_genre_train:
 
     def train(self, isOriginData = True):
 
+        for foldIndex in range(5):
+            p = Process(target = self.train_helper, args = (foldIndex, isOriginData,))
+            p.start()
+            p.join()
+
+    def train_helper(self, foldIndex, isOriginData):
+
         now = time.localtime(time.time())
         currentTime = "{}_{}{}_{}{}".format(now.tm_year, str(now.tm_mon).zfill(2), str(now.tm_mday).zfill(2), str(now.tm_hour).zfill(2), str(now.tm_min).zfill(2))
-        
-        accuracy = []
 
-        for foldIndex in range(5):
+        if isOriginData:
+            self.getOriginData(foldIndex)
+        else:
+            self.getFFTData(foldIndex)
 
-            if isOriginData:
-                self.getOriginData(foldIndex)
-            else:
-                self.getFFTData(foldIndex)
+        self.model = self.getModel(self.train_data.shape)
+        self.model.compile(optimizer = Adam(learning_rate=self.LR), loss = "categorical_crossentropy", metrics = ["acc"])
 
-            self.model = self.getModel(self.train_data.shape)
-            self.model.compile(optimizer = Adam(learning_rate=self.LR), loss = "categorical_crossentropy", metrics = ["acc"])
+        H = self.model.fit(
+            self.train_data, 
+            to_categorical(self.train_label), 
+            validation_data = [self.test_data, to_categorical(self.test_label)], 
+            epochs = self.EPOCH, 
+            batch_size = self.BATCH_SIZE, 
+            shuffle = True
+        )
+        print("############################### Accuracy = {} ###############################".format(str(H.history["val_acc"][-1])))
 
-            H = self.model.fit(
-                self.train_data, 
-                to_categorical(self.train_label), 
-                validation_data = [self.test_data, to_categorical(self.test_label)], 
-                epochs = self.EPOCH, 
-                batch_size = self.BATCH_SIZE, 
-                shuffle = True
-            )
-            accuracy.append(H.history["val_acc"][-1])
+        if not os.path.exists("./model/"):
+            os.makedirs("./model/")
+        self.model.save("./model/{}_model{}.h5".format(currentTime, foldIndex + 1))
 
-            if not os.path.exists("./model/"):
-                os.makedirs("./model/")
-            self.model.save("./model/{}_model{}.h5".format(currentTime, foldIndex + 1))
-
-            if not os.path.exists("./predict/"):
-                os.makedirs("./predict/")
-            np.savez("./predict/{}_loss{}.npz".format(currentTime, foldIndex + 1), train_loss = H.history["loss"], test_loss = H.history["val_loss"])
-            np.savez("./predict/{}_accuracy{}.npz".format(currentTime, foldIndex + 1), train_accuracy = H.history["acc"], test_accuracy = H.history["val_acc"])
-
-        print("Accuracy = {}".format(str(accuracy)))
+        if not os.path.exists("./predict/"):
+            os.makedirs("./predict/")
+        np.savez("./predict/{}_loss{}.npz".format(currentTime, foldIndex + 1), train_loss = H.history["loss"], test_loss = H.history["val_loss"])
+        np.savez("./predict/{}_accuracy{}.npz".format(currentTime, foldIndex + 1), train_accuracy = H.history["acc"], test_accuracy = H.history["val_acc"])
