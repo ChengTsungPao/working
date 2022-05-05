@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # dataset.plotFFTData(kind[1], 0)
 
     music_genre_train_func = music_genre_train(path)
-    music_genre_train_func.train_origin()
+    music_genre_train_func.train(False)
 
 
 

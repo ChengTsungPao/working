@@ -1,6 +1,6 @@
 import numpy as np
 from glob import glob
-from scipy.fft import fft
+from scipy.fft import fft, dct
 from scipy.io.wavfile import read
 import matplotlib.pylab as plt
 
@@ -19,7 +19,7 @@ class music_genre_dataset:
 
             for p in glob("{}/{}/*.wav".format(self.path, k)):
                 _, data = read(p)
-                self.datas.append(data.copy()[:65000])
+                self.datas.append(np.resize(data, 67000))
                 self.labels.append(i)
 
         self.datas = np.array(self.datas, float)
@@ -30,7 +30,7 @@ class music_genre_dataset:
             self.readOriginData()
 
         for data in self.datas:
-            self.FFTDatas.append(fft(data))
+            self.FFTDatas.append(fft(np.resize(data, 67000)).real)
 
         self.FFTDatas = np.array(self.FFTDatas)
 
