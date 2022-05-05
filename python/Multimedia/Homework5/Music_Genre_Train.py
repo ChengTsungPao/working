@@ -1,6 +1,7 @@
 from Music_Genre_Dataset import music_genre_dataset
 
 import os
+import time
 import random
 import numpy as np
 import tensorflow as tf
@@ -22,7 +23,7 @@ class music_genre_train:
         self.test_data = []
         self.test_label= []
         
-        self.EPOCH = 100
+        self.EPOCH = 50
         self.BATCH_SIZE = 4
         self.model = None
 
@@ -69,11 +70,14 @@ class music_genre_train:
         )
         print("Accuracy = {}".format(H.history["val_acc"][-1]))
 
+        now = time.localtime(time.time())
+        currentTime = "{}_{}{}_{}{}".format(now.tm_year, str(now.tm_mon).zfill(2), str(now.tm_mday).zfill(2), str(now.tm_hour).zfill(2), str(now.tm_min).zfill(2))
+
         if not os.path.exists("./model/"):
             os.makedirs("./model/")
-        self.model.save("./model/model.h5")
+        self.model.save("./model/{}_model.h5".format(currentTime))
 
         if not os.path.exists("./predict/"):
             os.makedirs("./predict/")
-        np.savez("./predict/loss.npz", train_loss = H.history["loss"], test_loss = H.history["val_loss"])
-        np.savez("./predict/accuracy.npz", train_accuracy = H.history["acc"], test_accuracy = H.history["val_acc"])
+        np.savez("./predict/{}_loss.npz".format(currentTime), train_loss = H.history["loss"], test_loss = H.history["val_loss"])
+        np.savez("./predict/{}_accuracy.npz".format(currentTime), train_accuracy = H.history["acc"], test_accuracy = H.history["val_acc"])
