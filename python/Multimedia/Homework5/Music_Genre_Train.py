@@ -24,17 +24,15 @@ class music_genre_train:
         self.test_data = []
         self.test_label= []
         
-        self.EPOCH = 20
+        self.EPOCH = 200
         self.BATCH_SIZE = 4
-        self.LR = 0.0001
+        self.LR = 0.000001
         self.model = None
         self.train_kind = {
             0: "Origin",
             1: "FFT",
             2: "Spectrogram"
         }
-
-        self.randomIndex = []
 
     def get1DModel(self, shape):
         self.model = Sequential()
@@ -59,24 +57,36 @@ class music_genre_train:
         self.model.add(Dense(1024, activation='relu'))
         self.model.add(Dense(10, activation='softmax'))
 
-    def getSplitIndex(self, foldIndex):
-        n = len(self.dataset.labels)
-        size = int(n * 0.2)
-
-        if self.randomIndex == []:
-            self.randomIndex = list(range(n))
-            random.shuffle(self.randomIndex)
-
-        trainDataIndex = np.array(list(self.randomIndex[:size * foldIndex]) + list(self.randomIndex[size * (foldIndex + 1):]))
-        testDataIndex = self.randomIndex[size * foldIndex: size * (foldIndex + 1)]
-
-        return trainDataIndex, testDataIndex
-
-    def getOriginData(self, foldIndex):
+    def getShuffleIndexArr(self):
         if self.dataset.datas == []:
             self.dataset.readOriginData()
 
-        trainDataIndex, testDataIndex = self.getSplitIndex(foldIndex)
+        n = len(self.dataset.labels)
+        size = n // 10
+
+        shuffleIndexArr = []
+        for i in range(10):
+            shuffleIndexArr.append(list(range(i * size, (i + 1) * size)))
+            random.shuffle(shuffleIndexArr[-1])
+
+        return shuffleIndexArr
+
+    def getSplitIndex(self, foldIndex, shuffleIndexArr):
+        patch = len(shuffleIndexArr[0]) // 5
+        trainDataIndex = []
+        testDataIndex = []
+
+        for i in range(10):
+            trainDataIndex += list(shuffleIndexArr[i][:patch * foldIndex]) + list(shuffleIndexArr[i][patch * (foldIndex + 1):])
+            testDataIndex += list(shuffleIndexArr[i][patch * foldIndex: patch * (foldIndex + 1)])
+
+        return np.array(trainDataIndex), np.array(testDataIndex)
+
+    def getOriginData(self, foldIndex, shuffleIndexArr):
+        if self.dataset.datas == []:
+            self.dataset.readOriginData()
+
+        trainDataIndex, testDataIndex = self.getSplitIndex(foldIndex, shuffleIndexArr)
 
         self.train_data, self.train_label = self.dataset.datas[trainDataIndex], self.dataset.labels[trainDataIndex]
         self.test_data, self.test_label = self.dataset.datas[testDataIndex], self.dataset.labels[testDataIndex]
@@ -85,11 +95,11 @@ class music_genre_train:
         self.train_data = self.train_data.reshape(train_shape)
         self.test_data = self.test_data.reshape(train_shape)
 
-    def getFFTData(self, foldIndex):
+    def getFFTData(self, foldIndex, shuffleIndexArr):
         if self.dataset.FFTDatas == []:
             self.dataset.transferFFTData()
 
-        trainDataIndex, testDataIndex = self.getSplitIndex(foldIndex)
+        trainDataIndex, testDataIndex = self.getSplitIndex(foldIndex, shuffleIndexArr)
 
         self.train_data, self.train_label = self.dataset.FFTDatas[trainDataIndex], self.dataset.labels[trainDataIndex]
         self.test_data, self.test_label = self.dataset.FFTDatas[testDataIndex], self.dataset.labels[testDataIndex]
@@ -98,11 +108,11 @@ class music_genre_train:
         self.train_data = self.train_data.reshape(train_shape)
         self.test_data = self.test_data.reshape(train_shape)
 
-    def getSpectrogramData(self, foldIndex):
+    def getSpectrogramData(self, foldIndex, shuffleIndexArr):
         if self.dataset.SpectrogramDatas == []:
             self.dataset.transferSpectrogramData()
 
-        trainDataIndex, testDataIndex = self.getSplitIndex(foldIndex)
+        trainDataIndex, testDataIndex = self.getSplitIndex(foldIndex, shuffleIndexArr)
 
         self.train_data, self.train_label = self.dataset.SpectrogramDatas[trainDataIndex], self.dataset.labels[trainDataIndex]
         self.test_data, self.test_label = self.dataset.SpectrogramDatas[testDataIndex], self.dataset.labels[testDataIndex]
@@ -113,25 +123,27 @@ class music_genre_train:
 
     def train(self, kindIndex = 0):
 
+        shuffleIndexArr = self.getShuffleIndexArr()
+
         now = time.localtime(time.time())
         currentTime = "{}_{}{}_{}{}".format(now.tm_year, str(now.tm_mon).zfill(2), str(now.tm_mday).zfill(2), str(now.tm_hour).zfill(2), str(now.tm_min).zfill(2))
 
         for foldIndex in range(5):
-            p = Process(target = self.train_helper, args = (foldIndex, kindIndex, currentTime,))
+            p = Process(target = self.train_helper, args = (foldIndex, kindIndex, shuffleIndexArr, currentTime,))
             p.start()
             p.join()
 
-    def train_helper(self, foldIndex, kindIndex, currentTime):
+    def train_helper(self, foldIndex, kindIndex, shuffleIndexArr, currentTime):
 
         # Load Data & Build Model
         if kindIndex == 0:
-            self.getOriginData(foldIndex)
+            self.getOriginData(foldIndex, shuffleIndexArr)
             self.get1DModel(self.train_data.shape)
         elif kindIndex == 1:
-            self.getFFTData(foldIndex)
+            self.getFFTData(foldIndex, shuffleIndexArr)
             self.get1DModel(self.train_data.shape)
         else:
-            self.getSpectrogramData(foldIndex)
+            self.getSpectrogramData(foldIndex, shuffleIndexArr)
             self.get2DModel(self.train_data.shape)            
         
         self.model.compile(optimizer = Adam(learning_rate=self.LR), loss = "categorical_crossentropy", metrics = ["acc"])
