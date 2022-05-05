@@ -22,14 +22,14 @@ def forward(image, label):
     out = pool.forward(out)
     out = linear.forward(out)
     out = softmax.forward(out)
-    print(out)
+    # print(out)
 
     loss = -np.log(out[label])
     acc = 1 if np.argmax(out) == label else 0
 
     return out, loss, acc
 
-def train(im, label, lr=.005):
+def train(im, label, lr=0.005):
     # Forward
     out, loss, acc = forward(im, label)
 
@@ -39,6 +39,7 @@ def train(im, label, lr=.005):
 
     # Backprop
     gradient = softmax.backprop(gradient)
+    gradient = linear.backprop(gradient, lr)
     gradient = pool.backprop(gradient)
     gradient = conv.backprop(gradient, lr)
 

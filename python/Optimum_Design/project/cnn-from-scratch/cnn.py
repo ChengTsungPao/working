@@ -44,7 +44,6 @@ def train(im, label, lr=.005):
   '''
   # Forward
   out, loss, acc = forward(im, label)
-  print(out, label)
 
   # Calculate initial gradient
   gradient = np.zeros(10)

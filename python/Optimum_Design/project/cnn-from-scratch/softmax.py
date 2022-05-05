@@ -35,7 +35,6 @@ class Softmax:
     - learn_rate is a float.
     '''
     # We know only 1 element of d_L_d_out will be nonzero
-    print(d_L_d_out)
     for i, gradient in enumerate(d_L_d_out):
       if gradient == 0:
         continue

@@ -72,9 +72,9 @@ class MaxPool2D:
 
             for di in range(h):
                 for dj in range(w):
-                    for f in range(f):
-                        if region[di, dj, f] == max_[f]:
-                            newGradient[i * 2 + di, j * 2 + dj, f] = gradient[i, j, f]
+                    for df in range(f):
+                        if region[di, dj, df] == max_[df]:
+                            newGradient[i * 2 + di, j * 2 + dj, df] = gradient[i, j, df]
 
         return newGradient
 
@@ -84,7 +84,7 @@ class Conv2D:
         self.size = size
         self.filter = filter
         self.padding = padding
-        self.kernel = np.random.randn(self.size, self.size, in_channel) / (self.size * self.size)
+        self.kernel = np.random.randn(self.size, self.size, filter) / (self.size * self.size)
         self.input = []
 
     def __call__(self, input):
@@ -118,7 +118,7 @@ class Conv2D:
 
         for region, i, j in self.getImageRegions(self.input):
             for f in range(self.filter):
-                newGradient[f] += gradient[i, j, f] * region
+                newGradient[:, :, f:f+1] += gradient[i, j, f] * region
 
         self.kernel -= learning_rate * newGradient
         return newGradient
@@ -139,7 +139,14 @@ class Linear:
         return output.T[0]
 
     def backprop(self, gradient, learning_rate):
-        pass
-    
+
+        dw = np.dot(gradient.reshape(self.basis.shape), self.input.reshape(-1, 1).T)
+        db = gradient.reshape(self.basis.shape)
+
+        self.weight -= learning_rate * dw
+        self.basis -= learning_rate * db
+
+        dout = np.dot(self.weight.T, gradient.reshape(self.basis.shape))
+        return dout.reshape(self.input.shape)
 
 
