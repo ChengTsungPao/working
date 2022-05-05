@@ -24,7 +24,7 @@ class music_genre_train:
         self.test_data = []
         self.test_label= []
         
-        self.EPOCH = 1
+        self.EPOCH = 20
         self.BATCH_SIZE = 4
         self.LR = 0.0001
         self.model = None
