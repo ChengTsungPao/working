@@ -11,7 +11,12 @@ if __name__ == "__main__":
     # dataset.plotSpectogramData(kind[1], 0)
 
     music_genre_train_func = music_genre_train(path)
-    music_genre_train_func.train(2)
+    # music_genre_train_func.train(2)
+
+
+    filename = "2022_0506_0545_Spectrogram"
+    music_genre_train_func.predict(filename)
+    music_genre_train_func.plotResult(filename)
 
 
 

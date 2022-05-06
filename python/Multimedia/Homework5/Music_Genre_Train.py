@@ -2,6 +2,7 @@ from Music_Genre_Dataset import music_genre_dataset
 
 import tensorflow as tf
 from tensorflow.keras import Sequential
+from tensorflow.keras.models import load_model
 from tensorflow.keras.layers import Dense, Conv1D, Conv2D, Flatten, MaxPooling1D, MaxPooling2D, LayerNormalization, BatchNormalization
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import to_categorical
@@ -10,6 +11,8 @@ import os
 import time
 import random
 import numpy as np
+from glob import glob
+import matplotlib.pylab as plt
 from multiprocessing import Process
 
 physical_devices = tf.config.experimental.list_physical_devices("GPU")
@@ -167,3 +170,80 @@ class music_genre_train:
             os.makedirs("./predict/")
         np.savez("./predict/{}_{}_loss{}.npz".format(currentTime, self.train_kind[kindIndex], foldIndex + 1), train_loss = H.history["loss"], test_loss = H.history["val_loss"])
         np.savez("./predict/{}_{}_accuracy{}.npz".format(currentTime, self.train_kind[kindIndex], foldIndex + 1), train_accuracy = H.history["acc"], test_accuracy = H.history["val_acc"])
+
+    def predict(self, filename):
+        number = 3
+        accuracy = []
+        loss = []
+
+        path = "./predict/"
+        for p in glob("{}{}_accuracy*.npz".format(path, filename)):
+            f = np.load(p)
+            accuracy.append(round(f["test_accuracy"][-1], number))
+
+        for p in glob("{}{}_loss*.npz".format(path, filename)):
+            f = np.load(p)
+            loss.append(round(f["test_loss"][-1], number))
+
+        print("average accuracy = {:.3f} ({})".format(np.average(accuracy), accuracy))
+        print("average loss     = {:.3f} ({})".format(np.average(loss), loss))
+
+    def plotConfusionMatrix(self, model, datas, labels):
+        n = len(self.dataset.kind)
+        
+        confusionMatrix = np.zeros((n, n), int)
+        for data, label in zip(datas, labels):
+            pred = model(data.reshape((-1,) + data.shape + (1,)))
+            confusionMatrix[label][np.argmax(pred[0])] += 1
+
+        for (j, i), val in np.ndenumerate(confusionMatrix):
+            plt.text(i, j, val, ha = "center", va = "center")
+
+        plt.title("Confusion Matrix")
+        plt.imshow(confusionMatrix, cmap = "Reds", vmin = 0, vmax = 100)
+        plt.xticks([])
+        plt.yticks([])
+        plt.xlabel("Predict")
+        plt.ylabel("Ground Truth")
+        plt.show()
+
+    def plotResult(self, filename, foldIndex = 1, index = [0]):
+        if self.train_kind[0] in filename:
+            if self.dataset.datas == []:
+                self.dataset.readOriginData()
+
+            train_kind = self.train_kind[0]
+            datas = self.dataset.datas
+            
+        elif self.train_kind[1] in filename:
+            if self.dataset.FFTDatas == []:
+                self.dataset.transferFFTData()
+
+            train_kind = self.train_kind[1]
+            datas = self.dataset.FFTDatas
+
+        elif self.train_kind[2] in filename:
+            if self.dataset.SpectrogramDatas == []:
+                self.dataset.transferSpectrogramData()
+
+            train_kind = self.train_kind[2]
+            datas = self.dataset.SpectrogramDatas
+
+        else:
+            print("Please input the correct model name !!!")
+            return
+
+        model = load_model("./model/{}_model{}.h5".format(filename, foldIndex))
+        preds = model(datas[index].reshape((-1,) + datas.shape[1:] + (1,)))
+        labels = self.dataset.labels[index]
+
+        for pred, label in zip(preds, labels):
+            plt.clf()
+            plt.title("{} (answer = {})".format(train_kind, self.dataset.kind[label]))
+            plt.bar(self.dataset.kind, pred, label = "fold{}".format(foldIndex))
+            plt.xticks(rotation = 45)
+            plt.legend()
+            plt.tight_layout()
+            plt.show()
+
+        self.plotConfusionMatrix(model, datas, self.dataset.labels)
