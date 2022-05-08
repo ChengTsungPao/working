@@ -188,25 +188,6 @@ class music_genre_train:
         print("average accuracy = {:.3f} ({})".format(np.average(accuracy), accuracy))
         print("average loss     = {:.3f} ({})".format(np.average(loss), loss))
 
-    def plotConfusionMatrix(self, model, datas, labels):
-        n = len(self.dataset.kind)
-        
-        confusionMatrix = np.zeros((n, n), int)
-        for data, label in zip(datas, labels):
-            pred = model(data.reshape((-1,) + data.shape + (1,)))
-            confusionMatrix[label][np.argmax(pred[0])] += 1
-
-        for (j, i), val in np.ndenumerate(confusionMatrix):
-            plt.text(i, j, val, ha = "center", va = "center")
-
-        plt.title("Confusion Matrix")
-        plt.imshow(confusionMatrix, cmap = "Reds", vmin = 0, vmax = 100)
-        plt.xticks([])
-        plt.yticks([])
-        plt.xlabel("Predict")
-        plt.ylabel("Ground Truth")
-        plt.show()
-
     def plotResult(self, filename, foldIndex = 1, index = []):
         if self.train_kind[0] in filename:
             if self.dataset.datas == []:
@@ -247,3 +228,22 @@ class music_genre_train:
             plt.show()
 
         self.plotConfusionMatrix(model, datas, self.dataset.labels)
+
+    def plotConfusionMatrix(self, model, datas, labels):
+        n = len(self.dataset.kind)
+        
+        confusionMatrix = np.zeros((n, n), int)
+        for data, label in zip(datas, labels):
+            pred = model(data.reshape((-1,) + data.shape + (1,)))
+            confusionMatrix[label][np.argmax(pred[0])] += 1
+
+        for (j, i), val in np.ndenumerate(confusionMatrix):
+            plt.text(i, j, val, ha = "center", va = "center")
+
+        plt.title("Confusion Matrix")
+        plt.imshow(confusionMatrix, cmap = "Reds", vmin = 0, vmax = 100)
+        plt.xticks([])
+        plt.yticks([])
+        plt.xlabel("Predict")
+        plt.ylabel("Ground Truth")
+        plt.show()
