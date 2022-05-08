@@ -207,7 +207,7 @@ class music_genre_train:
         plt.ylabel("Ground Truth")
         plt.show()
 
-    def plotResult(self, filename, foldIndex = 1, index = [0]):
+    def plotResult(self, filename, foldIndex = 1, index = []):
         if self.train_kind[0] in filename:
             if self.dataset.datas == []:
                 self.dataset.readOriginData()

@@ -13,6 +13,8 @@ if __name__ == "__main__":
     music_genre_train_func = music_genre_train(path)
     music_genre_train_func.train(2)
 
-    filename = "2022_0506_0545_Spectrogram"
-    music_genre_train_func.predict(filename)
-    music_genre_train_func.plotResult(filename)
+    # filename = "2022_0507_0012_Origin"
+    # filename = "2022_0506_1819_FFT"
+    # filename = "2022_0506_0545_Spectrogram"
+    # music_genre_train_func.predict(filename)
+    # music_genre_train_func.plotResult(filename)
