@@ -1,4 +1,3 @@
-from turtle import pos, position
 import numpy as np
 
 def downhillSimplexSearch(f, start, iteration = 100, parameter = [1, 0.5, 2]):
@@ -64,9 +63,9 @@ def downhillSimplexSearchTeacher(f, start, iteration = 100, parameter = [1, 0.5,
     positions = np.array(sorted(start, key = lambda position: f(position)), float)
     minPositions = []
 
-    for _ in range(iteration):
+    for iter in range(iteration):
 
-        print("============================= iteration = {} =============================".format(iteration))
+        print("============================= iteration = {} =============================".format(iter))
 
         # Order
         positions = np.array(sorted(positions, key = lambda position: f(position)), float)
@@ -121,13 +120,20 @@ def downhillSimplexSearchTeacher(f, start, iteration = 100, parameter = [1, 0.5,
             print("Step 5 => xMax = xc = {}".format(xc))
             positions[-1] = xc
 
+
+    positions = np.array(sorted(positions, key = lambda position: f(position)), float)
+    xMin = positions[0]
+    minPositions.append(np.average(positions, axis = 0))
+    values.append(f(xMin))
+
     return np.array(minPositions), np.array(values)
 
 
-def f(position):
-    x = position
-    return x / (1 + x ** 2)
-
 if __name__ == "__main__":
+
+    def f(position):
+        x = position
+        return x / (1 + x ** 2)
+
     positions1, values1 = downhillSimplexSearchTeacher(f, [-2, 0, -2], 2)
     print("\nlocal min value = {}".format(values1[-1]))
