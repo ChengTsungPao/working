@@ -117,7 +117,7 @@ def downhillSimplexSearchTeacher(f, start, iteration = 100, parameter = [1, 0.5,
             print("\nBecause: f(xc) = {} > f(xp) = {}".format(f(xc), f(xp)))
             print("Step 5 => position = position + (xMin - position) / 2 = {}".format(positions))
         else:
-            print("\nBecause: f(xc) = {} > f(xr) = {}".format(f(xc), f(xr)))
+            print("\nBecause: f(xc) = {} > f(xr) = {}".format(f(xc), f(xp)))
             print("Step 5 => xMax = xc = {}".format(xc))
             positions[-1] = xc
 
@@ -129,5 +129,5 @@ def f(position):
     return x / (1 + x ** 2)
 
 if __name__ == "__main__":
-    positions1, values1 = downhillSimplexSearchTeacher(f, [-2, 0, -2], 3)
+    positions1, values1 = downhillSimplexSearchTeacher(f, [-2, 0, -2], 2)
     print("\nlocal min value = {}".format(values1[-1]))
