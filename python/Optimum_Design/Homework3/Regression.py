@@ -206,3 +206,46 @@ def plotData(xData, yData, title = "", function = None):
     plotFunction()
     plt.legend()
     plt.show()
+
+
+class fletcherReeves:
+
+    def function(self, position):
+        x1, x2, x3 = position
+        return (3 / 2) * x1 ** 2 + 2 * x2 ** 2 + (3 / 2) * x3 ** 2 + x1 * x3 + 2 * x2 * x3 - 3 * x1 - x3
+
+    def getGradient(self, position):
+        x1, x2, x3 = position
+        d1 = 3 * x1 + x3 - 3
+        d2 = 4 * x2 + 2 * x3
+        d3 = x1 + 2 * x2 + 3 * x3 - 1
+        return np.array([d1, d2, d3], float)
+
+    def fletcherReevesMethod(self, start = [0, 0, 0], iteration = 2):
+        position = np.array(start, float)
+        gradient = self.getGradient(position)
+        s = -gradient
+
+        for _ in range(iteration):
+            _lambda, _, _ = goldSearch(lambda x: self.function(position + x * s), 0, 50)
+
+            newPosition = position + _lambda * s
+            newGradient = self.getGradient(newPosition)
+            beta = np.dot(newGradient, newGradient) / np.dot(gradient, gradient)
+            newS = -newGradient + beta * s
+
+            position = newPosition.copy()
+            gradient = newGradient.copy()
+            s = newS.copy()
+            print(position)
+
+        return position
+
+
+if __name__ == "__main__":
+    fcn = fletcherReeves()
+    fcn.fletcherReevesMethod()
+
+
+
+
