@@ -242,8 +242,8 @@ class music_genre_train:
 
         plt.title("Confusion Matrix")
         plt.imshow(confusionMatrix, cmap = "Reds", vmin = 0, vmax = 100)
-        plt.xticks([])
-        plt.yticks([])
+        plt.xticks(list(range(10)))
+        plt.yticks(list(range(10)))
         plt.xlabel("Predict")
         plt.ylabel("Ground Truth")
         plt.show()
