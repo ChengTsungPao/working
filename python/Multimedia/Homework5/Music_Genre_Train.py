@@ -15,8 +15,8 @@ from glob import glob
 import matplotlib.pylab as plt
 from multiprocessing import Process
 
-physical_devices = tf.config.experimental.list_physical_devices("GPU")
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
+# physical_devices = tf.config.experimental.list_physical_devices("GPU")
+# tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 class music_genre_train:
     def __init__(self, path):
