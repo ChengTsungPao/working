@@ -17,7 +17,7 @@ if __name__ == "__main__":
     parser.add_argument('--pretrained_model', default='./pretrained_model/80.7_T2T_ViT_t_14.pth.tar', type=str, help='load pretrained model')
     parser.add_argument('--lr_decay_gamma', default=0.1, type=int, help='learning rate decay')
     parser.add_argument('--lr', default=1e-4, type=int, help='learning rate')
-    parser.add_argument('--epochs', default=200, type=int, help='epochs')
+    parser.add_argument('--epochs', default=500, type=int, help='epochs')
     parser.add_argument('--batch_size', default=2, type=int, help='batch_size')
     parser.add_argument('--stepvalue1', default=20000, type=int, help='the step 1 for adjusting lr')
     parser.add_argument('--stepvalue2', default=30000, type=int, help='the step 2 for adjusting lr')
