@@ -1,4 +1,3 @@
-from turtle import position
 from DownhillSimplexSearch import downhillSimplexSearch, downhillSimplexSearchTeacher
 
 import numpy as np
@@ -39,13 +38,13 @@ if __name__ == "__main__":
     ########################################## Problem1 ##########################################
 
     print("\nProblem1")
-    positions1, values1 = downhillSimplexSearchTeacher(f1, [1, 3, 2], 10)
+    positions1, values1 = downhillSimplexSearchTeacher(f1, [1, 3, 2])
     print("  [r, h] = {}".format(getFunction1Pos(positions1[-1])))
     print("  A = {}".format(values1[-1]))
 
     ########################################## Problem2 ##########################################
     
     print("\nProblem2")
-    positions2, values2 = downhillSimplexSearchTeacher(f2, [[1] * 6, [3] * 6, [2] * 6], 10)
+    positions2, values2 = downhillSimplexSearchTeacher(f2, [[1] * 6, [3] * 6, [2] * 6])
     print("  F = {}".format(getFunction2Pos(positions2[-1])))
     print("  Z = {}".format(values2[-1]))
