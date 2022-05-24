@@ -92,7 +92,7 @@ class Network:
                 gradient[label] = -1 / tmp_output[label] + np.sum(
                     [2 * regularization * np.sum(np.absolute(layer.get_weights())) for layer in self.layers])
 
-                learning_rate = lr_schedule(learning_rate, iteration=i)     # learning rate decay
+                learning_rate = lr_schedule(learning_rate, iteration=epoch)     # learning rate decay
 
                 self.backward(gradient, learning_rate)                      # backward propagation
 

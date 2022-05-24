@@ -19,7 +19,7 @@ if __name__ == '__main__':
     '''
 
     dataset_name = 'mnist'
-    num_epochs = 1
+    num_epochs = 50
     learning_rate = 0.01
     validate = 1
     regularization = 0

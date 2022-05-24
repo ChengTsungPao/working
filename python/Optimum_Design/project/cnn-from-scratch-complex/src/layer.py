@@ -24,8 +24,8 @@ def leakyReLU_derivative(x, alpha=0.01):
     return alpha if x < 0 else 1
 
 
-def lr_schedule(learning_rate, iteration):
-    if iteration < 10000:
+def lr_schedule(learning_rate, epoch):
+    if epoch < 25:
         return learning_rate
     else:
         return learning_rate * 0.1
