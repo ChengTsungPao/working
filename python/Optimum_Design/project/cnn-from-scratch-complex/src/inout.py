@@ -1,4 +1,4 @@
-import tensorflow as tf
+# import tensorflow as tf
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -9,8 +9,8 @@ import platform
 import cv2
 sns.set(color_codes=True)
 
-tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)          # suppress messages from TensorFlow
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+# tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)          # suppress messages from TensorFlow
+# os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 
 def load_mnist():
