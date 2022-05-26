@@ -81,9 +81,9 @@ class Convolutional:                                        # convolution layer 
             while tmp_y + self.size <= input_dimension:
                 tmp_x = out_x = 0
                 while tmp_x + self.size <= input_dimension:
-                    patch = self.last_input[:, tmp_y:tmp_y + self.size, tmp_x:tmp_x + self.size]
-                    dfilt[f] += np.sum(din[f, out_y, out_x] * patch, axis=0)
-                    dout[:, tmp_y:tmp_y + self.size, tmp_x:tmp_x + self.size] += din[f, out_y, out_x] * self.filters[f]
+                    patch = self.last_input[:, tmp_y:tmp_y + self.size, tmp_x:tmp_x + self.size]                          # get the origin patch (kernel x kernel x channel)
+                    dfilt[f] += np.sum(din[f, out_y, out_x] * patch, axis=0)                                              # add (sum each channel of channel graient mul patch)
+                    dout[:, tmp_y:tmp_y + self.size, tmp_x:tmp_x + self.size] += din[f, out_y, out_x] * self.filters[f]   # add (graient mul channel filter) (kernel x kernel x 1)
                     tmp_x += self.stride
                     out_x += 1
                 tmp_y += self.stride
