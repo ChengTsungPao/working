@@ -15,7 +15,8 @@ class Network:
         if dataset_name is 'mnist':
             self.add_layer(Convolutional(name='conv1', num_filters=8, stride=2, size=3, activation='relu'))
             self.add_layer(Convolutional(name='conv2', num_filters=8, stride=2, size=3, activation='relu'))
-            self.add_layer(Dense(name='dense', nodes=8 * 6 * 6, num_classes=10))
+            self.add_layer(FullyConnected(name='fullyconnected', nodes1=8 * 6 * 6, nodes2=4 * 6 * 6, activation='relu'))
+            self.add_layer(Dense(name='dense', nodes=4 * 6 * 6, num_classes=10))
         else:
             self.add_layer(Convolutional(name='conv1', num_filters=32, stride=1, size=3, activation='relu'))
             self.add_layer(Convolutional(name='conv2', num_filters=32, stride=1, size=3, activation='relu'))

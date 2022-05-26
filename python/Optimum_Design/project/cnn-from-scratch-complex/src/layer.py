@@ -182,8 +182,8 @@ class FullyConnected:                               # fully-connected layer
         if self.activation == 'relu':                             # back propagate through ReLU
            self.leakyReLU_derivative(din)
 
-        self.last_input = np.expand_dims(self.last_input, axis=1)
-        din = np.expand_dims(din, axis=1)
+        self.last_input = np.expand_dims(self.last_input, axis=1) # Cheng: [a, b, c] => [[a], [b], [c]]
+        din = np.expand_dims(din, axis=1)                         # Cheng: [a, b, c] => [[a], [b], [c]]
 
         dw = np.dot(self.last_input, np.transpose(din))           # loss gradient of final dense layer weights
         db = np.sum(din, axis=1).reshape(self.biases.shape)       # loss gradient of final dense layer biases
