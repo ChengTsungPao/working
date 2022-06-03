@@ -142,7 +142,7 @@ class Pooling:
                     while inputX + self.size <= orig_dim:
                         patch = self.last_input[b, c, inputY: inputY + self.size, inputX: inputX + self.size] 
                         (x, y) = np.unravel_index(np.nanargmax(patch), patch.shape)                  
-                        dout[b, c, inputY + x, inputX + y] += din[c, outputY, outputX]
+                        dout[b, c, inputY + x, inputX + y] += din[b, c, outputY, outputX]
                         inputX += self.stride
                         outputX += 1
                     inputY += self.stride
