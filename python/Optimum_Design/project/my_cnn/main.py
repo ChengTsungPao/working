@@ -15,9 +15,9 @@ if __name__ == '__main__':
             - plot_weights              > 0 --> plot weights distribution
     '''
 
-    num_epochs = 1
+    num_epochs = 5
     batch_size = 8
-    learning_rate = 0.01
+    learning_rate = 0.001
     validate = 1
     verbose = 1
     plot_weights = 1
