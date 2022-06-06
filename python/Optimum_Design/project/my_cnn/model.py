@@ -12,9 +12,15 @@ class Network:
         self.layers.append(layer)
 
     def build_model(self):
-        self.add_layer(Convolutional(name='conv1', num_filters=8, stride=2, size=3, activation='relu'))
-        self.add_layer(Convolutional(name='conv2', num_filters=8, stride=2, size=3, activation='relu'))
-        self.add_layer(Dense(name='dense', nodes=8 * 6 * 6, num_classes=10))
+        # self.add_layer(Convolutional(name='conv1', num_filters=8, stride=2, size=3, activation='relu'))
+        # self.add_layer(Convolutional(name='conv2', num_filters=8, stride=2, size=3, activation='relu'))
+        # self.add_layer(Dense(name='dense', nodes=8 * 6 * 6, num_classes=10))
+
+        self.add_layer(Convolutional(name='conv1', num_filters=8, stride=1, size=3, activation='relu'))
+        self.add_layer(Pooling(name='pool1', stride=2, size=2))
+        self.add_layer(Convolutional(name='conv2', num_filters=16, stride=1, size=3, activation='relu'))
+        self.add_layer(Pooling(name='pool1', stride=2, size=2))
+        self.add_layer(Dense(name='dense', nodes=16 * 5 * 5, num_classes=10))
 
     def forward(self, images):                # forward propagate
         for layer in self.layers:

@@ -1,16 +1,14 @@
 num_epochs = 5
 batch_size = 8
-learning_rate = 0.01
+learning_rate = 0.001
 validate = 1
 verbose = 1
 plot_weights = 1
-
 
 self.add_layer(Convolutional(name='conv1', num_filters=8, stride=2, size=3, activation='relu'))
 self.add_layer(Convolutional(name='conv2', num_filters=8, stride=2, size=3, activation='relu'))
 self.add_layer(Dense(name='dense', nodes=8 * 6 * 6, num_classes=10))
 
-
 --- Testing the model ---
-Test Loss: 0.285
-Test Accuracy: 91.740
+Test Loss: 0.326
+Test Accuracy: 90.640
