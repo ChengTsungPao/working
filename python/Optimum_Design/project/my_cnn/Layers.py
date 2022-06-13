@@ -7,15 +7,6 @@ def softmax(x):
 def cross_entropy(x):
     return -np.log(x)
 
-# def cross_entropy(x):
-#     return np.array([-np.log(xi) for xi in x])
-
-# def leakyReLU(x, alpha=0.001):
-#     return np.array([xi * alpha if xi < 0 else xi for xi in x])
-
-# def leakyReLU_derivative(x, alpha=0.01):
-#     return np.array([alpha if xi < 0 else 1 for xi in x])
-
 def leakyReLU(x, alpha=0.001):
     return x * alpha if x < 0 else x
 
@@ -154,7 +145,7 @@ class Pooling:
         return 0
 
 
-class FullyConnected:                               # fully-connected layer
+class FullyConnected:
     def __init__(self, name, nodes1, nodes2, activation):
         self.name = name
         self.weights = np.random.randn(nodes1, nodes2) * 0.1

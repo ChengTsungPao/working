@@ -1,5 +1,5 @@
 from layers import Convolutional, Pooling, FullyConnected, Dense, cross_entropy, lr_schedule
-from inout import plot_learning_curve, plot_accuracy_curve, plot_histogram
+from inout import plot_learning_curve, plot_accuracy_curve
 import numpy as np
 import time
 
@@ -12,26 +12,28 @@ class Network:
         self.layers.append(layer)
 
     def build_model(self):
-        # self.add_layer(Convolutional(name='conv1', num_filters=8, stride=2, size=3, activation='relu'))
-        # self.add_layer(Convolutional(name='conv2', num_filters=8, stride=2, size=3, activation='relu'))
-        # self.add_layer(Dense(name='dense', nodes=8 * 6 * 6, num_classes=10))
+        # model1
+        self.add_layer(Convolutional(name='conv1', num_filters=8, stride=2, size=3, activation='relu'))
+        self.add_layer(Convolutional(name='conv2', num_filters=8, stride=2, size=3, activation='relu'))
+        self.add_layer(Dense(name='dense', nodes=8 * 6 * 6, num_classes=10))
 
-        self.add_layer(Convolutional(name='conv1', num_filters=8, stride=1, size=3, activation='relu'))
-        self.add_layer(Pooling(name='pool1', stride=2, size=2))
-        self.add_layer(Convolutional(name='conv2', num_filters=16, stride=1, size=3, activation='relu'))
-        self.add_layer(Pooling(name='pool1', stride=2, size=2))
-        self.add_layer(Dense(name='dense', nodes=16 * 5 * 5, num_classes=10))
+        # model2
+        # self.add_layer(Convolutional(name='conv1', num_filters=8, stride=1, size=3, activation='relu'))
+        # self.add_layer(Pooling(name='pool1', stride=2, size=2))
+        # self.add_layer(Convolutional(name='conv2', num_filters=16, stride=1, size=3, activation='relu'))
+        # self.add_layer(Pooling(name='pool1', stride=2, size=2))
+        # self.add_layer(Dense(name='dense', nodes=16 * 5 * 5, num_classes=10))
 
-    def forward(self, images):                # forward propagate
+    def forward(self, images):
         for layer in self.layers:
             images = layer.forward(images)
         return images
 
-    def backward(self, gradients, learning_rate):                # backward propagate
+    def backward(self, gradients, learning_rate):
         for layer in reversed(self.layers):
             gradients = layer.backward(gradients, learning_rate)
 
-    def train(self, dataset, num_epochs, batch_size, learning_rate, validate, plot_weights, verbose):
+    def train(self, dataset, num_epochs, batch_size, learning_rate, validate, verbose):
         history = {'loss': [], 'accuracy': [], 'val_loss': [], 'val_accuracy': []}
         for epoch in range(1, num_epochs + 1):
             print('\n--- Epoch {0} ---'.format(epoch))
@@ -39,10 +41,10 @@ class Network:
             initial_time = time.time()
             for i in range(0, len(dataset['train_images']), batch_size):
                 if i > 0 and i % 5000 == 0:
-                    accuracy = (num_corr / (i + 1)) * 100       # compute training accuracy and loss up to iteration i
+                    accuracy = (num_corr / (i + 1)) * 100 
                     loss = tmp_loss / (i + 1)
 
-                    history['loss'].append(loss)                # update history
+                    history['loss'].append(loss)
                     history['accuracy'].append(accuracy)
 
                     if validate:
@@ -69,9 +71,8 @@ class Network:
                 images = dataset['train_images'][i: i + batch_size]
                 labels = dataset['train_labels'][i: i + batch_size]
 
-                output = self.forward(images)       # forward propagation
+                output = self.forward(images)
 
-                # compute (regularized) cross-entropy and update loss
                 gradient = np.zeros((batch_size, 10), float)
                 
                 for b in range(batch_size):
@@ -79,25 +80,22 @@ class Network:
                     tmp_output = output[b]
                     tmp_loss += cross_entropy(tmp_output[label])
 
-                    if np.argmax(tmp_output) == label:                          # update accuracy
+                    if np.argmax(tmp_output) == label:
                         num_corr += 1
 
                     gradient[b][label] = -1 / tmp_output[label]
 
-                self.backward(gradient, learning_rate)                      # backward propagation
+                self.backward(gradient, learning_rate) 
 
-            learning_rate = lr_schedule(learning_rate, epoch)     # learning rate decay
-
+            learning_rate = lr_schedule(learning_rate, epoch)
+        
         if verbose:
             print('Train Loss: %02.3f' % (history['loss'][-1]))
             print('Train Accuracy: %02.3f' % (history['accuracy'][-1]))
             plot_learning_curve(history['loss'])
             plot_accuracy_curve(history['accuracy'], history['val_accuracy'])
 
-        if plot_weights:
-            for layer in self.layers:
-                if 'pool' not in layer.name:
-                    plot_histogram(layer.name, layer.get_weights())
+            
 
     def evaluate(self, X, y, verbose):
         loss, num_correct = 0, 0

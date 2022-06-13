@@ -68,11 +68,3 @@ def plot_learning_curve(loss_history):
     plt.title('Learning Curve', fontsize=16)
     plt.savefig('learning_curve.png')
     plt.show()
-
-
-def plot_histogram(layer_name, layer_weights):
-    plt.hist(layer_weights)
-    plt.title('Histogram of ' + str(layer_name))
-    plt.xlabel('Value')
-    plt.ylabel('Number')
-    plt.show()
