@@ -16,18 +16,18 @@ if __name__ == "__main__":
     parser.add_argument('--img_size', default=224, type=int, help='network input size')
     parser.add_argument('--pretrained_model', default='./pretrained_model/80.7_T2T_ViT_t_14.pth.tar', type=str, help='load Pretrained model')
     parser.add_argument('--lr_decay_gamma', default=0.1, type=int, help='learning rate decay')
-    parser.add_argument('--lr', default=1e-4, type=int, help='learning rate')
-    parser.add_argument('--epochs', default=200, type=int, help='epochs')
-    parser.add_argument('--batch_size', default=11, type=int, help='batch_size')
+    parser.add_argument('--lr', default=1e-5, type=int, help='learning rate')
+    parser.add_argument('--epochs', default=3000, type=int, help='epochs')
+    parser.add_argument('--batch_size', default=4, type=int, help='batch_size')
     parser.add_argument('--stepvalue1', default=30000, type=int, help='the step 1 for adjusting lr')
     parser.add_argument('--stepvalue2', default=45000, type=int, help='the step 2 for adjusting lr')
-    parser.add_argument('--trainset', default='DUTS/DUTS-TR', type=str, help='Trainging set')
+    parser.add_argument('--trainset', default="Shoulder/train", type=str, help='Trainging set') # Cheng Edit
     parser.add_argument('--save_model_dir', default='checkpoint/', type=str, help='save model path')
 
     # test
     parser.add_argument('--Testing', default=False, type=bool, help='Testing or not')
     parser.add_argument('--save_test_path_root', default='preds/', type=str, help='save saliency maps path')
-    parser.add_argument('--test_paths', type=str, default='DUTS/DUTS-TE+ECSSD+HKU-IS+PASCAL-S+DUT-O+BSD')
+    parser.add_argument('--test_paths', type=str, default='Shoulder/train/img+Shoulder/test') # Cheng Edit
 
     # evaluation
     parser.add_argument('--Evaluation', default=False, type=bool, help='Evaluation or not')

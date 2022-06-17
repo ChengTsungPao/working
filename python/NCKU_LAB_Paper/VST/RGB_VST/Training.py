@@ -11,6 +11,12 @@ import math
 from Models.ImageDepthNet import ImageDepthNet
 import os
 
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+
+from loss_function import DiceLoss, BinaryFocalLoss
+
 
 def save_loss(save_dir, whole_iter_num, epoch_total_loss, epoch_loss, epoch):
     fh = open(save_dir, 'a')
@@ -50,7 +56,7 @@ def main(local_rank, num_gpus, args):
 
     cudnn.benchmark = True
 
-    dist.init_process_group(backend='nccl', init_method=args.init_method, world_size=num_gpus, rank=local_rank)
+    # dist.init_process_group(backend='nccl', init_method=args.init_method, world_size=num_gpus, rank=local_rank)
 
     torch.cuda.set_device(local_rank)
 
@@ -58,18 +64,20 @@ def main(local_rank, num_gpus, args):
     net.train()
     net.cuda()
 
-    net = nn.SyncBatchNorm.convert_sync_batchnorm(net)
-    net = torch.nn.parallel.DistributedDataParallel(
-        net,
-        device_ids=[local_rank],
-        output_device=local_rank,
-        find_unused_parameters=True)
+    # net = nn.SyncBatchNorm.convert_sync_batchnorm(net)
+    # net = torch.nn.parallel.DistributedDataParallel(
+    #     net,
+    #     device_ids=[local_rank],
+    #     output_device=local_rank,
+    #     find_unused_parameters=True)
 
-    base_params = [params for name, params in net.named_parameters() if ("backbone" in name)]
-    other_params = [params for name, params in net.named_parameters() if ("backbone" not in name)]
+    # base_params = [params for name, params in net.named_parameters() if ("backbone" in name)]
+    # other_params = [params for name, params in net.named_parameters() if ("backbone" not in name)]
 
-    optimizer = optim.Adam([{'params': base_params, 'lr': args.lr * 0.1},
-                            {'params': other_params, 'lr': args.lr}])
+    # optimizer = optim.Adam([{'params': base_params, 'lr': args.lr * 0.1},
+    #                         {'params': other_params, 'lr': args.lr}])
+
+    optimizer = optim.Adam(net.parameters(), lr = args.lr)
     train_dataset = get_loader(args.trainset, args.data_root, args.img_size, mode='train')
 
     sampler = torch.utils.data.distributed.DistributedSampler(
@@ -98,6 +106,8 @@ def main(local_rank, num_gpus, args):
         os.makedirs(args.save_model_dir)
 
     criterion = nn.BCEWithLogitsLoss()
+    diceLoss = DiceLoss()
+    fLoss = BinaryFocalLoss()
     whole_iter_num = 0
     iter_num = math.ceil(len(train_loader.dataset) / args.batch_size)
     for epoch in range(args.epochs):
@@ -136,15 +146,28 @@ def main(local_rank, num_gpus, args):
             loss1 = criterion(mask_1_1, label_224)
 
             # contour loss
-            c_loss5 = criterion(cont_1_16, contour_14)
-            c_loss4 = criterion(cont_1_8, contour_28)
-            c_loss3 = criterion(cont_1_4, contour_56)
-            c_loss1 = criterion(cont_1_1, contour_224)
+            # c_loss5 = criterion(cont_1_16, contour_14)
+            # c_loss4 = criterion(cont_1_8, contour_28)
+            # c_loss3 = criterion(cont_1_4, contour_56)
+            # c_loss1 = criterion(cont_1_1, contour_224)
+
+            # c_loss5 = diceLoss(cont_1_16, contour_14)
+            # c_loss4 = diceLoss(cont_1_8, contour_28)
+            # c_loss3 = diceLoss(cont_1_4, contour_56)
+            # c_loss1 = diceLoss(cont_1_1, contour_224)
+
+            # c_loss5 = fLoss(cont_1_16, contour_14)
+            # c_loss4 = fLoss(cont_1_8, contour_28)
+            # c_loss3 = fLoss(cont_1_4, contour_56)
+            # c_loss1 = fLoss(cont_1_1, contour_224)
+
 
             img_total_loss = loss_weights[0] * loss1 + loss_weights[2] * loss3 + loss_weights[3] * loss4 + loss_weights[4] * loss5
-            contour_total_loss = loss_weights[0] * c_loss1 + loss_weights[2] * c_loss3 + loss_weights[3] * c_loss4 + loss_weights[4] * c_loss5
+            # contour_total_loss = loss_weights[0] * c_loss1 + loss_weights[2] * c_loss3 + loss_weights[3] * c_loss4 + loss_weights[4] * c_loss5
+            # d_loss = loss_weights[0] * c_loss1 + loss_weights[2] * c_loss3 + loss_weights[3] * c_loss4 + loss_weights[4] * c_loss5
+            # f_loss = loss_weights[0] * c_loss1 + loss_weights[2] * c_loss3 + loss_weights[3] * c_loss4 + loss_weights[4] * c_loss5
 
-            total_loss = img_total_loss + contour_total_loss
+            total_loss = img_total_loss  # + contour_total_loss # f_loss # d_loss # 
 
             epoch_total_loss += total_loss.cpu().data.item()
             epoch_loss += loss1.cpu().data.item()

@@ -79,7 +79,7 @@ def test_net(args):
             filename = image_path[0].split('/')[-1].split('.')[0]
 
             # save saliency maps
-            save_test_path = args.save_test_path_root + dataset + '/RGB_VST/'
+            save_test_path = args.save_test_path_root + test_dir_img # Cheng Edit
             if not os.path.exists(save_test_path):
                 os.makedirs(save_test_path)
             output_s.save(os.path.join(save_test_path, filename + '.png'))

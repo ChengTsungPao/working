@@ -12,14 +12,30 @@ def load_list(dataset_name, data_root):
     labels = []
     contours = []
 
-    img_root = data_root + dataset_name + '/DUTS-TR-Image/'
-    img_files = os.listdir(img_root)
+    paths = data_root + dataset_name
 
-    for img in img_files:
+    for i in range(28 + 1):
+        images.append(paths + "//img//{}.jpg".format(i))
+        labels.append(paths + "//label//{}.jpg".format(i))
+        contours.append(paths + "//label//{}.jpg".format(i))
 
-        images.append(img_root + img[:-4]+'.jpg')
-        labels.append(img_root.replace('/DUTS-TR-Image/', '/DUTS-TR-Mask/') + img[:-4]+'.png')
-        contours.append(img_root.replace('/DUTS-TR-Image/', '/DUTS-TR-Contour/') + img[:-4] + '.png')
+
+    # paths = "D://program//Github//working//python//NCKU_LAB_Paper//VST//RGB_VST//Data//BME//moreData//"
+
+    # for i in range(1, 73 + 1):
+    #     images.append(paths + "img//({}).jpg".format(i))
+    #     labels.append(paths + "label//({}).jpg".format(i))
+    #     contours.append(paths + "label//({}).jpg".format(i))
+
+
+    # img_root = data_root + dataset_name + '/DUTS-TR-Image/'
+    # img_files = os.listdir(img_root)
+
+    # for img in img_files:
+
+    #     images.append(img_root + img[:-4]+'.jpg')
+    #     labels.append(img_root.replace('/DUTS-TR-Image/', '/DUTS-TR-Mask/') + img[:-4]+'.png')
+    #     contours.append(img_root.replace('/DUTS-TR-Image/', '/DUTS-TR-Contour/') + img[:-4] + '.png')
 
     return images, labels, contours
 
@@ -28,18 +44,28 @@ def load_test_list(test_path, data_root):
 
     images = []
 
-    if 'DUTS' in test_path:
-        img_root = data_root + test_path + '/DUTS-TE-Image/'
-    else:
-        img_root = data_root + test_path + '/images/'
+    paths = data_root + test_path
 
-    img_files = os.listdir(img_root)
-    if '/HKU-IS/' in img_root:
-        ext = '.png'
-    else:
-        ext = '.jpg'
-    for img in img_files:
-        images.append(img_root + img[:-4] + ext)
+    for i in range(23 + 1):
+        images.append(paths + "//{}.jpg".format(i))
+
+    # paths = "D://program//Github//working//python//NCKU_LAB_Paper//VST//RGB_VST//Data//BME//moreData//img//"
+
+    # for i in range(1, 73 + 1):
+    #     images.append(paths + "({}).jpg".format(i))
+
+    # if 'DUTS' in test_path:
+    #     img_root = data_root + test_path + '/DUTS-TE-Image/'
+    # else:
+    #     img_root = data_root + test_path + '/images/'
+
+    # img_files = os.listdir(img_root)
+    # if '/HKU-IS/' in img_root:
+    #     ext = '.png'
+    # else:
+    #     ext = '.jpg'
+    # for img in img_files:
+    #     images.append(img_root + img[:-4] + ext)
 
     return images
 
@@ -76,9 +102,13 @@ class ImageData(data.Dataset):
             contour = Image.open(self.contour_path[item]).convert('L')
             random_size = self.scale_size
 
-            new_img = trans.Scale((random_size, random_size))(image)
-            new_label = trans.Scale((random_size, random_size), interpolation=Image.NEAREST)(label)
-            new_contour = trans.Scale((random_size, random_size), interpolation=Image.NEAREST)(contour)
+            # new_img = trans.Scale((random_size, random_size))(image)
+            # new_label = trans.Scale((random_size, random_size), interpolation=Image.NEAREST)(label)
+            # new_contour = trans.Scale((random_size, random_size), interpolation=Image.NEAREST)(contour)
+
+            new_img = image
+            new_label = label
+            new_contour = contour
 
             # random crop
             w, h = new_img.size
@@ -149,7 +179,7 @@ def get_loader(dataset_list, data_root, img_size, mode='train'):
             trans.Scale((img_size//2, img_size//2), interpolation=Image.NEAREST),
             transforms.ToTensor(),
         ])
-        scale_size = 256
+        scale_size = 512
     else:
         transform = trans.Compose([
             trans.Scale((img_size, img_size)),

@@ -10,7 +10,7 @@ class ImageDepthNet(nn.Module):
         super(ImageDepthNet, self).__init__()
 
         # VST Encoder
-        self.rgb_backbone = T2t_vit_t_14(pretrained=True, args=args)
+        self.rgb_backbone = T2t_vit_t_14(pretrained=False, args=args)
 
         # VST Convertor
         self.transformer = Transformer(embed_dim=384, depth=4, num_heads=6, mlp_ratio=3.)
