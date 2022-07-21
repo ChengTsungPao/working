@@ -151,7 +151,6 @@ class BboxReader(Dataset):
             bboxes = np.array(bboxes)
             truth_labels = bboxes[:, -1]
             truth_bboxes = bboxes[:, :-1]
-
             return [torch.from_numpy(sample).float(), truth_bboxes, truth_labels]
 
         if self.mode in ['eval']:

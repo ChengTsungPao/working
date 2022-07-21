@@ -101,14 +101,14 @@ def lr_shedule(epoch, init_lr=0.01, total=200):
 
 train_config = {
     'net': 'SANet',
-    'batch_size': 2,
+    'batch_size': 1,
 
     'lr_schedule': lr_shedule,
     'optimizer': 'SGD',
     'momentum': 0.9,
     'weight_decay': 1e-4,
 
-    'epochs': 1, #200,
+    'epochs': 20, #200,
     'epoch_save': 1,
     'epoch_rcnn': 20,
     'num_workers': 1,

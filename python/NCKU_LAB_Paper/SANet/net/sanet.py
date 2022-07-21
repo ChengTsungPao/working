@@ -229,7 +229,9 @@ class MaskHead(nn.Module):
             logits = getattr(self, 'logits' + str(int(cat)))(up3)
             logits = logits.squeeze()
  
-            mask = Variable(torch.zeros((D, H, W))).cuda()
+            # Cheng Edit
+            mask = Variable(torch.zeros((D, H, W)))
+            # mask = Variable(torch.zeros((D, H, W))).cuda()
             mask[z_start:z_end, y_start:y_end, x_start:x_end] = logits
             mask = mask.unsqueeze(0)
             out.append(mask)
@@ -402,7 +404,8 @@ class SANet(nn.Module):
                 proposal[:, 1:] = clip_boxes(proposal[:, 1:], inputs.shape[2:])
                 # rcnn_crops = self.rcnn_crop(features, inputs, torch.from_numpy(proposal).cuda())
                 features = [t.unsqueeze(0).expand(torch.cuda.device_count(), -1, -1, -1, -1, -1) for t in features]
-                rcnn_crops = data_parallel(self.rcnn_crop, (features, inputs, torch.from_numpy(proposal).cuda()))
+                rcnn_crops = data_parallel(self.rcnn_crop, (features, inputs, torch.from_numpy(proposal)))
+                # rcnn_crops = data_parallel(self.rcnn_crop, (features, inputs, torch.from_numpy(proposal).cuda()))
                 # rcnn_crops = self.rcnn_crop(fs, inputs, self.rpn_proposals)
                 # self.rcnn_logits, self.rcnn_deltas = self.rcnn_head(rcnn_crops)
                 self.rcnn_logits, self.rcnn_deltas = data_parallel(self.rcnn_head, rcnn_crops)
@@ -419,7 +422,8 @@ class SANet(nn.Module):
     def loss(self, targets=None):
         cfg  = self.cfg
     
-        self.rcnn_cls_loss, self.rcnn_reg_loss = torch.zeros(1).cuda(), torch.zeros(1).cuda()
+        self.rcnn_cls_loss, self.rcnn_reg_loss = torch.zeros(1), torch.zeros(1)
+        # self.rcnn_cls_loss, self.rcnn_reg_loss = torch.zeros(1).cuda(), torch.zeros(1).cuda()
         rcnn_stats = None
     
         self.rpn_cls_loss, self.rpn_reg_loss, rpn_stats = \
