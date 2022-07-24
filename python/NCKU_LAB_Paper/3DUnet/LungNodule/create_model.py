@@ -29,19 +29,23 @@ prsr.add_argument('--UNET_DROPOUT_MODE',          type=str,   default="monte-car
 prsr.add_argument('--UNET_DROPOUT_RATE',          type=float, default=0.50,                                                                help="U-Net: Dropout Regularization Rate")
 args, _ = prsr.parse_known_args()
 
-def get3DUnet(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS):
+def get3DUnet(image_spatial_dim, image_num_channels):
 
-    inputs = tf.keras.layers.Input(IMAGE_SPATIAL_DIMS + (IMAGE_NUM_CHANNELS,))
+    inputs = tf.keras.layers.Input(image_spatial_dim + (image_num_channels,))
     conv1 = tf.keras.layers.Conv3D(8, 3, activation = 'relu', padding = 'same',data_format="channels_last")(inputs)
+
     conv1 = tf.keras.layers.Conv3D(8, 3, activation = 'relu', padding = 'same')(conv1)
     pool1 = tf.keras.layers.MaxPooling3D(pool_size=(2, 2, 2))(conv1)
     conv2 = tf.keras.layers.Conv3D(16, 3, activation = 'relu', padding = 'same')(pool1)
+
     conv2 = tf.keras.layers.Conv3D(16, 3, activation = 'relu', padding = 'same')(conv2)
     pool2 = tf.keras.layers.MaxPooling3D(pool_size=(2, 2, 2))(conv2)
     conv3 = tf.keras.layers.Conv3D(32, 3, activation = 'relu', padding = 'same')(pool2)
+
     conv3 = tf.keras.layers.Conv3D(32, 3, activation = 'relu', padding = 'same')(conv3)
     pool3 = tf.keras.layers.MaxPooling3D(pool_size=(2, 2, 2))(conv3)
     conv4 = tf.keras.layers.Conv3D(64, 3, activation = 'relu', padding = 'same')(pool3)
+
     conv4 = tf.keras.layers.Conv3D(64, 3, activation = 'relu', padding = 'same')(conv4)
     drop4 = tf.keras.layers.Dropout(0.5)(conv4)
     pool4 = tf.keras.layers.MaxPooling3D(pool_size=(2, 2, 2))(drop4)
@@ -100,11 +104,11 @@ def get3DAttentionUnet(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS, NUM_CLASSES):
     return model
 
 
-def getDetectionHead(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS):
+def getDetectionHead(image_spatial_dim, image_num_channels):
     
     anchor_num = len(get_anchors())
 
-    inputs = tf.keras.layers.Input(IMAGE_SPATIAL_DIMS + (IMAGE_NUM_CHANNELS,))
+    inputs = tf.keras.layers.Input(image_spatial_dim + (image_num_channels,))
     cls_layer = tf.keras.layers.Conv3D(anchor_num * 2, 3, padding = 'same')(inputs)
     cls_layer = tf.keras.layers.Reshape((np.prod(cls_layer.shape[1: -1]) * anchor_num, 2))(cls_layer)
     cls_layer = tf.keras.layers.Softmax(axis = -1)(cls_layer)
@@ -114,20 +118,20 @@ def getDetectionHead(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS):
     model = tf.keras.models.Model(inputs, [cls_layer, reg_layer])
     return model
 
-def getModel(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS):
+def getModel(image_spatial_dim, image_num_channels):
 
-    spatial_dim1, spatial_dim2 = IMAGE_SPATIAL_DIMS
-    image_num_channels1, image_num_channels2 = IMAGE_NUM_CHANNELS
+    image_spatial_dim1, image_spatial_dim2 = image_spatial_dim
+    image_num_channels1, image_num_channels2 = image_num_channels
 
-    anchors = make_rpn_windows(spatial_dim2)
+    anchors = make_rpn_windows(image_spatial_dim2)
 
     def loss(reg, cls, targets):
         return rpn_loss(reg, cls, targets, anchors)
 
-    unet_model = get3DUnet(spatial_dim1, image_num_channels1)
-    detection_head = getDetectionHead(spatial_dim2, image_num_channels2)
+    unet_model = get3DUnet(image_spatial_dim1, image_num_channels1)
+    detection_head = getDetectionHead(image_spatial_dim2, image_num_channels2)
     
-    inputs = tf.keras.layers.Input(spatial_dim1 + (image_num_channels1,))
+    inputs = tf.keras.layers.Input(image_spatial_dim1 + (image_num_channels1,))
 
     x = unet_model(inputs)
     outputs = detection_head(x)
@@ -138,7 +142,7 @@ def getModel(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS):
 
 
 if __name__ == "__main__":
-    IMAGE_SPATIAL_DIMS = [(512, 512, 32), (512, 512, 32)]
+    IMAGE_SPATIAL_DIMS = [(128, 128, 128), (128, 128, 128)]
     IMAGE_NUM_CHANNELS = [1, 1]
 
     image = np.ones((1,) + IMAGE_SPATIAL_DIMS[0] + (IMAGE_NUM_CHANNELS[0],))
