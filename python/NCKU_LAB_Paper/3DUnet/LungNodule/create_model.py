@@ -151,3 +151,6 @@ if __name__ == "__main__":
     print(cls.shape)
     print(bbox.shape)
 
+    # model = get3DAttentionUnet(IMAGE_SPATIAL_DIMS[0], IMAGE_NUM_CHANNELS[0], 1)
+    # print(model(image).shape)
+
