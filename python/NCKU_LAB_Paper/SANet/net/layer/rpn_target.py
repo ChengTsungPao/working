@@ -31,6 +31,7 @@ def make_one_rpn_target(cfg, mode, input, window, truth_box, truth_label):
 
     num_neg = cfg['num_neg']
     num_window = len(window)
+    print(num_window, "num_window")
     label = np.zeros((num_window, ), np.float32)
     label_assign = np.zeros((num_window, ), np.int32) - 1
     label_weight = np.zeros((num_window, ), np.float32)

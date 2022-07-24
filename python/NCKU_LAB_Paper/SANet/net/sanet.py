@@ -128,18 +128,23 @@ class RpnHead(nn.Module):
 
     def forward(self, f):
         # out = self.drop(f)
+        
         out = self.conv(f)
 
         logits = self.logits(out)
         deltas = self.deltas(out)
+        print(deltas.size(), "deltas")
+        
+
         size = logits.size()
         logits = logits.view(logits.size(0), logits.size(1), -1)
         logits = logits.transpose(1, 2).contiguous().view(size[0], size[2], size[3], size[4], len(config['anchors']), 1)
+        print(logits.size(), "logits--", logits[0, 0, 0, 0, 0])
         
         size = deltas.size()
         deltas = deltas.view(deltas.size(0), deltas.size(1), -1)
         deltas = deltas.transpose(1, 2).contiguous().view(size[0], size[2], size[3], size[4], len(config['anchors']), 6)
-        
+        print(deltas.size(), "deltas--")
 
         return logits, deltas
 
@@ -230,8 +235,8 @@ class MaskHead(nn.Module):
             logits = logits.squeeze()
  
             # Cheng Edit
-            mask = Variable(torch.zeros((D, H, W)))
-            # mask = Variable(torch.zeros((D, H, W))).cuda()
+            # mask = Variable(torch.zeros((D, H, W)))
+            mask = Variable(torch.zeros((D, H, W))).cuda()
             mask[z_start:z_end, y_start:y_end, x_start:x_end] = logits
             mask = mask.unsqueeze(0)
             out.append(mask)
@@ -363,6 +368,7 @@ class SANet(nn.Module):
     def forward(self, inputs, truth_boxes, truth_labels, split_combiner=None, nzhw=None):
         # features, feat_4 = self.feature_net(inputs)
         features, feat_4 = data_parallel(self.feature_net, (inputs))
+        print(features[-1].size())
         fs = features[-1]
 
         self.rpn_logits_flat, self.rpn_deltas_flat = data_parallel(self.rpn, fs)
@@ -371,6 +377,7 @@ class SANet(nn.Module):
 
         self.rpn_logits_flat = self.rpn_logits_flat.view(b, -1, 1)
         self.rpn_deltas_flat = self.rpn_deltas_flat.view(b, -1, 6)
+        print(self.rpn_deltas_flat.size(), "=======")
 
 
         self.rpn_window = make_rpn_windows(fs, self.cfg)
@@ -404,8 +411,8 @@ class SANet(nn.Module):
                 proposal[:, 1:] = clip_boxes(proposal[:, 1:], inputs.shape[2:])
                 # rcnn_crops = self.rcnn_crop(features, inputs, torch.from_numpy(proposal).cuda())
                 features = [t.unsqueeze(0).expand(torch.cuda.device_count(), -1, -1, -1, -1, -1) for t in features]
-                rcnn_crops = data_parallel(self.rcnn_crop, (features, inputs, torch.from_numpy(proposal)))
-                # rcnn_crops = data_parallel(self.rcnn_crop, (features, inputs, torch.from_numpy(proposal).cuda()))
+                # rcnn_crops = data_parallel(self.rcnn_crop, (features, inputs, torch.from_numpy(proposal)))
+                rcnn_crops = data_parallel(self.rcnn_crop, (features, inputs, torch.from_numpy(proposal).cuda()))
                 # rcnn_crops = self.rcnn_crop(fs, inputs, self.rpn_proposals)
                 # self.rcnn_logits, self.rcnn_deltas = self.rcnn_head(rcnn_crops)
                 self.rcnn_logits, self.rcnn_deltas = data_parallel(self.rcnn_head, rcnn_crops)
@@ -422,8 +429,8 @@ class SANet(nn.Module):
     def loss(self, targets=None):
         cfg  = self.cfg
     
-        self.rcnn_cls_loss, self.rcnn_reg_loss = torch.zeros(1), torch.zeros(1)
-        # self.rcnn_cls_loss, self.rcnn_reg_loss = torch.zeros(1).cuda(), torch.zeros(1).cuda()
+        # self.rcnn_cls_loss, self.rcnn_reg_loss = torch.zeros(1), torch.zeros(1)
+        self.rcnn_cls_loss, self.rcnn_reg_loss = torch.zeros(1).cuda(), torch.zeros(1).cuda()
         rcnn_stats = None
     
         self.rpn_cls_loss, self.rpn_reg_loss, rpn_stats = \
