@@ -1,5 +1,5 @@
 import numpy as np
-from bbox_regression import one_box_transform
+from .utils.bbox_regression import one_box_transform
 
 TRAIN_THRESHOLD = 0.7
 

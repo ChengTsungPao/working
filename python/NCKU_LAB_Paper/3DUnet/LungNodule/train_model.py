@@ -1,4 +1,4 @@
-from create_model import getModel
+from model.create_model import getModel
 import tensorflow as tf
 
 
