@@ -1,7 +1,6 @@
 import numpy as np
 import itertools
 
-STRIDE = [1, 1, 1]
 BASES = [5, 10, 20, 30, 50]
 RATIOS = [[1, 1, 1]]
 
@@ -14,7 +13,7 @@ def get_anchors(bases = BASES, aspect_ratios = RATIOS):
 
     return anchors
 
-def make_rpn_windows(image_shape, stride = STRIDE):
+def make_rpn_windows(image_shape, stride = [1, 1, 1]):
     strideZ, strideY, strideX = stride
     offsetZ, offsetY, offsetX = (float(strideZ) - 1) / 2, (float(strideY) - 1) / 2, (float(strideX) - 1) / 2
     anchors = get_anchors()
