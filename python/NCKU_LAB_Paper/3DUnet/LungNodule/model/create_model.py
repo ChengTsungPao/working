@@ -41,24 +41,24 @@ def get3DAttentionUnet(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS, NUM_CLASSES):
     args, _ = prsr.parse_known_args()
 
     model = attUnet.networks.M1( input_spatial_dims = IMAGE_SPATIAL_DIMS,               
-                               input_channels     = IMAGE_NUM_CHANNELS,
-                               num_classes        = NUM_CLASSES,                      
-                               filters            = args.UNET_FEATURE_CHANNELS,                            
-                               dropout_rate       = args.UNET_DROPOUT_RATE,           
-                               strides            = args.UNET_STRIDES,
-                               kernel_sizes       = args.UNET_KERNEL_SIZES,           
-                               dropout_mode       = args.UNET_DROPOUT_MODE,
-                               se_reduction       = args.UNET_SE_REDUCTION,           
-                               att_sub_samp       = args.UNET_ATT_SUBSAMP,
-                               probabilistic      = bool(args.UNET_PROBABILISTIC),    
-                               prob_latent_dims   = args.UNET_PROBA_LATENT_DIMS,
-                               dense_skip         = bool(args.UNET_DENSE_SKIP),                                       
-                               deep_supervision   = bool(args.UNET_DEEP_SUPERVISION), 
-                               summary            = True,
-                               bias_initializer   = tf.keras.initializers.TruncatedNormal(mean=0.0, stddev=0.001),   
-                               bias_regularizer   = tf.keras.regularizers.l2(args.UNET_BIAS_REGULARIZER_L2),                                               
-                               kernel_initializer = tf.keras.initializers.Orthogonal(gain=1.0), 
-                               kernel_regularizer = tf.keras.regularizers.l2(args.UNET_KERNEL_REGULARIZER_L2)) 
+                                 input_channels     = IMAGE_NUM_CHANNELS,
+                                 num_classes        = NUM_CLASSES,                      
+                                 filters            = args.UNET_FEATURE_CHANNELS,                            
+                                 dropout_rate       = args.UNET_DROPOUT_RATE,           
+                                 strides            = args.UNET_STRIDES,
+                                 kernel_sizes       = args.UNET_KERNEL_SIZES,           
+                                 dropout_mode       = args.UNET_DROPOUT_MODE,
+                                 se_reduction       = args.UNET_SE_REDUCTION,           
+                                 att_sub_samp       = args.UNET_ATT_SUBSAMP,
+                                 probabilistic      = bool(args.UNET_PROBABILISTIC),    
+                                 prob_latent_dims   = args.UNET_PROBA_LATENT_DIMS,
+                                 dense_skip         = bool(args.UNET_DENSE_SKIP),                                       
+                                 deep_supervision   = bool(args.UNET_DEEP_SUPERVISION), 
+                                 summary            = True,
+                                 bias_initializer   = tf.keras.initializers.TruncatedNormal(mean=0.0, stddev=0.001),   
+                                 bias_regularizer   = tf.keras.regularizers.l2(args.UNET_BIAS_REGULARIZER_L2),                                               
+                                 kernel_initializer = tf.keras.initializers.Orthogonal(gain=1.0), 
+                                 kernel_regularizer = tf.keras.regularizers.l2(args.UNET_KERNEL_REGULARIZER_L2)) 
 
     return model
 
