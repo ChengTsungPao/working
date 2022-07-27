@@ -8,15 +8,20 @@ try:
     from head.RPNHead import rpn_head as rpn
     from head.RPNHead.utils import create_anchor as anchor
     from head.RPNHead.loss_function import rpn_loss
+    from head.CornerNetHead import cornerNet_head as cornerNet
 except:
     from .backbone.Attention3DUnet import unets as attUnet
     from .backbone.Base3DUnet import unet as baseUnet
     from .head.RPNHead import rpn_head as rpn
     from .head.RPNHead.utils import create_anchor as anchor
     from .head.RPNHead.loss_function import rpn_loss
+    from .head.CornerNetHead import cornerNet_head as cornerNet
 
 import warnings
 warnings.filterwarnings('ignore', '.*output shape of zoom.*')
+
+physical_devices = tf.config.experimental.list_physical_devices("GPU")
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 
 def get3DAttentionUnet(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS, NUM_CLASSES):
@@ -62,7 +67,7 @@ def get3DAttentionUnet(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS, NUM_CLASSES):
 
     return model
 
-def getModel(image_spatial_dim, image_num_channels):
+def getModel1(image_spatial_dim, image_num_channels):
 
     image_spatial_dim1, image_spatial_dim2 = image_spatial_dim
     image_num_channels1, image_num_channels2 = image_num_channels
@@ -84,17 +89,38 @@ def getModel(image_spatial_dim, image_num_channels):
     model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-4), loss = loss, metrics = [loss])
     return model
 
+def getModel2(image_spatial_dim, image_num_channels):
+
+    image_spatial_dim1, image_spatial_dim2 = image_spatial_dim
+    image_num_channels1, image_num_channels2 = image_num_channels
+
+    unet_model = baseUnet.get3DUnet(image_spatial_dim1, image_num_channels1)
+    cornerNetHead = cornerNet.getCornerNetHead(image_spatial_dim2, image_num_channels2)
+
+    inputs = tf.keras.layers.Input(image_spatial_dim1 + (image_num_channels1,))
+    x = unet_model(inputs)
+    outputs = cornerNetHead(x)
+
+    model = tf.keras.models.Model(inputs, outputs)
+    return model
 
 if __name__ == "__main__":
+
     IMAGE_SPATIAL_DIMS = [(128, 128, 128), (128, 128, 128)]
     IMAGE_NUM_CHANNELS = [1, 1]
 
     image = np.ones((1,) + IMAGE_SPATIAL_DIMS[0] + (IMAGE_NUM_CHANNELS[0],))
-    model = getModel(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS)
-    cls, bbox = model(image)
-    print(cls.shape)
-    print(bbox.shape)
 
-    model = get3DAttentionUnet(IMAGE_SPATIAL_DIMS[0], IMAGE_NUM_CHANNELS[0], 1)
-    print(model(image).shape)
+    # model1 = getModel1(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS)
+    # cls, bbox = model1(image)
+    # print(cls.shape)
+    # print(bbox.shape)
+
+    model2 = getModel2(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS)
+    cls, bbox = model2(image)
+    # print(np.shape(cls))
+    # print(np.shape(bbox))
+
+    # model = get3DAttentionUnet(IMAGE_SPATIAL_DIMS[0], IMAGE_NUM_CHANNELS[0], 1)
+    # print(model(image).shape)
 

@@ -1,22 +1,59 @@
 import tensorflow as tf
+import numpy as np
 
-def TopPool():
-    pass
+def TopPool(inputs):
+    dim = 1
+    height = inputs.shape[dim]
+    outputs = tf.expand_dims(inputs[:, height - 1, :, :, :], dim)
+    for h in range(height - 2, -1, -1):
+        new = tf.expand_dims(tf.maximum(outputs[:, 0, :, :, :], inputs[:, h, :, :, :]), dim)
+        outputs=tf.concat((new, outputs), dim)
+    return outputs
+    
+def BottomPool(inputs):
+    dim = 1
+    height = inputs.shape[dim]
+    outputs = tf.expand_dims(inputs[:, 0, :, :, :], dim)
+    for h in range(1, height):
+        new = tf.expand_dims(tf.maximum(outputs[:, -1, :, :, :], inputs[:, h, :, :, :]), dim)
+        outputs=tf.concat((outputs, new), dim)
+    return outputs
 
-def BottomPool():
-    pass
+def LeftPool(inputs):
+    dim = 2
+    width = inputs.shape[dim]
+    outputs = tf.expand_dims(inputs[:, :, width - 1, :, :], dim)
+    for w in range(width - 2, -1, -1):
+        new = tf.expand_dims(tf.maximum(outputs[:, :, 0, :, :], inputs[:, :, w, :, :]), dim)
+        outputs=tf.concat((new, outputs), dim)
+    return outputs
 
-def LeftPool():
-    pass
+def RightPool(inputs):
+    dim = 2
+    width = inputs.shape[dim]
+    outputs = tf.expand_dims(inputs[:, :, 0, :, :], dim)
+    for w in range(1, width):
+        new = tf.expand_dims(tf.maximum(outputs[:, :, -1, :, :], inputs[:, :, w, :, :]), dim)
+        outputs=tf.concat((outputs, new), dim)
+    return outputs
 
-def RightPool():
-    pass
+def FrontPool(inputs):
+    dim = 3
+    depth = inputs.shape[dim]
+    outputs = tf.expand_dims(inputs[:, :, :, depth - 1, :], dim)
+    for d in range(depth - 2, -1, -1):
+        new = tf.expand_dims(tf.maximum(outputs[:, :, :, 0, :], inputs[:, :, :, d, :]), dim)
+        outputs=tf.concat((new, outputs), dim)
+    return outputs
 
-def FrontPool():
-    pass
-
-def BehindPool():
-    pass
+def BehindPool(inputs):
+    dim = 3
+    depth = inputs.shape[dim]
+    outputs = tf.expand_dims(inputs[:, :, :, 0, :], dim)
+    for d in range(1, depth):
+        new = tf.expand_dims(tf.maximum(outputs[:, :, :, -1, :], inputs[:, :, :, d, :]), dim)
+        outputs=tf.concat((outputs, new), dim)
+    return outputs
 
 class Pool(tf.keras.Model):
     def __init__(self, pool1, pool2, pool3, channel):
@@ -53,9 +90,9 @@ class Pool(tf.keras.Model):
             ]
         )
 
-        self.pool1 = pool1()
-        self.pool2 = pool2()
-        self.pool3 = pool3()
+        self.pool1 = pool1
+        self.pool2 = pool2
+        self.pool3 = pool3
 
     def call(self, x):
         # pool 1
@@ -76,9 +113,8 @@ class Pool(tf.keras.Model):
 
         conv1 = self.conv1(x)
         bn1   = self.bn1(conv1)
-        relu1 = self.relu1(p_bn1 + bn1)
 
-        conv2 = self.conv2(relu1)
+        conv2 = self.conv2(p_bn1 + bn1)
         return conv2
 
 
@@ -98,7 +134,7 @@ def predictionModule(image_spatial_dim, image_num_channels):
     inputs  = tf.keras.layers.Input(image_spatial_dim + (image_num_channels,))
 
     heatMap = tf.keras.layers.Conv3D(image_num_channels * 2, 3, activation = 'relu', padding = 'same')(inputs)
-    heatMap = tf.keras.layers.Conv3D(2, 1, activation = 'relu', padding = 'same')(heatMap)
+    heatMap = tf.keras.layers.Conv3D(1, 1, activation = 'relu', padding = 'same')(heatMap)
 
     group = tf.keras.layers.Conv3D(image_num_channels * 2, 3, activation = 'relu', padding = 'same')(inputs)
     group = tf.keras.layers.Conv3D(1, 1, activation = 'relu', padding = 'same')(group)
