@@ -117,9 +117,13 @@ if __name__ == "__main__":
     # print(bbox.shape)
 
     model2 = getModel2(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS)
-    cls, bbox = model2(image)
-    # print(np.shape(cls))
-    # print(np.shape(bbox))
+    TLF, BRB = model2(image)
+    print("TLF => heatMap    : ", TLF[0].shape)
+    print("TLF => group      : ", TLF[1].shape)
+    print("TLF => regression : ", TLF[2].shape)
+    print("BRB => heatMap    : ", BRB[0].shape)
+    print("BRB => group      : ", BRB[1].shape)
+    print("BRB => regression : ", BRB[2].shape)
 
     # model = get3DAttentionUnet(IMAGE_SPATIAL_DIMS[0], IMAGE_NUM_CHANNELS[0], 1)
     # print(model(image).shape)
