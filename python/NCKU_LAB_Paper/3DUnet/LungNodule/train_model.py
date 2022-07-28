@@ -2,9 +2,6 @@ from model.create_model import getModel2
 import tensorflow as tf
 import numpy as np
 
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-
 def get_data(path):
     pass
 
