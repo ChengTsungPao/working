@@ -12,7 +12,7 @@ def train():
     IMAGE_SPATIAL_DIMS = [(64, 64, 64), (64, 64, 64)]
     IMAGE_NUM_CHANNELS = [1, 1]
 
-    model, loss_fn = getModel2(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS)
+    model = getModel2(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS)
     # image = np.ones((1,) + IMAGE_SPATIAL_DIMS[0] + (IMAGE_NUM_CHANNELS[0],))
 
     # outputs = model(image)
@@ -24,13 +24,15 @@ def train():
     # print("BRB => regression : ", outputs[5].shape)
 
     num_data = 100
-    data = np.ones((num_data, 1, 64, 64, 64, 1))
+    data = np.random.randn(num_data, 1, 64, 64, 64, 1)
     target = np.random.randint(0, 64, size = (num_data, 2, 1, 5, 3)) # (_, tlf brb, b, bbox num, dim)
     train_dataset = zip(data, target)
 
     epochs = 10
     batch_size = 1
-    optimizer = tf.keras.optimizers.SGD(learning_rate=1e-3)
+
+    loss_fn   = model.loss
+    optimizer = model.optimizer
 
     for epoch in range(epochs):
         print("\nStart of epoch %d" % (epoch,))

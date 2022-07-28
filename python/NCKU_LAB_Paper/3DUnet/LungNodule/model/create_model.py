@@ -114,8 +114,8 @@ def getModel2(image_spatial_dim, image_num_channels):
     # outputs = tf.keras.layers.Conv2D(8, 3, activation = 'relu', padding = 'same')(inputs)
 
     model = tf.keras.models.Model(inputs, outputs)
-    # model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-4), loss = loss)
-    return model, loss
+    model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-4), loss = loss)
+    return model
 
 
 if __name__ == "__main__":
