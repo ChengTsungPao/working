@@ -1,3 +1,4 @@
+import enum
 import numpy as np
 import argparse
 import tensorflow as tf
@@ -9,6 +10,7 @@ try:
     from head.RPNHead.utils import create_anchor as anchor
     from head.RPNHead.loss_function import rpn_loss
     from head.CornerNetHead import cornerNet_head as cornerNet
+    from head.CornerNetHead.loss_function import cornerNetLoss
 except:
     from .backbone.Attention3DUnet import unets as attUnet
     from .backbone.Base3DUnet import unet as baseUnet
@@ -16,12 +18,10 @@ except:
     from .head.RPNHead.utils import create_anchor as anchor
     from .head.RPNHead.loss_function import rpn_loss
     from .head.CornerNetHead import cornerNet_head as cornerNet
+    from .head.CornerNetHead.loss_function import cornerNetLoss
 
 import warnings
 warnings.filterwarnings('ignore', '.*output shape of zoom.*')
-
-physical_devices = tf.config.experimental.list_physical_devices("GPU")
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 
 def get3DAttentionUnet(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS, NUM_CLASSES):
@@ -75,9 +75,10 @@ def getModel1(image_spatial_dim, image_num_channels):
     anchors = anchor.make_rpn_windows(image_spatial_dim2)
 
     def loss(reg, cls, targets):
-        return rpn_loss(reg, cls, targets, anchors)
+        # worse running time
+        return sum([rpn_loss(batch_reg, batch_cls, batch_targets, anchors) for batch_reg, batch_cls, batch_targets in zip(reg, cls, targets)])
 
-    unet_model = baseUnet.get3DUnet(image_spatial_dim1, image_num_channels1)
+    unet_model = baseUnet.get3DUnet(image_spatial_dim1, image_num_channels1), 
     detection_head = rpn.getRPNHead(image_spatial_dim2, image_num_channels2)
     
     inputs = tf.keras.layers.Input(image_spatial_dim1 + (image_num_channels1,))
@@ -93,8 +94,15 @@ def getModel2(image_spatial_dim, image_num_channels):
 
     image_spatial_dim1, image_spatial_dim2 = image_spatial_dim
     image_num_channels1, image_num_channels2 = image_num_channels
+    scale = image_spatial_dim1[0] // image_spatial_dim2[0]
 
-    unet_model = baseUnet.get3DUnet(image_spatial_dim1, image_num_channels1)
+    # predicts: [[TLF_heatMap, TLF_group, TLF_regression], [BRB_heatMap, BRB_group, BRB_regression]]  (TLF_heatMap also have many batch)
+    # targets : [[[h0, w0, d0], [h1, w1, d1]...], [[h0, w0, d0], [h1, w1, d1]...] ....]
+    def loss(predicts, targets):
+        alpha, beta, gamma = 0.1, 0.1, 1
+        return cornerNetLoss(predicts, targets, scale, [alpha, beta, gamma])
+
+    unet_model = baseUnet.get3DUnet(image_spatial_dim1, image_num_channels1, int(np.log2(scale) + 1))
     cornerNetHead = cornerNet.getCornerNetHead(image_spatial_dim2, image_num_channels2)
 
     inputs = tf.keras.layers.Input(image_spatial_dim1 + (image_num_channels1,))
@@ -102,11 +110,15 @@ def getModel2(image_spatial_dim, image_num_channels):
     outputs = cornerNetHead(x)
 
     model = tf.keras.models.Model(inputs, outputs)
+    model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-4), loss = loss, metrics = [loss])
     return model
 
-if __name__ == "__main__":
 
-    IMAGE_SPATIAL_DIMS = [(128, 128, 128), (128, 128, 128)]
+if __name__ == "__main__":
+    physical_devices = tf.config.experimental.list_physical_devices("GPU")
+    tf.config.experimental.set_memory_growth(physical_devices[0], True)
+
+    IMAGE_SPATIAL_DIMS = [(256, 256, 256), (128, 128, 128)]
     IMAGE_NUM_CHANNELS = [1, 1]
 
     image = np.ones((1,) + IMAGE_SPATIAL_DIMS[0] + (IMAGE_NUM_CHANNELS[0],))
