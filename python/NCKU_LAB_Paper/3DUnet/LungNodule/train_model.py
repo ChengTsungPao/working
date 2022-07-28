@@ -18,7 +18,7 @@ def train():
     # outputs = model(image)
     # print("TLF => heatMap    : ", outputs[0].shape)
     # print("TLF => group      : ", outputs[1].shape)
-    # print("TLF => regression : ", TLF[2].shape)
+    # print("TLF => regression : ", outputs[2].shape)
     # print("BRB => heatMap    : ", outputs[3].shape)
     # print("BRB => group      : ", outputs[4].shape)
     # print("BRB => regression : ", outputs[5].shape)
