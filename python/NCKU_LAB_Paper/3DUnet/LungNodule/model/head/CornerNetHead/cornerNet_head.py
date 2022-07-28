@@ -157,10 +157,10 @@ def getCornerNetHead(image_spatial_dim, image_num_channels):
     inputs = tf.keras.layers.Input(image_spatial_dim + (image_num_channels,))
 
     TLF = TLF_cornerPooling(inputs)
-    TLF = TLF_prediction(TLF)
+    TLF_heatMap, TLF_group, TLF_regression = TLF_prediction(TLF)
 
     BRB = BRB_cornerPooling(inputs)
-    BRB = BRB_prediction(BRB)
+    BRB_heatMap, BRB_group, BRB_regression = BRB_prediction(BRB)
 
-    model = tf.keras.models.Model(inputs, [TLF, BRB])
+    model = tf.keras.models.Model(inputs, [TLF_heatMap, TLF_group, TLF_regression, BRB_heatMap, BRB_group, BRB_regression])
     return model

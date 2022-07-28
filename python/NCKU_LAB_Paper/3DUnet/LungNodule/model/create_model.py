@@ -96,9 +96,9 @@ def getModel2(image_spatial_dim, image_num_channels):
     image_num_channels1, image_num_channels2 = image_num_channels
     scale = image_spatial_dim1[0] // image_spatial_dim2[0]
 
-    # predicts: [[TLF_heatMap, TLF_group, TLF_regression], [BRB_heatMap, BRB_group, BRB_regression]]  (TLF_heatMap also have many batch)
+    # predicts: [TLF_heatMap, TLF_group, TLF_regression, BRB_heatMap, BRB_group, BRB_regression]  (TLF_heatMap also have many batch)
     # targets : [[[h0, w0, d0], [h1, w1, d1]...], [[h0, w0, d0], [h1, w1, d1]...] ....]
-    def loss(predicts, targets):
+    def loss(targets, predicts):
         alpha, beta, gamma = 0.1, 0.1, 1
         return cornerNetLoss(predicts, targets, scale, [alpha, beta, gamma])
 
@@ -109,9 +109,13 @@ def getModel2(image_spatial_dim, image_num_channels):
     x = unet_model(inputs)
     outputs = cornerNetHead(x)
 
+    # inputs = tf.keras.layers.Input(image_spatial_dim1 + (image_num_channels1,))
+    # inputs = tf.keras.layers.Input(image_spatial_dim1 + (image_num_channels1,))
+    # outputs = tf.keras.layers.Conv2D(8, 3, activation = 'relu', padding = 'same')(inputs)
+
     model = tf.keras.models.Model(inputs, outputs)
-    model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-4), loss = loss, metrics = [loss])
-    return model
+    # model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-4), loss = loss)
+    return model, loss
 
 
 if __name__ == "__main__":
@@ -129,13 +133,13 @@ if __name__ == "__main__":
     # print(bbox.shape)
 
     model2 = getModel2(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS)
-    TLF, BRB = model2(image)
-    print("TLF => heatMap    : ", TLF[0].shape)
-    print("TLF => group      : ", TLF[1].shape)
-    print("TLF => regression : ", TLF[2].shape)
-    print("BRB => heatMap    : ", BRB[0].shape)
-    print("BRB => group      : ", BRB[1].shape)
-    print("BRB => regression : ", BRB[2].shape)
+    outputs = model2(image)
+    print("TLF => heatMap    : ", outputs[0].shape)
+    print("TLF => group      : ", outputs[1].shape)
+    print("TLF => regression : ", outputs[2].shape)
+    print("BRB => heatMap    : ", outputs[3].shape)
+    print("BRB => group      : ", outputs[4].shape)
+    print("BRB => regression : ", outputs[5].shape)
 
     # model = get3DAttentionUnet(IMAGE_SPATIAL_DIMS[0], IMAGE_NUM_CHANNELS[0], 1)
     # print(model(image).shape)
