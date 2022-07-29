@@ -13,6 +13,7 @@ def predict_model(model):
     image = np.ones((1,) + IMAGE_SPATIAL_DIMS[0] + (IMAGE_NUM_CHANNELS[0],))
 
     outputs = model(image)
+    print()
     print("TLF => heatMap    : ", outputs[0].shape)
     print("TLF => group      : ", outputs[1].shape)
     print("TLF => regression : ", outputs[2].shape)
@@ -27,7 +28,7 @@ def train():
     data = np.random.randn(num_data, 1, IMAGE_SPATIAL_DIMS[0][0], IMAGE_SPATIAL_DIMS[0][1], IMAGE_SPATIAL_DIMS[0][2], 1)
     target = np.random.randint(0, IMAGE_SPATIAL_DIMS[1][0], size = (num_data, 2, 1, 5, 3)) # (_, tlf brb, b, bbox num, dim)
 
-    epochs = 2
+    epochs = 3
 
     loss_fn   = model.loss
     optimizer = model.optimizer
