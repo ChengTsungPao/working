@@ -20,13 +20,11 @@ def train():
     # print("BRB => group      : ", outputs[4].shape)
     # print("BRB => regression : ", outputs[5].shape)
 
-    num_data = 100
+    num_data = 20
     data = np.random.randn(num_data, 1, 64, 64, 64, 1)
     target = np.random.randint(0, 64, size = (num_data, 2, 1, 5, 3)) # (_, tlf brb, b, bbox num, dim)
-    train_dataset = zip(data, target)
 
     epochs = 10
-    batch_size = 1
 
     loss_fn   = model.loss
     optimizer = model.optimizer
@@ -34,8 +32,7 @@ def train():
     for epoch in range(epochs):
         print("\nStart of epoch %d" % (epoch,))
 
-        for step, (x_batch_train, y_batch_train) in enumerate(train_dataset):
-            print("\r", "Train: %.4f" % ((step / num_data) * 100.), "%", "(step: {})".format(step), end=" ")
+        for step, (x_batch_train, y_batch_train) in enumerate(zip(data, target)):
 
             with tf.GradientTape() as tape:
                 predicts = model(x_batch_train, training=True) 
@@ -44,9 +41,7 @@ def train():
             grads = tape.gradient(loss_value, model.trainable_weights)
             optimizer.apply_gradients(zip(grads, model.trainable_weights))
 
-            if step % 10 == 0:
-                print("Training loss (for one batch) at step %d: %.4f" % (step, float(loss_value)))
-                print("Seen so far: %s samples" % ((step + 1) * batch_size))
+            print("\r", "Train: %.4f" % (((step + 1) / num_data) * 100.), "%", "(step: {}, loss = {})".format(step, loss_value), end=" ")
 
 
 if __name__ == "__main__":

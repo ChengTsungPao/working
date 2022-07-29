@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 from .utils import prediction as cornerNetPredict
 
-BIGGER_LOSS = 10 ** 4
+BIGGER_LOSS = 10
 
 # heatmaps: predict, points: groundTruth
 def loss_det(heatmaps, points, scale, shape):
@@ -60,7 +60,7 @@ def loss_off(regressions, points, scale):
         for x, y, z in point:
             ox, oy, oz = regression[x // scale][y // scale][z // scale]
             gx, gy, gz = x / scale - x // scale, y / scale - y // scale, z / scale - z // scale
-            mse = (((ox - gx) ** 2 + (oy - gy) ** 2 + (oz - gz) ** 2) / 3) ** 0.5
+            mse = (abs(ox - gx) + abs(oy - gy) + abs(oz - gz)) / 3
             current_loss += 0.5 * mse ** 2 if abs(mse) < 1 else abs(mse) - 0.5
             current_size += 1
 
@@ -102,8 +102,8 @@ def loss_pull_push(tlf_groups, brb_groups, tlf_points, brb_points):
 
     return total_pull_loss / batch_size, total_push_loss / batch_size
 
-def cornerNetLoss(predicts, targets, scale, parameter):
-    alpha, beta, gamma = parameter
+def cornerNetLoss(predicts, targets, scale):
+    alpha, beta, gamma = 0.1, 0.1, 1
 
     tlf_heatMap_predict, tlf_group_predict, tlf_regression_predict = predicts[0: 3]
     brb_heatMap_predict, brb_group_predict, brb_regression_predict = predicts[3: 6]

@@ -99,8 +99,7 @@ def getModel2(image_spatial_dim, image_num_channels):
     # predicts: [TLF_heatMap, TLF_group, TLF_regression, BRB_heatMap, BRB_group, BRB_regression]  (TLF_heatMap also have many batch)
     # targets : [[[h0, w0, d0], [h1, w1, d1]...], [[h0, w0, d0], [h1, w1, d1]...] ....]
     def loss(targets, predicts):
-        alpha, beta, gamma = 0.1, 0.1, 1
-        return cornerNetLoss(predicts, targets, scale, [alpha, beta, gamma])
+        return cornerNetLoss(predicts, targets, scale)
 
     unet_model = baseUnet.get3DUnet(image_spatial_dim1, image_num_channels1, int(np.log2(scale) + 1))
     cornerNetHead = cornerNet.getCornerNetHead(image_spatial_dim2, image_num_channels2)
