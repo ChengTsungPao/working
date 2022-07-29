@@ -121,7 +121,7 @@ if __name__ == "__main__":
     physical_devices = tf.config.experimental.list_physical_devices("GPU")
     tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
-    IMAGE_SPATIAL_DIMS = [(256, 256, 256), (128, 128, 128)]
+    IMAGE_SPATIAL_DIMS = [(128, 128, 128), (64, 64, 64)]
     IMAGE_NUM_CHANNELS = [1, 1]
 
     image = np.ones((1,) + IMAGE_SPATIAL_DIMS[0] + (IMAGE_NUM_CHANNELS[0],))
