@@ -2,6 +2,10 @@ from model.create_model import getModel2
 import tensorflow as tf
 import numpy as np
 
+
+IMAGE_SPATIAL_DIMS = [(128, 128, 128), (64, 64, 64)]
+IMAGE_NUM_CHANNELS = [1, 1]
+
 def get_data(path):
     pass
 
@@ -17,9 +21,6 @@ def predict_model(model):
     print("BRB => regression : ", outputs[5].shape)
 
 def train():
-    IMAGE_SPATIAL_DIMS = [(128, 128, 128), (64, 64, 64)]
-    IMAGE_NUM_CHANNELS = [1, 1]
-
     model = getModel2(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS)
 
     num_data = 20
@@ -44,6 +45,8 @@ def train():
             optimizer.apply_gradients(zip(grads, model.trainable_weights))
 
             print("\r", "Train: %.4f" % (((step + 1) / num_data) * 100.), "%", "(step: {}, loss = {})".format(step, loss_value), end=" ")
+
+    predict_model(model)
 
 
 if __name__ == "__main__":
