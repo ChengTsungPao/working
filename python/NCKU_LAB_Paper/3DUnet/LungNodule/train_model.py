@@ -13,7 +13,7 @@ def predict_model(model):
     image = np.ones((1,) + IMAGE_SPATIAL_DIMS[0] + (IMAGE_NUM_CHANNELS[0],))
 
     outputs = model(image)
-    print()
+    print("======================== predict ========================")
     print("TLF => heatMap    : ", outputs[0].shape)
     print("TLF => group      : ", outputs[1].shape)
     print("TLF => regression : ", outputs[2].shape)
