@@ -26,7 +26,7 @@ def train():
 
     num_data = 20
     data = np.random.randn(num_data, 1, IMAGE_SPATIAL_DIMS[0][0], IMAGE_SPATIAL_DIMS[0][1], IMAGE_SPATIAL_DIMS[0][2], 1)
-    target = np.random.randint(0, IMAGE_SPATIAL_DIMS[1][0], size = (num_data, 2, 1, 5, 3)) # (_, tlf brb, b, bbox num, dim)
+    target = np.random.randint(0, IMAGE_SPATIAL_DIMS[0][0], size = (num_data, 2, 1, 5, 3)) # (_, tlf brb, b, bbox num, dim)
 
     epochs = 3
 

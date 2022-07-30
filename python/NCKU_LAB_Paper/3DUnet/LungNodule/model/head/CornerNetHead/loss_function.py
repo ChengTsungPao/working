@@ -70,7 +70,7 @@ def loss_off(regressions, points, scale):
     return total_loss / batch_size
 
 
-def loss_pull_push(tlf_groups, brb_groups, tlf_points, brb_points):
+def loss_pull_push(tlf_groups, brb_groups, tlf_points, brb_points, scale):
     # batch size
 
     total_pull_loss = total_push_loss = batch_size = 0
@@ -80,7 +80,9 @@ def loss_pull_push(tlf_groups, brb_groups, tlf_points, brb_points):
         center = []
         current_loss = current_size = 0
         for x1, y1, z1 in tlf_point:
-            x2, y2, z2 = min(brb_point, key = lambda pos: abs(brb_group[pos[0]][pos[1]][pos[2]][0] - tlf_group[x1][y1][z1][0]))
+            x1, y1, z1 = x1 // scale, y1 // scale, z1 // scale
+            x2, y2, z2 = min(brb_point, key = lambda pos: abs(brb_group[pos[0] // scale][pos[1] // scale][pos[2] // scale][0] - tlf_group[x1][y1][z1][0]))
+            x2, y2, z2 = x2 // scale, y2 // scale, z2 // scale
             etk, ebk = tlf_group[x1][y1][z1][0], brb_group[x2][y2][z2][0]
             ek = (etk + ebk) / 2
             center.append(ek)
@@ -114,7 +116,7 @@ def cornerNetLoss(predicts, targets, scale):
     heatMap_shape = tlf_heatMap_predict.shape
     tlf_loss_det , brb_loss_det  = loss_det(tlf_heatMap_predict, tlf_point_target, scale, heatMap_shape), loss_det(brb_heatMap_predict, brb_point_target, scale, heatMap_shape)
     tlf_loss_off , brb_loss_off  = loss_off(tlf_regression_predict, tlf_point_target, scale), loss_off(brb_regression_predict, brb_point_target, scale)
-    loss_pull    , loss_push     = loss_pull_push(tlf_group_predict, brb_group_predict, tlf_point_target, brb_point_target)
+    loss_pull    , loss_push     = loss_pull_push(tlf_group_predict, brb_group_predict, tlf_point_target, brb_point_target, scale)
 
     # tlf_loss_det , brb_loss_det  = 0, 0
     # tlf_loss_off , brb_loss_off  = 0, 0
