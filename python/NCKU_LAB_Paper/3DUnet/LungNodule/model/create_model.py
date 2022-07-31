@@ -3,22 +3,21 @@ import numpy as np
 import argparse
 import tensorflow as tf
 
-try:
-    from backbone.Attention3DUnet import unets as attUnet
-    from backbone.Base3DUnet import unet as baseUnet
-    from head.RPNHead import rpn_head as rpn
-    from head.RPNHead.utils import create_anchor as anchor
-    from head.RPNHead.loss_function import rpn_loss
-    from head.CornerNetHead import cornerNet_head as cornerNet
-    from head.CornerNetHead.loss_function import cornerNetLoss
-except:
-    from .backbone.Attention3DUnet import unets as attUnet
-    from .backbone.Base3DUnet import unet as baseUnet
-    from .head.RPNHead import rpn_head as rpn
-    from .head.RPNHead.utils import create_anchor as anchor
-    from .head.RPNHead.loss_function import rpn_loss
-    from .head.CornerNetHead import cornerNet_head as cornerNet
-    from .head.CornerNetHead.loss_function import cornerNetLoss
+from .backbone.Attention3DUnet import unets as attUnet
+from .backbone.Base3DUnet import unet as baseUnet
+from .head.RPNHead import rpn_head as rpn
+from .head.RPNHead.utils import create_anchor as anchor
+from .head.RPNHead.loss_function import rpn_loss
+from .head.CornerNetHead import cornerNet_head as cornerNet
+from .head.CornerNetHead.loss_function import cornerNetLoss
+
+# from backbone.Attention3DUnet import unets as attUnet
+# from backbone.Base3DUnet import unet as baseUnet
+# from head.RPNHead import rpn_head as rpn
+# from head.RPNHead.utils import create_anchor as anchor
+# from head.RPNHead.loss_function import rpn_loss
+# from head.CornerNetHead import cornerNet_head as cornerNet
+# from head.CornerNetHead.loss_function import cornerNetLoss
 
 import warnings
 warnings.filterwarnings('ignore', '.*output shape of zoom.*')
