@@ -55,7 +55,7 @@ def get3DUnet(image_spatial_dim, image_num_channels, downResolution = 1):
         conv9 = tf.keras.layers.Conv3D(8, 3, activation = 'relu', padding = 'same')(conv9)
         outputs = conv9
     
-    # sigmoid or not ??
+    # sigmoid or not ???
     outputs = tf.keras.layers.Conv3D(1, 1)(outputs)
     model = tf.keras.models.Model(inputs, outputs)
 
