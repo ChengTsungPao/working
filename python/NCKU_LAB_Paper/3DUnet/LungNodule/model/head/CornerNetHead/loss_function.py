@@ -2,6 +2,8 @@ import tensorflow as tf
 import numpy as np
 from .utils import prediction as cornerNetPredict
 
+BIGGER_LOSS = 1000
+
 # heatmaps: predict, points: groundTruth
 def loss_det(heatmaps, points, scale, shape):
 
@@ -26,11 +28,11 @@ def loss_det(heatmaps, points, scale, shape):
                     
                     p = heapMap[i][j][k][0]
                     if i == x and j == y and k == z:
-                        one_point_loss += ((1 - p) ** alpha) * np.log(p)
+                        one_point_loss += ((1 - p) ** alpha) * np.log(p) if p > 10 ** -5 else -BIGGER_LOSS
                     else:
                         # weight
                         y_ = gaussian3D(abs(i - x), abs(j - y), abs(k - z))
-                        one_point_loss += ((1 - y_) ** beta) * (p ** alpha) * np.log(1 - p)
+                        one_point_loss += ((1 - y_) ** beta) * (p ** alpha) * np.log(1 - p) if 1 - p > 10 ** -5  else -BIGGER_LOSS
         return one_point_loss
 
     # batch size
