@@ -68,6 +68,7 @@ def train():
                 data = data.transpose((0, 2, 3, 1))
                 data = transform.resize(data, (1,) + RESIZE_SHAPE)
                 data = np.expand_dims(data, -1)
+                data = data / 255.
 
             with tf.GradientTape() as tape:
                 predicts = model(data, training=True) 
