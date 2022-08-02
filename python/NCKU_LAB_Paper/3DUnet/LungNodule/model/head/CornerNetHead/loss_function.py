@@ -43,7 +43,7 @@ def loss_det(heatmaps, points, scale, shape):
             current_loss += ((1 - p) ** alpha) * np.log(p + 10 ** -7)
             current_size += 1
 
-        current_loss = backgroundLoss(heapMap, heapMapWeight)
+        current_loss += backgroundLoss(heapMap, heapMapWeight)
 
         total_loss += -current_loss / current_size
         batch_size += 1
