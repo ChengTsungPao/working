@@ -18,32 +18,34 @@ def loss_det(heatmaps, points, scale, shape):
     def distance(point1, point2):
         return ((point1[0] - point2[0]) ** 2 + (point1[1] - point2[1]) ** 2 + (point1[2] - point2[2]) ** 2) ** 0.5
 
-    def penaltyReductionLoss(x, y, z, heapMap):
-        one_point_loss = 0
+    def getHeapMapWeight(x, y, z, heapMapWeight):
         for i in range(x - radius - 1, x + radius):
             for j in range(y - radius - 1, y + radius):
                 for k in range(z - radius - 1, z + radius):
-                    if not (0 <= i < height and 0 <= j < width and 0 <= k < depth) or distance([i, j, k], [x, y, z]) > radius:
-                        continue
-                    
-                    p = heapMap[i][j][k][0]
-                    if i == x and j == y and k == z:
-                        one_point_loss += ((1 - p) ** alpha) * np.log(p) if p > 10 ** -5 else -BIGGER_LOSS
-                    else:
-                        # weight
-                        y_ = gaussian3D(abs(i - x), abs(j - y), abs(k - z))
-                        one_point_loss += ((1 - y_) ** beta) * (p ** alpha) * np.log(1 - p) if 1 - p > 10 ** -5  else -BIGGER_LOSS
-        return one_point_loss
+                    if 0 <= i < height and 0 <= j < width and 0 <= k < depth and distance([i, j, k], [x, y, z]) <= radius:
+                        heapMapWeight[i][j][k][0] = max(heapMapWeight[i][j][k][0], gaussian3D(abs(i - x), abs(j - y), abs(k - z)))
+
+    def backgroundLoss(heapMap, heapMapWeight):
+        y = heapMapWeight
+        p = heapMap
+        return tf.math.reduce_sum(((1 - y) ** beta) * (p ** alpha) * np.log(1 - p + 10 ** -7))
 
     # batch size
     total_loss = batch_size = 0
     for point, heapMap in zip(points, heatmaps):
         # groundTruth point
         current_loss = current_size = 0
+        heapMap = tf.clip_by_value(heapMap, 0, 1)
+        heapMapWeight = np.zeros(heapMap.shape, float)
         for x, y, z in point:
             x, y, z = x // scale, y // scale, z // scale
-            current_loss += penaltyReductionLoss(x, y, z, heapMap)
+            getHeapMapWeight(x, y, z, heapMapWeight)
+
+            p = heapMap[x][y][z][0]
+            current_loss += ((1 - p) ** alpha) * np.log(p + 10 ** -7)
             current_size += 1
+
+        current_loss = backgroundLoss(heapMap, heapMapWeight)
 
         total_loss += -current_loss / current_size
         batch_size += 1
@@ -68,7 +70,6 @@ def loss_off(regressions, points, scale):
         batch_size += 1
 
     return total_loss / batch_size
-
 
 def loss_pull_push(tlf_groups, brb_groups, tlf_points, brb_points, scale):
     # batch size

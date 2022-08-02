@@ -45,7 +45,7 @@ def predict_model(model):
 
 def train():
 
-    save_path = create_save_path()
+    if not TEST: save_path = create_save_path()
 
     model = getModel2(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS)
 
@@ -80,7 +80,7 @@ def train():
             print("\r", "Train: %.4f" % (((step + 1) / num_data) * 100.), "%", "(step: {}, loss = {})".format(step, loss_value), end=" ")
 
         print("save model (total loss = {})".format(total_loss / len(targets)))
-        model.save(os.path.join(save_path, "model_epoch{}".format(str(epoch).zfill(3))))
+        if not TEST: model.save(os.path.join(save_path, "model_epoch{}".format(str(epoch).zfill(3))))
 
     predict_model(model)
 
