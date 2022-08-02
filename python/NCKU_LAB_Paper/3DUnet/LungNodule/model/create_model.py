@@ -66,6 +66,7 @@ def get3DAttentionUnet(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS, NUM_CLASSES):
 
     return model
 
+# Unet + RPN
 def getModel1(image_spatial_dim, image_num_channels):
 
     image_spatial_dim1, image_spatial_dim2 = image_spatial_dim
@@ -89,6 +90,7 @@ def getModel1(image_spatial_dim, image_num_channels):
     model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-4), loss = loss, metrics = [loss])
     return model
 
+# Unet + CornerNet
 def getModel2(image_spatial_dim, image_num_channels):
 
     image_spatial_dim1, image_spatial_dim2 = image_spatial_dim
@@ -106,10 +108,6 @@ def getModel2(image_spatial_dim, image_num_channels):
     inputs = tf.keras.layers.Input(image_spatial_dim1 + (image_num_channels1,))
     x = unet_model(inputs)
     outputs = cornerNetHead(x)
-
-    # inputs = tf.keras.layers.Input(image_spatial_dim1 + (image_num_channels1,))
-    # inputs = tf.keras.layers.Input(image_spatial_dim1 + (image_num_channels1,))
-    # outputs = tf.keras.layers.Conv2D(8, 3, activation = 'relu', padding = 'same')(inputs)
 
     model = tf.keras.models.Model(inputs, outputs)
     model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-4), loss = loss)
