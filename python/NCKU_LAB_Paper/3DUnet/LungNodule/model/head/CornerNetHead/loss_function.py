@@ -2,8 +2,6 @@ import tensorflow as tf
 import numpy as np
 from .utils import prediction as cornerNetPredict
 
-BIGGER_LOSS = 1000
-
 # heatmaps: predict, points: groundTruth
 def loss_det(heatmaps, points, scale, shape):
 
