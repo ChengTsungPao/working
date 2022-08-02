@@ -134,7 +134,7 @@ def predictionModule(image_spatial_dim, image_num_channels):
     inputs  = tf.keras.layers.Input(image_spatial_dim + (image_num_channels,))
 
     heatMap = tf.keras.layers.Conv3D(image_num_channels * 2, 3, activation = 'relu', padding = 'same')(inputs)
-    heatMap = tf.keras.layers.Conv3D(1, 1, activation = 'relu', padding = 'same')(heatMap)
+    heatMap = tf.keras.layers.Conv3D(1, 1, activation = 'sigmoid', padding = 'same')(heatMap)
 
     group = tf.keras.layers.Conv3D(image_num_channels * 2, 3, activation = 'relu', padding = 'same')(inputs)
     group = tf.keras.layers.Conv3D(1, 1, activation = 'relu', padding = 'same')(group)
