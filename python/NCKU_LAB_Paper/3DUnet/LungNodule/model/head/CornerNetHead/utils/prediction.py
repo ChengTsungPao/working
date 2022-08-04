@@ -23,7 +23,7 @@ def predictionCornerGroup(tlf_points, brb_points, tlf_group, brb_group):
 
 
 def predictionBBoxOffset(bboxes, tlf_regression, brb_regression, scale):
-    print("Predict Corner offset...")  
+    print("Predict Corner Offset...")  
 
     def offset(x, y, z, regression):
         ox, oy, oz = regression[0][x][y][z]
