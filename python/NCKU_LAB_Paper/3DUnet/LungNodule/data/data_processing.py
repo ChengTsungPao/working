@@ -18,7 +18,7 @@ def mergeImage(path):
     np.savez(os.path.join(path, "{}.npz".format(pid)), image = images)
 
 def read_image_path(path, mode = "train"):
-    return glob(os.path.join(path, mode, "*"))
+    return sorted(glob(os.path.join(path, mode, "*")))
 
 def read_groundTruth(path, mode = "train", resize = None):
     csv_file = pd.read_csv(os.path.join(path, "{}_val_anno.csv".format(mode)))
