@@ -78,10 +78,9 @@ def loss_pull_push(tlf_groups, brb_groups, tlf_points, brb_points, scale):
         # pull loss
         center = []
         current_loss = current_size = 0
-        for x1, y1, z1 in tlf_point:
+        for (x1, y1, z1), (x2, y2, z2) in zip(tlf_point, brb_point):
             x1, y1, z1 = x1 // scale, y1 // scale, z1 // scale
-            x2, y2, z2 = min(brb_point, key = lambda pos: abs(brb_group[pos[0] // scale][pos[1] // scale][pos[2] // scale][0] - tlf_group[x1][y1][z1][0]))
-            x2, y2, z2 = x2 // scale, y2 // scale, z2 // scale
+            x2, y2, z2 = x2 // scale, y2 // scale, z2 // scale            
             etk, ebk = tlf_group[x1][y1][z1][0], brb_group[x2][y2][z2][0]
             ek = (etk + ebk) / 2
             center.append(ek)
