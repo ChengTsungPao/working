@@ -60,8 +60,8 @@ def loss_off(regressions, points, scale):
         for x, y, z in point:
             ox, oy, oz = regression[x // scale][y // scale][z // scale]
             gx, gy, gz = x / scale - x // scale, y / scale - y // scale, z / scale - z // scale
-            mse = (abs(ox - gx) + abs(oy - gy) + abs(oz - gz)) / 3
-            current_loss += 0.5 * mse ** 2 if abs(mse) < 1 else abs(mse) - 0.5
+            mae = (abs(ox - gx) + abs(oy - gy) + abs(oz - gz)) / 3
+            current_loss += 0.5 * mae ** 2 if abs(mae) < 1 else abs(mae) - 0.5
             current_size += 1
 
         total_loss += current_loss / current_size
