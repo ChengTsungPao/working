@@ -91,7 +91,7 @@ def getModel1(image_spatial_dim, image_num_channels):
     return model
 
 # Unet + CornerNet
-def getModel2(image_spatial_dim, image_num_channels):
+def getModel2(image_spatial_dim, image_num_channels, model_path = None):
 
     image_spatial_dim1, image_spatial_dim2 = image_spatial_dim
     image_num_channels1, image_num_channels2 = image_num_channels
@@ -101,6 +101,11 @@ def getModel2(image_spatial_dim, image_num_channels):
     # targets : [[[h0, w0, d0], [h1, w1, d1]...], [[h0, w0, d0], [h1, w1, d1]...] ....]
     def loss(targets, predicts):
         return cornerNetLoss(predicts, targets, scale)
+
+    if model_path:
+        model = tf.keras.models.load_model(model_path, custom_objects = {'loss': loss})
+        model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-4), loss = loss)
+        return model
 
     unet_model = baseUnet.get3DUnet(image_spatial_dim1, image_num_channels1, int(np.log2(scale) + 1))
     cornerNetHead = cornerNet.getCornerNetHead(image_spatial_dim2, image_num_channels2)
