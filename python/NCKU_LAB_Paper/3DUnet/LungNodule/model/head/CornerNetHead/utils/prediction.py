@@ -27,7 +27,7 @@ def predictionBBoxOffset(bboxes, tlf_regression, brb_regression, scale):
 
     def offset(x, y, z, regression):
         ox, oy, oz = regression[0][x][y][z]
-        return x * scale - ox, y * scale - oy, z * scale - oz
+        return x * scale + ox, y * scale + oy, z * scale + oz
     
     offsetBBoxes = []
     for bbox in bboxes:
