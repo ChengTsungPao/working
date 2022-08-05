@@ -10,7 +10,7 @@ RESIZE_SHAPE = (128, 128, 128)
 
 
 def predict_model(model):
-    threshold = (0.5, 0.5)
+    threshold = (0.4, 0.6)
     
     scale = IMAGE_SPATIAL_DIMS[0][0] // IMAGE_SPATIAL_DIMS[0][1]
 
@@ -36,7 +36,7 @@ def predict_model(model):
 
 def test():
     # model_path = "./result/2022_0802_2335/model_epoch000"
-    model_path = "./result/2022_0804_1703/model_epoch004"
+    model_path = "./result/2022_0804_1703/model_epoch010"
     model = getModel2(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS, model_path)
     predict_model(model)
 

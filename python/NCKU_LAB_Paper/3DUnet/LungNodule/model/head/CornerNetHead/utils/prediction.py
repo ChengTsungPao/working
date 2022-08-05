@@ -7,6 +7,9 @@ def predictionCornerPoint(tlf_heatMap, brb_heatMap, threshold):
     tlf_points = tf.where(tlf_heatMap > threshold[0]).numpy()   
     brb_points = tf.where(brb_heatMap > threshold[1]).numpy()
 
+    print("tlf_points => {}".format([tuple((x, y, z)) for _, x, y, z, _ in tlf_points]))
+    print("brb_points => {}".format([tuple((x, y, z)) for _, x, y, z, _ in brb_points]))
+
     return tlf_points, brb_points
 
 
