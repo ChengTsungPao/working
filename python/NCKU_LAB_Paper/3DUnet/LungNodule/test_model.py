@@ -10,9 +10,9 @@ RESIZE_SHAPE = (128, 128, 128)
 
 
 def predict_model(model):
-    threshold = (0.4, 0.6)
     
     scale = IMAGE_SPATIAL_DIMS[0][0] // IMAGE_SPATIAL_DIMS[0][1]
+    numbers = 10
 
     image = np.load("./dataset/0005.npz")["image"]
     image = image.transpose((0, 2, 3, 1))
@@ -30,13 +30,13 @@ def predict_model(model):
     print("BRB => regression : {}".format(outputs[5].shape))
 
     print("\n======================== result ========================")
-    result = predictionModel2(outputs, scale, threshold)
-    print("result => {}".format(result))
+    result = predictionModel2(outputs, scale, numbers)
+    print("result => {}".format(result[0: 3]))
 
 
 def test():
     # model_path = "./result/2022_0802_2335/model_epoch000"
-    model_path = "./result/2022_0804_1703/model_epoch010"
+    model_path = "./result/2022_0804_1703/model_epoch017"
     model = getModel2(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS, model_path)
     predict_model(model)
 
