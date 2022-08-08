@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from model.create_model import getModel2
 from model.head.CornerNetHead.utils.prediction import predictionModel2
 import tensorflow as tf
@@ -14,7 +18,7 @@ def predict_model(model):
     scale = IMAGE_SPATIAL_DIMS[0][0] // IMAGE_SPATIAL_DIMS[0][1]
     numbers = 10
 
-    image = np.load("./dataset/0005.npz")["image"]
+    image = np.load("./dataset/0061.npz")["image"]
     image = image.transpose((0, 2, 3, 1))
     image = transform.resize(image, (1,) + RESIZE_SHAPE)
     image = np.expand_dims(image, -1)
@@ -31,7 +35,7 @@ def predict_model(model):
 
     print("\n======================== result ========================")
     result = predictionModel2(outputs, scale, numbers)
-    print("result => {}".format(result[0: 3]))
+    print("result => {}".format(result))
 
 
 def test():

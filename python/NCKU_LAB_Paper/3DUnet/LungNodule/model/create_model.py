@@ -1,23 +1,18 @@
-import enum
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 import numpy as np
 import argparse
 import tensorflow as tf
 
-from .backbone.Attention3DUnet import unets as attUnet
-from .backbone.Base3DUnet import unet as baseUnet
-from .head.RPNHead import rpn_head as rpn
-from .head.RPNHead.utils import create_anchor as anchor
-from .head.RPNHead.loss_function import rpn_loss
-from .head.CornerNetHead import cornerNet_head as cornerNet
-from .head.CornerNetHead.loss_function import cornerNetLoss
-
-# from backbone.Attention3DUnet import unets as attUnet
-# from backbone.Base3DUnet import unet as baseUnet
-# from head.RPNHead import rpn_head as rpn
-# from head.RPNHead.utils import create_anchor as anchor
-# from head.RPNHead.loss_function import rpn_loss
-# from head.CornerNetHead import cornerNet_head as cornerNet
-# from head.CornerNetHead.loss_function import cornerNetLoss
+from backbone.Attention3DUnet import unets as attUnet
+from backbone.Base3DUnet import unet as baseUnet
+from head.RPNHead import rpn_head as rpn
+from head.RPNHead.utils import create_anchor as anchor
+from head.RPNHead.loss_function import rpn_loss
+from head.CornerNetHead import cornerNet_head as cornerNet
+from head.CornerNetHead.loss_function import cornerNetLoss
 
 import warnings
 warnings.filterwarnings('ignore', '.*output shape of zoom.*')
@@ -78,7 +73,7 @@ def getModel1(image_spatial_dim, image_num_channels):
         # worse running time
         return sum([rpn_loss(batch_reg, batch_cls, batch_targets, anchors) for batch_reg, batch_cls, batch_targets in zip(reg, cls, targets)])
 
-    unet_model = baseUnet.get3DUnet(image_spatial_dim1, image_num_channels1), 
+    unet_model = baseUnet.get3DUnet(image_spatial_dim1, image_num_channels1)
     detection_head = rpn.getRPNHead(image_spatial_dim2, image_num_channels2)
     
     inputs = tf.keras.layers.Input(image_spatial_dim1 + (image_num_channels1,))
@@ -120,6 +115,7 @@ def getModel2(image_spatial_dim, image_num_channels, model_path = None):
 
 
 if __name__ == "__main__":
+
     physical_devices = tf.config.experimental.list_physical_devices("GPU")
     tf.config.experimental.set_memory_growth(physical_devices[0], True)
 

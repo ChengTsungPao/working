@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 from model.create_model import getModel2
 from data.data_processing import read_image_path, read_groundTruth
 import tensorflow as tf
@@ -8,7 +12,7 @@ from skimage import transform
 
 TEST = True
 
-IMAGE_SPATIAL_DIMS = [(128, 128, 128), (128, 128, 128)]
+IMAGE_SPATIAL_DIMS = [(128, 128, 128), (64, 64, 64)]
 IMAGE_NUM_CHANNELS = [1, 1]
 RESIZE_SHAPE = (128, 128, 128)
 
