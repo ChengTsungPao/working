@@ -19,7 +19,7 @@ PATH = "D:\\SANet\\data\\LungNodule\\merge_data"
 
 def get_data(path):
     if not TEST:
-        data, target = read_image_path(path, mode = "train"), read_groundTruth(path, mode = "train", resize = RESIZE_SHAPE)
+        data, target = read_image_path(path, mode = "train"), read_groundTruth(path, mode = "train")
     else:
         num_data = 20
         data = np.random.randn(num_data, 1, IMAGE_SPATIAL_DIMS[0][0], IMAGE_SPATIAL_DIMS[0][1], IMAGE_SPATIAL_DIMS[0][2], 1)
