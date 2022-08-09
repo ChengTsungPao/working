@@ -34,7 +34,7 @@ def loss_det(heatmaps, points, scale, shape):
         # groundTruth point
         current_loss = current_size = 0
         heapMap = tf.clip_by_value(heapMap, 0, 1)
-        heapMapWeight = np.zeros(heapMap.shape, float)
+        heapMapWeight = -np.ones(heapMap.shape, float)
         for x, y, z in point:
             x, y, z = x // scale, y // scale, z // scale
             getHeapMapWeight(x, y, z, heapMapWeight)
@@ -43,6 +43,7 @@ def loss_det(heatmaps, points, scale, shape):
             current_loss += ((1 - p) ** alpha) * np.log(p + 10 ** -7)
             current_size += 1
 
+        heapMapWeight = tf.where(heapMapWeight < 0, 1, heapMapWeight)
         current_loss += backgroundLoss(heapMap, heapMapWeight)
 
         total_loss += -current_loss / current_size
