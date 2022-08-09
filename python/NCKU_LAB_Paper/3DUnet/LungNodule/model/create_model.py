@@ -113,6 +113,26 @@ def getModel2(image_spatial_dim, image_num_channels, model_path = None):
     model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-4), loss = loss)
     return model
 
+# Unet
+def getModel3(image_spatial_dim, image_num_channels, model_path = None):
+
+    def dice_coef_loss(y_true,y_pred,axis=(1,2,3),smooth=0.0001):
+        intersection = tf.reduce_sum(y_true*y_pred,axis)
+        total=tf.reduce_sum(tf.square(y_pred),axis)+tf.reduce_sum(tf.square(y_true),axis)
+        numerator=tf.reduce_mean(intersection+smooth)
+        denominator=tf.reduce_mean(total+smooth)
+        dice_loss=-tf.math.log(2.*numerator)+tf.math.log(denominator)
+        return dice_loss
+
+    unet_model = baseUnet.get3DUnetSegm(image_spatial_dim, image_num_channels)
+
+    inputs = tf.keras.layers.Input(image_spatial_dim + (image_num_channels,))
+    outputs = unet_model(inputs)
+
+    model = tf.keras.models.Model(inputs, outputs)
+    model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-4), loss = dice_coef_loss)
+    return model    
+
 
 if __name__ == "__main__":
 
