@@ -1,8 +1,4 @@
-import os
-import sys
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
-from model.create_model import getModel2
+from model.create_model import getModel2, getModel3
 from data.data_processing import read_image_path, read_groundTruth
 import tensorflow as tf
 import numpy as np
@@ -10,9 +6,9 @@ import os
 import time
 from skimage import transform
 
-TEST = True
+TEST = False
 
-IMAGE_SPATIAL_DIMS = [(128, 128, 128), (64, 64, 64)]
+IMAGE_SPATIAL_DIMS = [(128, 128, 128), (128, 128, 128)]
 IMAGE_NUM_CHANNELS = [1, 1]
 RESIZE_SHAPE = (128, 128, 128)
 
@@ -51,17 +47,24 @@ def train():
 
     if not TEST: save_path = create_save_path()
 
+    # start_epoch = 43
+    # model_path = "./result/2022_0804_1703/model_epoch{}".format(str(start_epoch - 1).zfill(3))
+    # model = getModel2(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS, model_path)
+    # print(model.summary())
+
+    start_epoch = 0
     model = getModel2(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS)
+    print(model.summary())
 
     datas, targets = get_data(PATH)
     num_data = len(datas)
 
-    epochs = 50
+    epochs = 100
 
     loss_fn   = model.loss
     optimizer = model.optimizer
 
-    for epoch in range(epochs):
+    for epoch in range(start_epoch, start_epoch + epochs):
         print("\nStart of epoch %d" % (epoch,))
 
         total_loss = 0
@@ -72,6 +75,7 @@ def train():
                 data = data.transpose((0, 2, 3, 1))
                 data = transform.resize(data, (1,) + RESIZE_SHAPE)
                 data = np.expand_dims(data, -1)
+                data = data / np.linalg.norm(data)
                 data = data / 255.
 
             with tf.GradientTape() as tape:
@@ -79,12 +83,12 @@ def train():
                 loss_value = loss_fn(target, predicts)
                 total_loss += loss_value
 
-            grads = tape.gradient(loss_value, model.trainable_weights)
-            optimizer.apply_gradients(zip(grads, model.trainable_weights))
+                grads = tape.gradient(loss_value, model.trainable_weights)
+                optimizer.apply_gradients(zip(grads, model.trainable_weights))
 
             print("\r", "Train: %.4f" % (((step + 1) / num_data) * 100.), "%", "(step: {}, loss = {})".format(step, loss_value), end=" ")
 
-        print("save model (total loss = {})".format(total_loss / len(targets)))
+        print("save model (total loss = {})".format(total_loss / num_data))
         if not TEST: model.save(os.path.join(save_path, "model_epoch{}".format(str(epoch).zfill(3))))
 
     predict_model(model)

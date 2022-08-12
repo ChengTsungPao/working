@@ -28,6 +28,7 @@ def predict_model(model):
     numbers = 1000
 
     image = np.load("./dataset/0084.npz")["image"]
+    print(image.shape)
     image = image.transpose((0, 2, 3, 1))
     IMAGE_SHAPE = image.shape
 

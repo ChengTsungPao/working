@@ -124,14 +124,23 @@ def getModel3(image_spatial_dim, image_num_channels, model_path = None):
         dice_loss=-tf.math.log(2.*numerator)+tf.math.log(denominator)
         return dice_loss
 
+    if model_path:
+        model = tf.keras.models.load_model(model_path, custom_objects = {'dice_coef_loss': dice_coef_loss})
+        total_step = 2280
+        # lr_schedules = tf.keras.optimizers.schedules.ExponentialDecay(0.001, 10 * total_step , 0.1)
+        model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 0.0001), loss = dice_coef_loss)
+        return model
+
     unet_model = baseUnet.get3DUnetSegm(image_spatial_dim, image_num_channels)
 
     inputs = tf.keras.layers.Input(image_spatial_dim + (image_num_channels,))
     outputs = unet_model(inputs)
 
     model = tf.keras.models.Model(inputs, outputs)
-    model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-4), loss = dice_coef_loss)
-    return model    
+    total_step = 2280
+    lr_schedules = tf.keras.optimizers.schedules.ExponentialDecay(0.001, 10 * total_step , 0.1)
+    model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = lr_schedules), loss = dice_coef_loss)
+    return model 
 
 
 if __name__ == "__main__":

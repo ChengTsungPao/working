@@ -1,30 +1,19 @@
 import os
+from pyexpat import model
 import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from model.create_model import getModel3
-from data.data_processing import read_image_path, read_groundTruth
+from data.segm_data_processing import getGernerator
 import tensorflow as tf
 import numpy as np
 import os
 import time
-from skimage import transform
 
-TEST = True
-
-IMAGE_SPATIAL_DIMS = (512, 512, 128)
+IMAGE_SPATIAL_DIMS = (512, 512, 32)
 IMAGE_NUM_CHANNELS = 1
 
 PATH = "D:\\SANet\\data\\LungNodule\\merge_data"
-
-def get_data(path):
-    if not TEST:
-        data, target = read_image_path(path, mode = "train"), read_groundTruth(path, mode = "train")
-    else:
-        num_data = 20
-        data = np.random.randn(num_data, 1, IMAGE_SPATIAL_DIMS[0][0], IMAGE_SPATIAL_DIMS[0][1], IMAGE_SPATIAL_DIMS[0][2], 1)
-        target = np.random.randint(0, IMAGE_SPATIAL_DIMS[1][0], size = (num_data, 2, 1, 5, 3)) # (_, tlf brb, b, bbox num, dim)        
-    return data, target
 
 def create_save_path():
     now = time.localtime(time.time())
@@ -42,9 +31,20 @@ def predict_model(model):
     print("shape => ", outputs.shape)
 
 def train():
-    model = getModel3(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS)
-    predict_model(model)
+    save_path = create_save_path()
 
+    train_path, target_path = "D:\\SANet\\data\\LungNodule\\merge_data\\train", "E:\\04_NewLn_Database\\label"
+    test_path , target_path = "D:\\SANet\\data\\LungNodule\\merge_data\\test" , "E:\\04_NewLn_Database\\label"
+
+    trainGernerator = getGernerator(train_path, target_path)
+    testGernerator  = getGernerator(test_path, target_path)
+
+    start_epoch = 14
+    model_path = ".\\result\\2022_0811_2240_3dunet\\model-{}.hdf5".format(str(start_epoch).zfill(2))
+    model = getModel3(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS, model_path)
+    model_checkpoint = tf.keras.callbacks.ModelCheckpoint(os.path.join(save_path, "model-{epoch:02d}.hdf5"), monitor = 'loss', verbose = 1)
+    model.fit_generator(trainGernerator, steps_per_epoch = 2280, epochs = 100, callbacks = [model_checkpoint], initial_epoch = start_epoch) # 2280
+    # predict_model(model)
 
 if __name__ == "__main__":
     physical_devices = tf.config.experimental.list_physical_devices("GPU")
@@ -52,4 +52,3 @@ if __name__ == "__main__":
     # tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
     train()
-

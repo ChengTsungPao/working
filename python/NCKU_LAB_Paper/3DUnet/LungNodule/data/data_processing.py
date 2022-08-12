@@ -23,7 +23,6 @@ def read_image_path(path, mode = "train"):
 def read_groundTruth(path, mode = "train", resize = None):
     csv_file = pd.read_csv(os.path.join(path, "{}_val_anno.csv".format(mode)))
     npz_path = os.path.join(path, mode)
-
     groundTruth = []
     tlf_points = []
     brb_points = []
@@ -52,7 +51,7 @@ def read_groundTruth(path, mode = "train", resize = None):
 if __name__ == "__main__":
     path = "D:\\SANet\\data\\LungNodule\\merge_data"
 
-    points = read_groundTruth(path, mode = "train")
+    points = read_groundTruth(path, mode = "train", resize = (128, 128, 128))
     image_npz_paths = read_image_path(path)
     print(points[0], "=======", points[0][0], "=======", points[0][0][0])
     print(image_npz_paths[0])
