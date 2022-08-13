@@ -32,9 +32,12 @@ def predict_model(model_path):
     model = getModel3(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS, model_path)
 
     for datas, sliceIDList, patientID in getInferenceGenerator(DATA_PATH):
-        outputs = model(datas)
 
         startSliceID, endSliceID = str(sliceIDList[0]).zfill(3), str(sliceIDList[-1]).zfill(3)
+        if int(patientID) < 258:
+            continue
+
+        outputs = model(datas)
 
         print("====================== patientID = {}, sliceID = {} ~ {} (max score = {}) ======================".format(patientID, startSliceID, endSliceID, np.max(outputs)))
 
@@ -55,12 +58,16 @@ def predict_model(model_path):
             if not os.path.exists(save_path):
                 os.makedirs(save_path)
 
-            plt.clf()
-            plt.imshow(heapMap, cmap = "hot")
-            plt.colorbar()
-            plt.savefig(os.path.join(save_path, heapMap_name))
+            heapMap_save_path = os.path.join(save_path, heapMap_name)
+            if not os.path.exists(heapMap_save_path):
+                plt.clf()
+                plt.imshow(heapMap, cmap = "hot")
+                plt.colorbar()
+                plt.savefig(heapMap_save_path)
 
-            cv2.imwrite(os.path.join(save_path, binaryMap_name), binaryMap)
+            binaryMap_save_path = os.path.join(save_path, binaryMap_name)
+            if not os.path.exists(binaryMap_save_path):
+                cv2.imwrite(binaryMap_save_path, binaryMap)
 
 def test():
     model_path = os.path.join(SAVE_PATH, "model-15.hdf5")
