@@ -15,30 +15,18 @@ from glob import glob
 TEST = True
 
 MODE = "test"
-THRESHOLD = 0.6
+THRESHOLD = 0.4
 
 IMAGE_SPATIAL_DIMS = (512, 512, 32)
 IMAGE_NUM_CHANNELS = 1
 
 MODEL_NAME = "model-70.hdf5"
 SAVE_PATH = "./result/2022_0812_1253_3dunet/"
-DATA_PATH = "E:\\dataset\\NCKU\\Lung\\{}\\".format(MODE)
+DATA_PATH = "E:\\dataset\\NCKU\\Lung\\"
 GROUNDTRUTH_PATH = "E:\\dataset\\NCKU\\Lung\\label\\"
 
 
 def evaluate_model(model_path, mode):
-
-    def accuracy(count):
-        TP = count[1, 1]
-        TN = count[0, 0]
-        FP = count[1, 0]
-        FN = count[0, 1]
-
-        recall    = 1 if TP == FN == 0 else TP / (TP + FN)
-        precision = 1 if TP == FP == 0 else TP / (TP + FP)
-
-        return recall, precision
-
 
     result_path = os.path.join(model_path.split(".hdf5")[0], mode)
     status = collections.defaultdict(lambda: collections.defaultdict(list))
@@ -48,14 +36,15 @@ def evaluate_model(model_path, mode):
             sliceID = npzfile_heapMap[-7:-4]
             status[patientID][sliceID].append(npzfile_heapMap)
     
+    all_patientID_recall = []
+    all_patientID_precision = []
 
     for patientID in sorted(status.keys()):
 
-        total_recall = 0
-        total_precision = 0
-        total_slice = 0
-
+        TP = TN = FP = FN = 0
+        
         for sliceID in sorted(status[patientID].keys()):
+
             heapMap = np.zeros(IMAGE_SPATIAL_DIMS[:-1])
             for npzfile_heapMap_path in status[patientID][sliceID]:
                 newHeapMap = np.load(npzfile_heapMap_path)["heapMap"]
@@ -74,12 +63,25 @@ def evaluate_model(model_path, mode):
 
             count = collections.Counter([(int(img), int(gt)) for img, gt in zip(heapMap.flatten(), groundTruth_image.flatten())])
 
-            recall, precision = accuracy(count)
-            total_recall += recall
-            total_precision += precision
-            total_slice += 1
+            TP += count[1, 1]
+            TN += count[0, 0]
+            FP += count[1, 0]
+            FN += count[0, 1]
 
-        print("patientID = {}, recall = {}, precision = {}".format(patientID, total_recall / total_slice, total_precision / total_slice))
+        recall    = None if TP == FN == 0 else TP / (TP + FN)
+        precision = None if TP == FP == 0 else TP / (TP + FP)
+
+        print("patientID = {}, recall = {}, precision = {}".format(patientID, recall, precision))
+
+        all_patientID_recall += [recall]
+        all_patientID_precision += [precision]
+
+    all_patientID_recall    = list(filter(lambda x: x != None, all_patientID_recall))
+    all_patientID_precision = list(filter(lambda x: x != None, all_patientID_precision))
+    avg_patientID_recall      = np.mean(all_patientID_recall) if all_patientID_recall else None
+    avg_patientID_precision   = np.mean(all_patientID_precision) if all_patientID_precision else None
+
+    print("====================== Threshold = {}, recall = {}, precision = {} ======================".format(THRESHOLD, avg_patientID_recall, avg_patientID_precision))
 
 
 def predict_model(model_path, mode):
@@ -92,12 +94,12 @@ def predict_model(model_path, mode):
 
     model = getModel3(IMAGE_SPATIAL_DIMS, IMAGE_NUM_CHANNELS, model_path)
 
-    for datas, sliceIDList, patientID in getInferenceGenerator(DATA_PATH):
+    for datas, sliceIDList, patientID in getInferenceGenerator(os.path.join(DATA_PATH, mode)):
 
         startSliceID, endSliceID = str(sliceIDList[0]).zfill(3), str(sliceIDList[-1]).zfill(3)
-        if int(patientID) < 499:
-            print("patientID = {} skip !!!".format(patientID))
-            continue
+        # if int(patientID) < 499:
+        #     print("patientID = {} skip !!!".format(patientID))
+        #     continue
 
         outputs = model(datas)
 

@@ -42,12 +42,14 @@ def getGernerator(data_path, target_path, batch_size = 1, stride = 16, shape = (
                             continue
 
                         datas[b]   = images[0][sliceIDStart: sliceIDStart + depth]
+                        # 不太優會出現 254 253...
                         targets[b] = np.array([cv2.imread(target_paths_status[patientID, sliceID], 0) if (patientID, sliceID) in target_paths_status else np.zeros(shape[:-1]) for sliceID in range(sliceIDStart, sliceIDStart + depth)])
                     else:
                         if not any([(patientID, sliceID) in target_paths_status for sliceID in range(number_of_slice - depth, number_of_slice)]):
                             continue
 
                         datas[b]   = images[0][number_of_slice - depth:]
+                        # 不太優會出現 254 253...
                         targets[b] = np.array([cv2.imread(target_paths_status[patientID, sliceID], 0) if (patientID, sliceID) in target_paths_status else np.zeros(shape[:-1]) for sliceID in range(number_of_slice - depth, number_of_slice)])
                     b += 1
 
@@ -78,9 +80,3 @@ def getInferenceGenerator(data_path, stride = 16, shape = (512, 512, 32)):
 
             datas = np.expand_dims(datas.transpose((0, 2, 3, 1)), -1) / 255.
             yield datas, sliceIDList, patientID
-            
-
-
-    
-
-

@@ -126,7 +126,7 @@ def getModel3(image_spatial_dim, image_num_channels, model_path = None):
 
     if model_path:
         model = tf.keras.models.load_model(model_path, custom_objects = {'dice_coef_loss': dice_coef_loss})
-        total_step = 2280
+        # total_step = 2280
         # lr_schedules = tf.keras.optimizers.schedules.ExponentialDecay(0.001, 10 * total_step , 0.1)
         model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 0.0001), loss = dice_coef_loss)
         return model
@@ -137,9 +137,37 @@ def getModel3(image_spatial_dim, image_num_channels, model_path = None):
     outputs = unet_model(inputs)
 
     model = tf.keras.models.Model(inputs, outputs)
-    total_step = 2280
-    lr_schedules = tf.keras.optimizers.schedules.ExponentialDecay(0.001, 10 * total_step , 0.1)
-    model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = lr_schedules), loss = dice_coef_loss)
+    # total_step = 2280
+    # lr_schedules = tf.keras.optimizers.schedules.ExponentialDecay(0.001, 10 * total_step , 0.1)
+    model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 0.0001), loss = dice_coef_loss)
+    return model 
+
+def getModel4(image_spatial_dim, image_num_channels, model_path = None):
+
+    def dice_coef_loss(y_true,y_pred,axis=(1,2,3),smooth=0.0001):
+        intersection = tf.reduce_sum(y_true*y_pred,axis)
+        total=tf.reduce_sum(tf.square(y_pred),axis)+tf.reduce_sum(tf.square(y_true),axis)
+        numerator=tf.reduce_mean(intersection+smooth)
+        denominator=tf.reduce_mean(total+smooth)
+        dice_loss=-tf.math.log(2.*numerator)+tf.math.log(denominator)
+        return dice_loss
+
+    if model_path:
+        model = tf.keras.models.load_model(model_path, custom_objects = {'dice_coef_loss': dice_coef_loss})
+        # total_step = 2280
+        # lr_schedules = tf.keras.optimizers.schedules.ExponentialDecay(0.001, 10 * total_step , 0.1)
+        model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 0.0001), loss = dice_coef_loss)
+        return model
+
+    attunet_model = get3DAttentionUnet(image_spatial_dim, image_num_channels, 1)
+
+    inputs = tf.keras.layers.Input(image_spatial_dim + (image_num_channels,))
+    outputs = attunet_model(inputs)
+
+    model = tf.keras.models.Model(inputs, outputs)
+    # total_step = 2280
+    # lr_schedules = tf.keras.optimizers.schedules.ExponentialDecay(0.001, 10 * total_step , 0.1)
+    model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate = 0.0001), loss = dice_coef_loss)
     return model 
 
 
