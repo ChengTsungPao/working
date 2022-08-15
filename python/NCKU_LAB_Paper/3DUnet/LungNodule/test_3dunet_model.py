@@ -12,7 +12,6 @@ import collections
 import matplotlib.pylab as plt
 from glob import glob
 
-TEST = True
 
 MODE = "test"
 THRESHOLD = 0.4
@@ -20,7 +19,7 @@ THRESHOLD = 0.4
 IMAGE_SPATIAL_DIMS = (512, 512, 32)
 IMAGE_NUM_CHANNELS = 1
 
-MODEL_NAME = "model-70.hdf5"
+MODEL_NAME = "model-95.hdf5"
 SAVE_PATH = "./result/2022_0812_1253_3dunet/"
 DATA_PATH = "E:\\dataset\\NCKU\\Lung\\"
 GROUNDTRUTH_PATH = "E:\\dataset\\NCKU\\Lung\\label\\"
